@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'SpotifyBackup'
-include('app', 'list', 'utilities')
+include('app')
