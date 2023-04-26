@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class CmdParser {
-    private List<Argument> arguments;
+    private final List<Argument> arguments;
     private boolean argumentsParsed = false;
 
     public CmdParser() {
@@ -16,7 +16,7 @@ public class CmdParser {
         arguments.add(argument);
     }
 
-    public void parseArguments(String[] args) {
+    public void parseArguments(String[] args) throws MissingArgumentException {
         if (!argumentsParsed) {
             Argument lookingForArgument = null;
             for (String arg : args) {
@@ -50,6 +50,9 @@ public class CmdParser {
                         lookingForArgument.setValue(arg);
                     }
                 }
+            }
+            if (arguments.stream().anyMatch(argument -> argument.isMandatory && !argument.isPresent)) {
+                throw new MissingArgumentException("Mandatory arguments missing from input.");
             }
             argumentsParsed = true;
         }

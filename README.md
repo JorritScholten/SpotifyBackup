@@ -8,6 +8,7 @@ database and automated backups to an online repository.
 - [ ] Structure project according to industry norms.
 - [ ] Good documentation and a user guide.
 - [ ] Implement a robust commandline interface.
+  - [x] Write unit tests.
   - [ ] Trying out a Python argparse style interface.
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.

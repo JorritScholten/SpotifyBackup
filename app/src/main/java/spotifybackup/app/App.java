@@ -8,6 +8,6 @@ public class App {
         System.out.println("Hello SpotifyBackup!");
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help.", 'h'));
-        argParser.parseArguments(args);
+//        argParser.parseArguments(args);
     }
 }
