@@ -20,7 +20,6 @@ public class CmdParser {
         if (!argumentsParsed) {
             Argument lookingForArgument = null;
             for (String arg : args) {
-                System.out.println("arg: " + arg);
                 if (lookingForArgument == null) {
                     if (arg.startsWith("-")) {
                         for (char c : arg.substring(1).toCharArray()) {
