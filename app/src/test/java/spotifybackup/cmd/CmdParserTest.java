@@ -11,8 +11,8 @@ class CmdParserTest {
         final String[] args = {"--help"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
         try {
-            argParser.parseArguments(args);
             System.out.println("help.getValue(): " + argParser.getValue("help"));
         } catch (Exception e) {
             System.out.println(e);
@@ -24,8 +24,8 @@ class CmdParserTest {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
         try {
-            argParser.parseArguments(args);
             System.out.println("help.getValue(): " + argParser.getValue("help"));
         } catch (Exception e) {
             System.out.println(e);
