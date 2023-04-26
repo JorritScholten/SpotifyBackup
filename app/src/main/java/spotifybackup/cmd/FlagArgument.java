@@ -5,6 +5,21 @@ package spotifybackup.cmd;
  * mandatory.
  */
 public class FlagArgument extends Argument {
+    public FlagArgument(String name, String description) {
+        isMandatory = false;
+        hasValue = false;
+        this.name = name;
+        this.description = description;
+    }
+
+    public FlagArgument(String name, String description, Character shortName) {
+        isMandatory = false;
+        hasValue = false;
+        this.name = name;
+        this.description = description;
+        this.shortName = shortName;
+    }
+
     /**
      * Returns true if flag is present in input.
      * @return true if flag is present in input.
@@ -13,4 +28,11 @@ public class FlagArgument extends Argument {
     public Boolean getValue() {
         return (Boolean) isPresent;
     }
+
+    /**
+     * Does nothing, value is dependent on whether flag is present.
+     * @param value is ignored.
+     */
+    @Override
+    protected void setValue(String value){}
 }
