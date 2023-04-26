@@ -16,12 +16,19 @@ public class CmdParser {
         arguments.add(argument);
     }
 
-    public void parseArguments(String[] args) throws MissingArgumentException {
+    public void parseArguments(String[] args) throws MissingArgumentException, ArgumentNotPresentException {
         if (!argumentsParsed) {
             Argument lookingForArgument = null;
             for (String arg : args) {
                 if (lookingForArgument == null) {
-                    if (arg.startsWith("-")) {
+                    if (arg.startsWith("--")) {
+                        lookingForArgument = arguments.stream().filter(argument -> (
+                                argument.name.equals(arg.substring(2)) && !argument.isPresent)
+                        ).findFirst().orElseThrow(() -> new ArgumentNotPresentException(
+                                "Malformed command line argument supplied to program: " + arg + " not an argument.")
+                        );
+                        lookingForArgument.isPresent = true;
+                    } else if (arg.startsWith("-")) {
                         for (char c : arg.substring(1).toCharArray()) {
                             lookingForArgument = arguments.stream().filter(argument -> (argument.shortName == c && !argument.isPresent))
                                     .findFirst().orElse(null);
@@ -30,11 +37,6 @@ public class CmdParser {
                             }
                             // TODO: implement multiple flag arguments followed by value
                         }
-                    } else if (arg.startsWith("--")) {
-                        lookingForArgument = arguments.stream().filter(argument ->
-                                        (argument.name.equals(arg.substring(2)) && !argument.isPresent))
-                                .findFirst().orElseThrow();
-                        lookingForArgument.isPresent = true;
                     } else {
                         throw new RuntimeException("Malformed command line argument supplied to program.");
                     }

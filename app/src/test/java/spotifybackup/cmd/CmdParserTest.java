@@ -39,9 +39,8 @@ class CmdParserTest {
         final String[] args = {"--hel"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
-        assertDoesNotThrow(() -> argParser.parseArguments(args));
         assertThrows(ArgumentNotPresentException.class, () ->
-                System.out.println("help.getValue(): " + argParser.getValue("help"))
+                argParser.parseArguments(args)
         );
     }
 
