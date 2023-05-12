@@ -61,6 +61,17 @@ class CmdParserTest {
 
     @Test
     void testMissingMandatoryArgument() {
+        final String[] args = {"-h"};
+        CmdParser argParser = new CmdParser();
+        argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
+        argParser.addArgument(new IntArgument("extra", "", 'e', true));
+        assertThrows(MissingArgumentException.class, () ->
+                argParser.parseArguments(args)
+        );
+    }
+
+    @Test
+    void testMalformedArgument() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
