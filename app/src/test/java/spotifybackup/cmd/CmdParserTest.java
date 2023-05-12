@@ -48,6 +48,18 @@ class CmdParserTest {
     }
 
     @Test
+    void testIntArgument() {
+        final Integer value = 34;
+        final String[] args = {"-e", value.toString()};
+        CmdParser argParser = new CmdParser();
+        argParser.addArgument(new IntArgument("extra", "", 'e', true));
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(value, argParser.getValue("extra"));
+        });
+    }
+
+    @Test
     void testMissingMandatoryArgument() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser();
@@ -57,17 +69,4 @@ class CmdParserTest {
                 argParser.parseArguments(args)
         );
     }
-
-//    @Test
-//    void testIncorrectParseArguments() {
-//        final String[] args = {"-x", "--help", "-l", "20", "d", "--d"};
-//        CmdParser argParser = new CmdParser();
-//        argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
-//        argParser.parseArguments(args);
-//        try {
-//            System.out.println("help.getValue(): " + argParser.getValue("help"));
-//        } catch (Exception e) {
-//            System.out.println(e);
-//        }
-//    }
 }
