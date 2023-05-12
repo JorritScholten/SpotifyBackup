@@ -54,40 +54,46 @@ public class CmdParser {
         }
     }
 
+    private Argument identifyArgumentByShortName(String arg) {
+        return identifyArgumentByShortName(arg.charAt(1));
+    }
+
     private Argument identifyArgumentByShortName(char shortName) {
         return arguments.stream().filter(argument -> (argument.shortName != null && argument.shortName == shortName))
                 .findFirst().orElse(null);
     }
 
-    private Argument identifyArgumentByName(String name) {
-        return arguments.stream().filter(arg -> (arg.name.equals(name)))
+    private Argument identifyArgumentByName(String arg) {
+        return arguments.stream().filter(argument -> (argument.name.equals(arg.substring(2))))
                 .findFirst().orElse(null);
+    }
+
+    private Argument identifyValueArgumentByShortName(String arg) {
+        List<Argument> shortArguments = new ArrayList<>();
+        for (var c : arg.substring(1).toCharArray()) {
+            shortArguments.add(identifyArgumentByShortName(c));
+        }
+        if (shortArguments.stream().filter(argument -> (argument.hasValue)).count() > 1) {
+            throw new MalformedInputException("Cannot have more than one value type argument in shortened block: " + arg);
+        } else {
+            shortArguments.stream().filter(argument -> (!argument.hasValue)).forEach(argument -> {
+                argument.isPresent = true;
+            });
+            return shortArguments.stream().filter(argument -> (argument.hasValue)).findFirst().orElse(null);
+        }
     }
 
     private void parser(final LexedArgs[] inputs) throws MalformedInputException {
         for (var iter = Stream.of(inputs).iterator(); iter.hasNext(); ) {
             var input = iter.next();
-            Argument argument = null;
-            switch (input.type) {
-                case SHORT_ARGUMENT -> argument = identifyArgumentByShortName(input.arg.charAt(1));
-                case LONG_ARGUMENT -> argument = identifyArgumentByName(input.arg.substring(2));
-                case SHORT_ARGUMENTS -> {
-                    List<Argument> shortArguments = new ArrayList<>();
-                    for (var c : input.arg.substring(1).toCharArray()) {
-                        shortArguments.add(identifyArgumentByShortName(c));
-                    }
-                    if (shortArguments.stream().filter(arg -> (arg.hasValue)).count() > 1) {
-                        throw new MalformedInputException("Cannot have more than one value type argument in shortened block: " + input.arg);
-                    } else {
-                        argument = shortArguments.stream().filter(arg -> (arg.hasValue)).findFirst().orElse(null);
-                        shortArguments.stream().filter(arg -> (!arg.hasValue)).forEach(arg -> {
-                            arg.isPresent = true;
-                        });
-                    }
+            Argument argument = switch (input.type) {
+                case SHORT_ARGUMENT -> identifyArgumentByShortName(input.arg);
+                case LONG_ARGUMENT -> identifyArgumentByName(input.arg);
+                case SHORT_ARGUMENTS -> identifyValueArgumentByShortName(input.arg);
+                case VALUE -> {
+                    throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
                 }
-                case VALUE ->
-                        throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
-            }
+            };
             if (argument == null) {
                 throw new MalformedInputException("No argument defined by: " + input.arg);
             } else if (!argument.isPresent) {
