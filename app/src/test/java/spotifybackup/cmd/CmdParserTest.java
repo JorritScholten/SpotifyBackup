@@ -48,6 +48,9 @@ class CmdParserTest {
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
     }
 
     @Test
@@ -83,9 +86,12 @@ class CmdParserTest {
         CmdParser argParser = new CmdParser(new Argument[]{
                 new BoundedIntArgument("extra", "", true, 1)
         });
-        assertThrows(MalformedInputException.class, () -> {
-            argParser.parseArguments(args);
-        });
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
     }
 
     @Test
@@ -95,9 +101,12 @@ class CmdParserTest {
         CmdParser argParser = new CmdParser(new Argument[]{
                 new BoundedIntArgument("extra", "", true, 1, 20)
         });
-        assertThrows(MalformedInputException.class, () -> {
-            argParser.parseArguments(args);
-        });
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
     }
 
     @Test
@@ -109,6 +118,9 @@ class CmdParserTest {
         });
         assertThrows(MissingArgumentException.class, () ->
                 argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
         );
     }
 
@@ -122,6 +134,9 @@ class CmdParserTest {
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
     }
 
     @Test
@@ -134,6 +149,9 @@ class CmdParserTest {
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
     }
 
     @Test
@@ -145,6 +163,9 @@ class CmdParserTest {
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
         );
     }
 
