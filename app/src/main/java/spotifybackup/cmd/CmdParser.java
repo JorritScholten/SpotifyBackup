@@ -139,7 +139,31 @@ public class CmdParser {
         }
     }
 
+    /**
+     * Generate help message, assumes 80 character width terminal.
+     * @return String containing help message.
+     */
     public String getHelp() {
+        final int DEFAULT_TERMINAL_WIDTH = 80;
+        return getHelp(DEFAULT_TERMINAL_WIDTH, DEFAULT_TERMINAL_WIDTH / 4);
+    }
+
+    /**
+     * Generate help message, formats name block to quarter width.
+     * @param maxWidth Width of command line for text wrapping.
+     * @return String containing help message.
+     */
+    public String getHelp(int maxWidth) {
+        return getHelp(maxWidth, maxWidth / 4);
+    }
+
+    /**
+     * Generate help message.
+     * @param maxWidth  Width of command line for text wrapping.
+     * @param nameWidth Width of argument name block.
+     * @return String containing help message.
+     */
+    public String getHelp(int maxWidth, int nameWidth) {
         final List<Argument> mandatoryArguments = arguments.stream().filter(argument -> argument.isMandatory).toList();
         final List<Argument> optionalArguments = arguments.stream().filter(argument -> !argument.isMandatory).toList();
 
@@ -184,7 +208,7 @@ public class CmdParser {
         if (!mandatoryArguments.isEmpty()) {
             help.append("\n" + "Mandatory arguments:\n");
             for (Argument argument : mandatoryArguments) {
-                help.append(argument.getHelp(24, 80)).append("\n");
+                help.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
             }
         }
 
@@ -192,7 +216,7 @@ public class CmdParser {
         if (!optionalArguments.isEmpty()) {
             help.append("\n" + "Optional arguments:\n");
             for (Argument argument : optionalArguments) {
-                help.append(argument.getHelp(24, 80)).append("\n");
+                help.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
             }
         }
 
