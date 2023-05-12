@@ -16,7 +16,8 @@ public class CmdParser {
         arguments.add(argument);
     }
 
-    public void parseArguments(String[] args) throws MissingArgumentException, ArgumentNotPresentException {
+    public void parseArguments(String[] args)
+            throws MissingArgumentException, ArgumentNotPresentException, MalformedInputException {
         if (!argumentsParsed) {
             Argument lookingForArgument = null;
             for (String arg : args) {

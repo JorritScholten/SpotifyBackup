@@ -9,7 +9,6 @@ abstract public class Argument {
     protected Character shortName;
     protected String name;
     protected String description;
-    private Object value;
 
     /**
      * Gets value inherent to argument.
@@ -21,5 +20,5 @@ abstract public class Argument {
      * Set value of argument when parsing command line arguments.
      * @param value String from String[] args.
      */
-    abstract protected void setValue(String value);
+    abstract protected void setValue(String value) throws MalformedInputException;
 }

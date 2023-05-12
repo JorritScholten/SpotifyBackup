@@ -48,16 +48,13 @@ class CmdParserTest {
     }
 
     @Test
-    void testMissingArgument() {
+    void testMissingMandatoryArgument() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
-        // extra needs to be a non-Flag argument because flags are per definition non-mandatory
-        assert false;
-        argParser.addArgument(new FlagArgument("extra", "", 'e'));
-        assertDoesNotThrow(() -> argParser.parseArguments(args));
-        assertThrows(ArgumentNotPresentException.class, () ->
-                System.out.println("help.getValue(): " + argParser.getValue("help"))
+        argParser.addArgument(new IntArgument("extra", "", 'e', true));
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
         );
     }
 
