@@ -42,6 +42,28 @@ class CmdParserTest {
     }
 
     @Test
+    void testNullArgs() {
+        final String[] args = {};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new FlagArgument("extra", "", 'e')
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(Boolean.FALSE, argParser.getValue("help"));
+            assertEquals(Boolean.FALSE, argParser.getValue("extra"));
+        });
+    }
+
+    @Test
+    void testDuplicateArgumentNames() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new FlagArgument("help", "", 'e')
+        }));
+    }
+
+    @Test
     void testFlagByMalformedName() {
         final String[] args = {"--hel"};
         CmdParser argParser = new CmdParser(new Argument[]{
@@ -127,11 +149,9 @@ class CmdParserTest {
 
     @Test
     void testNullArgumentName() {
-        assertThrows(IllegalConstructorParameterException.class, () -> {
-            CmdParser argParser = new CmdParser(new Argument[]{
-                    new FlagArgument(null, "Print program help and exit.", 'h')
-            });
-        });
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new FlagArgument(null, "Print program help and exit.", 'h')
+        }));
     }
 
     @Test
