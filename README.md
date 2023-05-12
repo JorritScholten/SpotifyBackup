@@ -13,7 +13,7 @@ database and automated backups to an online repository.
     - [x] Create a boolean flag argument that's true if present
     - [x] Create an integer argument
       - [ ] Create a subtype with bounds checking
-    - [ ] Create a string argument
+    - [x] Create a string argument
       - [ ] Create a filepath/uri argument with validity checking
     - [ ] Rewrite/improve argument lexer/parser
     - [x] De-pythonise current CmdParser implementation

@@ -110,4 +110,18 @@ class CmdParserTest {
                 argParser.parseArguments(args)
         );
     }
+
+    @Test
+    void testStringArgument() {
+        final String value = "test_value";
+        final String[] args = {"-h", "--extra", value};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new StringArgument("extra", "", true)
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(value, argParser.getValue("extra"));
+        });
+    }
 }
