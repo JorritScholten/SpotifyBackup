@@ -30,7 +30,6 @@ database and automated backups to an online repository.
         - [ ] Add pretty printing (look in to jANSI library?)
         - [ ] De-clutter and split functions to reduce length:
             - Argument.getHelp()
-            - CmdParser.getHelp()
             - CmdParser.identifyValueArgumentByShortName()
             - CmdParser.parser()
     - [ ] Implement positional arguments (at a later point in time)

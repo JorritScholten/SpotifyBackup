@@ -1,9 +1,6 @@
 package spotifybackup.cmd;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -182,64 +179,51 @@ public class CmdParser {
     public String getHelp(int maxWidth, int nameWidth) {
         final List<Argument> mandatoryArguments = arguments.stream().filter(argument -> argument.isMandatory).toList();
         final List<Argument> optionalArguments = arguments.stream().filter(argument -> !argument.isMandatory).toList();
+        StringBuilder helpText = new StringBuilder();
+        Formatter formatter = new Formatter(helpText);
 
         // generate usage block
-        StringBuilder help = new StringBuilder("Usage: ");
-        if (programName != null) {
-            help.append(programName).append(" ");
-        }
+        formatter.format("Usage: %s", programName != null ? programName + " " : "");
         if (!mandatoryArguments.isEmpty()) {
             for (Argument argument : mandatoryArguments) {
-                if (argument.shortName == null) {
-                    help.append("--").append(argument.name).append(" ");
-                } else {
-                    help.append("-").append(argument.shortName).append(" ");
-                }
-                if (argument.hasValue) {
-                    help.append(argument.getValueName()).append(" ");
-                }
+                formatter.format("-%s %s",
+                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
+                        argument.hasValue ? argument.getValueName() + " " : "");
             }
         }
         if (!optionalArguments.isEmpty()) {
             for (Argument argument : optionalArguments) {
-                if (argument.shortName == null) {
-                    help.append("[--").append(argument.name);
-                } else {
-                    help.append("[-").append(argument.shortName);
-                }
-                if (argument.hasValue) {
-                    help.append(" [").append(argument.getValueName()).append("]] ");
-                } else {
-                    help.append("] ");
-                }
+                formatter.format("[-%s%s] ",
+                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
+                        argument.hasValue ? " [" + argument.getValueName() + "]" : "");
             }
         }
-        help.append("\n");
+        helpText.append("\n");
 
         if (description != null) {
-            help.append("\n").append(description).append("\n");
+            helpText.append("\n").append(description).append("\n");
         }
 
         // add mandatory argument information
         if (!mandatoryArguments.isEmpty()) {
-            help.append("\n" + "Mandatory arguments:\n");
+            helpText.append("\nMandatory arguments:\n");
             for (Argument argument : mandatoryArguments) {
-                help.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
+                helpText.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
             }
         }
 
         // add optional argument information
         if (!optionalArguments.isEmpty()) {
-            help.append("\n" + "Optional arguments:\n");
+            helpText.append("\nOptional arguments:\n");
             for (Argument argument : optionalArguments) {
-                help.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
+                helpText.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
             }
         }
 
         if (epilog != null) {
-            help.append("\n").append(epilog).append("\n");
+            helpText.append("\n").append(epilog).append("\n");
         }
-        return help.toString();
+        return helpText.toString();
     }
 
     private Argument identifyArgumentByShortName(String arg) {

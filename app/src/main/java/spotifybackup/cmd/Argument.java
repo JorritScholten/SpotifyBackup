@@ -95,6 +95,14 @@ abstract public class Argument {
         }
     }
 
+    /**
+     * Test whether shortName has been assigned a value.
+     * @return true if shortName is not null.
+     */
+    protected boolean hasShortName() {
+        return shortName != null;
+    }
+
     abstract protected String getValueName();
 
     /**
