@@ -18,7 +18,7 @@ database and automated backups to an online repository.
     - [ ] Add baked in support for help argument
         - [x] Parametric help printing per argument.
         - [ ] Parametric usage printing in CmdParser
-        - [ ] Expand on CmdParser constructor for baked in program description
+        - [x] Expand on CmdParser constructor for baked in program description
     - [x] Add optional default value to value arguments: make it so
       that non-mandatory arguments are optional and vice-versa
         - [x] Split tests up because CmdParserTest.java is getting rather large

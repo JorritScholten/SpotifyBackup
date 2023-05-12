@@ -9,15 +9,81 @@ import java.util.stream.Stream;
 
 public class CmdParser {
     private final List<Argument> arguments;
+    private final String description;
+    private final String epilog;
+    private final String programName;
     private boolean argumentsParsed = false;
 
     /**
-     * The CmdParser class makes it easy to write user-friendly command-line interfaces.
-     * @param arguments Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be null).
+     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
+     * parser.
+     * @param arguments Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
+     *                  null).
      * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
      */
-    public CmdParser(final Argument[] arguments) throws IllegalConstructorParameterException {
+    public CmdParser(final Argument[] arguments)
+            throws IllegalConstructorParameterException {
+        this(arguments, null, null, null, true);
+    }
+
+    /**
+     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
+     * parser.
+     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
+     *                    null).
+     * @param description Text to display before the argument help.
+     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
+     */
+    public CmdParser(final Argument[] arguments, String description)
+            throws IllegalConstructorParameterException {
+        this(arguments, description, null, null, true);
+    }
+
+    /**
+     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
+     * parser.
+     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
+     *                    null).
+     * @param description Text to display before the argument help.
+     * @param programName The name of the program.
+     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
+     */
+    public CmdParser(final Argument[] arguments, String description, String programName)
+            throws IllegalConstructorParameterException {
+        this(arguments, description, programName, null, true);
+    }
+
+    /**
+     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
+     * parser.
+     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
+     *                    null).
+     * @param description Text to display before the argument help.
+     * @param programName The name of the program.
+     * @param epilog      Text to display after the argument help.
+     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
+     */
+    public CmdParser(final Argument[] arguments, String description, String programName, String epilog)
+            throws IllegalConstructorParameterException {
+        this(arguments, description, programName, epilog, true);
+    }
+
+    /**
+     * The CmdParser class makes it easy to write user-friendly command-line interfaces.
+     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
+     *                    null).
+     * @param description Text to display before the argument help.
+     * @param programName The name of the program.
+     * @param epilog      Text to display after the argument help.
+     * @param addHelp     Add a -h/--help option to the parser.
+     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
+     */
+    public CmdParser(final Argument[] arguments, String description, String programName, String epilog, boolean addHelp)
+            throws IllegalConstructorParameterException {
         this.arguments = new ArrayList<>();
+        if (addHelp) {
+            this.arguments.add(new FlagArgument("help", "Show this help message and exit.", 'h'));
+        }
         this.arguments.addAll(List.of(arguments));
         Set<String> argumentNames = new HashSet<>();
         this.arguments.forEach(argument -> {
@@ -31,6 +97,9 @@ public class CmdParser {
                 throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, shortNames should be unique.");
             }
         });
+        this.description = description;
+        this.programName = programName;
+        this.epilog = epilog;
     }
 
     /**
@@ -70,9 +139,19 @@ public class CmdParser {
     }
 
     public String getHelp() {
-        String help = "options:\n";
-        for (Argument argument : arguments) {
-            help += argument.getHelp(24, 80) + "\n";
+        String help = "";
+
+        if (arguments.stream().anyMatch(argument -> argument.isMandatory)) {
+            help += "\nMandatory arguments:\n";
+            for (Argument argument : arguments.stream().filter(argument -> !argument.isMandatory).toList()) {
+                help += argument.getHelp(24, 80) + "\n";
+            }
+        }
+        if (arguments.stream().anyMatch(argument -> !argument.isMandatory)) {
+            help += "\nOptional arguments:\n";
+            for (Argument argument : arguments.stream().filter(argument -> !argument.isMandatory).toList()) {
+                help += argument.getHelp(24, 80) + "\n";
+            }
         }
         return help;
     }
