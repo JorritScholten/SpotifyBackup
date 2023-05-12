@@ -14,8 +14,7 @@ public class MandatoryFilePathArgument extends Argument {
 
     public MandatoryFilePathArgument(String name, String description, boolean isFolder)
             throws IllegalConstructorParameterException {
-        super(name, description, true, true);
-        this.isFolder = isFolder;
+        this(name, description, null, isFolder);
     }
 
     @Override

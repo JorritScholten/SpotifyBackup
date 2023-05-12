@@ -42,14 +42,6 @@ abstract public class Argument {
     }
 
     /**
-     * @throws IllegalConstructorParameterException when name is null.
-     */
-    protected Argument(String name, String description, boolean isMandatory, boolean hasValue)
-            throws IllegalConstructorParameterException {
-        this(name, description, null, isMandatory, hasValue);
-    }
-
-    /**
      * Get string representation of Argument to print to Command line.
      * @param nameWidth width of name and shortName printing block.
      * @param maxWidth  maximum width of terminal for description text wrapping.

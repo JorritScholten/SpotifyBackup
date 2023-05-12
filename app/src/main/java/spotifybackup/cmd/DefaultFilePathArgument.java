@@ -24,18 +24,7 @@ public class DefaultFilePathArgument extends Argument {
 
     public DefaultFilePathArgument(String name, String description, File defaultValue, boolean isFolder)
             throws IllegalConstructorParameterException {
-        super(name, description, false, true);
-        this.isFolder = isFolder;
-        if (defaultValue == null) {
-            throw new IllegalConstructorParameterException("Default value can not be null.");
-        } else {
-            this.value = defaultValue;
-            try {
-                checkValue();
-            } catch (MalformedInputException e) {
-                throw new IllegalConstructorParameterException(e.getMessage());
-            }
-        }
+        this(name, description, null, defaultValue, isFolder);
     }
 
     @Override

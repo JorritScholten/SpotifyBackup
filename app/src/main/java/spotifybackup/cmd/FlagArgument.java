@@ -5,13 +5,13 @@ package spotifybackup.cmd;
  * mandatory.
  */
 public class FlagArgument extends Argument {
-    public FlagArgument(String name, String description) {
-        super(name, description, false, false);
-    }
-
     public FlagArgument(String name, String description, Character shortName)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, false, false);
+    }
+
+    public FlagArgument(String name, String description) {
+        this(name, description, null);
     }
 
     @Override

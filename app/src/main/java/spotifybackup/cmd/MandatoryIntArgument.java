@@ -24,7 +24,7 @@ public class MandatoryIntArgument extends Argument {
      *                                              not in the alphabet.
      */
     public MandatoryIntArgument(String name, String description) {
-        super(name, description, true, true);
+        this(name, description, null);
     }
 
     @Override

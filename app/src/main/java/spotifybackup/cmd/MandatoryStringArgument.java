@@ -10,7 +10,7 @@ public class MandatoryStringArgument extends Argument {
 
     public MandatoryStringArgument(String name, String description)
             throws IllegalConstructorParameterException {
-        super(name, description, true, true);
+        this(name, description, null);
     }
 
     @Override

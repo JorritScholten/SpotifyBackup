@@ -15,12 +15,7 @@ public class DefaultStringArgument extends Argument {
 
     public DefaultStringArgument(String name, String description, String defaultValue)
             throws IllegalConstructorParameterException {
-        super(name, description, false, true);
-        if (defaultValue == null) {
-            throw new IllegalConstructorParameterException("Default value can not be null.");
-        } else {
-            this.value = defaultValue;
-        }
+        this(name, description, null, defaultValue);
     }
 
     @Override

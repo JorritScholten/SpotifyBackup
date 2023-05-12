@@ -20,7 +20,12 @@ database and automated backups to an online repository.
         - [x] Split tests up because CmdParserTest.java is getting rather large
     - [x] Make optional arguments flag-like by adding CmdParser.isPresent(name)
     - [ ] Format code, write documentation and ensure compliance with style
-        - [ ] Write javadoc comments for each Argument constructor
+        - [ ] Write javadoc comments for each Argument constructor:
+            - FlagArgument
+            - MandatoryStringArgument
+            - DefaultStringArgument
+            - MandatoryFilePathArgument
+            - DefaultFilePathArgument
         - [ ] Write usage documentation in a markdown document
         - [ ] Add pretty printing (look in to jANSI library?)
         - [ ] De-clutter and split functions to reduce length:
@@ -28,12 +33,6 @@ database and automated backups to an online repository.
             - CmdParser.getHelp()
             - CmdParser.identifyValueArgumentByShortName()
             - CmdParser.parser()
-            - reduce duplicate constructor logic with this():
-                - FlagArgument
-                - MandatoryStringArgument
-                - DefaultStringArgument
-                - MandatoryFilePathArgument
-                - DefaultFilePathArgument
     - [ ] Implement positional arguments (at a later point in time)
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
