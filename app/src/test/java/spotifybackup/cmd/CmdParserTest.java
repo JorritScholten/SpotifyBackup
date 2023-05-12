@@ -126,6 +126,15 @@ class CmdParserTest {
     }
 
     @Test
+    void testNullArgumentName() {
+        assertThrows(IllegalConstructorParameterException.class, () -> {
+            CmdParser argParser = new CmdParser(new Argument[]{
+                    new FlagArgument(null, "Print program help and exit.", 'h')
+            });
+        });
+    }
+
+    @Test
     void testMissingMandatoryArgument() {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
