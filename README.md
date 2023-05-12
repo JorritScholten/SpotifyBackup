@@ -9,7 +9,14 @@ database and automated backups to an online repository.
 - [ ] Good documentation and a user guide.
 - [ ] Implement a robust commandline interface.
   - [x] Write unit tests.
-  - [ ] Trying out a Python argparse style interface.
+  - [x] Trying out a Python argparse style interface.
+    - [x] Create a boolean flag argument that's true if present
+    - [x] Create an integer argument
+      - [ ] Create a subtype with bounds checking
+    - [ ] Create a string argument
+      - [ ] Create a filepath/uri argument with validity checking
+    - [ ] Rewrite/improve argument lexer/parser
+    - [ ] De-pythonise current CmdParser implementation
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
 - [ ] Design a sensible SQL database that minimises data duplication.
