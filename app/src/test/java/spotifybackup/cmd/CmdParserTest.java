@@ -198,6 +198,28 @@ class CmdParserTest {
     }
 
     @Test
+    void testMultipleFlaggedDefaultArguments3() {
+        Integer defaultValue1 = 23, defaultValue2 = 12;
+        final String[] args = {"-hxi", defaultValue2.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue1),
+                new DefaultIntArgument("int", "", 'i', defaultValue1)
+        });
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
+    }
+
+    @Test
+    void testMultipleMandatoryArguments1() {
+        Integer defaultValue1 = 23;
+        final String[] args = {"-hxi", defaultValue1.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new MandatoryIntArgument("extra", "", 'x'),
+                new MandatoryIntArgument("int", "", 'i')
+        });
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
+    }
+
+    @Test
     void testMalformedMultipleFlaggedDefaultArguments1() {
         int defaultValue = 23;
         final String[] args = {"-hxi"};
