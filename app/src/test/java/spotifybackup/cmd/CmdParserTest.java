@@ -78,76 +78,6 @@ class CmdParserTest {
     }
 
     @Test
-    void testIntArgument1() {
-        final Integer value = 34;
-        final String[] args = {"-e", value.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new IntArgument("extra", "", 'e', true)
-        });
-        assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
-        });
-    }
-
-    @Test
-    void testIntArgument2() {
-        final Integer value = -34;
-        System.out.println("value: " + value.toString());
-        final String[] args = {"-e", value.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new IntArgument("extra", "", 'e', true)
-        });
-        assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
-        });
-    }
-
-    @Test
-    void testBoundedIntArgument() {
-        final Integer value = 34;
-        final String[] args = {"-e", value.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new BoundedIntArgument("extra", "", 'e', true, 1)
-        });
-        assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
-        });
-    }
-
-    @Test
-    void testMalformedBoundedIntArgument1() {
-        final Integer value = -34;
-        final String[] args = {"-e", value.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new BoundedIntArgument("extra", "", true, 1)
-        });
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
-
-    @Test
-    void testMalformedBoundedIntArgument2() {
-        final Integer value = 34;
-        final String[] args = {"-e", value.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new BoundedIntArgument("extra", "", true, 1, 20)
-        });
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
-
-    @Test
     void testNullArgumentName() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
                 new FlagArgument(null, "Print program help and exit.", 'h')
@@ -159,7 +89,7 @@ class CmdParserTest {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', true)
+                new IntArgument("extra", "", 'e')
         });
         assertThrows(MissingArgumentException.class, () ->
                 argParser.parseArguments(args)
@@ -171,17 +101,16 @@ class CmdParserTest {
 
     @Test
     void testMissingNonMandatoryArgument() {
+        int defaultValue = 23;
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', false)
+                new DefaultIntArgument("extra", "", 'e', defaultValue)
         });
-        assertDoesNotThrow(() ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentNotPresentException.class, () ->
-                argParser.getValue("extra")
-        );
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue, argParser.getValue("extra"));
+        });
     }
 
     @Test
@@ -189,9 +118,9 @@ class CmdParserTest {
         final String[] args = {"-he", "-28", "--string", "test", "-i"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', true),
+                new IntArgument("extra", "", 'e'),
                 new StringArgument("string", ""),
-                new BoundedIntArgument("int2", " ", 'i', false, 23)
+                new BoundedIntArgument("int2", " ", 'i', 23)
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
@@ -206,7 +135,7 @@ class CmdParserTest {
         final String[] args = {"-hea", "-28"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', false),
+                new IntArgument("extra", "", 'e'),
                 new StringArgument("string", "", 'a')
         });
         assertThrows(MalformedInputException.class, () ->
@@ -217,50 +146,6 @@ class CmdParserTest {
         );
     }
 
-    @Test
-    void testMalformedIntArgument1() {
-        final String[] args = {"-he"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', true)
-        });
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
-
-    @Test
-    void testMalformedIntArgument2() {
-        final String[] args = {"-he", "21.2"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', true)
-        });
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
-
-    @Test
-    void testMalformedIntArgument3() {
-        final String[] args = {"-he", "sdf"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e', true)
-        });
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
 
     @Test
     void testFilePathArgument1(@TempDir File temp_dir) {
