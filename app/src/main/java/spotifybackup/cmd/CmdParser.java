@@ -73,26 +73,31 @@ public class CmdParser {
         }
     }
 
-    private Argument identifyArgumentByShortName(char c) {
-        return arguments.stream().filter(argument -> (argument.shortName == c))
+    private Argument identifyArgumentByShortName(char shortName) {
+        return arguments.stream().filter(argument -> (argument.shortName == shortName))
                 .findFirst().orElse(null);
     }
 
-    private void parser(final LexedArgs[] args) throws MalformedInputException {
-        for (var iter = Stream.of(args).iterator(); iter.hasNext(); ) {
-            var arg = iter.next();
-            switch (arg.type) {
+    private Argument identifyArgumentByName(String name) {
+        return arguments.stream().filter(arg -> (arg.name.equals(name)))
+                .findFirst().orElse(null);
+    }
+
+    private void parser(final LexedArgs[] inputs) throws MalformedInputException {
+        for (var iter = Stream.of(inputs).iterator(); iter.hasNext(); ) {
+            var input = iter.next();
+            switch (input.type) {
                 case SHORT_ARGUMENT -> {
-                    char c = arg.input.charAt(1);
+                    char c = input.arg.charAt(1);
                     var argument = identifyArgumentByShortName(c);
                     if (argument == null) {
                         throw new MalformedInputException("No argument defined by: " + c);
                     } else if (!argument.isPresent) {
                         argument.isPresent = true;
                         if (argument.hasValue) {
-                            var nextArg = iter.next();
-                            if (nextArg.type == ArgType.VALUE) {
-                                argument.setValue(nextArg.input);
+                            var nextInput = iter.next();
+                            if (nextInput.type == ArgType.VALUE) {
+                                argument.setValue(nextInput.arg);
                             } else {
                                 throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
                             }
@@ -101,9 +106,13 @@ public class CmdParser {
                         throw new MalformedInputException("Argument " + argument.name + " repeated more than once in input.");
                     }
                 }
-
+                case LONG_ARGUMENT -> {
+                    String s = input.arg.substring(2);
+                    var argument = identifyArgumentByName(s);
+                    if (argument =)
+                }
                 case VALUE -> {
-                    throw new MalformedInputException("Value: " + arg.input + " supplied without identifying argument.");
+                    throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
                 }
             }
         }
@@ -112,9 +121,9 @@ public class CmdParser {
     private LexedArgs[] lexer(final String[] args) throws MalformedInputException {
         var retval = new LexedArgs[args.length];
         for (int i = 0; i < args.length; i++) {
-            for (ArgType a : ArgType.values()) {
-                if (a.regex.matcher(args[i]).find()) {
-                    retval[i] = new LexedArgs(args[i], a);
+            for (ArgType type : ArgType.values()) {
+                if (type.regex.matcher(args[i]).find()) {
+                    retval[i] = new LexedArgs(args[i], type);
                     break;
                 }
             }
@@ -138,6 +147,6 @@ public class CmdParser {
         }
     }
 
-    record LexedArgs(String input, ArgType type) {
+    record LexedArgs(String arg, ArgType type) {
     }
 }
