@@ -257,4 +257,64 @@ class CmdParserTest {
                 argParser.getValue("help")
         );
     }
+
+    @Test
+    void testGetHelp1() {
+        final String expectedOutput = "Usage: --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]] \n" +
+                "\n" +
+                "Mandatory arguments:\n" +
+                "  --int INTEGER     some integer\n" +
+                "  --txt FILE        Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
+                "\n" +
+                "Optional arguments:\n" +
+                "  -h, --help        Show this help message and exit.\n" +
+                "  -i [INTEGER], --int2 [INTEGER]\n" +
+                "                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
+                "  -s [STRING], --str [STRING]\n" +
+                "                    some sort of string, dunno, not gonna use it." +
+                "\n";
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new MandatoryIntArgument("int", "some integer"),
+                new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur adipiscing " +
+                        "elit,", 'i', 23),
+                new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
+                        's', "string"),
+                new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, consectetur " +
+                        "adipiscing elit,", false)
+        });
+        assertEquals(expectedOutput, argParser.getHelp(80));
+    }
+
+    @Test
+    void testGetHelp2() {
+        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]] \n" +
+                "\n" +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
+                "\n" +
+                "Mandatory arguments:\n" +
+                "  --int INTEGER                some integer\n" +
+                "  --txt FILE                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
+                "\n" +
+                "Optional arguments:\n" +
+                "  -h, --help                   Show this help message and exit.\n" +
+                "  -i [INTEGER], --int2 [INTEGER]\n" +
+                "                               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
+                "  -s [STRING], --str [STRING]  some sort of string, dunno, not gonna use it.\n" +
+                "\n" +
+                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" +
+                "\n";
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new MandatoryIntArgument("int", "some integer"),
+                new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur adipiscing " +
+                        "elit, sed do eiusmod tempor incididunt ut", 'i', 23),
+                new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
+                        's', "string"),
+                new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, consectetur " +
+                        "adipiscing elit, sed do eiusmod tempor incididunt ut", false)
+        }, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
+                "testName.jar", "labore et dolore magna aliqua. Ut enim ad minim veniam, quis " +
+                "nostrud exercitation"
+        );
+        assertEquals(expectedOutput, argParser.getHelp(125));
+    }
 }
