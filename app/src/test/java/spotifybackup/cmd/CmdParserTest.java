@@ -11,6 +11,9 @@ class CmdParserTest {
         final String[] args = {"--help"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(Boolean.TRUE, argParser.getValue("help"));
