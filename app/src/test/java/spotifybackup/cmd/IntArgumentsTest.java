@@ -91,7 +91,7 @@ public class IntArgumentsTest {
         final String[] args = {};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new DefaultBoundedIntArgument("extra", "", 'e', defaultValue, 1),
-                new DefaultBoundedIntArgument("int", "", 'e', value2, 1, 10)
+                new DefaultBoundedIntArgument("int", "", 'i', value2, 1, 10)
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);

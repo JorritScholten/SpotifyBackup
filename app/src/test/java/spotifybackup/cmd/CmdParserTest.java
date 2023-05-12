@@ -64,6 +64,14 @@ class CmdParserTest {
     }
 
     @Test
+    void testDuplicateArgumentShortNames() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new FlagArgument("extra", "", 'h')
+        }));
+    }
+
+    @Test
     void testFlagByMalformedName() {
         final String[] args = {"--hel"};
         CmdParser argParser = new CmdParser(new Argument[]{

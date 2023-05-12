@@ -1,7 +1,9 @@
 package spotifybackup.cmd;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -13,9 +15,21 @@ public class CmdParser {
      * The CmdParser class makes it easy to write user-friendly command-line interfaces.
      * @param arguments Array of arguments to be evaluated.
      */
-    public CmdParser(final Argument[] arguments) {
+    public CmdParser(final Argument[] arguments) throws IllegalConstructorParameterException {
         this.arguments = new ArrayList<>();
         this.arguments.addAll(List.of(arguments));
+        Set<String> argumentNames = new HashSet<>();
+        this.arguments.forEach(argument -> {
+            if (!argumentNames.add(argument.name)) {
+                throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, names should be unique.");
+            }
+        });
+        Set<Character> argumentShortNames = new HashSet<>();
+        this.arguments.stream().filter(argument -> argument.shortName != null).forEach(argument -> {
+            if (!argumentShortNames.add(argument.shortName)) {
+                throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, shortNames should be unique.");
+            }
+        });
     }
 
     /**
