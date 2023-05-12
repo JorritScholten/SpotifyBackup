@@ -4,39 +4,35 @@ public class BoundedIntArgument extends Argument {
     private final int min, max;
     private Integer value;
 
-    public BoundedIntArgument(String name, String description, Character shortName, boolean isMandatory, int minimum)
+    public BoundedIntArgument(String name, String description, Character shortName, Integer minimum)
             throws IllegalConstructorParameterException {
-        super(name, description, shortName, isMandatory, true);
+        super(name, description, shortName, true, true);
         this.min = minimum;
         this.max = Integer.MAX_VALUE;
     }
 
-    public BoundedIntArgument(String name, String description, Character shortName, boolean isMandatory, int minimum, int maximum)
+    public BoundedIntArgument(String name, String description, Character shortName, Integer minimum, Integer maximum)
             throws IllegalConstructorParameterException {
-        super(name, description, shortName, isMandatory, true);
+        super(name, description, shortName, true, true);
         this.min = minimum;
         this.max = maximum;
     }
 
-    public BoundedIntArgument(String name, String description, boolean isMandatory, int minimum) {
-        super(name, description, isMandatory, true);
+    public BoundedIntArgument(String name, String description, Integer minimum) {
+        super(name, description, true, true);
         this.min = minimum;
         this.max = Integer.MAX_VALUE;
     }
 
-    public BoundedIntArgument(String name, String description, boolean isMandatory, int minimum, int maximum) {
-        super(name, description, isMandatory, true);
+    public BoundedIntArgument(String name, String description, Integer minimum, Integer maximum) {
+        super(name, description, true, true);
         this.min = minimum;
         this.max = maximum;
     }
 
     @Override
     public Integer getValue() {
-        if (isPresent) {
-            return value;
-        } else {
-            throw new ArgumentNotPresentException("Argument " + name + " not supplied a value.");
-        }
+        return value;
     }
 
     @Override

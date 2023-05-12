@@ -3,22 +3,18 @@ package spotifybackup.cmd;
 public class IntArgument extends Argument {
     private Integer value;
 
-    public IntArgument(String name, String description, Character shortName, boolean isMandatory)
+    public IntArgument(String name, String description, Character shortName)
             throws IllegalConstructorParameterException {
-        super(name, description, shortName, isMandatory, true);
+        super(name, description, shortName, true, true);
     }
 
-    public IntArgument(String name, String description, boolean isMandatory) {
-        super(name, description, isMandatory, true);
+    public IntArgument(String name, String description) {
+        super(name, description, true, true);
     }
 
     @Override
     public Integer getValue() {
-        if (isPresent) {
-            return value;
-        } else {
-            throw new ArgumentNotPresentException("Argument " + name + " not supplied a value.");
-        }
+        return value;
     }
 
     @Override
