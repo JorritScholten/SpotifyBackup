@@ -71,8 +71,30 @@ class CmdParserTest {
     }
 
     @Test
-    void testMalformedArgument() {
+    void testMalformedIntArgument1() {
         final String[] args = {"-he"};
+        CmdParser argParser = new CmdParser();
+        argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
+        argParser.addArgument(new IntArgument("extra", "", 'e', true));
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
+        );
+    }
+
+    @Test
+    void testMalformedIntArgument2() {
+        final String[] args = {"-he", "21.2"};
+        CmdParser argParser = new CmdParser();
+        argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
+        argParser.addArgument(new IntArgument("extra", "", 'e', true));
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
+        );
+    }
+
+    @Test
+    void testMalformedIntArgument3() {
+        final String[] args = {"-he", "sdf"};
         CmdParser argParser = new CmdParser();
         argParser.addArgument(new FlagArgument("help", "Print program help and exit.", 'h'));
         argParser.addArgument(new IntArgument("extra", "", 'e', true));
