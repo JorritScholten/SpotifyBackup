@@ -54,8 +54,22 @@ class CmdParserTest {
     }
 
     @Test
-    void testIntArgument() {
+    void testIntArgument1() {
         final Integer value = 34;
+        final String[] args = {"-e", value.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new IntArgument("extra", "", 'e', true)
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(value, argParser.getValue("extra"));
+        });
+    }
+
+    @Test
+    void testIntArgument2() {
+        final Integer value = -34;
+        System.out.println("value: " + value.toString());
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new IntArgument("extra", "", 'e', true)
@@ -117,6 +131,38 @@ class CmdParserTest {
                 new IntArgument("extra", "", 'e', true)
         });
         assertThrows(MissingArgumentException.class, () ->
+                argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
+    }
+
+    @Test
+    void testMissingNonMandatoryArgument() {
+        final String[] args = {"-h"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new IntArgument("extra", "", 'e', false)
+        });
+        assertDoesNotThrow(() ->
+                argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentNotPresentException.class, () ->
+                argParser.getValue("extra")
+        );
+    }
+
+    @Test
+    void testMalformedArgumentMissingValue() {
+        final String[] args = {"-he", "-28", "--string", "test", "-i"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new IntArgument("extra", "", 'e', true),
+                new StringArgument("string", "", true),
+                new BoundedIntArgument("int2", " ", 'i', false, 23)
+        });
+        assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
         assertThrows(ArgumentsNotParsedException.class, () ->

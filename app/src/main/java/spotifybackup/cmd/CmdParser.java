@@ -135,7 +135,7 @@ public class CmdParser {
         SHORT_ARGUMENT("^[-]{1}[a-zA-Z]{1}$"),
         SHORT_ARGUMENTS("^[-]{1}[a-zA-Z]{2,}$"),
         LONG_ARGUMENT("^[-]{2}[\\w]+$"),
-        VALUE("^[^-]{1,2}[\\w]+$");
+        VALUE("^([^-]{1,2}[\\w]+)|([-][\\d]+)$");
 
         final Pattern regex;
 
