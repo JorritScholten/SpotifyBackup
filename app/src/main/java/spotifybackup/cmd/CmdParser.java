@@ -5,7 +5,6 @@ import org.apache.commons.text.WordUtils;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.function.Predicate.not;
@@ -287,48 +286,44 @@ public class CmdParser {
         }
     }
 
+    private Argument identifyArgumentFromLexedArg(final LexedArgs input) throws MalformedInputException {
+        return switch (input.type) {
+            case SHORT_ARGUMENT -> identifyArgumentByShortName(input.arg);
+            case LONG_ARGUMENT -> identifyArgumentByName(input.arg);
+            case SHORT_ARGUMENTS -> identifyValueArgumentByShortName(input.arg);
+            case VALUE -> throw new MalformedInputException("Value: " +
+                    input.arg + " supplied without identifying argument.");
+        };
+    }
+
     private void parser(final LexedArgs[] inputs) throws MalformedInputException {
-        for (var iter = Stream.of(inputs).collect(Collectors.toList()).listIterator(); iter.hasNext(); ) {
+        for (var iter = Arrays.stream(inputs).toList().listIterator(); iter.hasNext(); ) {
             var input = iter.next();
-            Argument argument = switch (input.type) {
-                case SHORT_ARGUMENT -> identifyArgumentByShortName(input.arg);
-                case LONG_ARGUMENT -> identifyArgumentByName(input.arg);
-                case SHORT_ARGUMENTS -> identifyValueArgumentByShortName(input.arg);
-                case VALUE -> {
-                    throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
-                }
-            };
+            var argument = identifyArgumentFromLexedArg(input);
             if (argument == null) {
                 if (input.type != ArgType.SHORT_ARGUMENTS) {
                     throw new MalformedInputException("No argument defined by: " + input.arg);
                 }
-            } else if (!argument.isPresent) {
-                argument.isPresent = true;
+            } else if (argument.isPresent) {
+                throw new MalformedInputException("Argument " + argument.name + " repeated more than once in input.");
+            } else {
+                argument.confirmPresent();
                 if (argument.hasValue) {
-                    if (argument.isMandatory) {
-                        if (!iter.hasNext()) {
-                            throw new MalformedInputException("Missing value for argument.");
-                        }
+                    try {
                         var nextInput = iter.next();
                         if (nextInput.type == ArgType.VALUE) {
                             argument.setValue(nextInput.arg);
-                        } else {
+                        } else if (argument.isMandatory) {
                             throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
+                        } else {
+                            iter.previous(); // prevent ingestion of next argument
                         }
-                    } else {
-                        if (iter.hasNext()) {
-                            var nextInput = iter.next();
-                            if (nextInput.type == ArgType.VALUE) {
-                                argument.setValue(nextInput.arg);
-                            } else {
-                                // prevent ingestion of arguments
-                                iter.previous();
-                            }
+                    } catch (NoSuchElementException e) {
+                        if (argument.isMandatory) {
+                            throw new MalformedInputException("Missing value for mandatory argument: " + argument.name);
                         }
                     }
                 }
-            } else {
-                throw new MalformedInputException("Argument " + argument.name + " repeated more than once in input.");
             }
         }
     }
