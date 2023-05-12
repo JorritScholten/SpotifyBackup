@@ -29,9 +29,9 @@ database and automated backups to an online repository.
         - [ ] Write usage documentation in a markdown document
         - [ ] Add pretty printing (look in to jANSI library?)
         - [ ] De-clutter and split functions to reduce length:
-            - Argument.getHelp()
             - CmdParser.identifyValueArgumentByShortName()
             - CmdParser.parser()
+        - [ ] Create or import word wrapping function for getHelp() printing
     - [ ] Implement positional arguments (at a later point in time)
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.

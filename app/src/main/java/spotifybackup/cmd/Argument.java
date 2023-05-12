@@ -1,5 +1,6 @@
 package spotifybackup.cmd;
 
+import java.util.Formatter;
 import java.util.regex.Pattern;
 
 abstract public class Argument {
@@ -51,47 +52,40 @@ abstract public class Argument {
         if (nameWidth <= 0 || maxWidth <= 0 || maxWidth <= nameWidth) {
             throw new IllegalArgumentException("Illegal value for nameWidth or maxWidth.");
         }
-        StringBuilder helpString = new StringBuilder("  ");
-        if (shortName != null) {
-            helpString.append("-").append(shortName);
-            if (hasValue) {
-                helpString.append(" ");
-                if (!isMandatory) {
-                    helpString.append("[");
-                }
-                helpString.append(getValueName());
-                if (!isMandatory) {
-                    helpString.append("]");
-                }
+        StringBuilder helpText = new StringBuilder("  ");
+        Formatter formatter = new Formatter(helpText);
+
+        // generate usage
+        if (isMandatory) {
+            if (hasShortName()) {
+                formatter.format("-%c%s, ", shortName, hasValue ? " " + getValueName() : "");
             }
-            helpString.append(", ");
-        }
-        helpString.append("--").append(name);
-        if (hasValue) {
-            helpString.append(" ");
-            if (!isMandatory) {
-                helpString.append("[");
-            }
-            helpString.append(getValueName());
-            if (!isMandatory) {
-                helpString.append("]");
-            }
-        }
-        if (helpString.length() >= (nameWidth - 1)) {
-            helpString.append("\n").append(" ".repeat(nameWidth));
+            formatter.format("--%s%s", name, hasValue ? " " + getValueName() : "");
         } else {
-            helpString.append(" ".repeat(nameWidth - helpString.length()));
+            if (hasShortName()) {
+                formatter.format("-%c%s, ", shortName, hasValue ? " [" + getValueName() + "]" : "");
+            }
+            formatter.format("--%s%s", name, hasValue ? " [" + getValueName() + "]" : "");
         }
+
+        // switch to new line if usage is too wide
+        if (helpText.length() >= (nameWidth - 1)) {
+            helpText.append("\n").append(" ".repeat(nameWidth));
+        } else {
+            helpText.append(" ".repeat(nameWidth - helpText.length()));
+        }
+
+        // add argument description with terrible word wrapping TODO: wrap on word boundary instead of fixed width
         if (description.length() < (maxWidth - nameWidth)) {
-            helpString.append(description);
-            return helpString.toString();
+            helpText.append(description);
+            return helpText.toString();
         } else {
             final int descriptionWidth = maxWidth - nameWidth;
             for (int i = 0; (description.length() - (descriptionWidth * i)) > 0; i++) {
                 int endIndex = descriptionWidth * (i + 1) < description.length() ? descriptionWidth * (i + 1) : description.length() - 1;
-                helpString.append(description, descriptionWidth * i, endIndex).append("\n").append(" ".repeat(nameWidth));
+                formatter.format("%s\n%s", description.substring(descriptionWidth * i, endIndex), " ".repeat(nameWidth));
             }
-            return helpString.substring(0, helpString.length() - (1 + nameWidth));
+            return helpText.substring(0, helpText.length() - (1 + nameWidth));
         }
     }
 
