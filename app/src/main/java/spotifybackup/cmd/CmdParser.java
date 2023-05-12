@@ -7,6 +7,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.util.function.Predicate.not;
+
 public class CmdParser {
     private final List<Argument> arguments;
     private final String description;
@@ -92,7 +94,7 @@ public class CmdParser {
             }
         });
         Set<Character> argumentShortNames = new HashSet<>();
-        this.arguments.stream().filter(argument -> argument.shortName != null).forEach(argument -> {
+        this.arguments.stream().filter(Argument::hasShortName).forEach(argument -> {
             if (!argumentShortNames.add(argument.shortName)) {
                 throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, shortNames should be unique.");
             }
@@ -179,8 +181,8 @@ public class CmdParser {
      * @return String containing help message.
      */
     public String getHelp(int maxWidth, int nameWidth) {
-        final List<Argument> mandatoryArguments = arguments.stream().filter(argument -> argument.isMandatory).toList();
-        final List<Argument> optionalArguments = arguments.stream().filter(argument -> !argument.isMandatory).toList();
+        final List<Argument> mandatoryArguments = arguments.stream().filter(Argument::getMandatory).toList();
+        final List<Argument> optionalArguments = arguments.stream().filter(not(Argument::getMandatory)).toList();
         StringBuilder helpText = new StringBuilder();
 
         helpText.append(generateUsage(mandatoryArguments, optionalArguments, maxWidth)).append("\n");
@@ -237,7 +239,7 @@ public class CmdParser {
     }
 
     private Argument identifyArgumentByShortName(char shortName) {
-        return arguments.stream().filter(argument -> (argument.shortName != null && argument.shortName == shortName))
+        return arguments.stream().filter(argument -> (argument.hasShortName() && argument.shortName == shortName))
                 .findFirst().orElse(null);
     }
 
@@ -257,9 +259,8 @@ public class CmdParser {
                 shortArguments.add(argument);
             }
         }
-        shortArguments.stream().filter(argument -> (!argument.hasValue)).forEach(argument -> {
-            argument.isPresent = true;
-        });
+        // mark all identified non-value (currently only FlagArgument) arguments as present
+        shortArguments.stream().filter(not(Argument::getHasValue)).forEach(Argument::confirmPresent);
 
         if (shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory)).count() > 1) {
             throw new MalformedInputException("Cannot have more than one mandatory value type argument in shortened block: " + arg);
