@@ -10,7 +10,6 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryStringArgument("extra", "")
         });
         assertDoesNotThrow(() -> {
@@ -24,7 +23,6 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h", "-e", value};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryStringArgument("extra", "", 'e')
         });
         assertDoesNotThrow(() -> {
@@ -38,7 +36,6 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new DefaultStringArgument("extra", "", value)
         });
         assertDoesNotThrow(() -> {
@@ -52,7 +49,6 @@ public class StringArgumentsTest {
         final String value = "test_value", defaultValue = "other_value";
         final String[] args = {"-h", "-e", value};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new DefaultStringArgument("extra", "", 'e', defaultValue)
         });
         assertDoesNotThrow(() -> {
@@ -67,7 +63,6 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryStringArgument("extra", "", 'e')
         });
         assertThrows(MissingArgumentException.class, () ->
@@ -82,7 +77,6 @@ public class StringArgumentsTest {
     void testDefaultStringArgumentConstructor1() {
         assertThrows(IllegalConstructorParameterException.class, () -> {
             CmdParser argParser = new CmdParser(new Argument[]{
-                    new FlagArgument("help", "Print program help and exit.", 'h'),
                     new DefaultStringArgument("extra", "", null)
             });
         });
@@ -92,7 +86,6 @@ public class StringArgumentsTest {
     void testDefaultStringArgumentConstructor2() {
         assertThrows(IllegalConstructorParameterException.class, () -> {
             CmdParser argParser = new CmdParser(new Argument[]{
-                    new FlagArgument("help", "Print program help and exit.", 'h'),
                     new DefaultStringArgument(null, "", "string")
             });
         });

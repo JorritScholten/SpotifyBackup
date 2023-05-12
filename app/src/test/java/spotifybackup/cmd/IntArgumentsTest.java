@@ -186,7 +186,6 @@ public class IntArgumentsTest {
     void testMalformedIntArgument1() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MalformedInputException.class, () ->
@@ -201,7 +200,6 @@ public class IntArgumentsTest {
     void testMalformedIntArgument2() {
         final String[] args = {"-he", "21.2"};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MalformedInputException.class, () ->
@@ -216,7 +214,6 @@ public class IntArgumentsTest {
     void testMalformedIntArgument3() {
         final String[] args = {"-he", "sdf"};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MalformedInputException.class, () ->

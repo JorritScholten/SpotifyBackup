@@ -14,7 +14,6 @@ public class FilePathArgumentsTest {
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryFilePathArgument("extra", "", true)
         });
         assertDoesNotThrow(() -> {
@@ -34,7 +33,6 @@ public class FilePathArgumentsTest {
 
             final String[] args = {"-h", "--extra", value};
             CmdParser argParser = new CmdParser(new Argument[]{
-                    new FlagArgument("help", "Print program help and exit.", 'h'),
                     new MandatoryFilePathArgument("extra", "", false)
             });
             argParser.parseArguments(args);
@@ -48,7 +46,6 @@ public class FilePathArgumentsTest {
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("help", "Print program help and exit.", 'h'),
                 new MandatoryFilePathArgument("extra", "", 'e', false)
         });
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
@@ -65,7 +62,6 @@ public class FilePathArgumentsTest {
 
             final String[] args = {"-h", "--extra", value};
             CmdParser argParser = new CmdParser(new Argument[]{
-                    new FlagArgument("help", "Print program help and exit.", 'h'),
                     new MandatoryFilePathArgument("extra", "", 'e', true)
             });
             assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
