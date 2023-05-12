@@ -9,7 +9,8 @@ public class FlagArgument extends Argument {
         super(name, description, false, false);
     }
 
-    public FlagArgument(String name, String description, Character shortName) {
+    public FlagArgument(String name, String description, Character shortName)
+            throws IllegalConstructorParameterException {
         super(name, description, shortName, false, false);
     }
 

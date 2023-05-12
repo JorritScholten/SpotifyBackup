@@ -4,13 +4,15 @@ public class BoundedIntArgument extends Argument {
     private final int min, max;
     private Integer value;
 
-    public BoundedIntArgument(String name, String description, Character shortName, boolean isMandatory, int minimum) {
+    public BoundedIntArgument(String name, String description, Character shortName, boolean isMandatory, int minimum)
+            throws IllegalConstructorParameterException {
         super(name, description, shortName, isMandatory, true);
         this.min = minimum;
         this.max = Integer.MAX_VALUE;
     }
 
-    public BoundedIntArgument(String name, String description, Character shortName, boolean isMandatory, int minimum, int maximum) {
+    public BoundedIntArgument(String name, String description, Character shortName, boolean isMandatory, int minimum, int maximum)
+            throws IllegalConstructorParameterException {
         super(name, description, shortName, isMandatory, true);
         this.min = minimum;
         this.max = maximum;

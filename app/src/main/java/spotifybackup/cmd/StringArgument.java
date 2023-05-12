@@ -3,7 +3,8 @@ package spotifybackup.cmd;
 public class StringArgument extends Argument {
     private String value;
 
-    public StringArgument(String name, String description, Character shortName, boolean isMandatory) {
+    public StringArgument(String name, String description, Character shortName, boolean isMandatory)
+            throws IllegalConstructorParameterException {
         super(name, description, shortName, isMandatory, true);
     }
 

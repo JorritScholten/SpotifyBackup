@@ -3,7 +3,8 @@ package spotifybackup.cmd;
 public class IntArgument extends Argument {
     private Integer value;
 
-    public IntArgument(String name, String description, Character shortName, boolean isMandatory) {
+    public IntArgument(String name, String description, Character shortName, boolean isMandatory)
+            throws IllegalConstructorParameterException {
         super(name, description, shortName, isMandatory, true);
     }
 

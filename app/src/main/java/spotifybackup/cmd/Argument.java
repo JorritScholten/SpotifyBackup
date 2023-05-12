@@ -1,5 +1,7 @@
 package spotifybackup.cmd;
 
+import java.util.regex.Pattern;
+
 abstract public class Argument {
     /** If true and missing from input then program will throw an Exception, flags cannot be mandatory. */
     protected final boolean isMandatory;
@@ -10,10 +12,18 @@ abstract public class Argument {
     /** true if present in input. */
     protected boolean isPresent;
 
-    protected Argument(String name, String description, Character shortName, boolean isMandatory, boolean hasValue) {
+    /**
+     * @throws IllegalConstructorParameterException when shortname isn't in the alphabet.
+     */
+    protected Argument(String name, String description, Character shortName, boolean isMandatory, boolean hasValue)
+            throws IllegalConstructorParameterException {
         this.name = name;
         this.description = description;
-        this.shortName = shortName;
+        if (Pattern.compile("[a-zA-Z]").matcher(shortName.toString()).find()) {
+            this.shortName = shortName;
+        } else {
+            throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");
+        }
         this.isMandatory = isMandatory;
         this.hasValue = hasValue;
     }

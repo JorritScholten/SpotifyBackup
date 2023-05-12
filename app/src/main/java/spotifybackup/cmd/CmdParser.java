@@ -55,7 +55,7 @@ public class CmdParser {
     }
 
     private Argument identifyArgumentByShortName(char shortName) {
-        return arguments.stream().filter(argument -> (argument.shortName == shortName))
+        return arguments.stream().filter(argument -> (argument.shortName != null && argument.shortName == shortName))
                 .findFirst().orElse(null);
     }
 
@@ -126,8 +126,8 @@ public class CmdParser {
     }
 
     private enum ArgType {
-        SHORT_ARGUMENT("^[-]{1}[\\w]{1}$"),
-        SHORT_ARGUMENTS("^[-]{1}[\\w]{2,}$"),
+        SHORT_ARGUMENT("^[-]{1}[a-zA-Z]{1}$"),
+        SHORT_ARGUMENTS("^[-]{1}[a-zA-Z]{2,}$"),
         LONG_ARGUMENT("^[-]{2}[\\w]+$"),
         VALUE("^[^-]{1,2}[\\w]+$");
 

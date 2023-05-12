@@ -64,6 +64,43 @@ class CmdParserTest {
     }
 
     @Test
+    void testBoundedIntArgument() {
+        final Integer value = 34;
+        final String[] args = {"-e", value.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new BoundedIntArgument("extra", "", 'e', true, 1)
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(value, argParser.getValue("extra"));
+        });
+    }
+
+    @Test
+    void testMalformedBoundedIntArgument1() {
+        final Integer value = -34;
+        final String[] args = {"-e", value.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new BoundedIntArgument("extra", "", true, 1)
+        });
+        assertThrows(MalformedInputException.class, () -> {
+            argParser.parseArguments(args);
+        });
+    }
+
+    @Test
+    void testMalformedBoundedIntArgument2() {
+        final Integer value = 34;
+        final String[] args = {"-e", value.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new BoundedIntArgument("extra", "", true, 1, 20)
+        });
+        assertThrows(MalformedInputException.class, () -> {
+            argParser.parseArguments(args);
+        });
+    }
+
+    @Test
     void testMissingMandatoryArgument() {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
