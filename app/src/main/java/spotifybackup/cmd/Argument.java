@@ -92,6 +92,28 @@ abstract public class Argument {
         return shortName != null;
     }
 
+    /**
+     * Sets isPresent to true, meant for lambda usage.
+     */
+    protected void confirmPresent() {
+        isPresent = true;
+    }
+
+    protected boolean getHasValue() {
+        return hasValue;
+    }
+
+    /**
+     * @return isMandatory && hasValue
+     */
+    protected boolean getMandatoryAndValue() {
+        return isMandatory && hasValue;
+    }
+
+    protected boolean getMandatory() {
+        return isMandatory;
+    }
+
     abstract protected String getValueName();
 
     /**
