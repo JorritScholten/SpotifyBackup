@@ -132,6 +132,41 @@ public class IntArgumentsTest {
     }
 
     @Test
+    void testNullDefaultValueInt1() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", null)
+        }));
+    }
+
+    @Test
+    void testNullDefaultValueInt2() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new DefaultBoundedIntArgument("extra", "", null, 20)
+        }));
+    }
+
+    @Test
+    void testNullDefaultValueInt3() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new DefaultBoundedIntArgument("extra", "", 20, null)
+        }));
+    }
+
+    @Test
+    void testNullDefaultValueInt4() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new DefaultBoundedIntArgument("extra", "", 20, 1, null)
+        }));
+    }
+
+    @Test
+    void testNullDefaultValueInt5() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new DefaultBoundedIntArgument("extra", "", 'e', 20, 1, null)
+        }));
+    }
+
+    @Test
     void testRangeCheckDefaultBoundedIntConstructor1() {
         final Integer value = -5;
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{

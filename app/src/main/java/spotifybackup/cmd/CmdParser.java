@@ -13,7 +13,8 @@ public class CmdParser {
 
     /**
      * The CmdParser class makes it easy to write user-friendly command-line interfaces.
-     * @param arguments Array of arguments to be evaluated.
+     * @param arguments Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be null).
+     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
      */
     public CmdParser(final Argument[] arguments) throws IllegalConstructorParameterException {
         this.arguments = new ArrayList<>();

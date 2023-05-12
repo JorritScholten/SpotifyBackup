@@ -6,12 +6,21 @@ public class DefaultIntArgument extends Argument {
     public DefaultIntArgument(String name, String description, Character shortName, Integer defaultValue)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, false, true);
-        this.value = defaultValue;
+        if (defaultValue == null) {
+            throw new IllegalConstructorParameterException("Default value can not be null.");
+        } else {
+            this.value = defaultValue;
+        }
     }
 
-    public DefaultIntArgument(String name, String description, Integer defaultValue) {
+    public DefaultIntArgument(String name, String description, Integer defaultValue)
+            throws IllegalConstructorParameterException {
         super(name, description, false, true);
-        this.value = defaultValue;
+        if (defaultValue == null) {
+            throw new IllegalConstructorParameterException("Default value can not be null.");
+        } else {
+            this.value = defaultValue;
+        }
     }
 
     @Override

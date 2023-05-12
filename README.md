@@ -16,9 +16,9 @@ database and automated backups to an online repository.
     - [x] Create a string argument
         - [x] Create a filepath/uri argument with validity checking
     - [ ] Add baked in support for help argument
-    - [ ] Add optional default value to value arguments: make it so
+    - [x] Add optional default value to value arguments: make it so
       that non-mandatory arguments are optional and vice-versa
-      - [ ] Split tests up because CmdParserTest.java is getting rather large
+        - [x] Split tests up because CmdParserTest.java is getting rather large
     - [ ] Write javadoc comments for each Argument constructor
     - [ ] Add pretty printing (look in to jANSI library?)
 - [ ] Write unit tests.
