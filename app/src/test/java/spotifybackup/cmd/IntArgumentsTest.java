@@ -10,7 +10,7 @@ public class IntArgumentsTest {
         final Integer value = 34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new IntArgument("extra", "", 'e')
+                new MandatoryIntArgument("extra", "", 'e')
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -23,7 +23,7 @@ public class IntArgumentsTest {
         final Integer value = -34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new IntArgument("extra", "", 'e')
+                new MandatoryIntArgument("extra", "", 'e')
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -187,7 +187,7 @@ public class IntArgumentsTest {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e')
+                new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
@@ -202,7 +202,7 @@ public class IntArgumentsTest {
         final String[] args = {"-he", "21.2"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e')
+                new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
@@ -217,7 +217,7 @@ public class IntArgumentsTest {
         final String[] args = {"-he", "sdf"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e')
+                new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)

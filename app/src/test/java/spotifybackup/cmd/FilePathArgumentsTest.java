@@ -15,7 +15,7 @@ public class FilePathArgumentsTest {
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new FilePathArgument("extra", "", true)
+                new MandatoryFilePathArgument("extra", "", true)
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -35,7 +35,7 @@ public class FilePathArgumentsTest {
             final String[] args = {"-h", "--extra", value};
             CmdParser argParser = new CmdParser(new Argument[]{
                     new FlagArgument("help", "Print program help and exit.", 'h'),
-                    new FilePathArgument("extra", "", false)
+                    new MandatoryFilePathArgument("extra", "", false)
             });
             argParser.parseArguments(args);
             assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
@@ -49,7 +49,7 @@ public class FilePathArgumentsTest {
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new FilePathArgument("extra", "", 'e', false)
+                new MandatoryFilePathArgument("extra", "", 'e', false)
         });
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
@@ -66,7 +66,7 @@ public class FilePathArgumentsTest {
             final String[] args = {"-h", "--extra", value};
             CmdParser argParser = new CmdParser(new Argument[]{
                     new FlagArgument("help", "Print program help and exit.", 'h'),
-                    new FilePathArgument("extra", "", 'e', true)
+                    new MandatoryFilePathArgument("extra", "", 'e', true)
             });
             assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
         });

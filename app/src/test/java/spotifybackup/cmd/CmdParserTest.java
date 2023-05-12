@@ -94,7 +94,7 @@ class CmdParserTest {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e')
+                new MandatoryIntArgument("extra", "", 'e')
         });
         assertThrows(MissingArgumentException.class, () ->
                 argParser.parseArguments(args)
@@ -123,8 +123,8 @@ class CmdParserTest {
         final String[] args = {"-he", "-28", "--string", "test", "-i"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e'),
-                new StringArgument("string", ""),
+                new MandatoryIntArgument("extra", "", 'e'),
+                new MandatoryStringArgument("string", ""),
                 new BoundedIntArgument("int2", " ", 'i', 23)
         });
         assertThrows(MalformedInputException.class, () ->
@@ -140,8 +140,8 @@ class CmdParserTest {
         final String[] args = {"-hea", "-28"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new IntArgument("extra", "", 'e'),
-                new StringArgument("string", "", 'a')
+                new MandatoryIntArgument("extra", "", 'e'),
+                new MandatoryStringArgument("string", "", 'a')
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)

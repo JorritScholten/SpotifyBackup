@@ -11,7 +11,7 @@ public class StringArgumentsTest {
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new StringArgument("extra", "")
+                new MandatoryStringArgument("extra", "")
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -25,7 +25,7 @@ public class StringArgumentsTest {
         final String[] args = {"-h", "-e", value};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new StringArgument("extra", "", 'e')
+                new MandatoryStringArgument("extra", "", 'e')
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -68,7 +68,7 @@ public class StringArgumentsTest {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h'),
-                new StringArgument("extra", "", 'e')
+                new MandatoryStringArgument("extra", "", 'e')
         });
         assertThrows(MissingArgumentException.class, () ->
                 argParser.parseArguments(args)

@@ -2,17 +2,17 @@ package spotifybackup.cmd;
 
 import java.io.File;
 
-public class FilePathArgument extends Argument {
+public class MandatoryFilePathArgument extends Argument {
     private final boolean isFolder;
     private File value;
 
-    public FilePathArgument(String name, String description, Character shortName, boolean isFolder)
+    public MandatoryFilePathArgument(String name, String description, Character shortName, boolean isFolder)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, true, true);
         this.isFolder = isFolder;
     }
 
-    public FilePathArgument(String name, String description, boolean isFolder)
+    public MandatoryFilePathArgument(String name, String description, boolean isFolder)
             throws IllegalConstructorParameterException {
         super(name, description, true, true);
         this.isFolder = isFolder;

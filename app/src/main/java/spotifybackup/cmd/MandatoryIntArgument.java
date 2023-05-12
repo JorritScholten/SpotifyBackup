@@ -1,14 +1,14 @@
 package spotifybackup.cmd;
 
-public class IntArgument extends Argument {
+public class MandatoryIntArgument extends Argument {
     private Integer value;
 
-    public IntArgument(String name, String description, Character shortName)
+    public MandatoryIntArgument(String name, String description, Character shortName)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, true, true);
     }
 
-    public IntArgument(String name, String description) {
+    public MandatoryIntArgument(String name, String description) {
         super(name, description, true, true);
     }
 
