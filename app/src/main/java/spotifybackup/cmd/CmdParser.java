@@ -3,6 +3,7 @@ package spotifybackup.cmd;
 import org.apache.commons.text.WordUtils;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -248,35 +249,41 @@ public class CmdParser {
                 .findFirst().orElse(null);
     }
 
-    private Argument identifyValueArgumentByShortName(String arg)
-            throws MalformedInputException {
-        List<Argument> shortArguments = new ArrayList<>();
-        for (var c : arg.substring(1).toCharArray()) {
+    private List<Argument> listArgumentsFromShortNames(char[] shortNames, String arg) throws MalformedInputException {
+        List<Argument> argumentList = new ArrayList<>();
+        for (var c : shortNames) {
             var argument = identifyArgumentByShortName(c);
             if (argument == null) {
                 throw new MalformedInputException("No argument defined by: " + c + " in shortened block: " + arg);
             } else {
-                shortArguments.add(argument);
+                argumentList.add(argument);
             }
         }
+        return argumentList;
+    }
+
+    private Argument identifyValueArgumentByShortName(String arg) throws MalformedInputException {
+        List<Argument> shortArguments = listArgumentsFromShortNames(arg.substring(1).toCharArray(), arg);
+        Supplier<Stream<Argument>> mandatoryValueArguments = () ->
+                shortArguments.stream().filter(Argument::getMandatory).filter(Argument::getHasValue);
+        Supplier<Stream<Argument>> optionalValueArguments = () ->
+                shortArguments.stream().filter(not(Argument::getMandatory)).filter(Argument::getHasValue);
+
         // mark all identified non-value (currently only FlagArgument) arguments as present
         shortArguments.stream().filter(not(Argument::getHasValue)).forEach(Argument::confirmPresent);
 
-        if (shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory)).count() > 1) {
+        if (mandatoryValueArguments.get().count() > 1) {
             throw new MalformedInputException("Cannot have more than one mandatory value type argument in shortened block: " + arg);
-        } else if (shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory)).count() == 1) {
-            shortArguments.stream().filter(argument -> (!argument.isMandatory)).forEach(argument -> {
-                argument.isPresent = true;
-            });
-            return shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory))
-                    .findFirst().orElse(null);
-        } else if (shortArguments.stream().noneMatch(argument -> (argument.hasValue && argument.isMandatory))) {
-            shortArguments.stream().filter(argument -> (!argument.isMandatory)).forEach(argument -> {
-                argument.isPresent = true;
-            });
-            return null;
+        } else if (mandatoryValueArguments.get().count() == 1) {
+            optionalValueArguments.get().forEach(Argument::confirmPresent);
+            return mandatoryValueArguments.get().findFirst().orElse(null);
         } else {
-            throw new RuntimeException("Should not occur, all mandatory arguments should have a value.");
+            if (optionalValueArguments.get().count() == 1) {
+                return optionalValueArguments.get().findFirst().orElse(null);
+            } else {
+                optionalValueArguments.get().forEach(Argument::confirmPresent);
+                return null;
+            }
         }
     }
 

@@ -29,7 +29,6 @@ database and automated backups to an online repository.
         - [ ] Write usage documentation in a markdown document
         - [ ] Add pretty printing (look in to jANSI library?)
         - [ ] De-clutter and split functions to reduce length:
-            - CmdParser.identifyValueArgumentByShortName()
             - CmdParser.parser()
     - [ ] Implement positional arguments (at a later point in time)
 - [ ] Write unit tests.
