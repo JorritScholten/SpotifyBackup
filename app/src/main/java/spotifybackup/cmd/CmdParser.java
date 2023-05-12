@@ -8,12 +8,9 @@ public class CmdParser {
     private final List<Argument> arguments;
     private boolean argumentsParsed = false;
 
-    public CmdParser() {
-        arguments = new ArrayList<>();
-    }
-
-    public void addArgument(Argument argument) {
-        arguments.add(argument);
+    public CmdParser(final Argument[] arguments) {
+        this.arguments = new ArrayList<>();
+        this.arguments.addAll(List.of(arguments));
     }
 
     public void parseArguments(String[] args)

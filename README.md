@@ -16,7 +16,7 @@ database and automated backups to an online repository.
     - [ ] Create a string argument
       - [ ] Create a filepath/uri argument with validity checking
     - [ ] Rewrite/improve argument lexer/parser
-    - [ ] De-pythonise current CmdParser implementation
+    - [x] De-pythonise current CmdParser implementation
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
 - [ ] Design a sensible SQL database that minimises data duplication.
