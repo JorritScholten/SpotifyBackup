@@ -4,19 +4,19 @@ public class DefaultBoundedIntArgument extends Argument {
     private final Integer min, max;
     private Integer value;
 
-    public DefaultBoundedIntArgument(String name, String description, Character shortName, Integer defaultValue, Integer minimum)
-            throws IllegalConstructorParameterException {
-        super(name, description, shortName, false, true);
-        this.min = minimum;
-        this.max = Integer.MAX_VALUE;
-        checkFieldsNotNull();
-        try {
-            setBoundedValue(defaultValue);
-        } catch (MalformedInputException e) {
-            throw new IllegalConstructorParameterException(e.getMessage());
-        }
-    }
-
+    /**
+     * Integer argument with range checking and default value, has flag-like behaviour because it can be called without
+     * a value. Argument throws exception at runtime if supplied value is out of range.
+     * @param name         Identifying name of argument, --{name} is used as identifier.
+     * @param description  Description of argument printed in help.
+     * @param shortName    Identifying character of argument, -{Character} is used as identifier.
+     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
+     * @param minimum      Minimum value integer should be (also applied to defaultValue).
+     * @param maximum      Maximum value integer should be (also applied to defaultValue).
+     * @throws IllegalConstructorParameterException When trying assign name, minimum or defaultValue as null,
+     *                                              defaultValue is out of range or assigning shortName a character not
+     *                                              in the alphabet.
+     */
     public DefaultBoundedIntArgument(String name, String description, Character shortName, Integer defaultValue, Integer minimum, Integer maximum)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, false, true);
@@ -30,35 +30,61 @@ public class DefaultBoundedIntArgument extends Argument {
         }
     }
 
+    /**
+     * Integer argument with range checking and default value, has flag-like behaviour because it can be called without
+     * a value. Argument throws exception at runtime if supplied value is out of range.
+     * @param name         Identifying name of argument, --{name} is used as identifier.
+     * @param description  Description of argument printed in help.
+     * @param shortName    Identifying character of argument, -{Character} is used as identifier.
+     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
+     * @param minimum      Minimum value integer should be (also applied to defaultValue).
+     * @throws IllegalConstructorParameterException When trying assign name, minimum or defaultValue as null,
+     *                                              defaultValue is out of range or assigning shortName a character not
+     *                                              in the alphabet.
+     */
+    public DefaultBoundedIntArgument(String name, String description, Character shortName, Integer defaultValue, Integer minimum)
+            throws IllegalConstructorParameterException {
+        this(name, description, shortName, defaultValue, minimum, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Integer argument with range checking, a default value and without identifying an character, has flag-like
+     * behaviour because it can be called without a value. Argument throws exception at runtime if supplied value is out
+     * of range.
+     * @param name         Identifying name of argument, --{name} is used as identifier.
+     * @param description  Description of argument printed in help.
+     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
+     * @param minimum      Minimum value integer should be (also applied to defaultValue).
+     * @throws IllegalConstructorParameterException When trying assign name, minimum or defaultValue as null,
+     *                                              defaultValue is out of range or assigning shortName a character not
+     *                                              in the alphabet.
+     */
+    public DefaultBoundedIntArgument(String name, String description, Integer defaultValue, Integer minimum)
+            throws IllegalConstructorParameterException {
+        this(name, description, null, defaultValue, minimum, Integer.MAX_VALUE);
+    }
+
+    /**
+     * Integer argument with range checking, a default value and without identifying an character, has flag-like
+     * behaviour because it can be called without a value. Argument throws exception at runtime if supplied value is out
+     * of range.
+     * @param name         Identifying name of argument, --{name} is used as identifier.
+     * @param description  Description of argument printed in help.
+     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
+     * @param minimum      Minimum value integer should be (also applied to defaultValue).
+     * @param maximum      Maximum value integer should be (also applied to defaultValue).
+     * @throws IllegalConstructorParameterException When trying assign name, minimum or defaultValue as null,
+     *                                              defaultValue is out of range or assigning shortName a character not
+     *                                              in the alphabet.
+     */
+    public DefaultBoundedIntArgument(String name, String description, Integer defaultValue, Integer minimum, Integer maximum)
+            throws IllegalConstructorParameterException {
+        this(name, description, null, defaultValue, minimum, maximum);
+    }
+
     @Override
     protected String getValueName() {
         return "INTEGER";
-    }
-
-    public DefaultBoundedIntArgument(String name, String description, Integer defaultValue, Integer minimum)
-            throws IllegalConstructorParameterException {
-        super(name, description, false, true);
-        this.min = minimum;
-        this.max = Integer.MAX_VALUE;
-        checkFieldsNotNull();
-        try {
-            setBoundedValue(defaultValue);
-        } catch (MalformedInputException e) {
-            throw new IllegalConstructorParameterException(e.getMessage());
-        }
-    }
-
-    public DefaultBoundedIntArgument(String name, String description, Integer defaultValue, Integer minimum, Integer maximum)
-            throws IllegalConstructorParameterException {
-        super(name, description, false, true);
-        this.min = minimum;
-        this.max = maximum;
-        checkFieldsNotNull();
-        try {
-            setBoundedValue(defaultValue);
-        } catch (MalformedInputException e) {
-            throw new IllegalConstructorParameterException(e.getMessage());
-        }
     }
 
     private void checkFieldsNotNull()
