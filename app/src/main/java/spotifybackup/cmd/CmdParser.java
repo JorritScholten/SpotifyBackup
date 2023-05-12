@@ -144,43 +144,62 @@ public class CmdParser {
         final List<Argument> optionalArguments = arguments.stream().filter(argument -> !argument.isMandatory).toList();
 
         // generate usage block
-        String help = "Usage: ";
+        StringBuilder help = new StringBuilder("Usage: ");
         if (programName != null) {
-            help += programName + " ";
+            help.append(programName).append(" ");
         }
         if (!mandatoryArguments.isEmpty()) {
             for (Argument argument : mandatoryArguments) {
-                help += argument.getHelp(24, 80) + "\n";
+                if (argument.shortName == null) {
+                    help.append("--").append(argument.name).append(" ");
+                } else {
+                    help.append("-").append(argument.shortName).append(" ");
+                }
+                if (argument.hasValue) {
+                    help.append(argument.getValueName()).append(" ");
+                }
             }
         }
         if (!optionalArguments.isEmpty()) {
             for (Argument argument : optionalArguments) {
-                help += argument.getHelp(24, 80) + "\n";
+                if (argument.shortName == null) {
+                    help.append("[--").append(argument.name);
+                } else {
+                    help.append("[-").append(argument.shortName);
+                }
+                if (argument.hasValue) {
+                    help.append(argument.getValueName()).append("] ");
+                } else {
+                    help.append("] ");
+                }
             }
         }
+        help.append("\n");
 
         if (description != null) {
-            help += "\n" + description + "\n";
+            help.append("\n").append(description).append("\n");
         }
 
+        // add mandatory argument information
         if (!mandatoryArguments.isEmpty()) {
-            help += "\n" + "Mandatory arguments:\n";
+            help.append("\n" + "Mandatory arguments:\n");
             for (Argument argument : mandatoryArguments) {
-                help += argument.getHelp(24, 80) + "\n";
+                help.append(argument.getHelp(24, 80)).append("\n");
             }
         }
 
+        // add optional argument information
         if (!optionalArguments.isEmpty()) {
-            help += "\n" + "Optional arguments:\n";
+            help.append("\n" + "Optional arguments:\n");
             for (Argument argument : optionalArguments) {
-                help += argument.getHelp(24, 80) + "\n";
+                help.append(argument.getHelp(24, 80)).append("\n");
             }
         }
 
         if (epilog != null) {
-            help += "\n" + epilog + "\n";
+            help.append("\n").append(epilog).append("\n");
         }
-        return help;
+        return help.toString();
     }
 
     private Argument identifyArgumentByShortName(String arg) {
