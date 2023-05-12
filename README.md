@@ -32,7 +32,6 @@ database and automated backups to an online repository.
                 - FlagArgument
                 - MandatoryIntArgument
                 - MandatoryBoundedIntArgument
-                - DefaultIntArgument
                 - DefaultBoundedIntArgument
                 - MandatoryStringArgument
                 - DefaultStringArgument
