@@ -16,8 +16,8 @@ database and automated backups to an online repository.
     - [x] Create a string argument
       - [ ] Create a filepath/uri argument with validity checking
     - [ ] Rewrite/improve argument lexer/parser: split lexing and parsing
-      - [ ] Create lexer
-      - [ ] Create parser
+      - [x] Create lexer
+      - [x] Create parser
       - [ ] Feed output of parser back into arguments list
     - [x] De-pythonise current CmdParser implementation
 - [ ] Write unit tests.

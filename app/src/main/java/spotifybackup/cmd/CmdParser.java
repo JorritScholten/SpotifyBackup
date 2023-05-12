@@ -86,34 +86,48 @@ public class CmdParser {
     private void parser(final LexedArgs[] inputs) throws MalformedInputException {
         for (var iter = Stream.of(inputs).iterator(); iter.hasNext(); ) {
             var input = iter.next();
+            Argument argument = null;
             switch (input.type) {
                 case SHORT_ARGUMENT -> {
                     char c = input.arg.charAt(1);
-                    var argument = identifyArgumentByShortName(c);
-                    if (argument == null) {
-                        throw new MalformedInputException("No argument defined by: " + c);
-                    } else if (!argument.isPresent) {
-                        argument.isPresent = true;
-                        if (argument.hasValue) {
-                            var nextInput = iter.next();
-                            if (nextInput.type == ArgType.VALUE) {
-                                argument.setValue(nextInput.arg);
-                            } else {
-                                throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
-                            }
-                        }
-                    } else {
-                        throw new MalformedInputException("Argument " + argument.name + " repeated more than once in input.");
-                    }
+                    argument = identifyArgumentByShortName(c);
                 }
                 case LONG_ARGUMENT -> {
                     String s = input.arg.substring(2);
-                    var argument = identifyArgumentByName(s);
-                    if (argument =)
+                    argument = identifyArgumentByName(s);
+                }
+                case SHORT_ARGUMENTS -> {
+                    List<Argument> shortArguments = new ArrayList<>();
+                    for (var c : input.arg.substring(1).toCharArray()) {
+                        shortArguments.add(identifyArgumentByShortName(c));
+                    }
+                    if (shortArguments.stream().filter(arg -> (arg.hasValue)).count() > 1) {
+                        throw new MalformedInputException("Cannot have more than one value type argument in shortened block: " + input.arg);
+                    } else {
+                        argument = shortArguments.stream().filter(arg -> (arg.hasValue)).findFirst().orElse(null);
+                        shortArguments.stream().filter(arg -> (!arg.hasValue)).forEach(arg -> {
+                            arg.isPresent = true;
+                        });
+                    }
                 }
                 case VALUE -> {
                     throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
                 }
+            }
+            if (argument == null) {
+                throw new MalformedInputException("No argument defined by: " + input.arg);
+            } else if (!argument.isPresent) {
+                argument.isPresent = true;
+                if (argument.hasValue) {
+                    var nextInput = iter.next();
+                    if (nextInput.type == ArgType.VALUE) {
+                        argument.setValue(nextInput.arg);
+                    } else {
+                        throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
+                    }
+                }
+            } else {
+                throw new MalformedInputException("Argument " + argument.name + " repeated more than once in input.");
             }
         }
     }
