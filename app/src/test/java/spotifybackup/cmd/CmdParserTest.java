@@ -45,7 +45,7 @@ class CmdParserTest {
         CmdParser argParser = new CmdParser(new Argument[]{
                 new FlagArgument("help", "Print program help and exit.", 'h')
         });
-        assertThrows(ArgumentNotPresentException.class, () ->
+        assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
     }
