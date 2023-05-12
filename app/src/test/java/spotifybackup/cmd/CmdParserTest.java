@@ -171,6 +171,22 @@ class CmdParserTest {
     }
 
     @Test
+    void testMalformedArgumentMultipleShortValue() {
+        final String[] args = {"-hea", "-28"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new FlagArgument("help", "Print program help and exit.", 'h'),
+                new IntArgument("extra", "", 'e', false),
+                new StringArgument("string", "", 'a', false)
+        });
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
+    }
+
+    @Test
     void testMalformedIntArgument1() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser(new Argument[]{
