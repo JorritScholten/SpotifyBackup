@@ -200,6 +200,25 @@ class CmdParserTest {
     @Test
     void testMultipleFlaggedDefaultArguments3() {
         Integer defaultValue1 = 23, defaultValue2 = 12;
+        final String[] args = {"-hxim", defaultValue2.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new FlagArgument("extra", "", 'x'),
+                new DefaultIntArgument("int", "", 'i', defaultValue1),
+                new FlagArgument("mint", "", 'm')
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue2, argParser.getValue("int"));
+            assertTrue(argParser.isPresent("extra"));
+            assertTrue(argParser.isPresent("int"));
+            assertTrue(argParser.isPresent("mint"));
+            assertTrue(argParser.isPresent("help"));
+        });
+    }
+
+    @Test
+    void testMultipleFlaggedDefaultArguments4() {
+        Integer defaultValue1 = 23, defaultValue2 = 12;
         final String[] args = {"-hxi", defaultValue2.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new DefaultIntArgument("extra", "", 'x', defaultValue1),
