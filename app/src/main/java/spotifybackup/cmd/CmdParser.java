@@ -256,10 +256,16 @@ public class CmdParser {
                 .findFirst().orElse(null);
     }
 
-    private Argument identifyValueArgumentByShortName(String arg) {
+    private Argument identifyValueArgumentByShortName(String arg)
+            throws MalformedInputException {
         List<Argument> shortArguments = new ArrayList<>();
         for (var c : arg.substring(1).toCharArray()) {
-            shortArguments.add(identifyArgumentByShortName(c));
+            var argument = identifyArgumentByShortName(c);
+            if (argument == null) {
+                throw new MalformedInputException("No argument defined by: " + c + " in shortened block: " + arg);
+            } else {
+                shortArguments.add(argument);
+            }
         }
         shortArguments.stream().filter(argument -> (!argument.hasValue)).forEach(argument -> {
             argument.isPresent = true;

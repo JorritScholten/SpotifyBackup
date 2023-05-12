@@ -133,7 +133,7 @@ class CmdParserTest {
         final String[] args = {"-hxi"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new DefaultIntArgument("extra", "", 'x', defaultValue),
-                new DefaultIntArgument("int", "", defaultValue)
+                new DefaultIntArgument("int", "", 'i', defaultValue)
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -165,6 +165,19 @@ class CmdParserTest {
     }
 
     @Test
+    void testMalformedMultipleFlaggedDefaultArguments1() {
+        int defaultValue = 23;
+        final String[] args = {"-hxi"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue),
+                new DefaultIntArgument("int", "",/*'i',*/ defaultValue)
+        });
+        assertThrows(MalformedInputException.class, () -> {
+            argParser.parseArguments(args);
+        });
+    }
+
+    @Test
     void testMalformedArgumentMissingValue() {
         final String[] args = {"-he", "-28", "--string", "test", "-i"};
         CmdParser argParser = new CmdParser(new Argument[]{
@@ -181,11 +194,28 @@ class CmdParserTest {
     }
 
     @Test
-    void testMalformedArgumentMultipleShortValue() {
+    void testMalformedArgumentMultipleShortValue1() {
         final String[] args = {"-hea", "-28"};
         CmdParser argParser = new CmdParser(new Argument[]{
                 new MandatoryIntArgument("extra", "", 'e'),
                 new MandatoryStringArgument("string", "", 'a')
+        });
+        assertThrows(MalformedInputException.class, () ->
+                argParser.parseArguments(args)
+        );
+        assertThrows(ArgumentsNotParsedException.class, () ->
+                argParser.getValue("help")
+        );
+    }
+
+    @Test
+    void testMalformedArgumentMultipleShortValue2() {
+        Integer defaultValue = 1;
+        final String[] args = {"-hea", defaultValue.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new MandatoryIntArgument("extra", "", 'e'),
+                new MandatoryIntArgument("string", "", 'a'),
+                new DefaultIntArgument("int", "", 'i', defaultValue)
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)

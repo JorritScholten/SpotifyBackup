@@ -19,10 +19,10 @@ database and automated backups to an online repository.
     - [x] Add optional default value to value arguments: make it so
       that non-mandatory arguments are optional and vice-versa
         - [x] Split tests up because CmdParserTest.java is getting rather large
-  - [ ] Make optional arguments flag-like by adding CmdParser.isPresent(name)
-  - [ ] Implement positional arguments
-  - [ ] Write javadoc comments for each Argument constructor
-    - [ ] Add pretty printing (look in to jANSI library?)
+    - [x] Make optional arguments flag-like by adding CmdParser.isPresent(name)
+    - [ ] Implement positional arguments (at a later point in time)
+    - [ ] Write javadoc comments for each Argument constructor
+        - [ ] Add pretty printing (look in to jANSI library?)
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
 - [ ] Design a sensible SQL database that minimises data duplication.
