@@ -50,8 +50,12 @@ public class CmdParser {
                                 + lookingForArgument.name + " shouldn't be supplied a value.");
                     } else {
                         lookingForArgument.setValue(arg);
+                        lookingForArgument = null;
                     }
                 }
+            }
+            if (lookingForArgument != null) {
+                throw new MalformedInputException("Missing value for argument.");
             }
             if (arguments.stream().anyMatch(argument -> argument.isMandatory && !argument.isPresent)) {
                 throw new MissingArgumentException("Mandatory arguments missing from input.");
