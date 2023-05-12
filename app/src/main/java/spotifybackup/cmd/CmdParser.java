@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class CmdParser {
@@ -139,19 +140,45 @@ public class CmdParser {
     }
 
     public String getHelp() {
-        String help = "";
+        final List<Argument> mandatoryArguments = arguments.stream().filter(argument -> argument.isMandatory).toList();
+        final List<Argument> optionalArguments = arguments.stream().filter(argument -> !argument.isMandatory).toList();
 
-        if (arguments.stream().anyMatch(argument -> argument.isMandatory)) {
-            help += "\nMandatory arguments:\n";
-            for (Argument argument : arguments.stream().filter(argument -> !argument.isMandatory).toList()) {
+        // generate usage block
+        String help = "Usage: ";
+        if (programName != null) {
+            help += programName + " ";
+        }
+        if (!mandatoryArguments.isEmpty()) {
+            for (Argument argument : mandatoryArguments) {
                 help += argument.getHelp(24, 80) + "\n";
             }
         }
-        if (arguments.stream().anyMatch(argument -> !argument.isMandatory)) {
-            help += "\nOptional arguments:\n";
-            for (Argument argument : arguments.stream().filter(argument -> !argument.isMandatory).toList()) {
+        if (!optionalArguments.isEmpty()) {
+            for (Argument argument : optionalArguments) {
                 help += argument.getHelp(24, 80) + "\n";
             }
+        }
+
+        if (description != null) {
+            help += "\n" + description + "\n";
+        }
+
+        if (!mandatoryArguments.isEmpty()) {
+            help += "\n" + "Mandatory arguments:\n";
+            for (Argument argument : mandatoryArguments) {
+                help += argument.getHelp(24, 80) + "\n";
+            }
+        }
+
+        if (!optionalArguments.isEmpty()) {
+            help += "\n" + "Optional arguments:\n";
+            for (Argument argument : optionalArguments) {
+                help += argument.getHelp(24, 80) + "\n";
+            }
+        }
+
+        if (epilog != null) {
+            help += "\n" + epilog + "\n";
         }
         return help;
     }
