@@ -3,6 +3,7 @@ package spotifybackup.cmd;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class CmdParser {
     private final List<Argument> arguments;
@@ -78,20 +79,20 @@ public class CmdParser {
     }
 
     private void parser(final LexedArgs[] args) throws MalformedInputException {
-        List.of(args).stream().iterator()
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i].type) {
+        for (var iter = Stream.of(args).iterator(); iter.hasNext(); ) {
+            var arg = iter.next();
+            switch (arg.type) {
                 case SHORT_ARGUMENT -> {
-                    char c = args[i].arg.charAt(1);
+                    char c = arg.input.charAt(1);
                     var argument = identifyArgumentByShortName(c);
                     if (argument == null) {
                         throw new MalformedInputException("No argument defined by: " + c);
                     } else if (!argument.isPresent) {
                         argument.isPresent = true;
                         if (argument.hasValue) {
-                            if (args[i + 1].type == ArgType.VALUE) {
-                                argument.setValue(args[i + 1].arg);
-                                i++; // skip next argument because it will be a VALUE type
+                            var nextArg = iter.next();
+                            if (nextArg.type == ArgType.VALUE) {
+                                argument.setValue(nextArg.input);
                             } else {
                                 throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
                             }
@@ -102,7 +103,7 @@ public class CmdParser {
                 }
 
                 case VALUE -> {
-                    throw new MalformedInputException("Value: " + args[i].arg + " supplied without identifying argument.");
+                    throw new MalformedInputException("Value: " + arg.input + " supplied without identifying argument.");
                 }
             }
         }
@@ -137,6 +138,6 @@ public class CmdParser {
         }
     }
 
-    record LexedArgs(String arg, ArgType type) {
+    record LexedArgs(String input, ArgType type) {
     }
 }
