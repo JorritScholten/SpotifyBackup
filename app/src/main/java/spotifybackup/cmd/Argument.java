@@ -103,13 +103,6 @@ abstract public class Argument {
         return hasValue;
     }
 
-    /**
-     * @return isMandatory && hasValue
-     */
-    protected boolean getMandatoryAndValue() {
-        return isMandatory && hasValue;
-    }
-
     protected boolean getMandatory() {
         return isMandatory;
     }
