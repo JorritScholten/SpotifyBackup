@@ -13,7 +13,7 @@ public class DefaultBoundedIntArgument extends Argument {
      * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
      * @param minimum      Minimum value integer should be (also applied to defaultValue).
      * @param maximum      Maximum value integer should be (also applied to defaultValue).
-     * @throws IllegalConstructorParameterException When trying assign name, minimum or defaultValue as null,
+     * @throws IllegalConstructorParameterException When trying assign name, minimum, maximum or defaultValue as null,
      *                                              defaultValue is out of range or assigning shortName a character not
      *                                              in the alphabet.
      */
@@ -73,7 +73,7 @@ public class DefaultBoundedIntArgument extends Argument {
      * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
      * @param minimum      Minimum value integer should be (also applied to defaultValue).
      * @param maximum      Maximum value integer should be (also applied to defaultValue).
-     * @throws IllegalConstructorParameterException When trying assign name, minimum or defaultValue as null,
+     * @throws IllegalConstructorParameterException When trying assign name, minimum, maximum or defaultValue as null,
      *                                              defaultValue is out of range or assigning shortName a character not
      *                                              in the alphabet.
      */
@@ -93,7 +93,7 @@ public class DefaultBoundedIntArgument extends Argument {
             throw new IllegalConstructorParameterException("minimum can not be null value.");
         }
         if (max == null) {
-            throw new IllegalConstructorParameterException("minimum can not be null value.");
+            throw new IllegalConstructorParameterException("maximum can not be null value.");
         }
     }
 
