@@ -20,6 +20,7 @@ database and automated backups to an online repository.
       - [x] Create parser
       - [x] Feed output of parser back into arguments list
     - [x] De-pythonise current CmdParser implementation
+    - [ ] Add optional default value to value arguments
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
 - [ ] Design a sensible SQL database that minimises data duplication.

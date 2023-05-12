@@ -32,7 +32,11 @@ public class BoundedIntArgument extends Argument {
 
     @Override
     public Integer getValue() {
-        return value;
+        if (isPresent) {
+            return value;
+        } else {
+            throw new ArgumentNotPresentException("Argument " + name + " not supplied a value.");
+        }
     }
 
     @Override

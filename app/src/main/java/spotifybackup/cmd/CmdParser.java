@@ -49,7 +49,7 @@ public class CmdParser {
             throw new ArgumentsNotParsedException("CmdParser.getValue() called before parsing arguments.");
         } else {
             return arguments.stream().filter(arg -> arg.name.equals(name)).findFirst()
-                    .orElseThrow(() -> new ArgumentNotPresentException("Argument " + name + " not supplied."))
+                    .orElseThrow(() -> new ArgumentNotPresentException("Argument " + name + " not supplied in input."))
                     .getValue();
         }
     }

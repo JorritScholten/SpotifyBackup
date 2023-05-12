@@ -14,7 +14,11 @@ public class StringArgument extends Argument {
 
     @Override
     public String getValue() {
-        return value;
+        if (isPresent) {
+            return value;
+        } else {
+            throw new ArgumentNotPresentException("Argument " + name + " not supplied a value.");
+        }
     }
 
     @Override
