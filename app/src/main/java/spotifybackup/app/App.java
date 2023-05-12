@@ -17,6 +17,6 @@ public class App {
                 "testName.jar", "labore et dolore magna aliqua. Ut enim ad minim veniam, quis " +
                 "nostrud exercitation");
 //        argParser.parseArguments(args);
-        System.out.println(argParser.getHelp(125));
+        System.out.println(argParser.getHelp(60));
     }
 }

@@ -1,5 +1,7 @@
 package spotifybackup.cmd;
 
+import org.apache.commons.text.WordUtils;
+
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -198,10 +200,11 @@ public class CmdParser {
                         argument.hasValue ? " [" + argument.getValueName() + "]" : "");
             }
         }
+        helpText.replace(0, helpText.length() - 1, WordUtils.wrap(helpText.toString().strip(), maxWidth));
         helpText.append("\n");
 
         if (description != null) {
-            helpText.append("\n").append(description).append("\n");
+            helpText.append("\n").append(WordUtils.wrap(description, maxWidth)).append("\n");
         }
 
         // add mandatory argument information
@@ -211,7 +214,6 @@ public class CmdParser {
                 helpText.append(argument.getHelp(nameWidth, maxWidth)).append("\n");
             }
         }
-
         // add optional argument information
         if (!optionalArguments.isEmpty()) {
             helpText.append("\nOptional arguments:\n");
@@ -221,7 +223,7 @@ public class CmdParser {
         }
 
         if (epilog != null) {
-            helpText.append("\n").append(epilog).append("\n");
+            helpText.append("\n").append(WordUtils.wrap(epilog, maxWidth)).append("\n");
         }
         return helpText.toString();
     }
