@@ -1,6 +1,9 @@
 package spotifybackup.cmd;
 
-public class ArgumentNotPresentException extends Exception {
+/**
+ * Thrown when trying to get the value of an undefined argument.
+ */
+public class ArgumentNotPresentException extends RuntimeException {
     public ArgumentNotPresentException(String errorMessage) {
         super(errorMessage);
     }

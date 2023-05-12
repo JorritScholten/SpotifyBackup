@@ -9,11 +9,21 @@ public class CmdParser {
     private final List<Argument> arguments;
     private boolean argumentsParsed = false;
 
+    /**
+     * The CmdParser class makes it easy to write user-friendly command-line interfaces.
+     * @param arguments Array of arguments to be evaluated.
+     */
     public CmdParser(final Argument[] arguments) {
         this.arguments = new ArrayList<>();
         this.arguments.addAll(List.of(arguments));
     }
 
+    /**
+     * Parses command line program arguments into usable format.
+     * @param args String[] parameter from main method.
+     * @throws MissingArgumentException when a mandatory argument is missing from the input.
+     * @throws MalformedInputException  when the input from the command line is written incorrectly.
+     */
     public void parseArguments(final String[] args)
             throws MissingArgumentException, MalformedInputException {
         if (!argumentsParsed) {
@@ -26,6 +36,13 @@ public class CmdParser {
         }
     }
 
+    /**
+     * Get the value of an argument.
+     * @param name Identifying name of argument as defined in constructor.
+     * @return Parsed value of argument.
+     * @throws ArgumentNotPresentException when trying to get the value of an undefined argument.
+     * @throws ArgumentsNotParsedException when trying to get value before command-line input has been parsed.
+     */
     public Object getValue(String name)
             throws ArgumentNotPresentException, ArgumentsNotParsedException {
         if (!argumentsParsed) {
@@ -52,14 +69,8 @@ public class CmdParser {
             var input = iter.next();
             Argument argument = null;
             switch (input.type) {
-                case SHORT_ARGUMENT -> {
-                    char c = input.arg.charAt(1);
-                    argument = identifyArgumentByShortName(c);
-                }
-                case LONG_ARGUMENT -> {
-                    String s = input.arg.substring(2);
-                    argument = identifyArgumentByName(s);
-                }
+                case SHORT_ARGUMENT -> argument = identifyArgumentByShortName(input.arg.charAt(1));
+                case LONG_ARGUMENT -> argument = identifyArgumentByName(input.arg.substring(2));
                 case SHORT_ARGUMENTS -> {
                     List<Argument> shortArguments = new ArrayList<>();
                     for (var c : input.arg.substring(1).toCharArray()) {
@@ -74,9 +85,8 @@ public class CmdParser {
                         });
                     }
                 }
-                case VALUE -> {
-                    throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
-                }
+                case VALUE ->
+                        throw new MalformedInputException("Value: " + input.arg + " supplied without identifying argument.");
             }
             if (argument == null) {
                 throw new MalformedInputException("No argument defined by: " + input.arg);
