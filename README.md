@@ -16,10 +16,15 @@ database and automated backups to an online repository.
     - [x] Create a string argument
         - [x] Create a filepath/uri argument with validity checking
     - [ ] Add baked in support for help argument
+        - [x] Parametric help printing per argument.
+        - [ ] Parametric usage printing in CmdParser
+        - [ ] Expand on CmdParser constructor for baked in program description
     - [x] Add optional default value to value arguments: make it so
       that non-mandatory arguments are optional and vice-versa
         - [x] Split tests up because CmdParserTest.java is getting rather large
-    - [ ] Write javadoc comments for each Argument constructor
+  - [ ] Make optional arguments flag-like by adding CmdParser.isPresent(name)
+  - [ ] Implement positional arguments
+  - [ ] Write javadoc comments for each Argument constructor
     - [ ] Add pretty printing (look in to jANSI library?)
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
