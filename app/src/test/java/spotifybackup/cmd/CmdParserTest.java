@@ -100,7 +100,7 @@ class CmdParserTest {
     }
 
     @Test
-    void testMissingNonMandatoryArgument() {
+    void testMissingDefaultArgument() {
         int defaultValue = 23;
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
@@ -110,6 +110,57 @@ class CmdParserTest {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
             assertFalse(argParser.isPresent("extra"));
+        });
+    }
+
+    @Test
+    void testFlaggedDefaultArgument() {
+        int defaultValue = 23;
+        final String[] args = {"-hx"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue)
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue, argParser.getValue("extra"));
+            assertFalse(argParser.isPresent("extra"));
+        });
+    }
+
+    @Test
+    void testMultipleFlaggedDefaultArguments1() {
+        int defaultValue = 23;
+        final String[] args = {"-hxi"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue),
+                new DefaultIntArgument("int", "", defaultValue)
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue, argParser.getValue("extra"));
+            assertEquals(defaultValue, argParser.getValue("int"));
+            assertTrue(argParser.isPresent("extra"));
+            assertTrue(argParser.isPresent("int"));
+        });
+    }
+
+    @Test
+    void testMultipleFlaggedDefaultArguments2() {
+        Integer defaultValue1 = 23, defaultValue2 = 12, defaultValue3 = -98;
+        final String[] args = {"-him", defaultValue3.toString()};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue1),
+                new DefaultIntArgument("int", "", 'i', defaultValue2),
+                new MandatoryIntArgument("mint", "", 'm')
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue1, argParser.getValue("extra"));
+            assertEquals(defaultValue2, argParser.getValue("int"));
+            assertEquals(defaultValue3, argParser.getValue("mint"));
+            assertFalse(argParser.isPresent("extra"));
+            assertTrue(argParser.isPresent("int"));
+            assertTrue(argParser.isPresent("mint"));
         });
     }
 

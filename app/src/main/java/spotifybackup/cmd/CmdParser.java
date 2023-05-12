@@ -140,6 +140,22 @@ public class CmdParser {
     }
 
     /**
+     * Get if value is present in input, useful for seeing if default arguments are flagged.
+     * @param name Identifying name of argument as defined in constructor.
+     * @return true if argument is found in input.
+     * @throws ArgumentsNotParsedException when trying to get value before command-line input has been parsed.
+     */
+    public boolean isPresent(String name)
+            throws ArgumentsNotParsedException {
+        if (!argumentsParsed) {
+            throw new ArgumentsNotParsedException("CmdParser.isPresent() called before parsing arguments.");
+        } else {
+            return arguments.stream().anyMatch(arg -> (arg.name.equals(name) && arg.isPresent));
+        }
+
+    }
+
+    /**
      * Generate help message, assumes 80 character width terminal.
      * @return String containing help message.
      */
