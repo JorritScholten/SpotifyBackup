@@ -123,7 +123,7 @@ class CmdParserTest {
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
-            assertFalse(argParser.isPresent("extra"));
+            assertTrue(argParser.isPresent("extra"));
         });
     }
 

@@ -261,13 +261,25 @@ public class CmdParser {
         for (var c : arg.substring(1).toCharArray()) {
             shortArguments.add(identifyArgumentByShortName(c));
         }
-        if (shortArguments.stream().filter(argument -> (argument.hasValue)).count() > 1) {
-            throw new MalformedInputException("Cannot have more than one value type argument in shortened block: " + arg);
-        } else {
-            shortArguments.stream().filter(argument -> (!argument.hasValue)).forEach(argument -> {
+        shortArguments.stream().filter(argument -> (!argument.hasValue)).forEach(argument -> {
+            argument.isPresent = true;
+        });
+
+        if (shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory)).count() > 1) {
+            throw new MalformedInputException("Cannot have more than one mandatory value type argument in shortened block: " + arg);
+        } else if (shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory)).count() == 1) {
+            shortArguments.stream().filter(argument -> (!argument.isMandatory)).forEach(argument -> {
                 argument.isPresent = true;
             });
-            return shortArguments.stream().filter(argument -> (argument.hasValue)).findFirst().orElse(null);
+            return shortArguments.stream().filter(argument -> (argument.hasValue && argument.isMandatory))
+                    .findFirst().orElse(null);
+        } else if (shortArguments.stream().noneMatch(argument -> (argument.hasValue && argument.isMandatory))) {
+            shortArguments.stream().filter(argument -> (!argument.isMandatory)).forEach(argument -> {
+                argument.isPresent = true;
+            });
+            return null;
+        } else {
+            throw new RuntimeException("Should not occur, all mandatory arguments should have a value.");
         }
     }
 
@@ -283,7 +295,9 @@ public class CmdParser {
                 }
             };
             if (argument == null) {
-                throw new MalformedInputException("No argument defined by: " + input.arg);
+                if (input.type != ArgType.SHORT_ARGUMENTS) {
+                    throw new MalformedInputException("No argument defined by: " + input.arg);
+                }
             } else if (!argument.isPresent) {
                 argument.isPresent = true;
                 if (argument.hasValue) {
