@@ -168,7 +168,7 @@ public class CmdParser {
                     help.append("[-").append(argument.shortName);
                 }
                 if (argument.hasValue) {
-                    help.append(argument.getValueName()).append("] ");
+                    help.append(" ").append(argument.getValueName()).append("] ");
                 } else {
                     help.append("] ");
                 }
