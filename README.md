@@ -15,7 +15,10 @@ database and automated backups to an online repository.
       - [ ] Create a subtype with bounds checking
     - [x] Create a string argument
       - [ ] Create a filepath/uri argument with validity checking
-    - [ ] Rewrite/improve argument lexer/parser
+    - [ ] Rewrite/improve argument lexer/parser: split lexing and parsing
+      - [ ] Create lexer
+      - [ ] Create parser
+      - [ ] Feed output of parser back into arguments list
     - [x] De-pythonise current CmdParser implementation
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
