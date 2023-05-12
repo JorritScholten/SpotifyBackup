@@ -63,45 +63,45 @@ abstract public class Argument {
         if (nameWidth <= 0 || maxWidth <= 0 || maxWidth <= nameWidth) {
             throw new IllegalArgumentException("Illegal value for nameWidth or maxWidth.");
         }
-        String helpString = "  ";
+        StringBuilder helpString = new StringBuilder("  ");
         if (shortName != null) {
-            helpString += "-" + shortName;
+            helpString.append("-").append(shortName);
             if (hasValue) {
-                helpString += " ";
+                helpString.append(" ");
                 if (!isMandatory) {
-                    helpString += "[";
+                    helpString.append("[");
                 }
-                helpString += getValueName();
+                helpString.append(getValueName());
                 if (!isMandatory) {
-                    helpString += "]";
+                    helpString.append("]");
                 }
             }
-            helpString += ", ";
+            helpString.append(", ");
         }
-        helpString += "--" + name;
+        helpString.append("--").append(name);
         if (hasValue) {
-            helpString += " ";
+            helpString.append(" ");
             if (!isMandatory) {
-                helpString += "[";
+                helpString.append("[");
             }
-            helpString += getValueName();
+            helpString.append(getValueName());
             if (!isMandatory) {
-                helpString += "]";
+                helpString.append("]");
             }
         }
         if (helpString.length() >= (nameWidth - 1)) {
-            helpString += "\n" + " ".repeat(nameWidth);
+            helpString.append("\n").append(" ".repeat(nameWidth));
         } else {
-            helpString += " ".repeat(nameWidth - helpString.length());
+            helpString.append(" ".repeat(nameWidth - helpString.length()));
         }
         if (description.length() < (maxWidth - nameWidth)) {
-            helpString += description;
-            return helpString;
+            helpString.append(description);
+            return helpString.toString();
         } else {
             final int descriptionWidth = maxWidth - nameWidth;
             for (int i = 0; (description.length() - (descriptionWidth * i)) > 0; i++) {
                 int endIndex = descriptionWidth * (i + 1) < description.length() ? descriptionWidth * (i + 1) : description.length() - 1;
-                helpString += description.substring(descriptionWidth * i, endIndex) + "\n" + " ".repeat(nameWidth);
+                helpString.append(description, descriptionWidth * i, endIndex).append("\n").append(" ".repeat(nameWidth));
             }
             return helpString.substring(0, helpString.length() - (1 + nameWidth));
         }
