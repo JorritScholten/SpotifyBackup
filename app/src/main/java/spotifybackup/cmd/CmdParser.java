@@ -290,7 +290,7 @@ public class CmdParser {
     }
 
     private void parser(final LexedArgs[] inputs) throws MalformedInputException {
-        for (var iter = Stream.of(inputs).iterator(); iter.hasNext(); ) {
+        for (var iter = Stream.of(inputs).collect(Collectors.toList()).listIterator(); iter.hasNext(); ) {
             var input = iter.next();
             Argument argument = switch (input.type) {
                 case SHORT_ARGUMENT -> identifyArgumentByShortName(input.arg);
@@ -307,14 +307,26 @@ public class CmdParser {
             } else if (!argument.isPresent) {
                 argument.isPresent = true;
                 if (argument.hasValue) {
-                    if (!iter.hasNext()) {
-                        throw new MalformedInputException("Missing value for argument.");
-                    }
-                    var nextInput = iter.next();
-                    if (nextInput.type == ArgType.VALUE) {
-                        argument.setValue(nextInput.arg);
+                    if (argument.isMandatory) {
+                        if (!iter.hasNext()) {
+                            throw new MalformedInputException("Missing value for argument.");
+                        }
+                        var nextInput = iter.next();
+                        if (nextInput.type == ArgType.VALUE) {
+                            argument.setValue(nextInput.arg);
+                        } else {
+                            throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
+                        }
                     } else {
-                        throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
+                        if (iter.hasNext()) {
+                            var nextInput = iter.next();
+                            if (nextInput.type == ArgType.VALUE) {
+                                argument.setValue(nextInput.arg);
+                            } else {
+                                // prevent ingestion of arguments
+                                iter.previous();
+                            }
+                        }
                     }
                 }
             } else {

@@ -114,7 +114,7 @@ class CmdParserTest {
     }
 
     @Test
-    void testFlaggedDefaultArgument() {
+    void testFlaggedDefaultArgument1() {
         int defaultValue = 23;
         final String[] args = {"-hx"};
         CmdParser argParser = new CmdParser(new Argument[]{
@@ -123,6 +123,39 @@ class CmdParserTest {
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
+            assertTrue(argParser.isPresent("extra"));
+        });
+    }
+
+    @Test
+    void testFlaggedDefaultArgument2() {
+        int defaultValue = 23;
+        final String[] args = {"-h", "--extra"};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue)
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue, argParser.getValue("extra"));
+            assertTrue(argParser.isPresent("extra"));
+        });
+    }
+
+    @Test
+    void testFlaggedDefaultArgument3() {
+        Integer defaultValue1 = 23, defaultValue2 = 12;
+        String defaultValue3 = "some_test_string";
+        final String[] args = {"-h", "--extra", "--int", "-a", defaultValue3};
+        CmdParser argParser = new CmdParser(new Argument[]{
+                new DefaultIntArgument("extra", "", 'x', defaultValue1),
+                new DefaultIntArgument("int", "", 'i', defaultValue2),
+                new DefaultStringArgument("append", "", 'a', "other")
+        });
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(defaultValue1, argParser.getValue("extra"));
+            assertEquals(defaultValue2, argParser.getValue("int"));
+            assertEquals(defaultValue3, argParser.getValue("append"));
             assertTrue(argParser.isPresent("extra"));
         });
     }
