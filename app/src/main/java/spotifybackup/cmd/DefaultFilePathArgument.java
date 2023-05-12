@@ -38,6 +38,11 @@ public class DefaultFilePathArgument extends Argument {
         }
     }
 
+    @Override
+    protected String getValueName() {
+        return "FILE";
+    }
+
     private void checkValue() throws MalformedInputException {
         if (this.value.isDirectory() && !this.isFolder) {
             throw new MalformedInputException("Supplied filepath points to a directory rather than a file: " + this.value);

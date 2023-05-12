@@ -11,13 +11,14 @@ abstract public class Argument {
     protected final Character shortName;
     protected final String name;
     protected final String description;
+
     /**
      * true if present in input.
      */
     protected boolean isPresent;
 
     /**
-     * @throws IllegalConstructorParameterException when shortname isn't in the alphabet.
+     * @throws IllegalConstructorParameterException when shortname isn't in the alphabet or name is null.
      */
     protected Argument(String name, String description, Character shortName, boolean isMandatory, boolean hasValue)
             throws IllegalConstructorParameterException {
@@ -36,6 +37,9 @@ abstract public class Argument {
         this.hasValue = hasValue;
     }
 
+    /**
+     * @throws IllegalConstructorParameterException when name is null.
+     */
     protected Argument(String name, String description, boolean isMandatory, boolean hasValue)
             throws IllegalConstructorParameterException {
         if (name == null) {
@@ -48,6 +52,62 @@ abstract public class Argument {
         this.isMandatory = isMandatory;
         this.hasValue = hasValue;
     }
+
+    /**
+     * Get string representation of Argument to print to Command line.
+     * @param nameWidth width of name and shortName printing block.
+     * @param maxWidth  maximum width of terminal for description text wrapping.
+     * @return Formatted String containing help printout representation of Argument.
+     */
+    protected String getHelp(int nameWidth, int maxWidth) {
+        if (nameWidth <= 0 || maxWidth <= 0 || maxWidth <= nameWidth) {
+            throw new IllegalArgumentException("Illegal value for nameWidth or maxWidth.");
+        }
+        String helpString = "  ";
+        if (shortName != null) {
+            helpString += "-" + shortName;
+            if (hasValue) {
+                helpString += " ";
+                if (!isMandatory) {
+                    helpString += "[";
+                }
+                helpString += getValueName();
+                if (!isMandatory) {
+                    helpString += "]";
+                }
+            }
+            helpString += ", ";
+        }
+        helpString += "--" + name;
+        if (hasValue) {
+            helpString += " ";
+            if (!isMandatory) {
+                helpString += "[";
+            }
+            helpString += getValueName();
+            if (!isMandatory) {
+                helpString += "]";
+            }
+        }
+        if (helpString.length() >= (nameWidth - 1)) {
+            helpString += "\n" + " ".repeat(nameWidth);
+        } else {
+            helpString += " ".repeat(nameWidth - helpString.length());
+        }
+        if (description.length() < (maxWidth - nameWidth)) {
+            helpString += description;
+            return helpString;
+        } else {
+            final int descriptionWidth = maxWidth - nameWidth;
+            for (int i = 0; (description.length() - (descriptionWidth * i)) > 0; i++) {
+                int endIndex = descriptionWidth * (i + 1) < description.length() ? descriptionWidth * (i + 1) : description.length() - 1;
+                helpString += description.substring(descriptionWidth * i, endIndex) + "\n" + " ".repeat(nameWidth);
+            }
+            return helpString.substring(0, helpString.length() - (1 + nameWidth));
+        }
+    }
+
+    abstract protected String getValueName();
 
     /**
      * Gets value inherent to argument.

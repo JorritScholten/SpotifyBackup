@@ -24,6 +24,11 @@ public class DefaultIntArgument extends Argument {
     }
 
     @Override
+    protected String getValueName() {
+        return "INTEGER";
+    }
+
+    @Override
     public Integer getValue() {
         return value;
     }

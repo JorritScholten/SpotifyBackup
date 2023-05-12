@@ -69,6 +69,14 @@ public class CmdParser {
         }
     }
 
+    public String getHelp() {
+        String help = "options:\n";
+        for (Argument argument : arguments) {
+            help += argument.getHelp(24, 80) + "\n";
+        }
+        return help;
+    }
+
     private Argument identifyArgumentByShortName(String arg) {
         return identifyArgumentByShortName(arg.charAt(1));
     }

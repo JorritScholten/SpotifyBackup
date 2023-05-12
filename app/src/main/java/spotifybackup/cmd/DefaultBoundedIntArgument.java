@@ -30,6 +30,11 @@ public class DefaultBoundedIntArgument extends Argument {
         }
     }
 
+    @Override
+    protected String getValueName() {
+        return "INTEGER";
+    }
+
     public DefaultBoundedIntArgument(String name, String description, Integer defaultValue, Integer minimum)
             throws IllegalConstructorParameterException {
         super(name, description, false, true);

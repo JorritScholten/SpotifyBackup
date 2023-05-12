@@ -14,6 +14,11 @@ public class FlagArgument extends Argument {
         super(name, description, shortName, false, false);
     }
 
+    @Override
+    protected String getValueName() {
+        return "NONE";
+    }
+
     /**
      * Returns true if flag is present in input.
      * @return true if flag is present in input.

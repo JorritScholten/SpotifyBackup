@@ -24,6 +24,11 @@ public class DefaultStringArgument extends Argument {
     }
 
     @Override
+    protected String getValueName() {
+        return "STRING";
+    }
+
+    @Override
     public String getValue() {
         return value;
     }

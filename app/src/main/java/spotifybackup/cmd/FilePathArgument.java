@@ -19,6 +19,11 @@ public class FilePathArgument extends Argument {
     }
 
     @Override
+    protected String getValueName() {
+        return "FILE";
+    }
+
+    @Override
     public File getValue() {
         return value;
     }

@@ -31,6 +31,11 @@ public class BoundedIntArgument extends Argument {
     }
 
     @Override
+    protected String getValueName() {
+        return "INTEGER";
+    }
+
+    @Override
     public Integer getValue() {
         return value;
     }
