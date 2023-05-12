@@ -182,26 +182,8 @@ public class CmdParser {
         final List<Argument> mandatoryArguments = arguments.stream().filter(argument -> argument.isMandatory).toList();
         final List<Argument> optionalArguments = arguments.stream().filter(argument -> !argument.isMandatory).toList();
         StringBuilder helpText = new StringBuilder();
-        Formatter formatter = new Formatter(helpText);
 
-        // generate usage block
-        formatter.format("Usage: %s", programName != null ? programName + " " : "");
-        if (!mandatoryArguments.isEmpty()) {
-            for (Argument argument : mandatoryArguments) {
-                formatter.format("-%s %s",
-                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
-                        argument.hasValue ? argument.getValueName() + " " : "");
-            }
-        }
-        if (!optionalArguments.isEmpty()) {
-            for (Argument argument : optionalArguments) {
-                formatter.format("[-%s%s] ",
-                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
-                        argument.hasValue ? " [" + argument.getValueName() + "]" : "");
-            }
-        }
-        helpText.replace(0, helpText.length() - 1, WordUtils.wrap(helpText.toString().strip(), maxWidth));
-        helpText.append("\n");
+        helpText.append(generateUsage(mandatoryArguments, optionalArguments, maxWidth)).append("\n");
 
         if (description != null) {
             helpText.append("\n").append(WordUtils.wrap(description, maxWidth)).append("\n");
@@ -226,6 +208,28 @@ public class CmdParser {
             helpText.append("\n").append(WordUtils.wrap(epilog, maxWidth)).append("\n");
         }
         return helpText.toString();
+    }
+
+    private String generateUsage(List<Argument> mandatoryArguments, List<Argument> optionalArguments, int maxWidth) {
+        StringBuilder usageText = new StringBuilder();
+        Formatter formatter = new Formatter(usageText);
+
+        formatter.format("Usage: %s", programName != null ? programName + " " : "");
+        if (!mandatoryArguments.isEmpty()) {
+            for (Argument argument : mandatoryArguments) {
+                formatter.format("-%s %s",
+                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
+                        argument.hasValue ? argument.getValueName() + " " : "");
+            }
+        }
+        if (!optionalArguments.isEmpty()) {
+            for (Argument argument : optionalArguments) {
+                formatter.format("[-%s%s] ",
+                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
+                        argument.hasValue ? " [" + argument.getValueName() + "]" : "");
+            }
+        }
+        return WordUtils.wrap(usageText.toString().strip(), maxWidth);
     }
 
     private Argument identifyArgumentByShortName(String arg) {

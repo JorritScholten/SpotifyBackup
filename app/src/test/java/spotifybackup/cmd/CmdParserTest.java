@@ -260,7 +260,7 @@ class CmdParserTest {
 
     @Test
     void testGetHelp1() {
-        final String expectedOutput = "Usage: --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]] \n" +
+        final String expectedOutput = "Usage: --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]]\n" +
                 "\n" +
                 "Mandatory arguments:\n" +
                 "  --int INTEGER     some integer\n" +
@@ -287,7 +287,7 @@ class CmdParserTest {
 
     @Test
     void testGetHelp2() {
-        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]] \n" +
+        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]]\n" +
                 "\n" +
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
                 "\n" +
@@ -321,7 +321,7 @@ class CmdParserTest {
     @Test
     void testGetHelp3() {
         final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILE [-h] [-i\n" +
-                "[INTEGER]] [-s [STRING]] \n" +
+                "[INTEGER]] [-s [STRING]]\n" +
                 "\n" +
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\n" +
                 "do eiusmod tempor incididunt ut\n" +
