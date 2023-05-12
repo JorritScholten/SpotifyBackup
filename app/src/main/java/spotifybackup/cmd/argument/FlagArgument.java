@@ -1,4 +1,7 @@
-package spotifybackup.cmd;
+package spotifybackup.cmd.argument;
+
+import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 public class FlagArgument extends Argument {
     /**

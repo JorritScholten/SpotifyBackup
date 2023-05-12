@@ -1,4 +1,8 @@
-package spotifybackup.cmd;
+package spotifybackup.cmd.argument.integer;
+
+import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
+import spotifybackup.cmd.exception.MalformedInputException;
 
 public class DefaultIntArgument extends Argument {
     private Integer value;

@@ -1,4 +1,4 @@
-package spotifybackup.cmd;
+package spotifybackup.cmd.exception;
 
 /**
  * Thrown when trying to get value before command-line input has been parsed.

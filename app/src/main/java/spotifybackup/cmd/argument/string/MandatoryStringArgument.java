@@ -1,21 +1,20 @@
-package spotifybackup.cmd;
+package spotifybackup.cmd.argument.string;
 
-public class DefaultStringArgument extends Argument {
+import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
+import spotifybackup.cmd.exception.MalformedInputException;
+
+public class MandatoryStringArgument extends Argument {
     private String value;
 
-    public DefaultStringArgument(String name, String description, Character shortName, String defaultValue)
+    public MandatoryStringArgument(String name, String description, Character shortName)
             throws IllegalConstructorParameterException {
-        super(name, description, shortName, false, true);
-        if (defaultValue == null) {
-            throw new IllegalConstructorParameterException("Default value can not be null.");
-        } else {
-            this.value = defaultValue;
-        }
+        super(name, description, shortName, true, true);
     }
 
-    public DefaultStringArgument(String name, String description, String defaultValue)
+    public MandatoryStringArgument(String name, String description)
             throws IllegalConstructorParameterException {
-        this(name, description, null, defaultValue);
+        this(name, description, null);
     }
 
     @Override

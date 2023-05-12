@@ -1,4 +1,8 @@
-package spotifybackup.cmd;
+package spotifybackup.cmd.argument.file;
+
+import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
+import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
 

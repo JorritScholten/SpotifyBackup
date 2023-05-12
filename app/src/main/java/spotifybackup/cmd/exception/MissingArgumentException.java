@@ -1,4 +1,4 @@
-package spotifybackup.cmd;
+package spotifybackup.cmd.exception;
 
 /**
  * Thrown when a mandatory argument is missing from the input.

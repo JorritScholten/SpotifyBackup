@@ -1,6 +1,14 @@
 package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
+import spotifybackup.cmd.argument.FlagArgument;
+import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
+import spotifybackup.cmd.argument.integer.DefaultIntArgument;
+import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
+import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
+import spotifybackup.cmd.argument.string.DefaultStringArgument;
+import spotifybackup.cmd.argument.string.MandatoryStringArgument;
+import spotifybackup.cmd.exception.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 

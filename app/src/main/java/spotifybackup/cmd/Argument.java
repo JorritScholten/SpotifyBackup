@@ -1,6 +1,8 @@
 package spotifybackup.cmd;
 
 import org.apache.commons.text.WordUtils;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
+import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.util.Formatter;
 import java.util.regex.Pattern;

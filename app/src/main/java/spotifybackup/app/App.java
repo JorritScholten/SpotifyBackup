@@ -1,6 +1,10 @@
 package spotifybackup.app;
 
 import spotifybackup.cmd.*;
+import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
+import spotifybackup.cmd.argument.integer.DefaultIntArgument;
+import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
+import spotifybackup.cmd.argument.string.DefaultStringArgument;
 
 public class App {
     public static void main(String[] args) {

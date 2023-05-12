@@ -1,6 +1,8 @@
 package spotifybackup.cmd;
 
 import org.apache.commons.text.WordUtils;
+import spotifybackup.cmd.argument.FlagArgument;
+import spotifybackup.cmd.exception.*;
 
 import java.util.*;
 import java.util.function.Supplier;
