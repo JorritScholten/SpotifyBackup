@@ -6,18 +6,11 @@ package spotifybackup.cmd;
  */
 public class FlagArgument extends Argument {
     public FlagArgument(String name, String description) {
-        isMandatory = false;
-        hasValue = false;
-        this.name = name;
-        this.description = description;
+        super(name, description, false, false);
     }
 
     public FlagArgument(String name, String description, Character shortName) {
-        isMandatory = false;
-        hasValue = false;
-        this.name = name;
-        this.description = description;
-        this.shortName = shortName;
+        super(name, description, shortName, false, false);
     }
 
     /**
@@ -34,5 +27,6 @@ public class FlagArgument extends Argument {
      * @param value is ignored.
      */
     @Override
-    protected void setValue(String value){}
+    protected void setValue(String value) {
+    }
 }

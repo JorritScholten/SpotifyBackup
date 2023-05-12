@@ -4,11 +4,11 @@ public class IntArgument extends Argument {
     private Integer value;
 
     public IntArgument(String name, String description, Character shortName, boolean isMandatory) {
-        hasValue = true;
-        this.isMandatory = isMandatory;
-        this.name = name;
-        this.description = description;
-        this.shortName = shortName;
+        super(name, description, shortName, isMandatory, true);
+    }
+
+    public IntArgument(String name, String description, boolean isMandatory) {
+        super(name, description, isMandatory, true);
     }
 
     @Override
@@ -17,7 +17,7 @@ public class IntArgument extends Argument {
     }
 
     @Override
-    protected void setValue(String value) throws MalformedInputException {
+    protected void setValue(final String value) throws MalformedInputException {
         try {
             this.value = Integer.valueOf(value);
         } catch (NumberFormatException e) {
