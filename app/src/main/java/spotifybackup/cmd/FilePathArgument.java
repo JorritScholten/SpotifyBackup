@@ -6,30 +6,30 @@ public class FilePathArgument extends Argument {
     private final boolean isFolder;
     private File value;
 
-    public FilePathArgument(String name, String description, Character shortName, boolean isMandatory, boolean isFolder)
+    public FilePathArgument(String name, String description, Character shortName, boolean isFolder)
             throws IllegalConstructorParameterException {
-        super(name, description, shortName, isMandatory, true);
+        super(name, description, shortName, true, true);
         this.isFolder = isFolder;
     }
 
-    public FilePathArgument(String name, String description, boolean isMandatory, boolean isFolder)
+    public FilePathArgument(String name, String description, boolean isFolder)
             throws IllegalConstructorParameterException {
-        super(name, description, isMandatory, true);
+        super(name, description, true, true);
         this.isFolder = isFolder;
     }
 
     @Override
     public File getValue() {
-        if (isPresent) {
-            return value;
-        } else {
-            throw new ArgumentNotPresentException("Argument " + name + " not supplied a value.");
-        }
+        return value;
     }
 
     @Override
     protected void setValue(final String value) throws MalformedInputException {
-        this.value = new File(value);
+        if (value == null) {
+            throw new MalformedInputException("setValue can not be called with a null value.");
+        } else {
+            this.value = new File(value);
+        }
         if (this.value.isDirectory() && !this.isFolder) {
             throw new MalformedInputException("Supplied filepath points to a directory rather than a file: " + this.value);
         } else if (this.value.isFile() && this.isFolder) {
