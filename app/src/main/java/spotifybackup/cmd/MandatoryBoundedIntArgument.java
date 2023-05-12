@@ -1,30 +1,30 @@
 package spotifybackup.cmd;
 
-public class BoundedIntArgument extends Argument {
+public class MandatoryBoundedIntArgument extends Argument {
     private final int min, max;
     private Integer value;
 
-    public BoundedIntArgument(String name, String description, Character shortName, Integer minimum)
+    public MandatoryBoundedIntArgument(String name, String description, Character shortName, Integer minimum)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, true, true);
         this.min = minimum;
         this.max = Integer.MAX_VALUE;
     }
 
-    public BoundedIntArgument(String name, String description, Character shortName, Integer minimum, Integer maximum)
+    public MandatoryBoundedIntArgument(String name, String description, Character shortName, Integer minimum, Integer maximum)
             throws IllegalConstructorParameterException {
         super(name, description, shortName, true, true);
         this.min = minimum;
         this.max = maximum;
     }
 
-    public BoundedIntArgument(String name, String description, Integer minimum) {
+    public MandatoryBoundedIntArgument(String name, String description, Integer minimum) {
         super(name, description, true, true);
         this.min = minimum;
         this.max = Integer.MAX_VALUE;
     }
 
-    public BoundedIntArgument(String name, String description, Integer minimum, Integer maximum) {
+    public MandatoryBoundedIntArgument(String name, String description, Integer minimum, Integer maximum) {
         super(name, description, true, true);
         this.min = minimum;
         this.max = maximum;

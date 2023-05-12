@@ -63,7 +63,7 @@ public class IntArgumentsTest {
         final Integer value = 34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new BoundedIntArgument("extra", "", 'e', 1)
+                new MandatoryBoundedIntArgument("extra", "", 'e', 1)
         });
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -106,7 +106,7 @@ public class IntArgumentsTest {
         final Integer value = -34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new BoundedIntArgument("extra", "", 1)
+                new MandatoryBoundedIntArgument("extra", "", 1)
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
@@ -121,7 +121,7 @@ public class IntArgumentsTest {
         final Integer value = 34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser(new Argument[]{
-                new BoundedIntArgument("extra", "", 1, 20)
+                new MandatoryBoundedIntArgument("extra", "", 1, 20)
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)

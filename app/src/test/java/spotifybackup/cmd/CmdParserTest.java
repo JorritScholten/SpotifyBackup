@@ -183,7 +183,7 @@ class CmdParserTest {
         CmdParser argParser = new CmdParser(new Argument[]{
                 new MandatoryIntArgument("extra", "", 'e'),
                 new MandatoryStringArgument("string", ""),
-                new BoundedIntArgument("int2", " ", 'i', 23)
+                new MandatoryBoundedIntArgument("int2", " ", 'i', 23)
         });
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
