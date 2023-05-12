@@ -23,6 +23,21 @@ database and automated backups to an online repository.
         - [ ] Write javadoc comments for each Argument constructor
         - [ ] Write usage documentation in a markdown document
         - [ ] Add pretty printing (look in to jANSI library?)
+        - [ ] De-clutter and split functions to reduce length:
+            - Argument.getHelp()
+            - CmdParser.getHelp()
+            - CmdParser.identifyValueArgumentByShortName()
+            - CmdParser.parser()
+            - duplicate constructors:
+                - FlagArgument
+                - MandatoryIntArgument
+                - MandatoryBoundedIntArgument
+                - DefaultIntArgument
+                - DefaultBoundedIntArgument
+                - MandatoryStringArgument
+                - DefaultStringArgument
+                - MandatoryFilePathArgument
+                - DefaultFilePathArgument
     - [ ] Implement positional arguments (at a later point in time)
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
