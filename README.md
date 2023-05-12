@@ -29,7 +29,6 @@ database and automated backups to an online repository.
             - CmdParser.identifyValueArgumentByShortName()
             - CmdParser.parser()
             - reduce duplicate constructor logic with this():
-                - Argument
                 - FlagArgument
                 - MandatoryIntArgument
                 - MandatoryBoundedIntArgument

@@ -28,10 +28,14 @@ abstract public class Argument {
             this.name = name;
         }
         this.description = description;
-        if (Pattern.compile("[a-zA-Z]").matcher(shortName.toString()).find()) {
-            this.shortName = shortName;
+        if (shortName == null) {
+            this.shortName = null;
         } else {
-            throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");
+            if (Pattern.compile("[a-zA-Z]").matcher(shortName.toString()).find()) {
+                this.shortName = shortName;
+            } else {
+                throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");
+            }
         }
         this.isMandatory = isMandatory;
         this.hasValue = hasValue;
@@ -42,15 +46,7 @@ abstract public class Argument {
      */
     protected Argument(String name, String description, boolean isMandatory, boolean hasValue)
             throws IllegalConstructorParameterException {
-        if (name == null) {
-            throw new IllegalConstructorParameterException("Argument name can not be null value.");
-        } else {
-            this.name = name;
-        }
-        this.description = description;
-        this.shortName = null;
-        this.isMandatory = isMandatory;
-        this.hasValue = hasValue;
+        this(name, description, null, isMandatory, hasValue);
     }
 
     /**
