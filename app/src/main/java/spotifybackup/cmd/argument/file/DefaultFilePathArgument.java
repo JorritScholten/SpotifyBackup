@@ -1,12 +1,12 @@
 package spotifybackup.cmd.argument.file;
 
-import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.argument.DefaultArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
 
-public class DefaultFilePathArgument extends Argument {
+public class DefaultFilePathArgument extends DefaultArgument {
     private final boolean isFolder;
     private File value;
 

@@ -1,10 +1,10 @@
 package spotifybackup.cmd.argument.integer;
 
-import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.argument.DefaultArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
-public class DefaultBoundedIntArgument extends Argument {
+public class DefaultBoundedIntArgument extends DefaultArgument {
     private final Integer min, max;
     private Integer value;
 

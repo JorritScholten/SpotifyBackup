@@ -318,7 +318,7 @@ public class CmdParser {
                         } else if (argument.isMandatory) {
                             throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
                         } else {
-                            iter.previous(); // prevent ingestion of next argument
+                            iter.previous(); // undo ingestion of next argument
                         }
                     } catch (NoSuchElementException e) {
                         if (argument.isMandatory) {
@@ -340,7 +340,7 @@ public class CmdParser {
                 }
             }
             if (retval[i] == null) {
-                throw new MalformedInputException("Argument not identified as an ArgType.");
+                throw new MalformedInputException("Input not identified as an ArgType: " + args[i]);
             }
         }
         return retval;

@@ -120,6 +120,7 @@ abstract public class Argument {
     /**
      * Set value of argument when parsing command line arguments.
      * @param value String from String[] args.
+     * @throws MalformedInputException when input string cannot be parsed as underlying type.
      */
     abstract protected void setValue(final String value) throws MalformedInputException;
 }

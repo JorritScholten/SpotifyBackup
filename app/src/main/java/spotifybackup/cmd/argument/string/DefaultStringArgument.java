@@ -1,10 +1,10 @@
 package spotifybackup.cmd.argument.string;
 
-import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.argument.DefaultArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
-public class DefaultStringArgument extends Argument {
+public class DefaultStringArgument extends DefaultArgument {
     private String value;
 
     public DefaultStringArgument(String name, String description, Character shortName, String defaultValue)
