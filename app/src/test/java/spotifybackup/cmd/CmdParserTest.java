@@ -94,6 +94,27 @@ class CmdParserTest {
     }
 
     @Test
+    void testInvalidShortArgumentName1() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new FlagArgument("null", "flag argument", '3')
+        }));
+    }
+
+    @Test
+    void testInvalidShortArgumentName2() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new FlagArgument("null", "flag argument", '$')
+        }));
+    }
+
+    @Test
+    void testInvalidShortArgumentName3() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+                new FlagArgument("null", "flag argument", ' ')
+        }));
+    }
+
+    @Test
     void testMissingMandatoryArgument() {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser(new Argument[]{
