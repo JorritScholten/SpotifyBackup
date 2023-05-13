@@ -20,9 +20,7 @@ database and automated backups to an online repository.
         - [x] Split tests up because CmdParserTest.java is getting rather large
     - [x] Make optional arguments flag-like by adding CmdParser.isPresent(name)
     - [ ] Format code, write documentation and ensure compliance with style
-        - [ ] Write javadoc comments for each Argument constructor:
-            - MandatoryFilePathArgument
-            - DefaultFilePathArgument
+        - [x] Write javadoc comments for each Argument constructor
         - [ ] Write usage documentation in a markdown document
         - [ ] Add pretty printing (look in to jANSI library?)
     - [ ] Implement positional arguments (at a later point in time)
