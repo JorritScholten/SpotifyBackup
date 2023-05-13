@@ -21,8 +21,6 @@ database and automated backups to an online repository.
     - [x] Make optional arguments flag-like by adding CmdParser.isPresent(name)
     - [ ] Format code, write documentation and ensure compliance with style
         - [ ] Write javadoc comments for each Argument constructor:
-            - MandatoryStringArgument
-            - DefaultStringArgument
             - MandatoryFilePathArgument
             - DefaultFilePathArgument
         - [ ] Write usage documentation in a markdown document
