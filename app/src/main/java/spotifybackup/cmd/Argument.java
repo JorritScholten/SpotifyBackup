@@ -5,7 +5,6 @@ import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.util.Formatter;
-import java.util.regex.Pattern;
 
 abstract public class Argument {
     /**
@@ -36,7 +35,7 @@ abstract public class Argument {
         if (shortName == null) {
             this.shortName = null;
         } else {
-            if (Pattern.compile("[a-zA-Z]").matcher(shortName.toString()).find()) {
+            if ((shortName >= 'a' && shortName <= 'z') || (shortName >= 'A' && shortName <= 'Z')) {
                 this.shortName = shortName;
             } else {
                 throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");
