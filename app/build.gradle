@@ -1,5 +1,6 @@
 plugins {
     id 'spotifybackup.java-application-conventions'
+    id 'application'
 }
 
 dependencies {
@@ -16,4 +17,12 @@ java {
 application {
     // Define the main class for the application.
     mainClass = 'spotifybackup.app.App'
+    mainModule = 'spotifybackup.app.main'
+    applicationDefaultJvmArgs = ['-Dgreeting.language=en']
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
 }
