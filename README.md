@@ -9,7 +9,7 @@ database and automated backups to an online repository.
 
 - [ ] Structure project according to industry norms.
 - [ ] Good documentation and a user guide.
-- [ ] Implement a robust commandline interface in the style of the Python argparse package.
+- [x] Implement a robust commandline interface in the style of the Python argparse package.
     - [ ] Format code, write documentation and ensure compliance with style
         - [x] Write javadoc comments for each Argument constructor
         - [ ] Write usage documentation in a markdown document
@@ -18,3 +18,7 @@ database and automated backups to an online repository.
 - [ ] Write unit tests.
 - [ ] Create Spotify API wrapper.
 - [ ] Design a sensible SQL database that minimises data duplication.
+
+## Documentation
+
+[*See wiki page on github*](https://github.com/JorritScholten/SpotifyBackup/wiki)
