@@ -16,7 +16,7 @@ database and automated backups to an online repository.
         - [ ] Split CmdParser class into CmdParser and ParsedArguments to eliminate CmdParser.argumentsParsed and clean
           up code structure
         - [x] Use `Optional<Argument>` as return in the identifyArgument functions
-        - [ ] Deduplicate contents of `CmdParser.generateUsage()`
+        - [x] Deduplicate contents of `CmdParser.generateUsage()`
         - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command line without
           generating an exception
         - [ ] Clean up unit tests according to best practices
