@@ -13,17 +13,17 @@ database and automated backups to an online repository.
 - [ ] Implement a robust commandline interface in the style of the Python argparse package.
     - [ ] Format code, write documentation and ensure compliance with style
         - [ ] Write usage documentation in a markdown document
-        - [ ] Split CmdParser class into CmdParser and ParsedArguments to eliminate CmdParser.argumentsParsed and clean
-          up code structure
+        - [ ] Split CmdParser class into CmdParser and ParsedArguments to eliminate
+          `CmdParser.argumentsParsed` and clean up code structure
         - [x] Use `Optional<Argument>` as return in the identifyArgument functions
         - [x] Deduplicate contents of `CmdParser.generateUsage()`
-        - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command line without
-          generating an exception
+        - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command
+          line without generating an exception
         - [ ] Clean up unit tests according to best practices
         - [ ] Exchange public CmdParser constructor to using a builder pattern
         - [x] Remove MessageUtils from codebase
-        - [x] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character> argumentShortNames` for
-          a `.stream()` call
+        - [x] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character>
+          argumentShortNames` for a `.stream()` call
     - [ ] Add pretty printing (at a later point in time, look in to jANSI library?)
     - [ ] Implement positional arguments (at a later point in time)
 - [ ] Create Spotify API wrapper.
@@ -31,4 +31,4 @@ database and automated backups to an online repository.
 
 ## Documentation
 
-[*See wiki page on github*](https://github.com/JorritScholten/SpotifyBackup/wiki)
+[*See wiki page on GitHub*](https://github.com/JorritScholten/SpotifyBackup/wiki)
