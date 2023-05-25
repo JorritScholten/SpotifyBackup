@@ -15,7 +15,7 @@ database and automated backups to an online repository.
         - [ ] Write usage documentation in a markdown document
         - [ ] Split CmdParser class into CmdParser and ParsedArguments to eliminate CmdParser.argumentsParsed and clean
           up code structure
-        - [ ] Use `Optional<Argument>` as return in the identifyArgument functions
+        - [x] Use `Optional<Argument>` as return in the identifyArgument functions
         - [ ] Deduplicate contents of `CmdParser.generateUsage()`
         - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command line without
           generating an exception

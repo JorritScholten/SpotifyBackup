@@ -92,13 +92,15 @@ public class CmdParser {
         Set<String> argumentNames = new HashSet<>();
         this.arguments.forEach(argument -> {
             if (!argumentNames.add(argument.name)) {
-                throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, names should be unique.");
+                throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, names " +
+                        "should be unique.");
             }
         });
         Set<Character> argumentShortNames = new HashSet<>();
         this.arguments.stream().filter(Argument::hasShortName).forEach(argument -> {
             if (!argumentShortNames.add(argument.shortName)) {
-                throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, shortNames should be unique.");
+                throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, " +
+                        "shortNames should be unique.");
             }
         });
         this.description = description;
@@ -236,34 +238,30 @@ public class CmdParser {
         return WordUtils.wrap(usageText.toString().strip(), maxWidth);
     }
 
-    private Argument identifyArgumentByShortName(String arg) {
+    private Optional<Argument> identifyArgumentByShortName(String arg) {
         return identifyArgumentByShortName(arg.charAt(1));
     }
 
-    private Argument identifyArgumentByShortName(char shortName) {
+    private Optional<Argument> identifyArgumentByShortName(char shortName) {
         return arguments.stream().filter(argument -> (argument.hasShortName() && argument.shortName == shortName))
-                .findFirst().orElse(null);
+                .findFirst();
     }
 
-    private Argument identifyArgumentByName(String arg) {
+    private Optional<Argument> identifyArgumentByName(String arg) {
         return arguments.stream().filter(argument -> (argument.name.equals(arg.substring(2))))
-                .findFirst().orElse(null);
+                .findFirst();
     }
 
     private List<Argument> listArgumentsFromShortNames(char[] shortNames, String arg) throws MalformedInputException {
         List<Argument> argumentList = new ArrayList<>();
         for (var c : shortNames) {
-            var argument = identifyArgumentByShortName(c);
-            if (argument == null) {
-                throw new MalformedInputException("No argument defined by: " + c + " in shortened block: " + arg);
-            } else {
-                argumentList.add(argument);
-            }
+            argumentList.add(identifyArgumentByShortName(c).orElseThrow(() ->
+                    new MalformedInputException("No argument defined by: " + c + " in shortened block: " + arg)));
         }
         return argumentList;
     }
 
-    private Argument identifyValueArgumentByShortName(String arg) throws MalformedInputException {
+    private Optional<Argument> identifyValueArgumentByShortName(String arg) throws MalformedInputException {
         List<Argument> shortArguments = listArgumentsFromShortNames(arg.substring(1).toCharArray(), arg);
         Supplier<Stream<Argument>> mandatoryValueArguments = () ->
                 shortArguments.stream().filter(Argument::getMandatory).filter(Argument::getHasValue);
@@ -274,21 +272,22 @@ public class CmdParser {
         shortArguments.stream().filter(not(Argument::getHasValue)).forEach(Argument::confirmPresent);
 
         if (mandatoryValueArguments.get().count() > 1) {
-            throw new MalformedInputException("Cannot have more than one mandatory value type argument in shortened block: " + arg);
+            throw new MalformedInputException("Cannot have more than one mandatory value type argument in " +
+                    "shortened block: " + arg);
         } else if (mandatoryValueArguments.get().count() == 1) {
             optionalValueArguments.get().forEach(Argument::confirmPresent);
-            return mandatoryValueArguments.get().findFirst().orElse(null);
+            return mandatoryValueArguments.get().findFirst();
         } else {
             if (optionalValueArguments.get().count() == 1) {
-                return optionalValueArguments.get().findFirst().orElse(null);
+                return optionalValueArguments.get().findFirst();
             } else {
                 optionalValueArguments.get().forEach(Argument::confirmPresent);
-                return null;
+                return Optional.empty();
             }
         }
     }
 
-    private Argument identifyArgumentFromLexedArg(final LexedArgs input) throws MalformedInputException {
+    private Optional<Argument> identifyArgumentFromLexedArg(final LexedArgs input) throws MalformedInputException {
         return switch (input.type) {
             case SHORT_ARGUMENT -> identifyArgumentByShortName(input.arg);
             case LONG_ARGUMENT -> identifyArgumentByName(input.arg);
@@ -302,27 +301,30 @@ public class CmdParser {
         for (var iter = Arrays.stream(inputs).toList().listIterator(); iter.hasNext(); ) {
             var input = iter.next();
             var argument = identifyArgumentFromLexedArg(input);
-            if (argument == null) {
+            if (argument.isEmpty()) {
                 if (input.type != ArgType.SHORT_ARGUMENTS) {
                     throw new MalformedInputException("No argument defined by: " + input.arg);
                 }
-            } else if (argument.isPresent) {
-                throw new MalformedInputException("Argument " + argument.name + " repeated more than once in input.");
+            } else if (argument.get().isPresent) {
+                throw new MalformedInputException("Argument " + argument.get().name +
+                        " repeated more than once in input.");
             } else {
-                argument.confirmPresent();
-                if (argument.hasValue) {
+                argument.get().confirmPresent();
+                if (argument.get().hasValue) {
                     try {
                         var nextInput = iter.next();
                         if (nextInput.type == ArgType.VALUE) {
-                            argument.setValue(nextInput.arg);
-                        } else if (argument.isMandatory) {
-                            throw new MalformedInputException("Argument " + argument.name + " supplied without value.");
+                            argument.get().setValue(nextInput.arg);
+                        } else if (argument.get().isMandatory) {
+                            throw new MalformedInputException("Argument " + argument.get().name +
+                                    " supplied without value.");
                         } else {
                             iter.previous(); // undo ingestion of next argument
                         }
                     } catch (NoSuchElementException e) {
-                        if (argument.isMandatory) {
-                            throw new MalformedInputException("Missing value for mandatory argument: " + argument.name);
+                        if (argument.get().isMandatory) {
+                            throw new MalformedInputException("Missing value for mandatory argument: " +
+                                    argument.get().name);
                         }
                     }
                 }
