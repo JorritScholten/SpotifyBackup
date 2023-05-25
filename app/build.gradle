@@ -1,10 +1,15 @@
 plugins {
     id 'spotifybackup.java-application-conventions'
+    id 'application'
+    id 'java'
 }
 
 dependencies {
-    implementation 'org.apache.commons:commons-text'
-//    implementation project(':utilities')
+    implementation 'org.apache.commons:commons-text:1.10.0'
+}
+
+test {
+    useJUnitPlatform()
 }
 
 java {
@@ -16,4 +21,17 @@ java {
 application {
     // Define the main class for the application.
     mainClass = 'spotifybackup.app.App'
+    mainModule = 'spotifybackup.app.main'
+    applicationDefaultJvmArgs = ['-Dgreeting.language=en']
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': application.mainClass
+    }
+    archiveBaseName = rootProject.name
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
