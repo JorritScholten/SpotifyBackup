@@ -22,7 +22,7 @@ database and automated backups to an online repository.
         - [ ] Clean up unit tests according to best practices
         - [ ] Exchange public CmdParser constructor to using a builder pattern
         - [ ] Remove MessageUtils from codebase
-        - [ ] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character> argumentShortNames` for
+        - [x] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character> argumentShortNames` for
           a `.stream()` call
     - [ ] Add pretty printing (at a later point in time, look in to jANSI library?)
     - [ ] Implement positional arguments (at a later point in time)

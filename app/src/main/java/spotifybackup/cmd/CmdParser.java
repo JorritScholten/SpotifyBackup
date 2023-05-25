@@ -89,20 +89,15 @@ public class CmdParser {
             this.arguments.add(new FlagArgument("help", "Show this help message and exit.", 'h'));
         }
         this.arguments.addAll(List.of(arguments));
-        Set<String> argumentNames = new HashSet<>();
-        this.arguments.forEach(argument -> {
-            if (!argumentNames.add(argument.name)) {
-                throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, names " +
-                        "should be unique.");
-            }
-        });
-        Set<Character> argumentShortNames = new HashSet<>();
-        this.arguments.stream().filter(Argument::hasShortName).forEach(argument -> {
-            if (!argumentShortNames.add(argument.shortName)) {
-                throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, " +
-                        "shortNames should be unique.");
-            }
-        });
+        if (this.arguments.stream().map(a -> a.name).distinct().count() != this.arguments.size()) {
+            throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, " +
+                    "names should be unique.");
+        }
+        if (this.arguments.stream().filter(Argument::hasShortName).map(a -> a.shortName).distinct().count()
+                != this.arguments.stream().filter(Argument::hasShortName).count()) {
+            throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, " +
+                    "shortNames should be unique.");
+        }
         this.description = description;
         this.programName = programName;
         this.epilog = epilog;
