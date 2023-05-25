@@ -21,7 +21,7 @@ database and automated backups to an online repository.
           generating an exception
         - [ ] Clean up unit tests according to best practices
         - [ ] Exchange public CmdParser constructor to using a builder pattern
-        - [ ] Remove MessageUtils from codebase
+        - [x] Remove MessageUtils from codebase
         - [x] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character> argumentShortNames` for
           a `.stream()` call
     - [ ] Add pretty printing (at a later point in time, look in to jANSI library?)
