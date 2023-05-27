@@ -56,13 +56,19 @@ class FilePathArgument extends Argument {
             super(isMandatory, true);
         }
 
-        /** Indicate that supplied filepath should be a directory. */
+        /**
+         * Indicate that supplied filepath should be a directory, Argument throws runtime error if supplied value does
+         * not match.
+         */
         public T isDirectory() {
             isFolder = true;
             return getThis();
         }
 
-        /** Indicate that supplied filepath should be a file. */
+        /**
+         * Indicate that supplied filepath should be a file, Argument throws runtime error if supplied value does not
+         * match.
+         */
         public T isFile() {
             isFolder = false;
             return getThis();

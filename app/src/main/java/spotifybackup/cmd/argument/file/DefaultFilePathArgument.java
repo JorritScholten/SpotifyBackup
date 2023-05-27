@@ -1,83 +1,71 @@
 package spotifybackup.cmd.argument.file;
 
-import spotifybackup.cmd.argument.DefaultArgument;
+import spotifybackup.cmd.HasDefaultValue;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
-import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
 
-public class DefaultFilePathArgument extends DefaultArgument {
-    private final boolean isFolder;
-    private File value;
-
+/**
+ * File path argument with default value, has flag-like behaviour because it can be called without a value. Argument
+ * throws exception at runtime if supplied value does not adhere to isFolder rule.
+ */
+public class DefaultFilePathArgument extends FilePathArgument implements HasDefaultValue {
     /**
      * File path argument with default value, has flag-like behaviour because it can be called without a value. Argument
      * throws exception at runtime if supplied value does not adhere to isFolder rule.
-     * @param name         Identifying name of argument, --{name} is used as identifier.
-     * @param description  Description of argument printed in help.
-     * @param shortName    Identifying character of argument, -{Character} is used as identifier.
-     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
-     * @param isFolder     Argument throws runtime error if supplied value does not match (also applied to defaultValue).
-     * @throws IllegalConstructorParameterException When trying assign name or defaultValue as null or assigning
-     *                                              shortName a character not in the alphabet.
      */
-    public DefaultFilePathArgument(String name, String description, Character shortName, File defaultValue, boolean isFolder)
-            throws IllegalConstructorParameterException {
-        super(name, description, shortName, false, true);
-        this.isFolder = isFolder;
-        if (defaultValue == null) {
-            throw new IllegalConstructorParameterException("Default value can not be null.");
-        } else {
-            this.value = defaultValue;
-            try {
-                checkValue();
-            } catch (MalformedInputException e) {
-                throw new IllegalConstructorParameterException(e.getMessage());
+    public DefaultFilePathArgument(Builder builder) {
+        super(builder);
+        super.value = builder.defaultValue;
+    }
+
+    @Override
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public static class Builder extends FilePathArgument.Builder<Builder> {
+        private File defaultValue;
+
+        public Builder() {
+            super(false);
+        }
+
+        /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */
+        public Builder defaultValue(File defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
+
+        @Override
+        protected void validateThis() throws IllegalConstructorParameterException {
+            if (getIsFolder() == null) {
+                throw new IllegalConstructorParameterException("Must specify whether value is file or directory.");
+            }
+            if (defaultValue == null) {
+                throw new IllegalConstructorParameterException("defaultValue can not be null value.");
+            }
+            if (FilePathArgument.errorWithValue(defaultValue, getIsFolder())) {
+                throw new IllegalConstructorParameterException(
+                        FilePathArgument.generateErrorString(defaultValue, getIsFolder()));
             }
         }
-    }
 
-    /**
-     * File path argument with default value and without identifying an character, has flag-like behaviour because it
-     * can be called without a value. Argument
-     * throws exception at runtime if supplied value does not adhere to isFolder rule.
-     * @param name         Identifying name of argument, --{name} is used as identifier.
-     * @param description  Description of argument printed in help.
-     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
-     * @param isFolder     Argument throws runtime error if supplied value does not match (also applied to defaultValue).
-     * @throws IllegalConstructorParameterException When trying assign name or defaultValue as null or assigning
-     *                                              shortName a character not in the alphabet.
-     */
-    public DefaultFilePathArgument(String name, String description, File defaultValue, boolean isFolder)
-            throws IllegalConstructorParameterException {
-        this(name, description, null, defaultValue, isFolder);
-    }
-
-    @Override
-    protected String getValueName() {
-        return "FILE";
-    }
-
-    private void checkValue() throws MalformedInputException {
-        if (this.value.isDirectory() && !this.isFolder) {
-            throw new MalformedInputException("Supplied filepath points to a directory rather than a file: " + this.value);
-        } else if (this.value.isFile() && this.isFolder) {
-            throw new MalformedInputException("Supplied filepath points to a file rather than a directory: " + this.value);
+        /**
+         * @throws IllegalConstructorParameterException When trying assign name or defaultValue as null, or defaultValue
+         *                                              does not adhere to whether it is a file or not or assigning
+         *                                              shortName a character not in the alphabet.
+         */
+        @Override
+        public DefaultFilePathArgument build() throws IllegalConstructorParameterException {
+            validateSuper();
+            validateThis();
+            return new DefaultFilePathArgument(this);
         }
-    }
 
-    @Override
-    public File getValue() {
-        return value;
-    }
-
-    @Override
-    protected void setValue(final String value) throws MalformedInputException {
-        if (value == null) {
-            throw new MalformedInputException("setValue can not be called with a null value.");
-        } else {
-            this.value = new File(value);
+        @Override
+        protected Builder getThis() {
+            return this;
         }
-        checkValue();
     }
 }
