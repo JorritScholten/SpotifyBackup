@@ -233,7 +233,7 @@ public class CmdParser {
     }
 
     private Optional<Argument> identifyArgumentByShortName(char shortName) {
-        return arguments.stream().filter(argument -> (argument.hasShortName() && argument.shortName == shortName))
+        return arguments.stream().filter(Argument::hasShortName).filter(argument -> (argument.shortName == shortName))
                 .findFirst();
     }
 
