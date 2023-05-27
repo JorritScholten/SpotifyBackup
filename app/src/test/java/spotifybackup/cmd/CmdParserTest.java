@@ -502,11 +502,11 @@ class CmdParserTest {
 
     @Test
     void testGetHelp1() {
-        final String expectedOutput = "Usage: --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]]\n" +
+        final String expectedOutput = "Usage: --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]\n" +
                 "\n" +
                 "Mandatory arguments:\n" +
                 "  --int INTEGER     some integer\n" +
-                "  --txt FILE        Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
+                "  --txt FILEPATH    Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
                 "\n" +
                 "Optional arguments:\n" +
                 "  -h, --help        Show this help message and exit.\n" +
@@ -528,8 +528,11 @@ class CmdParserTest {
                                 .build(),
                         new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
                                 's', "string"),
-                        new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, " +
-                                "consectetur adipiscing elit,", false))
+                        new MandatoryFilePathArgument.Builder()
+                                .name("txt")
+                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit,")
+                                .isFile()
+                                .build())
                 .addHelp()
                 .build();
         assertEquals(expectedOutput, argParser.getHelp(80));
@@ -537,13 +540,13 @@ class CmdParserTest {
 
     @Test
     void testGetHelp2() {
-        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILE [-h] [-i [INTEGER]] [-s [STRING]]\n" +
+        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]\n" +
                 "\n" +
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
                 "\n" +
                 "Mandatory arguments:\n" +
                 "  --int INTEGER                some integer\n" +
-                "  --txt FILE                   Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
+                "  --txt FILEPATH               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
                 "\n" +
                 "Optional arguments:\n" +
                 "  -h, --help                   Show this help message and exit.\n" +
@@ -567,8 +570,12 @@ class CmdParserTest {
                                 .build(),
                         new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
                                 's', "string"),
-                        new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, " +
-                                "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut", false))
+                        new MandatoryFilePathArgument.Builder()
+                                .name("txt")
+                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
+                                        " tempor incididunt ut")
+                                .isFile()
+                                .build())
                 .addHelp()
                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
                 .programName("testName.jar")
@@ -579,7 +586,7 @@ class CmdParserTest {
 
     @Test
     void testGetHelp3() {
-        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILE [-h] [-i\n" +
+        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i\n" +
                 "[INTEGER]] [-s [STRING]]\n" +
                 "\n" +
                 "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\n" +
@@ -588,7 +595,8 @@ class CmdParserTest {
                 "Mandatory arguments:\n" +
                 "  --int INTEGER\n" +
                 "               some integer\n" +
-                "  --txt FILE   Lorem ipsum dolor sit amet, consectetur\n" +
+                "  --txt FILEPATH\n" +
+                "               Lorem ipsum dolor sit amet, consectetur\n" +
                 "               adipiscing elit, sed do eiusmod tempor\n" +
                 "               incididunt ut\n" +
                 "\n" +
@@ -618,8 +626,12 @@ class CmdParserTest {
                                 .build(),
                         new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
                                 's', "string"),
-                        new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, " +
-                                "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut", false))
+                        new MandatoryFilePathArgument.Builder()
+                                .name("txt")
+                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
+                                        " tempor incididunt ut")
+                                .isFile()
+                                .build())
                 .addHelp()
                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
                 .programName("testName.jar")

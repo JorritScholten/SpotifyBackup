@@ -18,7 +18,11 @@ public class FilePathArgumentsTest {
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryFilePathArgument("extra", "", true))
+                .argument(new MandatoryFilePathArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .isDirectory()
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -38,7 +42,11 @@ public class FilePathArgumentsTest {
 
             final String[] args = {"-h", "--extra", value};
             CmdParser argParser = new CmdParser.Builder()
-                    .argument(new MandatoryFilePathArgument("extra", "", false))
+                    .argument(new MandatoryFilePathArgument.Builder()
+                            .name("extra")
+                            .description("")
+                            .isFile()
+                            .build())
                     .addHelp()
                     .build();
             argParser.parseArguments(args);
@@ -52,7 +60,12 @@ public class FilePathArgumentsTest {
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryFilePathArgument("extra", "", 'e', false))
+                .argument(new MandatoryFilePathArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .isFile()
+                        .shortName('e')
+                        .build())
                 .build();
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
@@ -68,10 +81,26 @@ public class FilePathArgumentsTest {
 
             final String[] args = {"-h", "--extra", value};
             CmdParser argParser = new CmdParser.Builder()
-                    .argument(new MandatoryFilePathArgument("extra", "", 'e', true))
+                    .argument(new MandatoryFilePathArgument.Builder()
+                            .name("extra")
+                            .description("")
+                            .isDirectory()
+                            .shortName('e')
+                            .build())
                     .build();
             assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
         });
+    }
+
+    @Test
+    void testMalformedFilePathArgument3() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
+                .argument(new MandatoryFilePathArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .build()
+                )
+        );
     }
 
     @Test
