@@ -102,11 +102,11 @@ abstract public class Argument {
     abstract protected void setValue(final String value) throws MalformedInputException;
 
     abstract protected static class Builder<T extends Builder<T>> {
-        protected final boolean isMandatory;
-        protected final boolean hasValue;
-        protected String name;
-        protected String description;
-        protected Character shortName;
+        private final boolean isMandatory;
+        private final boolean hasValue;
+        private String name;
+        private String description;
+        private Character shortName;
 
         protected Builder(boolean isMandatory, boolean hasValue) {
             this.isMandatory = isMandatory;

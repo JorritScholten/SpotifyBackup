@@ -319,7 +319,12 @@ public class CmdParser {
 
         /** Add a -h/--help argument to the parser. */
         public Builder addHelp() {
-            arguments.add(0, new FlagArgument("help", "Show this help message and exit.", 'h'));
+            arguments.add(0, new FlagArgument.Builder()
+                    .name("help")
+                    .description("Show this help message and exit.")
+                    .shortName('h')
+                    .build()
+            );
             return this;
         }
 

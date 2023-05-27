@@ -34,7 +34,11 @@ class CmdParserTest {
     void testFlagByShortName() {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new FlagArgument("extra", "", 'e'))
+                .argument(new FlagArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -48,7 +52,11 @@ class CmdParserTest {
     void testNullArgs() {
         final String[] args = {};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new FlagArgument("extra", "", 'e'))
+                .argument(new FlagArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -61,16 +69,32 @@ class CmdParserTest {
     @Test
     void testDuplicateArgumentNames() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().arguments(
-                new FlagArgument("flag", "flag argument.", 'f'),
-                new FlagArgument("help", "", 'e')
+                new FlagArgument.Builder()
+                        .name("flag")
+                        .description("flag argument.")
+                        .shortName('f')
+                        .build(),
+                new FlagArgument.Builder()
+                        .name("help")
+                        .description("")
+                        .shortName('e')
+                        .build()
         ).addHelp().build());
     }
 
     @Test
     void testDuplicateArgumentShortNames() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().arguments(
-                new FlagArgument("flag", "flag argument.", 'f'),
-                new FlagArgument("extra", "", 'h')
+                new FlagArgument.Builder()
+                        .name("flag")
+                        .description("flag argument.")
+                        .shortName('f')
+                        .build(),
+                new FlagArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('h')
+                        .build()
         ).addHelp().build());
     }
 
@@ -89,28 +113,47 @@ class CmdParserTest {
     @Test
     void testNullArgumentName() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new FlagArgument(null, "flag argument", 'f')
+//                new FlagArgument(null, "flag argument", 'f')
+                new FlagArgument.Builder()
+                        .description("flag argument.")
+                        .shortName('f')
+                        .build()
         ).build());
     }
 
     @Test
     void testInvalidShortArgumentName1() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new FlagArgument("null", "flag argument", '3')
+//                new FlagArgument("null", "flag argument", '3')
+                new FlagArgument.Builder()
+                        .name("null")
+                        .description("flag argument.")
+                        .shortName('3')
+                        .build()
         ).build());
     }
 
     @Test
     void testInvalidShortArgumentName2() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new FlagArgument("null", "flag argument", '$')
+//                new FlagArgument("null", "flag argument", '$')
+                new FlagArgument.Builder()
+                        .name("null")
+                        .description("flag argument.")
+                        .shortName('$')
+                        .build()
         ).build());
     }
 
     @Test
     void testInvalidShortArgumentName3() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new FlagArgument("null", "flag argument", ' ')
+//                new FlagArgument("null", "flag argument", ' ')
+                new FlagArgument.Builder()
+                        .name("null")
+                        .description("flag argument.")
+                        .shortName(' ')
+                        .build()
         ).build());
     }
 
@@ -237,10 +280,18 @@ class CmdParserTest {
     void testMultipleFlaggedDefaultArguments3() {
         Integer defaultValue1 = 23, defaultValue2 = 12;
         final String[] args = {"-hxim", defaultValue2.toString()};
-        CmdParser argParser = new CmdParser.Builder()
-                .arguments(new FlagArgument("extra", "", 'x'),
+        CmdParser argParser = new CmdParser.Builder().arguments(
+                        new FlagArgument.Builder()
+                                .name("extra")
+                                .description("")
+                                .shortName('x')
+                                .build(),
                         new DefaultIntArgument("int", "", 'i', defaultValue1),
-                        new FlagArgument("mint", "", 'm'))
+                        new FlagArgument.Builder()
+                                .name("mint")
+                                .description("")
+                                .shortName('m')
+                                .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {

@@ -90,20 +90,20 @@ public class MandatoryBoundedIntArgument extends Argument {
             }
         }
 
-        @Override
-        protected Builder getThis() {
-            return this;
-        }
-
         /**
          * @throws IllegalConstructorParameterException When trying assign name, description, minimum or maximum as null
          *                                              or assigning shortName a character not in the alphabet.
          */
         @Override
-        public Argument build() {
+        public Argument build() throws IllegalConstructorParameterException {
             validateSuper();
             validateThis();
             return new MandatoryBoundedIntArgument(this);
+        }
+
+        @Override
+        protected Builder getThis() {
+            return this;
         }
     }
 }
