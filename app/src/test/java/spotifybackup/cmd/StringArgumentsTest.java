@@ -50,7 +50,12 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new DefaultStringArgument("extra", "", value))
+                .argument(new DefaultStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(value)
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -64,7 +69,12 @@ public class StringArgumentsTest {
         final String value = "test_value", defaultValue = "other_value";
         final String[] args = {"-h", "-e", value};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new DefaultStringArgument("extra", "", 'e', defaultValue))
+                .argument(new DefaultStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(defaultValue)
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -96,14 +106,20 @@ public class StringArgumentsTest {
     @Test
     void testDefaultStringArgumentConstructor1() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultStringArgument("extra", "", null)
-        ).build());
+                new DefaultStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .build()
+        ));
     }
 
     @Test
     void testDefaultStringArgumentConstructor2() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultStringArgument(null, "", "string")
-        ).build());
+                new DefaultStringArgument.Builder()
+                        .description("")
+                        .defaultValue("string")
+                        .build()
+        ));
     }
 }

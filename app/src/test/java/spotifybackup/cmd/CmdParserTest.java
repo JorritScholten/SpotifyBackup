@@ -250,7 +250,12 @@ class CmdParserTest {
                                 .shortName('i')
                                 .defaultValue(defaultValue2)
                                 .build(),
-                        new DefaultStringArgument("append", "", 'a', "other"))
+                        new DefaultStringArgument.Builder()
+                                .name("append")
+                                .description("")
+                                .shortName('a')
+                                .defaultValue("other")
+                                .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -531,8 +536,12 @@ class CmdParserTest {
                                 .shortName('i')
                                 .defaultValue(23)
                                 .build(),
-                        new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
-                                's', "string"),
+                        new DefaultStringArgument.Builder()
+                                .name("str")
+                                .description("some sort of string, dunno, not gonna use it.")
+                                .shortName('s')
+                                .defaultValue("string")
+                                .build(),
                         new MandatoryFilePathArgument.Builder()
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit,")
@@ -573,8 +582,12 @@ class CmdParserTest {
                                 .shortName('i')
                                 .defaultValue(23)
                                 .build(),
-                        new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
-                                's', "string"),
+                        new DefaultStringArgument.Builder()
+                                .name("str")
+                                .description("some sort of string, dunno, not gonna use it.")
+                                .shortName('s')
+                                .defaultValue("string")
+                                .build(),
                         new MandatoryFilePathArgument.Builder()
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
@@ -629,8 +642,12 @@ class CmdParserTest {
                                 .shortName('i')
                                 .defaultValue(23)
                                 .build(),
-                        new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
-                                's', "string"),
+                        new DefaultStringArgument.Builder()
+                                .name("str")
+                                .description("some sort of string, dunno, not gonna use it.")
+                                .shortName('s')
+                                .defaultValue("string")
+                                .build(),
                         new MandatoryFilePathArgument.Builder()
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +

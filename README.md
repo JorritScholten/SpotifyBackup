@@ -23,7 +23,7 @@ database and automated backups to an online repository.
         - [x] Exchange public CmdParser telescoping constructors to using a builder pattern as outlined in
           [this article](
           https://blogs.oracle.com/javamagazine/post/exploring-joshua-blochs-builder-design-pattern-in-java)
-        - [ ] Exchange various telescoping Arguments constructors to using builder patterns as with
+        - [x] Exchange various telescoping Arguments constructors to using builder patterns as with
           CmdParser. Refactor code from using `DefaultArgument` parent class to `HasDefaultValue` interface
           to enable easier code de-duplication
         - [x] Remove MessageUtils from codebase
