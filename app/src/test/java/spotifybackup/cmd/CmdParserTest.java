@@ -297,7 +297,12 @@ class CmdParserTest {
         CmdParser argParser = new CmdParser.Builder()
                 .arguments(new MandatoryIntArgument("extra", "", 'e'),
                         new MandatoryStringArgument("string", ""),
-                        new MandatoryBoundedIntArgument("int2", " ", 'i', 23))
+                        new MandatoryBoundedIntArgument.Builder()
+                                .name("int2")
+                                .description(" ")
+                                .shortName('i')
+                                .minimum(23)
+                                .build())
                 .addHelp()
                 .build();
         assertThrows(MalformedInputException.class, () ->

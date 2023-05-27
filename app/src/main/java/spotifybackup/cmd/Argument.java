@@ -39,6 +39,14 @@ abstract public class Argument {
         this.hasValue = hasValue;
     }
 
+    protected Argument(Builder builder) throws IllegalConstructorParameterException {
+        this.name = builder.name;
+        this.description = builder.description;
+        this.shortName = builder.shortName;
+        this.isMandatory = builder.isMandatory;
+        this.hasValue = builder.hasValue;
+    }
+
     /**
      * Get string representation of Argument to print to Command line.
      * @param nameWidth width of name and shortName printing block.
@@ -114,4 +122,58 @@ abstract public class Argument {
      * @throws MalformedInputException when input string cannot be parsed as underlying type.
      */
     abstract protected void setValue(final String value) throws MalformedInputException;
+
+    abstract protected static class Builder<T extends Builder<T>> {
+        protected final boolean isMandatory;
+        protected final boolean hasValue;
+        protected String name;
+        protected String description;
+        protected Character shortName;
+
+        protected Builder(boolean isMandatory, boolean hasValue) {
+            this.isMandatory = isMandatory;
+            this.hasValue = hasValue;
+        }
+
+        /** @param name Identifying name of argument, --{name} is used as identifier. */
+        public T name(String name) {
+            this.name = name;
+            return getThis();
+        }
+
+        /** @param description Description of argument printed in help. */
+        public T description(String description) {
+            this.description = description;
+            return getThis();
+        }
+
+        /** @param shortName Identifying character of argument, -{Character} is used as identifier. */
+        public T shortName(char shortName) {
+            this.shortName = shortName;
+            return getThis();
+        }
+
+        public abstract Argument build();
+
+        protected abstract T getThis();
+
+        /** @throws IllegalConstructorParameterException when child is built wrong. */
+        protected abstract void validateThis() throws IllegalConstructorParameterException;
+
+        /**
+         * @throws IllegalConstructorParameterException when shortname isn't in the alphabet, description or name is
+         *                                              null.
+         */
+        protected void validateSuper() throws IllegalConstructorParameterException {
+            if (name == null) {
+                throw new IllegalConstructorParameterException("Argument name can not be null value.");
+            }
+            if (description == null) {
+                throw new IllegalConstructorParameterException("Argument description can not be null value.");
+            }
+            if (shortName != null && !((shortName >= 'a' && shortName <= 'z') || (shortName >= 'A' && shortName <= 'Z'))) {
+                throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");
+            }
+        }
+    }
 }
