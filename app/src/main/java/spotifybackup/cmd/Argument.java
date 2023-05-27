@@ -7,23 +7,17 @@ import spotifybackup.cmd.exception.MalformedInputException;
 import java.util.Formatter;
 
 abstract public class Argument {
-    /**
-     * If true and missing from input then program will throw an Exception, flags cannot be mandatory.
-     */
+    /** If true and missing from input then program will throw an Exception, flags cannot be mandatory. */
     protected final boolean isMandatory;
     protected final boolean hasValue;
     protected final Character shortName;
     protected final String name;
     protected final String description;
 
-    /**
-     * true if present in input.
-     */
+    /** true if present in input. */
     protected boolean isPresent;
 
-    /**
-     * @throws IllegalConstructorParameterException when shortname isn't in the alphabet or name is null.
-     */
+    /** @throws IllegalConstructorParameterException when shortname isn't in the alphabet or name is null. */
     protected Argument(String name, String description, Character shortName, boolean isMandatory, boolean hasValue)
             throws IllegalConstructorParameterException {
         if (name == null) {
@@ -93,9 +87,7 @@ abstract public class Argument {
         return shortName != null;
     }
 
-    /**
-     * Sets isPresent to true, meant for lambda usage.
-     */
+    /** Sets isPresent to true, meant for lambda usage. */
     protected void confirmPresent() {
         isPresent = true;
     }
