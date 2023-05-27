@@ -17,29 +17,7 @@ abstract public class Argument {
     /** true if present in input. */
     protected boolean isPresent;
 
-    /** @throws IllegalConstructorParameterException when shortname isn't in the alphabet or name is null. */
-    protected Argument(String name, String description, Character shortName, boolean isMandatory, boolean hasValue)
-            throws IllegalConstructorParameterException {
-        if (name == null) {
-            throw new IllegalConstructorParameterException("Argument name can not be null value.");
-        } else {
-            this.name = name;
-        }
-        this.description = description;
-        if (shortName == null) {
-            this.shortName = null;
-        } else {
-            if ((shortName >= 'a' && shortName <= 'z') || (shortName >= 'A' && shortName <= 'Z')) {
-                this.shortName = shortName;
-            } else {
-                throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");
-            }
-        }
-        this.isMandatory = isMandatory;
-        this.hasValue = hasValue;
-    }
-
-    protected Argument(Builder builder) throws IllegalConstructorParameterException {
+    protected Argument(Builder<?> builder) {
         this.name = builder.name;
         this.description = builder.description;
         this.shortName = builder.shortName;

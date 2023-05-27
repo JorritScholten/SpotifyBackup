@@ -22,16 +22,6 @@ public class MandatoryBoundedIntArgument extends Argument {
         this.max = builder.max;
     }
 
-    private void checkFieldsNotNull()
-            throws IllegalConstructorParameterException {
-        if (min == null) {
-            throw new IllegalConstructorParameterException("minimum can not be null value.");
-        }
-        if (max == null) {
-            throw new IllegalConstructorParameterException("maximum can not be null value.");
-        }
-    }
-
     @Override
     protected String getValueName() {
         return "INTEGER";
@@ -45,7 +35,7 @@ public class MandatoryBoundedIntArgument extends Argument {
     @Override
     protected void setValue(final String value) throws MalformedInputException {
         try {
-            var tempValue = Integer.valueOf(value);
+            int tempValue = Integer.parseInt(value);
             if (tempValue >= min && tempValue <= max) {
                 this.value = tempValue;
             } else {
