@@ -1,6 +1,5 @@
 package spotifybackup.cmd.argument.integer;
 
-import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 /**
@@ -26,7 +25,7 @@ public class MandatoryBoundedIntArgument extends BoundedIntArgument {
          *                                              or assigning shortName a character not in the alphabet.
          */
         @Override
-        public Argument build() throws IllegalConstructorParameterException {
+        public MandatoryBoundedIntArgument build() throws IllegalConstructorParameterException {
             validateSuper();
             validateThis();
             return new MandatoryBoundedIntArgument(this);

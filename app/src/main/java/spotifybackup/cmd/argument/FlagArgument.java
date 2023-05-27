@@ -42,7 +42,7 @@ public class FlagArgument extends Argument {
         }
 
         @Override
-        public Argument build() throws IllegalConstructorParameterException {
+        public FlagArgument build() throws IllegalConstructorParameterException {
             validateSuper();
             validateThis();
             return new FlagArgument(this);

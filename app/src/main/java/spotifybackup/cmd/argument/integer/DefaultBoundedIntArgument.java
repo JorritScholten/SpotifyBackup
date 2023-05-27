@@ -1,6 +1,5 @@
 package spotifybackup.cmd.argument.integer;
 
-import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.HasDefaultValue;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
@@ -43,7 +42,7 @@ public class DefaultBoundedIntArgument extends BoundedIntArgument implements Has
          *                                              character not in the alphabet.
          */
         @Override
-        public Argument build() throws IllegalConstructorParameterException {
+        public DefaultBoundedIntArgument build() throws IllegalConstructorParameterException {
             validateSuper();
             validateThis();
             if (defaultValue == null) {
