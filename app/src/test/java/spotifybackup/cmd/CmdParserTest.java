@@ -418,9 +418,7 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
-        assertThrows(MalformedInputException.class, () -> {
-            argParser.parseArguments(args);
-        });
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
@@ -432,7 +430,10 @@ class CmdParserTest {
                                 .description("")
                                 .shortName('e')
                                 .build(),
-                        new MandatoryStringArgument("string", ""),
+                        new MandatoryStringArgument.Builder()
+                                .name("string")
+                                .description("")
+                                .build(),
                         new MandatoryBoundedIntArgument.Builder()
                                 .name("int2")
                                 .description(" ")
@@ -458,7 +459,11 @@ class CmdParserTest {
                                 .description("")
                                 .shortName('e')
                                 .build(),
-                        new MandatoryStringArgument("string", "", 'a'))
+                        new MandatoryStringArgument.Builder()
+                                .name("string")
+                                .description("")
+                                .shortName('a')
+                                .build())
                 .addHelp()
                 .build();
         assertThrows(MalformedInputException.class, () ->

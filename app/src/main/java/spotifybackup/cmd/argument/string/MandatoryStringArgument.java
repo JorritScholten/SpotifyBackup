@@ -1,53 +1,37 @@
 package spotifybackup.cmd.argument.string;
 
-import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
-import spotifybackup.cmd.exception.MalformedInputException;
 
-public class MandatoryStringArgument extends Argument {
-    private String value;
-
-    /**
-     * Mandatory String argument, program won't execute if missing.
-     * @param name        Identifying name of argument, --{name} is used as identifier.
-     * @param description Description of argument printed in help.
-     * @param shortName   Identifying character of argument, -{Character} is used as identifier.
-     * @throws IllegalConstructorParameterException When trying assign name as null or assigning shortName a character
-     *                                              not in the alphabet.
-     */
-    public MandatoryStringArgument(String name, String description, Character shortName)
+/** Mandatory String argument, program won't execute if missing. */
+public class MandatoryStringArgument extends StringArgument {
+    /** Mandatory String argument, program won't execute if missing. */
+    public MandatoryStringArgument(Builder builder)
             throws IllegalConstructorParameterException {
-        super(name, description, shortName, true, true);
+        super(builder);
     }
 
-    /**
-     * Mandatory String argument without identifying character, program won't execute if missing.
-     * @param name        Identifying name of argument, --{name} is used as identifier.
-     * @param description Description of argument printed in help.
-     * @throws IllegalConstructorParameterException When trying assign name as null or assigning shortName a character
-     *                                              not in the alphabet.
-     */
-    public MandatoryStringArgument(String name, String description)
-            throws IllegalConstructorParameterException {
-        this(name, description, null);
-    }
+    public static class Builder extends StringArgument.Builder<Builder> {
+        public Builder() {
+            super(true);
+        }
 
-    @Override
-    protected String getValueName() {
-        return "STRING";
-    }
+        @Override
+        protected void validateThis() throws IllegalConstructorParameterException {
+        }
 
-    @Override
-    public String getValue() {
-        return value;
-    }
+        /**
+         * @throws IllegalConstructorParameterException When trying assign name as null or assigning shortName a
+         *                                              character not in the alphabet.
+         */
+        @Override
+        public MandatoryStringArgument build() throws IllegalConstructorParameterException {
+            validateSuper();
+            return new MandatoryStringArgument(this);
+        }
 
-    @Override
-    protected void setValue(final String value) throws MalformedInputException {
-        if (value == null) {
-            throw new MalformedInputException("setValue can not be called with a null value.");
-        } else {
-            this.value = value;
+        @Override
+        protected Builder getThis() {
+            return this;
         }
     }
 }

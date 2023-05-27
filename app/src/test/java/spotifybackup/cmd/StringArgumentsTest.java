@@ -15,7 +15,10 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryStringArgument("extra", ""))
+                .argument(new MandatoryStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -29,7 +32,11 @@ public class StringArgumentsTest {
         final String value = "test_value";
         final String[] args = {"-h", "-e", value};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryStringArgument("extra", "", 'e'))
+                .argument(new MandatoryStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertDoesNotThrow(() -> {
@@ -69,10 +76,13 @@ public class StringArgumentsTest {
 
     @Test
     void testMissingStringArgument() {
-        final String value = "test_value";
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryStringArgument("extra", "", 'e'))
+                .argument(new MandatoryStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertThrows(MissingArgumentException.class, () ->
