@@ -10,8 +10,16 @@ public class App {
 
     public static void addition(String[] args) {
         var argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument("value1", "First value.", 'a'))
-                .argument(new MandatoryIntArgument("value2", "Second value.", 'b'))
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("value1")
+                        .description("First value.")
+                        .shortName('a')
+                        .build())
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("value2")
+                        .description("Second value.")
+                        .shortName('b')
+                        .build())
                 .description("Program description")
                 .programName("Add.jar")
                 .epilogue("Help footer")

@@ -1,61 +1,59 @@
 package spotifybackup.cmd.argument.integer;
 
-import spotifybackup.cmd.argument.DefaultArgument;
+import spotifybackup.cmd.HasDefaultValue;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
-import spotifybackup.cmd.exception.MalformedInputException;
 
-public class DefaultIntArgument extends DefaultArgument {
-    private Integer value;
-
+/**
+ * Integer argument with default value, has flag-like behaviour because it can be called without a value.
+ */
+public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
     /**
      * Integer argument with default value, has flag-like behaviour because it can be called without a value.
-     * @param name         Identifying name of argument, --{name} is used as identifier.
-     * @param description  Description of argument printed in help.
-     * @param shortName    Identifying character of argument, -{Character} is used as identifier.
-     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
-     * @throws IllegalConstructorParameterException When trying assign name or defaultValue as null or assigning
-     *                                              shortName a character not in the alphabet.
      */
-    public DefaultIntArgument(String name, String description, Character shortName, Integer defaultValue)
-            throws IllegalConstructorParameterException {
-        super(name, description, shortName, false, true);
-        if (defaultValue == null) {
-            throw new IllegalConstructorParameterException("Default value can not be null.");
-        } else {
-            this.value = defaultValue;
+    private DefaultIntArgument(Builder builder) {
+        super(builder);
+        super.value = builder.defaultValue;
+    }
+
+    @Override
+    public boolean isPresent() {
+        return isPresent;
+    }
+
+    public static class Builder extends IntArgument.Builder<Builder> {
+        private Integer defaultValue;
+
+        public Builder() {
+            super(false);
         }
-    }
 
-    /**
-     * Integer argument with default value and no identifying character, has flag-like behaviour because it can be
-     * called without a value.
-     * @param name         Identifying name of argument, --{name} is used as identifier.
-     * @param description  Description of argument printed in help.
-     * @param defaultValue The value produced if the argument is absent from or undefined in the command line.
-     * @throws IllegalConstructorParameterException When trying assign name or defaultValue as null or assigning
-     *                                              shortName a character not in the alphabet.
-     */
-    public DefaultIntArgument(String name, String description, Integer defaultValue)
-            throws IllegalConstructorParameterException {
-        this(name, description, null, defaultValue);
-    }
+        /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */
+        public Builder defaultValue(int defaultValue) {
+            this.defaultValue = defaultValue;
+            return this;
+        }
 
-    @Override
-    protected String getValueName() {
-        return "INTEGER";
-    }
+        @Override
+        protected void validateThis() throws IllegalConstructorParameterException {
+            if (defaultValue == null) {
+                throw new IllegalConstructorParameterException("defaultValue can not be null value.");
+            }
+        }
 
-    @Override
-    public Integer getValue() {
-        return value;
-    }
+        /**
+         * @throws IllegalConstructorParameterException When trying assign name or defaultValue as null or assigning
+         *                                              shortName a character not in the alphabet.
+         */
+        @Override
+        public DefaultIntArgument build() throws IllegalConstructorParameterException {
+            validateSuper();
+            validateThis();
+            return new DefaultIntArgument(this);
+        }
 
-    @Override
-    protected void setValue(final String value) throws MalformedInputException {
-        try {
-            this.value = Integer.valueOf(value);
-        } catch (NumberFormatException e) {
-            throw new MalformedInputException("[" + value + "] can't be parsed as an integer.");
+        @Override
+        protected Builder getThis() {
+            return this;
         }
     }
 }

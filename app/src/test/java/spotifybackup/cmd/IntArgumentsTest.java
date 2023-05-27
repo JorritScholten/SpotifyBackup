@@ -17,7 +17,11 @@ public class IntArgumentsTest {
         final Integer value = 34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument("extra", "", 'e'))
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -30,7 +34,11 @@ public class IntArgumentsTest {
         final Integer value = -34;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument("extra", "", 'e'))
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -40,10 +48,15 @@ public class IntArgumentsTest {
 
     @Test
     void testDefaultIntArgument1() {
-        final Integer value = 34, defaultValue = 12;
-        final String[] args = {"-e", value.toString()};
+        final int value = 34, defaultValue = 12;
+        final String[] args = {"-e", Integer.toString(value)};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new DefaultIntArgument("extra", "", 'e', defaultValue))
+                .argument(new DefaultIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(defaultValue)
+                        .build())
                 .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -54,10 +67,14 @@ public class IntArgumentsTest {
 
     @Test
     void testDefaultIntArgument2() {
-        final Integer value = -34;
-        final String[] args = {"--extra", value.toString()};
+        final int value = -34;
+        final String[] args = {"--extra", Integer.toString(value)};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new DefaultIntArgument("extra", "", value))
+                .argument(new DefaultIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .defaultValue(value)
+                        .build())
                 .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -85,8 +102,8 @@ public class IntArgumentsTest {
 
     @Test
     void testDefaultBoundedIntArgument1() {
-        final Integer value = 34, defaultValue = 12;
-        final String[] args = {"-e", value.toString()};
+        final int value = 34, defaultValue = 12;
+        final String[] args = {"-e", Integer.toString(value)};
         CmdParser argParser = new CmdParser.Builder()
                 .argument(new DefaultBoundedIntArgument.Builder()
                         .name("extra")
@@ -105,7 +122,7 @@ public class IntArgumentsTest {
 
     @Test
     void testDefaultBoundedIntArgument2() {
-        final Integer value = 34, defaultValue = 12, value2 = 5;
+        final int value = 34, defaultValue = 12, value2 = 5;
         final String[] args = {};
         CmdParser argParser = new CmdParser.Builder()
                 .arguments(new DefaultBoundedIntArgument.Builder()
@@ -174,7 +191,10 @@ public class IntArgumentsTest {
     @Test
     void testNullDefaultValueInt1() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultIntArgument("extra", "", null)
+                new DefaultIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .build()
         ).build());
     }
 
@@ -255,7 +275,11 @@ public class IntArgumentsTest {
     void testMalformedIntArgument1() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument("extra", "", 'e'))
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertThrows(MalformedInputException.class, () ->
@@ -270,7 +294,11 @@ public class IntArgumentsTest {
     void testMalformedIntArgument2() {
         final String[] args = {"-he", "21.2"};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument("extra", "", 'e'))
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertThrows(MalformedInputException.class, () ->
@@ -285,7 +313,11 @@ public class IntArgumentsTest {
     void testMalformedIntArgument3() {
         final String[] args = {"-he", "sdf"};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument("extra", "", 'e'))
+                .argument(new MandatoryIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
                 .addHelp()
                 .build();
         assertThrows(MalformedInputException.class, () ->
