@@ -20,7 +20,10 @@ database and automated backups to an online repository.
         - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command
           line without generating an exception
         - [ ] Clean up unit tests according to best practices
-        - [ ] Exchange public CmdParser constructor to using a builder pattern
+        - [ ] Exchange public CmdParser telescoping constructors to using a builder pattern as outlined in
+          [this article](
+          https://blogs.oracle.com/javamagazine/post/exploring-joshua-blochs-builder-design-pattern-in-java)
+        - [ ] Exchange various telescoping Arguments constructors to using builder patterns as with CmdParser
         - [x] Remove MessageUtils from codebase
         - [x] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character>
           argumentShortNames` for a `.stream()` call
