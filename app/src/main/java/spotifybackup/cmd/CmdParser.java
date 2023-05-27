@@ -14,93 +14,15 @@ import static java.util.function.Predicate.not;
 public class CmdParser {
     private final List<Argument> arguments;
     private final String description;
-    private final String epilog;
+    private final String epilogue;
     private final String programName;
     private boolean argumentsParsed = false;
 
-    /**
-     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
-     * parser.
-     * @param arguments Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
-     *                  null).
-     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
-     */
-    public CmdParser(final Argument[] arguments)
-            throws IllegalConstructorParameterException {
-        this(arguments, null, null, null, true);
-    }
-
-    /**
-     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
-     * parser.
-     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
-     *                    null).
-     * @param description Text to display before the argument help.
-     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
-     */
-    public CmdParser(final Argument[] arguments, String description)
-            throws IllegalConstructorParameterException {
-        this(arguments, description, null, null, true);
-    }
-
-    /**
-     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
-     * parser.
-     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
-     *                    null).
-     * @param description Text to display before the argument help.
-     * @param programName The name of the program.
-     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
-     */
-    public CmdParser(final Argument[] arguments, String description, String programName)
-            throws IllegalConstructorParameterException {
-        this(arguments, description, programName, null, true);
-    }
-
-    /**
-     * The CmdParser class makes it easy to write user-friendly command-line interfaces, adds a -h/--help option to the
-     * parser.
-     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
-     *                    null).
-     * @param description Text to display before the argument help.
-     * @param programName The name of the program.
-     * @param epilog      Text to display after the argument help.
-     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
-     */
-    public CmdParser(final Argument[] arguments, String description, String programName, String epilog)
-            throws IllegalConstructorParameterException {
-        this(arguments, description, programName, epilog, true);
-    }
-
-    /**
-     * The CmdParser class makes it easy to write user-friendly command-line interfaces.
-     * @param arguments   Array of arguments to be evaluated, name and shortName fields must be unique (shortName can be
-     *                    null).
-     * @param description Text to display before the argument help.
-     * @param programName The name of the program.
-     * @param epilog      Text to display after the argument help.
-     * @param addHelp     Add a -h/--help option to the parser.
-     * @throws IllegalConstructorParameterException when either an argument name or shortName is not unique.
-     */
-    public CmdParser(final Argument[] arguments, String description, String programName, String epilog, boolean addHelp)
-            throws IllegalConstructorParameterException {
-        this.arguments = new ArrayList<>();
-        if (addHelp) {
-            this.arguments.add(new FlagArgument("help", "Show this help message and exit.", 'h'));
-        }
-        this.arguments.addAll(List.of(arguments));
-        if (this.arguments.stream().map(a -> a.name).distinct().count() != this.arguments.size()) {
-            throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, " +
-                    "names should be unique.");
-        }
-        if (this.arguments.stream().filter(Argument::hasShortName).map(a -> a.shortName).distinct().count()
-                != this.arguments.stream().filter(Argument::hasShortName).count()) {
-            throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, " +
-                    "shortNames should be unique.");
-        }
-        this.description = description;
-        this.programName = programName;
-        this.epilog = epilog;
+    private CmdParser(Builder builder) throws IllegalConstructorParameterException {
+        this.arguments = builder.arguments;
+        this.epilogue = builder.epilogue;
+        this.programName = builder.programName;
+        this.description = builder.description;
     }
 
     /**
@@ -205,8 +127,8 @@ public class CmdParser {
             }
         }
 
-        if (epilog != null) {
-            helpText.append("\n").append(WordUtils.wrap(epilog, maxWidth)).append("\n");
+        if (epilogue != null) {
+            helpText.append("\n").append(WordUtils.wrap(epilogue, maxWidth)).append("\n");
         }
         return helpText.toString();
     }
@@ -348,6 +270,76 @@ public class CmdParser {
 
         ArgType(String regex) {
             this.regex = Pattern.compile(regex);
+        }
+    }
+
+    public static class Builder {
+        private final List<Argument> arguments;
+        private String description;
+        private String epilogue;
+        private String programName;
+
+        /** The CmdParser class makes it easy to write user-friendly command-line interfaces. */
+        public Builder() {
+            arguments = new ArrayList<>();
+        }
+
+        /**
+         * @param arguments Arguments to be evaluated, name and shortName fields must be unique (shortName can be
+         *                  null).
+         */
+        public Builder arguments(Argument... arguments) {
+            this.arguments.addAll(List.of(arguments));
+            return this;
+        }
+
+        /** @param argument Argument to be evaluated, name and shortName fields must be unique (shortName can be null). */
+        public Builder argument(Argument argument) {
+            this.arguments.add(argument);
+            return this;
+        }
+
+        /** @param description Text to display before the argument help. */
+        public Builder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        /** @param epilogue Text to display after the argument help. */
+        public Builder epilogue(String epilogue) {
+            this.epilogue = epilogue;
+            return this;
+        }
+
+        /** @param programName The name of the program. */
+        public Builder programName(String programName) {
+            this.programName = programName;
+            return this;
+        }
+
+        /** Add a -h/--help argument to the parser. */
+        public Builder addHelp() {
+            arguments.add(0, new FlagArgument("help", "Show this help message and exit.", 'h'));
+            return this;
+        }
+
+        /** @throws IllegalConstructorParameterException when either an argument name or shortName is not unique. */
+        public CmdParser build() throws IllegalConstructorParameterException {
+            validate();
+            return new CmdParser(this);
+        }
+
+        /** @throws IllegalConstructorParameterException when either an argument name or shortName is not unique. */
+        private void validate() throws IllegalConstructorParameterException {
+            if (this.arguments.stream().map(a -> a.name).distinct().count() != this.arguments.size()) {
+                throw new IllegalConstructorParameterException("Duplicated Argument name in constructor, " +
+                        "names should be unique.");
+            }
+            if (this.arguments.stream().filter(Argument::hasShortName).map(a -> a.shortName).distinct().count()
+                    != this.arguments.stream().filter(Argument::hasShortName).count()) {
+                throw new IllegalConstructorParameterException("Duplicated Argument shortName in constructor, " +
+                        "shortNames should be unique.");
+            }
         }
     }
 
