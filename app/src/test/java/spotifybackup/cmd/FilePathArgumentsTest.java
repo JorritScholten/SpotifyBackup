@@ -17,9 +17,10 @@ public class FilePathArgumentsTest {
         final String value = temp_dir.toString();
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryFilePathArgument("extra", "", true)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryFilePathArgument("extra", "", true))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
@@ -36,9 +37,10 @@ public class FilePathArgumentsTest {
             assert new File(value).exists();
 
             final String[] args = {"-h", "--extra", value};
-            CmdParser argParser = new CmdParser(new Argument[]{
-                    new MandatoryFilePathArgument("extra", "", false)
-            });
+            CmdParser argParser = new CmdParser.Builder()
+                    .argument(new MandatoryFilePathArgument("extra", "", false))
+                    .addHelp()
+                    .build();
             argParser.parseArguments(args);
             assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
         });
@@ -49,9 +51,9 @@ public class FilePathArgumentsTest {
         final String value = temp_dir.toString();
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryFilePathArgument("extra", "", 'e', false)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryFilePathArgument("extra", "", 'e', false))
+                .build();
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
@@ -65,9 +67,9 @@ public class FilePathArgumentsTest {
             assert new File(value).exists();
 
             final String[] args = {"-h", "--extra", value};
-            CmdParser argParser = new CmdParser(new Argument[]{
-                    new MandatoryFilePathArgument("extra", "", 'e', true)
-            });
+            CmdParser argParser = new CmdParser.Builder()
+                    .argument(new MandatoryFilePathArgument("extra", "", 'e', true))
+                    .build();
             assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
         });
     }
@@ -77,9 +79,9 @@ public class FilePathArgumentsTest {
         final String value = temp_dir.toString();
         assert new File(value).exists();
         final String[] args = {};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultFilePathArgument("extra", "", new File(value), true)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultFilePathArgument("extra", "", new File(value), true))
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
@@ -99,9 +101,9 @@ public class FilePathArgumentsTest {
             assert new File(value).exists();
 
             final String[] args = {"-e", value2};
-            CmdParser argParser = new CmdParser(new Argument[]{
-                    new DefaultFilePathArgument("extra", "", 'e', new File(value), false)
-            });
+            CmdParser argParser = new CmdParser.Builder()
+                    .argument(new DefaultFilePathArgument("extra", "", 'e', new File(value), false))
+                    .build();
             argParser.parseArguments(args);
             assertEquals(new File(value2).getAbsoluteFile(), argParser.getValue("extra"));
             assertNotEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
@@ -110,8 +112,8 @@ public class FilePathArgumentsTest {
 
     @Test
     void testNullDefaultValue() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new DefaultFilePathArgument("extra", "", null, true)
-        }));
+        ).build());
     }
 }

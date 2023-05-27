@@ -14,9 +14,10 @@ public class StringArgumentsTest {
     void testStringArgument1() {
         final String value = "test_value";
         final String[] args = {"-h", "--extra", value};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryStringArgument("extra", "")
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryStringArgument("extra", ""))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(value, argParser.getValue("extra"));
@@ -27,9 +28,10 @@ public class StringArgumentsTest {
     void testStringArgument2() {
         final String value = "test_value";
         final String[] args = {"-h", "-e", value};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryStringArgument("extra", "", 'e')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryStringArgument("extra", "", 'e'))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(value, argParser.getValue("extra"));
@@ -40,9 +42,10 @@ public class StringArgumentsTest {
     void testDefaultStringArgument1() {
         final String value = "test_value";
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultStringArgument("extra", "", value)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultStringArgument("extra", "", value))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(value, argParser.getValue("extra"));
@@ -53,9 +56,10 @@ public class StringArgumentsTest {
     void testDefaultStringArgument2() {
         final String value = "test_value", defaultValue = "other_value";
         final String[] args = {"-h", "-e", value};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultStringArgument("extra", "", 'e', defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultStringArgument("extra", "", 'e', defaultValue))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertNotEquals(defaultValue, argParser.getValue("extra"));
@@ -67,9 +71,10 @@ public class StringArgumentsTest {
     void testMissingStringArgument() {
         final String value = "test_value";
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryStringArgument("extra", "", 'e')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryStringArgument("extra", "", 'e'))
+                .addHelp()
+                .build();
         assertThrows(MissingArgumentException.class, () ->
                 argParser.parseArguments(args)
         );
@@ -80,19 +85,15 @@ public class StringArgumentsTest {
 
     @Test
     void testDefaultStringArgumentConstructor1() {
-        assertThrows(IllegalConstructorParameterException.class, () -> {
-            CmdParser argParser = new CmdParser(new Argument[]{
-                    new DefaultStringArgument("extra", "", null)
-            });
-        });
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultStringArgument("extra", "", null)
+        ).build());
     }
 
     @Test
     void testDefaultStringArgumentConstructor2() {
-        assertThrows(IllegalConstructorParameterException.class, () -> {
-            CmdParser argParser = new CmdParser(new Argument[]{
-                    new DefaultStringArgument(null, "", "string")
-            });
-        });
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultStringArgument(null, "", "string")
+        ).build());
     }
 }

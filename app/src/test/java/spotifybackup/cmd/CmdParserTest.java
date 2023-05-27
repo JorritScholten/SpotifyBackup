@@ -16,8 +16,7 @@ class CmdParserTest {
     @Test
     void testFlagByName() {
         final String[] args = {"--help"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-        });
+        CmdParser argParser = new CmdParser.Builder().addHelp().build();
         assertThrows(ArgumentsNotParsedException.class, () ->
                 argParser.getValue("help")
         );
@@ -34,9 +33,10 @@ class CmdParserTest {
     @Test
     void testFlagByShortName() {
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("extra", "", 'e')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new FlagArgument("extra", "", 'e'))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(Boolean.TRUE, argParser.getValue("help"));
@@ -47,9 +47,10 @@ class CmdParserTest {
     @Test
     void testNullArgs() {
         final String[] args = {};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("extra", "", 'e')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new FlagArgument("extra", "", 'e'))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(Boolean.FALSE, argParser.getValue("help"));
@@ -59,25 +60,24 @@ class CmdParserTest {
 
     @Test
     void testDuplicateArgumentNames() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().arguments(
                 new FlagArgument("flag", "flag argument.", 'f'),
                 new FlagArgument("help", "", 'e')
-        }));
+        ).addHelp().build());
     }
 
     @Test
     void testDuplicateArgumentShortNames() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().arguments(
                 new FlagArgument("flag", "flag argument.", 'f'),
                 new FlagArgument("extra", "", 'h')
-        }));
+        ).addHelp().build());
     }
 
     @Test
     void testFlagByMalformedName() {
         final String[] args = {"--hel"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-        });
+        CmdParser argParser = new CmdParser.Builder().addHelp().build();
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
@@ -88,38 +88,39 @@ class CmdParserTest {
 
     @Test
     void testNullArgumentName() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new FlagArgument(null, "flag argument", 'f')
-        }));
+        ).build());
     }
 
     @Test
     void testInvalidShortArgumentName1() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new FlagArgument("null", "flag argument", '3')
-        }));
+        ).build());
     }
 
     @Test
     void testInvalidShortArgumentName2() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new FlagArgument("null", "flag argument", '$')
-        }));
+        ).build());
     }
 
     @Test
     void testInvalidShortArgumentName3() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser(new Argument[]{
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new FlagArgument("null", "flag argument", ' ')
-        }));
+        ).build());
     }
 
     @Test
     void testMissingMandatoryArgument() {
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("extra", "", 'e')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryIntArgument("extra", "", 'e'))
+                .addHelp()
+                .build();
         assertThrows(MissingArgumentException.class, () ->
                 argParser.parseArguments(args)
         );
@@ -132,9 +133,10 @@ class CmdParserTest {
     void testMissingDefaultArgument() {
         int defaultValue = 23;
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'e', defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultIntArgument("extra", "", 'e', defaultValue))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
@@ -146,9 +148,10 @@ class CmdParserTest {
     void testFlaggedDefaultArgument1() {
         int defaultValue = 23;
         final String[] args = {"-hx"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultIntArgument("extra", "", 'x', defaultValue))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
@@ -160,9 +163,10 @@ class CmdParserTest {
     void testFlaggedDefaultArgument2() {
         int defaultValue = 23;
         final String[] args = {"-h", "--extra"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultIntArgument("extra", "", 'x', defaultValue))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
@@ -175,11 +179,12 @@ class CmdParserTest {
         Integer defaultValue1 = 23, defaultValue2 = 12;
         String defaultValue3 = "some_test_string";
         final String[] args = {"-h", "--extra", "--int", "-a", defaultValue3};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue1),
-                new DefaultIntArgument("int", "", 'i', defaultValue2),
-                new DefaultStringArgument("append", "", 'a', "other")
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new DefaultIntArgument("extra", "", 'x', defaultValue1),
+                        new DefaultIntArgument("int", "", 'i', defaultValue2),
+                        new DefaultStringArgument("append", "", 'a', "other"))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue1, argParser.getValue("extra"));
@@ -193,10 +198,11 @@ class CmdParserTest {
     void testMultipleFlaggedDefaultArguments1() {
         int defaultValue = 23;
         final String[] args = {"-hxi"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue),
-                new DefaultIntArgument("int", "", 'i', defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new DefaultIntArgument("extra", "", 'x', defaultValue),
+                        new DefaultIntArgument("int", "", 'i', defaultValue))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
@@ -210,11 +216,12 @@ class CmdParserTest {
     void testMultipleFlaggedDefaultArguments2() {
         Integer defaultValue1 = 23, defaultValue2 = 12, defaultValue3 = -98;
         final String[] args = {"-him", defaultValue3.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue1),
-                new DefaultIntArgument("int", "", 'i', defaultValue2),
-                new MandatoryIntArgument("mint", "", 'm')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new DefaultIntArgument("extra", "", 'x', defaultValue1),
+                        new DefaultIntArgument("int", "", 'i', defaultValue2),
+                        new MandatoryIntArgument("mint", "", 'm'))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue1, argParser.getValue("extra"));
@@ -230,11 +237,12 @@ class CmdParserTest {
     void testMultipleFlaggedDefaultArguments3() {
         Integer defaultValue1 = 23, defaultValue2 = 12;
         final String[] args = {"-hxim", defaultValue2.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new FlagArgument("extra", "", 'x'),
-                new DefaultIntArgument("int", "", 'i', defaultValue1),
-                new FlagArgument("mint", "", 'm')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new FlagArgument("extra", "", 'x'),
+                        new DefaultIntArgument("int", "", 'i', defaultValue1),
+                        new FlagArgument("mint", "", 'm'))
+                .addHelp()
+                .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
             assertEquals(defaultValue2, argParser.getValue("int"));
@@ -249,10 +257,11 @@ class CmdParserTest {
     void testMultipleFlaggedDefaultArguments4() {
         Integer defaultValue1 = 23, defaultValue2 = 12;
         final String[] args = {"-hxi", defaultValue2.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue1),
-                new DefaultIntArgument("int", "", 'i', defaultValue1)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new DefaultIntArgument("extra", "", 'x', defaultValue1),
+                        new DefaultIntArgument("int", "", 'i', defaultValue1))
+                .addHelp()
+                .build();
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
@@ -260,10 +269,11 @@ class CmdParserTest {
     void testMultipleMandatoryArguments1() {
         Integer defaultValue1 = 23;
         final String[] args = {"-hxi", defaultValue1.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("extra", "", 'x'),
-                new MandatoryIntArgument("int", "", 'i')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new MandatoryIntArgument("extra", "", 'x'),
+                        new MandatoryIntArgument("int", "", 'i'))
+                .addHelp()
+                .build();
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
@@ -271,10 +281,11 @@ class CmdParserTest {
     void testMalformedMultipleFlaggedDefaultArguments1() {
         int defaultValue = 23;
         final String[] args = {"-hxi"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new DefaultIntArgument("extra", "", 'x', defaultValue),
-                new DefaultIntArgument("int", "",/*'i',*/ defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new DefaultIntArgument("extra", "", 'x', defaultValue),
+                        new DefaultIntArgument("int", "",/*'i',*/ defaultValue))
+                .addHelp()
+                .build();
         assertThrows(MalformedInputException.class, () -> {
             argParser.parseArguments(args);
         });
@@ -283,11 +294,12 @@ class CmdParserTest {
     @Test
     void testMalformedArgumentMissingValue() {
         final String[] args = {"-he", "-28", "--string", "test", "-i"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("extra", "", 'e'),
-                new MandatoryStringArgument("string", ""),
-                new MandatoryBoundedIntArgument("int2", " ", 'i', 23)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new MandatoryIntArgument("extra", "", 'e'),
+                        new MandatoryStringArgument("string", ""),
+                        new MandatoryBoundedIntArgument("int2", " ", 'i', 23))
+                .addHelp()
+                .build();
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
@@ -299,10 +311,11 @@ class CmdParserTest {
     @Test
     void testMalformedArgumentMultipleShortValue1() {
         final String[] args = {"-hea", "-28"};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("extra", "", 'e'),
-                new MandatoryStringArgument("string", "", 'a')
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new MandatoryIntArgument("extra", "", 'e'),
+                        new MandatoryStringArgument("string", "", 'a'))
+                .addHelp()
+                .build();
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
@@ -315,11 +328,12 @@ class CmdParserTest {
     void testMalformedArgumentMultipleShortValue2() {
         Integer defaultValue = 1;
         final String[] args = {"-hea", defaultValue.toString()};
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("extra", "", 'e'),
-                new MandatoryIntArgument("string", "", 'a'),
-                new DefaultIntArgument("int", "", 'i', defaultValue)
-        });
+        CmdParser argParser = new CmdParser.Builder()
+                .arguments(new MandatoryIntArgument("extra", "", 'e'),
+                        new MandatoryIntArgument("string", "", 'a'),
+                        new DefaultIntArgument("int", "", 'i', defaultValue))
+                .addHelp()
+                .build();
         assertThrows(MalformedInputException.class, () ->
                 argParser.parseArguments(args)
         );
@@ -343,15 +357,16 @@ class CmdParserTest {
                 "  -s [STRING], --str [STRING]\n" +
                 "                    some sort of string, dunno, not gonna use it." +
                 "\n";
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("int", "some integer"),
-                new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur adipiscing " +
-                        "elit,", 'i', 23),
-                new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
-                        's', "string"),
-                new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, consectetur " +
-                        "adipiscing elit,", false)
-        });
+        CmdParser argParser = new CmdParser.Builder().arguments(
+                        new MandatoryIntArgument("int", "some integer"),
+                        new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur " +
+                                "adipiscing elit,", 'i', 23),
+                        new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
+                                's', "string"),
+                        new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, " +
+                                "consectetur adipiscing elit,", false))
+                .addHelp()
+                .build();
         assertEquals(expectedOutput, argParser.getHelp(80));
     }
 
@@ -373,18 +388,19 @@ class CmdParserTest {
                 "\n" +
                 "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" +
                 "\n";
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("int", "some integer"),
-                new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur adipiscing " +
-                        "elit, sed do eiusmod tempor incididunt ut", 'i', 23),
-                new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
-                        's', "string"),
-                new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, consectetur " +
-                        "adipiscing elit, sed do eiusmod tempor incididunt ut", false)
-        }, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
-                "testName.jar", "labore et dolore magna aliqua. Ut enim ad minim veniam, quis " +
-                "nostrud exercitation"
-        );
+        CmdParser argParser = new CmdParser.Builder().arguments(
+                        new MandatoryIntArgument("int", "some integer"),
+                        new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur " +
+                                "adipiscing elit, sed do eiusmod tempor incididunt ut", 'i', 23),
+                        new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
+                                's', "string"),
+                        new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, " +
+                                "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut", false))
+                .addHelp()
+                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
+                .programName("testName.jar")
+                .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
+                .build();
         assertEquals(expectedOutput, argParser.getHelp(125));
     }
 
@@ -415,18 +431,19 @@ class CmdParserTest {
                 "labore et dolore magna aliqua. Ut enim ad minim veniam, quis\n" +
                 "nostrud exercitation" +
                 "\n";
-        CmdParser argParser = new CmdParser(new Argument[]{
-                new MandatoryIntArgument("int", "some integer"),
-                new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur adipiscing " +
-                        "elit, sed do eiusmod tempor incididunt ut", 'i', 23),
-                new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
-                        's', "string"),
-                new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, consectetur " +
-                        "adipiscing elit, sed do eiusmod tempor incididunt ut", false)
-        }, "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut",
-                "testName.jar", "labore et dolore magna aliqua. Ut enim ad minim veniam, quis " +
-                "nostrud exercitation"
-        );
+        CmdParser argParser = new CmdParser.Builder().arguments(
+                        new MandatoryIntArgument("int", "some integer"),
+                        new DefaultIntArgument("int2", "Lorem ipsum dolor sit amet, consectetur " +
+                                "adipiscing elit, sed do eiusmod tempor incididunt ut", 'i', 23),
+                        new DefaultStringArgument("str", "some sort of string, dunno, not gonna use it.",
+                                's', "string"),
+                        new MandatoryFilePathArgument("txt", "Lorem ipsum dolor sit amet, " +
+                                "consectetur adipiscing elit, sed do eiusmod tempor incididunt ut", false))
+                .addHelp()
+                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
+                .programName("testName.jar")
+                .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
+                .build();
         assertEquals(expectedOutput, argParser.getHelp(60));
     }
 }
