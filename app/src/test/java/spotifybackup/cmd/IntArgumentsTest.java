@@ -88,7 +88,13 @@ public class IntArgumentsTest {
         final Integer value = 34, defaultValue = 12;
         final String[] args = {"-e", value.toString()};
         CmdParser argParser = new CmdParser.Builder()
-                .argument(new DefaultBoundedIntArgument("extra", "", 'e', defaultValue, 1))
+                .argument(new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(defaultValue)
+                        .minimum(1)
+                        .build())
                 .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -102,8 +108,21 @@ public class IntArgumentsTest {
         final Integer value = 34, defaultValue = 12, value2 = 5;
         final String[] args = {};
         CmdParser argParser = new CmdParser.Builder()
-                .arguments(new DefaultBoundedIntArgument("extra", "", 'e', defaultValue, 1),
-                        new DefaultBoundedIntArgument("int", "", 'i', value2, 1, 10))
+                .arguments(new DefaultBoundedIntArgument.Builder()
+                                .name("extra")
+                                .description("")
+                                .shortName('e')
+                                .defaultValue(defaultValue)
+                                .minimum(1)
+                                .build(),
+                        new DefaultBoundedIntArgument.Builder()
+                                .name("int")
+                                .description("")
+                                .shortName('i')
+                                .defaultValue(value2)
+                                .minimum(1)
+                                .maximum(20)
+                                .build())
                 .build();
         assertDoesNotThrow(() -> {
             argParser.parseArguments(args);
@@ -162,44 +181,73 @@ public class IntArgumentsTest {
     @Test
     void testNullDefaultValueInt2() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument("extra", "", null, 20)
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .minimum(20)
+                        .build()
         ).build());
     }
 
     @Test
     void testNullDefaultValueInt3() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument("extra", "", 20, null)
-        ).build());
-    }
-
-    @Test
-    void testNullDefaultValueInt4() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument("extra", "", 20, 1, null)
-        ).build());
-    }
-
-    @Test
-    void testNullDefaultValueInt5() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument("extra", "", 'e', 20, 1, null)
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .defaultValue(20)
+                        .build()
         ).build());
     }
 
     @Test
     void testRangeCheckDefaultBoundedIntConstructor1() {
-        final Integer value = -5;
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument("extra", "", value, 20)
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .defaultValue(-5)
+                        .minimum(20)
+                        .build()
         ).build());
     }
 
     @Test
     void testRangeCheckDefaultBoundedIntConstructor2() {
-        final Integer value = 25;
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument("extra", "", value, 20, 23)
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .minimum(20)
+                        .defaultValue(25)
+                        .maximum(23)
+                        .build()
+        ).build());
+    }
+
+    @Test
+    void testRangeCheckDefaultBoundedIntConstructor3() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .minimum(20)
+                        .defaultValue(23)
+                        .maximum(20)
+                        .build()
+        ).build());
+    }
+
+    @Test
+    void testRangeCheckDefaultBoundedIntConstructor4() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .minimum(20)
+                        .defaultValue(23)
+                        .maximum(19)
+                        .build()
         ).build());
     }
 
