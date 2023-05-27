@@ -131,12 +131,12 @@ abstract public class Argument {
             return getThis();
         }
 
-        public abstract Argument build();
-
-        protected abstract T getThis();
-
         /** @throws IllegalConstructorParameterException when child is built wrong. */
         protected abstract void validateThis() throws IllegalConstructorParameterException;
+
+        public abstract Argument build() throws IllegalConstructorParameterException;
+
+        protected abstract T getThis();
 
         /**
          * @throws IllegalConstructorParameterException when shortname isn't in the alphabet, description or name is
