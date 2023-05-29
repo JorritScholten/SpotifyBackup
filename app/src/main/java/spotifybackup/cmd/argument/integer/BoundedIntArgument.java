@@ -4,11 +4,11 @@ import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
-abstract public class BoundedIntArgument extends Argument {
+abstract class BoundedIntArgument extends Argument {
     final Integer min, max;
     Integer value;
 
-    protected BoundedIntArgument(Builder<?> builder) {
+    BoundedIntArgument(Builder<?> builder) {
         super(builder);
         this.min = builder.min;
         this.max = builder.max;

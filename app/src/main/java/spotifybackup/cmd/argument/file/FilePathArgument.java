@@ -6,7 +6,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
 
-class FilePathArgument extends Argument {
+abstract class FilePathArgument extends Argument {
     final boolean isFolder;
     File value;
 

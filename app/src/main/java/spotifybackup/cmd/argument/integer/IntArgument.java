@@ -6,7 +6,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 abstract class IntArgument extends Argument {
     int value;
 
-    protected IntArgument(Builder<?> builder) {
+    IntArgument(Builder<?> builder) {
         super(builder);
     }
 

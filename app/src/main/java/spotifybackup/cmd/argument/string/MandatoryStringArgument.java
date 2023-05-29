@@ -5,7 +5,7 @@ import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 /** Mandatory String argument, program won't execute if missing. */
 public class MandatoryStringArgument extends StringArgument {
     /** Mandatory String argument, program won't execute if missing. */
-    public MandatoryStringArgument(Builder builder)
+    private MandatoryStringArgument(Builder builder)
             throws IllegalConstructorParameterException {
         super(builder);
     }

@@ -693,10 +693,30 @@ class CmdParserTest {
     }
 
     @Test
+    void testEnsureAllArgumentConstructorAccessIsCorrect() {
+        var argImplementations = scanResult.getSubclasses(Argument.class);
+        for (var argument : argImplementations) {
+            var declaredConstructorInfo = argument.getDeclaredConstructorInfo();
+            if (declaredConstructorInfo.size() != 1) {
+                throw new RuntimeException("Argument declaration should have only one constructor, " +
+                        "parameters are to be handled using builder: " + argument.getName());
+            }
+            var constructor = declaredConstructorInfo.get(0);
+            if (argument.isAbstract() && (constructor.isPrivate() || constructor.isPublic())) {
+                throw new RuntimeException("Abstract argument should have a protected or package-private " +
+                        "constructor: " + argument.getName());
+            } else if (!argument.isAbstract() && !constructor.isPrivate()) {
+                throw new RuntimeException("Implemented argument should have a private constructor: " +
+                        argument.getName());
+            }
+        }
+    }
+
+    @Test
     void testArgumentBuilderChildrenImplementations() {
-        var argBuilderImplementations = scanResult.getSubclasses("spotifybackup.cmd.Argument$Builder");
+        var argBuilderImplementations = scanResult.getSubclasses(Argument.Builder.class);
         if (argBuilderImplementations.isEmpty()) {
-            throw new TestInstantiationException("Cannot find any subclasses for: spotifybackup.cmd.Argument$Builder");
+            throw new TestInstantiationException("Cannot find any subclasses for: " + Argument.Builder.class.getName());
         }
         for (var impl : argBuilderImplementations) {
             if (!impl.getDeclaredFieldInfo().isEmpty()) {

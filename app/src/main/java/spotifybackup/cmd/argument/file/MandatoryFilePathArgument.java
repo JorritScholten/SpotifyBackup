@@ -11,7 +11,7 @@ public class MandatoryFilePathArgument extends FilePathArgument {
      * Mandatory file path argument, program won't execute if missing. Argument throws exception at runtime if supplied
      * value does not adhere to isFolder rule.
      */
-    public MandatoryFilePathArgument(Builder builder) {
+    private MandatoryFilePathArgument(Builder builder) {
         super(builder);
     }
 

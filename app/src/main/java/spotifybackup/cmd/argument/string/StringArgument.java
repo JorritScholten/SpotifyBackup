@@ -3,10 +3,10 @@ package spotifybackup.cmd.argument.string;
 import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.MalformedInputException;
 
-public class StringArgument extends Argument {
+abstract class StringArgument extends Argument {
     String value;
 
-    protected StringArgument(Builder<?> builder) {
+    StringArgument(Builder<?> builder) {
         super(builder);
     }
 

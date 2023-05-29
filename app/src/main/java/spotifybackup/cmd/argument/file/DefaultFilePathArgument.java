@@ -14,7 +14,7 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
      * File path argument with default value, has flag-like behaviour because it can be called without a value. Argument
      * throws exception at runtime if supplied value does not adhere to isFolder rule.
      */
-    public DefaultFilePathArgument(Builder builder) {
+    private DefaultFilePathArgument(Builder builder) {
         super(builder);
         super.value = builder.defaultValue;
     }

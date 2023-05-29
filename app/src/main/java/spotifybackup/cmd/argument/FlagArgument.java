@@ -6,7 +6,7 @@ import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 /** A flag argument has no inherent value, rather it either is or isn't present in the input. */
 public class FlagArgument extends Argument {
     /** A flag argument has no inherent value, rather it either is or isn't present in the input. */
-    public FlagArgument(Builder builder) {
+    private FlagArgument(Builder builder) {
         super(builder);
     }
 
