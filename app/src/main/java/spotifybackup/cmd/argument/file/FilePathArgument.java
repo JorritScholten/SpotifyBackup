@@ -51,7 +51,7 @@ abstract class FilePathArgument extends Argument {
     }
 
     abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
-        Boolean isFolder;
+        private Boolean isFolder;
 
         Builder(boolean isMandatory) {
             super(isMandatory, true);

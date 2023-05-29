@@ -748,6 +748,12 @@ class CmdParserTest {
         }
         for (var impl : argBuilderImplementations) {
             if (!impl.getDeclaredFieldInfo().isEmpty()) {
+                for (var field : impl.getDeclaredFieldInfo()) {
+                    if (!field.isPrivate()) {
+                        throw new RuntimeException("All Builder fields should be private: "
+                                + impl.getName() + ":" + field.getName());
+                    }
+                }
                 var method = impl.getDeclaredMethodInfo().getSingleMethod("validate");
                 if (method == null) {
                     throw new RuntimeException("Missing validate() method in builder that has fields, location: "

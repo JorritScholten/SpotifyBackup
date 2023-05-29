@@ -22,9 +22,6 @@ public class MandatoryFilePathArgument extends FilePathArgument {
 
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
-            if (getIsFolder() == null) {
-                throw new IllegalConstructorParameterException("Must specify whether value is file or directory.");
-            }
         }
 
         @Override

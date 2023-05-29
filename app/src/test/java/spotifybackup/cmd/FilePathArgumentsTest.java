@@ -93,13 +93,40 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMalformedFilePathArgument3() {
+    void testMissingBuilderParameter1() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
-                .argument(new MandatoryFilePathArgument.Builder()
-                        .name("extra")
-                        .description("")
-                        .build()
-                )
+                        .argument(new MandatoryFilePathArgument.Builder()
+                                        .name("extra")
+                                        .description("")
+//                        .isDirectory()
+                                        .build()
+                        )
+        );
+    }
+
+    @Test
+    void testMissingBuilderParameter2(@TempDir File temp_dir) {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
+                        .argument(new DefaultFilePathArgument.Builder()
+                                        .name("extra")
+                                        .description("")
+//                        .isDirectory()
+                                        .defaultValue(temp_dir)
+                                        .build()
+                        )
+        );
+    }
+
+    @Test
+    void testMissingBuilderParameter3(@TempDir File temp_dir) {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
+                        .argument(new DefaultFilePathArgument.Builder()
+                                        .name("extra")
+                                        .description("")
+                                        .isDirectory()
+//                        .defaultValue(temp_dir)
+                                        .build()
+                        )
         );
     }
 
