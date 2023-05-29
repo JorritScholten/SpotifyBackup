@@ -124,8 +124,8 @@ public class IntArgumentsTest {
     void testDefaultBoundedIntArgument2() {
         final int value = 34, defaultValue = 12, value2 = 5;
         final String[] args = {};
-        CmdParser argParser = new CmdParser.Builder()
-                .arguments(new DefaultBoundedIntArgument.Builder()
+        CmdParser argParser = new CmdParser.Builder().arguments(
+                        new DefaultBoundedIntArgument.Builder()
                                 .name("extra")
                                 .description("")
                                 .shortName('e')

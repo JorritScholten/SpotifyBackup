@@ -146,6 +146,9 @@ abstract public class Argument {
             if (name == null) {
                 throw new IllegalConstructorParameterException("Argument name can not be null value.");
             }
+            if (name.length() == 0) {
+                throw new IllegalConstructorParameterException("Argument name can not be empty string.");
+            }
             if (description == null) {
                 throw new IllegalConstructorParameterException("Argument description can not be null value.");
             }

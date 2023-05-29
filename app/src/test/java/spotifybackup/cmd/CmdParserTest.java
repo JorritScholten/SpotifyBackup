@@ -154,6 +154,17 @@ class CmdParserTest {
     }
 
     @Test
+    void testInvalidShortArgumentName4() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new FlagArgument.Builder()
+                        .name("")
+                        .description("flag argument.")
+                        .shortName('s')
+                        .build()
+        ).build());
+    }
+
+    @Test
     void testMissingMandatoryArgument() {
         final String[] args = {"-h"};
         CmdParser argParser = new CmdParser.Builder()
