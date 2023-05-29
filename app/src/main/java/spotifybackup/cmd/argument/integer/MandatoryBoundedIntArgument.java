@@ -26,8 +26,7 @@ public class MandatoryBoundedIntArgument extends BoundedIntArgument {
          */
         @Override
         public MandatoryBoundedIntArgument build() throws IllegalConstructorParameterException {
-            validateSuper();
-            validateThis();
+            validate();
             return new MandatoryBoundedIntArgument(this);
         }
 

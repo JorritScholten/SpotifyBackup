@@ -33,8 +33,8 @@ public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
             return this;
         }
 
-        @Override
-        protected void validateThis() throws IllegalConstructorParameterException {
+        protected void validate() throws IllegalConstructorParameterException {
+            super.validate();
             if (defaultValue == null) {
                 throw new IllegalConstructorParameterException("defaultValue can not be null value.");
             }
@@ -46,8 +46,7 @@ public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
          */
         @Override
         public DefaultIntArgument build() throws IllegalConstructorParameterException {
-            validateSuper();
-            validateThis();
+            validate();
             return new DefaultIntArgument(this);
         }
 

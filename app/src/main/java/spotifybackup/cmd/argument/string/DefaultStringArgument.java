@@ -29,8 +29,8 @@ public class DefaultStringArgument extends StringArgument implements HasDefaultV
             return this;
         }
 
-        @Override
-        protected void validateThis() throws IllegalConstructorParameterException {
+        protected void validate() throws IllegalConstructorParameterException {
+            super.validate();
             if (defaultValue == null) {
                 throw new IllegalConstructorParameterException("defaultValue can not be null value.");
             }
@@ -42,8 +42,7 @@ public class DefaultStringArgument extends StringArgument implements HasDefaultV
          */
         @Override
         public DefaultStringArgument build() throws IllegalConstructorParameterException {
-            validateSuper();
-            validateThis();
+            validate();
             return new DefaultStringArgument(this);
         }
 

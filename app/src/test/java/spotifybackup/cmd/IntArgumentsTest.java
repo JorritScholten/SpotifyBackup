@@ -192,32 +192,132 @@ public class IntArgumentsTest {
     void testNullDefaultValueInt1() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new DefaultIntArgument.Builder()
-                        .name("extra")
+//                        .name("extra")
                         .description("")
+                        .shortName('e')
+                        .defaultValue(20)
                         .build()
-        ).build());
+        ));
     }
 
     @Test
     void testNullDefaultValueInt2() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultBoundedIntArgument.Builder()
+                new DefaultIntArgument.Builder()
                         .name("extra")
-                        .description("")
-                        .minimum(20)
+//                        .description("")
+                        .shortName('e')
+                        .defaultValue(20)
                         .build()
-        ).build());
+        ));
     }
 
     @Test
     void testNullDefaultValueInt3() {
+        assertDoesNotThrow(() -> new CmdParser.Builder().argument(
+                new DefaultIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+//                        .shortName('e')
+                        .defaultValue(20)
+                        .build()
+        ));
+    }
+
+    @Test
+    void testNullDefaultValueInt4() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+//                        .defaultValue(20)
+                        .build()
+        ));
+    }
+
+    @Test
+    void testNullDefaultBoundedIntValue1() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+//                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(20)
+                        .minimum(0)
+                        .maximum(100)
+                        .build()
+        ));
+    }
+
+    @Test
+    void testNullDefaultBoundedIntValue2() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+//                        .description("")
+                        .shortName('e')
+                        .defaultValue(20)
+                        .minimum(0)
+                        .maximum(100)
+                        .build()
+        ));
+    }
+
+    @Test
+    void testNullDefaultBoundedIntValue3() {
+        assertDoesNotThrow(() -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+//                        .shortName('e')
+                        .defaultValue(20)
+                        .minimum(0)
+                        .maximum(100)
+                        .build()
+        ));
+    }
+
+    @Test
+    void testNullDefaultBoundedIntValue4() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
                 new DefaultBoundedIntArgument.Builder()
                         .name("extra")
                         .description("")
-                        .defaultValue(20)
+                        .shortName('e')
+//                        .defaultValue(20)
+                        .minimum(0)
+                        .maximum(100)
                         .build()
-        ).build());
+        ));
+    }
+
+    @Test
+    void testNullDefaultBoundedIntValue5() {
+        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(20)
+//                        .minimum(0)
+                        .maximum(100)
+                        .build()
+        ));
+    }
+
+    @Test
+    void testNullDefaultBoundedIntValue6() {
+        assertDoesNotThrow(() -> new CmdParser.Builder().argument(
+                new DefaultBoundedIntArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(20)
+                        .minimum(0)
+//                        .maximum(100)
+                        .build()
+        ));
     }
 
     @Test

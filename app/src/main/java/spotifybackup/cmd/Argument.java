@@ -131,9 +131,6 @@ abstract public class Argument {
             return getThis();
         }
 
-        /** @throws IllegalConstructorParameterException when child is built wrong. */
-        protected abstract void validateThis() throws IllegalConstructorParameterException;
-
         public abstract Argument build() throws IllegalConstructorParameterException;
 
         protected abstract T getThis();
@@ -142,7 +139,7 @@ abstract public class Argument {
          * @throws IllegalConstructorParameterException when shortname isn't in the alphabet, description or name is
          *                                              null.
          */
-        protected void validateSuper() throws IllegalConstructorParameterException {
+        protected void validate() throws IllegalConstructorParameterException {
             if (name == null) {
                 throw new IllegalConstructorParameterException("Argument name can not be null value.");
             }

@@ -77,8 +77,8 @@ abstract public class BoundedIntArgument extends Argument {
             return min;
         }
 
-        @Override
-        protected void validateThis() throws IllegalConstructorParameterException {
+        protected void validate() throws IllegalConstructorParameterException {
+            super.validate();
             if (min == null) {
                 throw new IllegalConstructorParameterException("minimum can not be null value.");
             }

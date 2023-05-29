@@ -1,6 +1,7 @@
 package spotifybackup.cmd.argument.file;
 
 import spotifybackup.cmd.Argument;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
@@ -72,6 +73,13 @@ class FilePathArgument extends Argument {
         public T isFile() {
             isFolder = false;
             return getThis();
+        }
+
+        protected void validate() throws IllegalConstructorParameterException {
+            super.validate();
+            if (isFolder == null) {
+                throw new IllegalConstructorParameterException("Must specify whether value is file or directory.");
+            }
         }
 
         Boolean getIsFolder() {

@@ -1,6 +1,10 @@
 package spotifybackup.cmd;
 
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.TestInstantiationException;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
@@ -13,6 +17,18 @@ import spotifybackup.cmd.exception.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CmdParserTest {
+    private static ScanResult scanResult;
+
+    @BeforeAll
+    static void bypassEncapsulationAndScanCmdPackage() {
+        ClassGraph.CIRCUMVENT_ENCAPSULATION = ClassGraph.CircumventEncapsulationMethod.JVM_DRIVER;
+        scanResult = new ClassGraph()
+//                .verbose()
+                .enableAllInfo()
+                .acceptPackages("spotifybackup.cmd")
+                .scan();
+    }
+
     @Test
     void testFlagByName() {
         final String[] args = {"--help"};
@@ -523,19 +539,20 @@ class CmdParserTest {
 
     @Test
     void testGetHelp1() {
-        final String expectedOutput = "Usage: --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]\n" +
-                "\n" +
-                "Mandatory arguments:\n" +
-                "  --int INTEGER     some integer\n" +
-                "  --txt FILEPATH    Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
-                "\n" +
-                "Optional arguments:\n" +
-                "  -h, --help        Show this help message and exit.\n" +
-                "  -i [INTEGER], --int2 [INTEGER]\n" +
-                "                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,\n" +
-                "  -s [STRING], --str [STRING]\n" +
-                "                    some sort of string, dunno, not gonna use it." +
-                "\n";
+        final String expectedOutput = """
+                Usage: --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]
+
+                Mandatory arguments:
+                  --int INTEGER     some integer
+                  --txt FILEPATH    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+
+                Optional arguments:
+                  -h, --help        Show this help message and exit.
+                  -i [INTEGER], --int2 [INTEGER]
+                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                  -s [STRING], --str [STRING]
+                                    some sort of string, dunno, not gonna use it.
+                """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
                                 .name("int")
@@ -565,22 +582,23 @@ class CmdParserTest {
 
     @Test
     void testGetHelp2() {
-        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]\n" +
-                "\n" +
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
-                "\n" +
-                "Mandatory arguments:\n" +
-                "  --int INTEGER                some integer\n" +
-                "  --txt FILEPATH               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
-                "\n" +
-                "Optional arguments:\n" +
-                "  -h, --help                   Show this help message and exit.\n" +
-                "  -i [INTEGER], --int2 [INTEGER]\n" +
-                "                               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut\n" +
-                "  -s [STRING], --str [STRING]  some sort of string, dunno, not gonna use it.\n" +
-                "\n" +
-                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation" +
-                "\n";
+        final String expectedOutput = """
+                Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]
+
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+
+                Mandatory arguments:
+                  --int INTEGER                some integer
+                  --txt FILEPATH               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+
+                Optional arguments:
+                  -h, --help                   Show this help message and exit.
+                  -i [INTEGER], --int2 [INTEGER]
+                                               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                  -s [STRING], --str [STRING]  some sort of string, dunno, not gonna use it.
+
+                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
                                 .name("int")
@@ -615,32 +633,33 @@ class CmdParserTest {
 
     @Test
     void testGetHelp3() {
-        final String expectedOutput = "Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i\n" +
-                "[INTEGER]] [-s [STRING]]\n" +
-                "\n" +
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed\n" +
-                "do eiusmod tempor incididunt ut\n" +
-                "\n" +
-                "Mandatory arguments:\n" +
-                "  --int INTEGER\n" +
-                "               some integer\n" +
-                "  --txt FILEPATH\n" +
-                "               Lorem ipsum dolor sit amet, consectetur\n" +
-                "               adipiscing elit, sed do eiusmod tempor\n" +
-                "               incididunt ut\n" +
-                "\n" +
-                "Optional arguments:\n" +
-                "  -h, --help   Show this help message and exit.\n" +
-                "  -i [INTEGER], --int2 [INTEGER]\n" +
-                "               Lorem ipsum dolor sit amet, consectetur\n" +
-                "               adipiscing elit, sed do eiusmod tempor\n" +
-                "               incididunt ut\n" +
-                "  -s [STRING], --str [STRING]\n" +
-                "               some sort of string, dunno, not gonna use it.\n" +
-                "\n" +
-                "labore et dolore magna aliqua. Ut enim ad minim veniam, quis\n" +
-                "nostrud exercitation" +
-                "\n";
+        final String expectedOutput = """
+                Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i
+                [INTEGER]] [-s [STRING]]
+
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                do eiusmod tempor incididunt ut
+
+                Mandatory arguments:
+                  --int INTEGER
+                               some integer
+                  --txt FILEPATH
+                               Lorem ipsum dolor sit amet, consectetur
+                               adipiscing elit, sed do eiusmod tempor
+                               incididunt ut
+
+                Optional arguments:
+                  -h, --help   Show this help message and exit.
+                  -i [INTEGER], --int2 [INTEGER]
+                               Lorem ipsum dolor sit amet, consectetur
+                               adipiscing elit, sed do eiusmod tempor
+                               incididunt ut
+                  -s [STRING], --str [STRING]
+                               some sort of string, dunno, not gonna use it.
+
+                labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                nostrud exercitation
+                """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
                                 .name("int")
@@ -671,5 +690,28 @@ class CmdParserTest {
                 .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
                 .build();
         assertEquals(expectedOutput, argParser.getHelp(60));
+    }
+
+    @Test
+    void testArgumentBuilderChildrenImplementations() {
+        var argBuilderImplementations = scanResult.getSubclasses("spotifybackup.cmd.Argument$Builder");
+        if (argBuilderImplementations.isEmpty()) {
+            throw new TestInstantiationException("Cannot find any subclasses for: spotifybackup.cmd.Argument$Builder");
+        }
+        for (var impl : argBuilderImplementations) {
+            if (!impl.getDeclaredFieldInfo().isEmpty()) {
+                var method = impl.getDeclaredMethodInfo().getSingleMethod("validate");
+                if (method == null) {
+                    throw new RuntimeException("Missing validate() method in builder that has fields, location: "
+                            + impl.getName());
+                }
+                if (method.getTypeSignature() != null) {
+                    throw new RuntimeException("validate() in " + impl.getName() + " should always return void.");
+                }
+                if (!method.isProtected()) {
+                    throw new RuntimeException("validate() in " + impl.getName() + " should be protected.");
+                }
+            }
+        }
     }
 }

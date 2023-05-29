@@ -37,11 +37,8 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
             return this;
         }
 
-        @Override
-        protected void validateThis() throws IllegalConstructorParameterException {
-            if (getIsFolder() == null) {
-                throw new IllegalConstructorParameterException("Must specify whether value is file or directory.");
-            }
+        protected void validate() throws IllegalConstructorParameterException {
+            super.validate();
             if (defaultValue == null) {
                 throw new IllegalConstructorParameterException("defaultValue can not be null value.");
             }
@@ -58,8 +55,7 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
          */
         @Override
         public DefaultFilePathArgument build() throws IllegalConstructorParameterException {
-            validateSuper();
-            validateThis();
+            validate();
             return new DefaultFilePathArgument(this);
         }
 
