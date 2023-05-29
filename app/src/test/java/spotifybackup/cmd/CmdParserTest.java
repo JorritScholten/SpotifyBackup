@@ -694,8 +694,7 @@ class CmdParserTest {
 
     @Test
     void testEnsureAllArgumentConstructorAccessIsCorrect() {
-        var argImplementations = scanResult.getSubclasses(Argument.class);
-        for (var argument : argImplementations) {
+        for (var argument : scanResult.getSubclasses(Argument.class)) {
             var declaredConstructorInfo = argument.getDeclaredConstructorInfo();
             if (declaredConstructorInfo.size() != 1) {
                 throw new RuntimeException("Argument declaration should have only one constructor, " +
@@ -703,11 +702,40 @@ class CmdParserTest {
             }
             var constructor = declaredConstructorInfo.get(0);
             if (argument.isAbstract() && (constructor.isPrivate() || constructor.isPublic())) {
-                throw new RuntimeException("Abstract argument should have a protected or package-private " +
+                throw new RuntimeException("Abstract Argument should have a protected or package-private " +
                         "constructor: " + argument.getName());
             } else if (!argument.isAbstract() && !constructor.isPrivate()) {
-                throw new RuntimeException("Implemented argument should have a private constructor: " +
+                throw new RuntimeException("Implemented Argument should have a private constructor: " +
                         argument.getName());
+            }
+        }
+    }
+
+    @Test
+    void testEnsureArgumentBuilderAccessIsCorrect() {
+        for (var argument : scanResult.getSubclasses(Argument.class)) {
+            var optionallyBuilder = argument
+                    .getInnerClasses()
+                    .filter(classInfo -> classInfo.getSimpleName().equals("Builder"));
+            if (optionallyBuilder.size() != 1) {
+                throw new RuntimeException("Each Argument class should have an implemented builder class: " +
+                        argument.getName());
+            }
+            var builder = optionallyBuilder.get(0);
+            if (argument.isAbstract()) {
+                if (!builder.isAbstract()) {
+                    throw new RuntimeException("Abstract Argument should contain an abstract Builder: " +
+                            argument.getName());
+                }
+            } else {
+                if (builder.isAbstract()) {
+                    throw new RuntimeException("Implemented Argument should contain a non-abstract Builder: " +
+                            argument.getName());
+                }
+                if (!builder.isPublic()) {
+                    throw new RuntimeException("Implemented Argument should have a public Builder: " +
+                            argument.getName());
+                }
             }
         }
     }
