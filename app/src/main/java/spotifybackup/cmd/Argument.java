@@ -1,6 +1,7 @@
 package spotifybackup.cmd;
 
 import org.apache.commons.text.WordUtils;
+import spotifybackup.cmd.exception.IllegalArgumentNameException;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
@@ -141,10 +142,10 @@ abstract public class Argument {
          */
         protected void validate() throws IllegalConstructorParameterException {
             if (name == null) {
-                throw new IllegalConstructorParameterException("Argument name can not be null value.");
+                throw new IllegalArgumentNameException("Argument name can not be null value.");
             }
             if (name.length() == 0) {
-                throw new IllegalConstructorParameterException("Argument name can not be empty string.");
+                throw new IllegalArgumentNameException("Argument name can not be empty string.");
             }
             if (description == null) {
                 throw new IllegalConstructorParameterException("Argument description can not be null value.");
