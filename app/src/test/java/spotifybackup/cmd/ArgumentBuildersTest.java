@@ -2,15 +2,18 @@ package spotifybackup.cmd;
 
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
+import io.github.classgraph.ClassInfoList;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.TestInstantiationException;
 import spotifybackup.cmd.exception.IllegalArgumentNameException;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ArgumentBuildersTest {
     static private ScanResult scanResult;
+    static private ClassInfoList abstractBuilders, implementedBuilders;
 
     @BeforeAll
     static void bypassEncapsulationAndScanCmdPackage() {
@@ -20,26 +23,26 @@ public class ArgumentBuildersTest {
                 .enableAllInfo()
                 .acceptPackages("spotifybackup.cmd")
                 .scan();
+        var subclasses = scanResult.getSubclasses(Argument.Builder.class);
+        if (subclasses.isEmpty()) {
+            throw new TestInstantiationException("Cannot find any subclasses for: " + Argument.Builder.class.getName());
+        }
+        abstractBuilders = subclasses.filter(ClassInfo::isAbstract);
+        implementedBuilders = subclasses.exclude(abstractBuilders);
     }
 
     /**
      * This test ensures that super.validate() is called all along the inheritance chain by triggering an exception in
-     * Argument$Builder.validate() givenMalformedName_whenBuildingArguments_thenThrowException
+     * Argument$Builder.validate(). This test was implemented to ease future development.
+     * givenMalformedName_whenBuildingArguments_thenThrowException
      */
     @Test
     void ensureEachArgumentImplementationChainsValidateCorrectly() {
-        var arguments = scanResult
-                .getSubclasses(Argument.Builder.class)
-                .exclude(scanResult
-                        .getSubclasses(Argument.Builder.class)
-                        .filter(ClassInfo::isAbstract)
-                )
-                .loadClasses();
-        for (var argument : arguments) {
+        for (var argumentBuilder : implementedBuilders.loadClasses()) {
             assertThrows(IllegalArgumentNameException.class, () -> {
-                Argument.Builder<?> test = (Argument.Builder<?>) argument.getConstructors()[0].newInstance();
+                Argument.Builder<?> test = (Argument.Builder<?>) argumentBuilder.getConstructors()[0].newInstance();
                 test.name("").build();
-            }, argument.getName() + " does not properly call super.validate().");
+            }, argumentBuilder.getName() + " does not properly call super.validate().");
         }
     }
 }
