@@ -692,8 +692,12 @@ class CmdParserTest {
         assertEquals(expectedOutput, argParser.getHelp(60));
     }
 
+    /**
+     * This test ensures that each Argument child has its constructor access set correctly. This test was implemented to
+     * ease future development.
+     */
     @Test
-    void testEnsureAllArgumentConstructorAccessIsCorrect() {
+    void ensureAllArgumentConstructorAccessIsCorrect() {
         for (var argument : scanResult.getSubclasses(Argument.class)) {
             var declaredConstructorInfo = argument.getDeclaredConstructorInfo();
             if (declaredConstructorInfo.size() != 1) {
@@ -711,8 +715,13 @@ class CmdParserTest {
         }
     }
 
+    /**
+     * This test is to ensure that each Argument child class has an implemented Builder class which is necessary for the
+     * Builder class to properly work. It also ensures that the various Builders have the correct access type. This test
+     * was implemented to ease future development.
+     */
     @Test
-    void testEnsureArgumentBuilderAccessIsCorrect() {
+    void ensureArgumentBuilderAccessIsCorrect() {
         for (var argument : scanResult.getSubclasses(Argument.class)) {
             var optionallyBuilder = argument
                     .getInnerClasses()
