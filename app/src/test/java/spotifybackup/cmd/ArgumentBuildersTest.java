@@ -35,13 +35,15 @@ public class ArgumentBuildersTest {
      * This test ensures that super.validate() is called all along the inheritance chain by triggering an exception in
      * Argument$Builder.validate(). This test was implemented to ease future development.
      * givenMalformedName_whenBuildingArguments_thenThrowException
+     * @implNote Actual functionality can be one-lined with (but didn't for clarities sake):
+     * ((Argument.Builder<?>)argumentBuilder.getConstructors()[0].newInstance()).name("").build();
      */
     @Test
-    void ensureEachArgumentImplementationChainsValidateCorrectly() {
+    void ensureEachBuilderImplementationChainsValidateCorrectly() {
         for (var argumentBuilder : implementedBuilders.loadClasses()) {
             assertThrows(IllegalArgumentNameException.class, () -> {
-                Argument.Builder<?> test = (Argument.Builder<?>) argumentBuilder.getConstructors()[0].newInstance();
-                test.name("").build();
+                Argument.Builder<?> builder = (Argument.Builder<?>) argumentBuilder.getConstructors()[0].newInstance();
+                builder.name("").build();
             }, argumentBuilder.getName() + " does not properly call super.validate().");
         }
     }
