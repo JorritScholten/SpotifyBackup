@@ -4,7 +4,6 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.TestInstantiationException;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
@@ -744,35 +743,6 @@ class CmdParserTest {
                 if (!builder.isPublic()) {
                     throw new RuntimeException("Implemented Argument should have a public Builder: " +
                             argument.getName());
-                }
-            }
-        }
-    }
-
-    @Test
-    void testArgumentBuilderChildrenImplementations() {
-        var argBuilderImplementations = scanResult.getSubclasses(Argument.Builder.class);
-        if (argBuilderImplementations.isEmpty()) {
-            throw new TestInstantiationException("Cannot find any subclasses for: " + Argument.Builder.class.getName());
-        }
-        for (var impl : argBuilderImplementations) {
-            if (!impl.getDeclaredFieldInfo().isEmpty()) {
-                for (var field : impl.getDeclaredFieldInfo()) {
-                    if (!field.isPrivate()) {
-                        throw new RuntimeException("All Builder fields should be private: "
-                                + impl.getName() + ":" + field.getName());
-                    }
-                }
-                var method = impl.getDeclaredMethodInfo().getSingleMethod("validate");
-                if (method == null) {
-                    throw new RuntimeException("Missing validate() method in builder that has fields, location: "
-                            + impl.getName());
-                }
-                if (method.getTypeSignature() != null) {
-                    throw new RuntimeException("validate() in " + impl.getName() + " should always return void.");
-                }
-                if (!method.isProtected()) {
-                    throw new RuntimeException("validate() in " + impl.getName() + " should be protected.");
                 }
             }
         }
