@@ -100,7 +100,6 @@ public class ArgumentBuildersTest {
         var flagArgumentBuilder = new FlagArgument.Builder();
         final String name = "flag", description = "flag argument";
         final char shortName = 'f';
-//        final FlagArgument flagArgument;
 
         // Act
         flagArgumentBuilder
