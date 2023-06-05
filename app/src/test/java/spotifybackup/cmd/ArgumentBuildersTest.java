@@ -10,10 +10,11 @@ import org.junit.jupiter.api.extension.TestInstantiationException;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.exception.IllegalArgumentDescriptionException;
 import spotifybackup.cmd.exception.IllegalArgumentNameException;
+import spotifybackup.cmd.exception.IllegalArgumentShortnameException;
 
 import java.util.function.Supplier;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArgumentBuildersTest {
     static private ScanResult scanResult;
@@ -93,6 +94,29 @@ public class ArgumentBuildersTest {
         }
     }
 
+    @Test
+    void argument_builder_builds_successfully() {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder();
+        final String name = "flag", description = "flag argument";
+        final char shortName = 'f';
+//        final FlagArgument flagArgument;
+
+        // Act
+        flagArgumentBuilder
+                .name(name)
+                .description(description)
+                .shortName(shortName);
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            final var flagArgument = flagArgumentBuilder.build();
+            assertEquals(name, flagArgument.name);
+            assertEquals(description, flagArgument.description);
+            assertEquals(shortName, flagArgument.shortName);
+        });
+    }
+
     /**
      * This test ensures that Argument$Builder.validate() rejects when name is null. FlagArgument is used because it is
      * the simplest implemented Argument: it has no value or other validation steps beyond Argument itself.
@@ -150,8 +174,22 @@ public class ArgumentBuildersTest {
     }
 
     /**
-     * This test ensures that Argument$Builder.validate() rejects all faulty field values. FlagArgument is used because
-     * it is the simplest implemented Argument: it has no value or other validation steps beyond Argument itself.
+     * This test ensures that Argument$Builder.validate() rejects when shortname is not in the alphabet. FlagArgument is
+     * used because it is the simplest implemented Argument: it has no value or other validation steps beyond Argument
+     * itself.
      */
+    @Test
+    void argument_builder_validates_shortname() {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder();
 
+        // Act
+        flagArgumentBuilder
+                .description("flag argument")
+                .shortName('#')
+                .name("flag");
+
+        // Assert
+        assertThrows(IllegalArgumentShortnameException.class, flagArgumentBuilder::build);
+    }
 }
