@@ -20,7 +20,7 @@ public class ArgumentBuildersTest {
     static private Supplier<ClassInfoList> allBuilders = () -> abstractBuilders.union(implementedBuilders);
 
     @BeforeAll
-    static void bypassEncapsulationAndScanCmdPackage() {
+    static void bypass_encapsulation_and_scan_cmd_package() {
         ClassGraph.CIRCUMVENT_ENCAPSULATION = ClassGraph.CircumventEncapsulationMethod.JVM_DRIVER;
         scanResult = new ClassGraph()
 //                .verbose()
@@ -43,7 +43,7 @@ public class ArgumentBuildersTest {
      * ((Argument.Builder<?>)argumentBuilder.getConstructors()[0].newInstance()).name("").build();
      */
     @Test
-    void ensureEachBuilderImplementationChainsValidateCorrectly() {
+    void ensure_each_builder_implementation_chains_validate_correctly() {
         for (var argumentBuilder : implementedBuilders.loadClasses()) {
             assertThrows(IllegalArgumentNameException.class, () -> {
                 Argument.Builder<?> builder = (Argument.Builder<?>) argumentBuilder.getConstructors()[0].newInstance();
@@ -57,7 +57,7 @@ public class ArgumentBuildersTest {
      * be public. This test was implemented to ease future development.
      */
     @Test
-    void ensureBuilderFieldsArePrivate() {
+    void ensure_builder_fields_are_private() {
         for (var argumentBuilder : allBuilders.get().filter(c -> (!c.getDeclaredFieldInfo().isEmpty()))) {
             for (var field : argumentBuilder.getDeclaredFieldInfo()) {
                 if (!field.isFinal() && !field.isPrivate()) {
@@ -73,7 +73,7 @@ public class ArgumentBuildersTest {
      * test was implemented to ease future development.
      */
     @Test
-    void ensureBuildersWithFieldsHaveValidate() {
+    void ensure_builders_with_fields_have_validate() {
         for (var argumentBuilder : allBuilders.get().filter(c -> (!c.getDeclaredFieldInfo().isEmpty()))) {
             var methods = argumentBuilder.getDeclaredMethodInfo("validate");
             if (methods.isEmpty()) {
@@ -97,7 +97,7 @@ public class ArgumentBuildersTest {
      * the simplest implemented Argument: it has no value or other validation steps beyond Argument itself.
      */
     @Test
-    void testArgumentBuilderValidatesNameNotNull() {
+    void argument_builder_validates_name_not_null() {
         // Arrange
         var flagArgumentBuilder = new FlagArgument.Builder();
 
