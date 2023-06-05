@@ -7,6 +7,7 @@ import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.TestInstantiationException;
+import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.exception.IllegalArgumentNameException;
 
 import java.util.function.Supplier;
@@ -38,7 +39,7 @@ public class ArgumentBuildersTest {
      * This test ensures that super.validate() is called all along the inheritance chain by triggering an exception in
      * Argument$Builder.validate(). This test was implemented to ease future development.
      * givenMalformedName_whenBuildingArguments_thenThrowException
-     * @implNote Actual functionality can be one-lined with (but didn't for clarities sake):
+     * @implNote Actual functionality can be one-lined with (but didn't for clarity's sake):
      * ((Argument.Builder<?>)argumentBuilder.getConstructors()[0].newInstance()).name("").build();
      */
     @Test
@@ -89,5 +90,22 @@ public class ArgumentBuildersTest {
                 }
             }
         }
+    }
+
+    /**
+     * This test ensures that Argument$Builder.validate() rejects when name is null. FlagArgument is used because it is
+     * the simplest implemented Argument: it has no value or other validation steps beyond Argument itself.
+     */
+    @Test
+    void testArgumentBuilderValidatesNameNotNull() {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder();
+
+        // Act
+        flagArgumentBuilder.description("a description");
+        flagArgumentBuilder.shortName('f');
+
+        // Assert
+        assertThrows(IllegalArgumentNameException.class, flagArgumentBuilder::build);
     }
 }
