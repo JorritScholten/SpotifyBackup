@@ -14,13 +14,14 @@ public class BoundedIntArgumentTest {
         // Arrange
         final int min = 0, value = -10;
         final String[] args = {"-i", String.valueOf(value)};
+        final var argument = new MandatoryBoundedIntArgument.Builder()
+                .name("int")
+                .shortName('i')
+                .description("");
 
         // Act
         var argParser = new CmdParser.Builder()
-                .argument(new MandatoryBoundedIntArgument.Builder()
-                        .name("int")
-                        .shortName('i')
-                        .description("")
+                .argument(argument
                         .minimum(min)
                         .build())
                 .build();
@@ -34,14 +35,15 @@ public class BoundedIntArgumentTest {
         // Arrange
         final int min = 0, max = 20, value = 30;
         final String[] args = {"-i", String.valueOf(value)};
+        final var argument = new MandatoryBoundedIntArgument.Builder()
+                .name("int")
+                .shortName('i')
+                .description("")
+                .minimum(min);
 
         // Act
         var argParser = new CmdParser.Builder()
-                .argument(new MandatoryBoundedIntArgument.Builder()
-                        .name("int")
-                        .shortName('i')
-                        .description("")
-                        .minimum(min)
+                .argument(argument
                         .maximum(max)
                         .build())
                 .build();
@@ -56,8 +58,6 @@ public class BoundedIntArgumentTest {
         final int min = 0, max = 20, value = 10;
         final String name = "int";
         final String[] args = {"-i", String.valueOf(value)};
-
-        // Act
         var argParser = new CmdParser.Builder()
                 .argument(new MandatoryBoundedIntArgument.Builder()
                         .name(name)
@@ -68,22 +68,23 @@ public class BoundedIntArgumentTest {
                         .build())
                 .build();
 
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
         // Assert
-        assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue(name));
-        });
+        assertDoesNotThrow(() -> assertEquals(value, argParser.getValue(name)));
     }
 
     @Test
     void default_argument_rejects_below_bounds_default_value() {
         // Arrange
         final int min = 0, defaultValue = -10;
-
-        // Act
         var builder = new DefaultBoundedIntArgument.Builder()
                 .name("int")
-                .description("")
+                .description("");
+
+        // Act
+        builder
                 .minimum(min)
                 .defaultValue(defaultValue);
 
@@ -97,17 +98,20 @@ public class BoundedIntArgumentTest {
         final int min = 0, value = -10, defaultValue = 5;
         final String name = "int";
         final String[] args = {"--int", String.valueOf(value)};
+        final var argument = new DefaultBoundedIntArgument.Builder()
+                .name(name)
+                .description("");
 
-        // Act & Assert
+        // Act
         assertDoesNotThrow(() -> {
             final var argParser = new CmdParser.Builder()
-                    .argument(new DefaultBoundedIntArgument.Builder()
-                            .name(name)
-                            .description("")
+                    .argument(argument
                             .minimum(min)
                             .defaultValue(defaultValue)
                             .build())
                     .build();
+
+            // Assert
             assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
         });
     }
@@ -118,8 +122,6 @@ public class BoundedIntArgumentTest {
         final int min = 0, value = 10, defaultValue = 5;
         final String name = "int", name2 = "append";
         final String[] args = {"--int", String.valueOf(value), "-a"};
-
-        // Act
         var parser = new CmdParser.Builder()
                 .argument(new DefaultBoundedIntArgument.Builder()
                         .name(name)
@@ -136,9 +138,11 @@ public class BoundedIntArgumentTest {
                         .build())
                 .build();
 
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
         // Assert
         assertDoesNotThrow(() -> {
-            parser.parseArguments(args);
             assertEquals(value, parser.getValue(name));
             assertNotEquals(defaultValue, parser.getValue(name));
             assertEquals(defaultValue, parser.getValue(name2));
@@ -150,12 +154,13 @@ public class BoundedIntArgumentTest {
     void default_argument_validates_defaultValue_not_null() {
         // Arrange
         var builder = new DefaultBoundedIntArgument.Builder();
-
-        // Act
         builder
                 .description("a description")
                 .name("int")
                 .minimum(0);
+
+        // Act
+        // builder.defaultValue();
 
         // Assert
         assertThrows(IllegalConstructorParameterException.class, builder::build);
@@ -165,11 +170,12 @@ public class BoundedIntArgumentTest {
     void default_argument_validates_defaultValue_in_bounds() {
         // Arrange
         var builder = new DefaultBoundedIntArgument.Builder();
+        builder
+                .description("a description")
+                .name("int");
 
         // Act
         builder
-                .description("a description")
-                .name("int")
                 .minimum(0)
                 .defaultValue(-5);
 
@@ -181,11 +187,12 @@ public class BoundedIntArgumentTest {
     void argument_validates_maximum_is_greater_than_minimum() {
         // Arrange
         var builder = new MandatoryBoundedIntArgument.Builder();
+        builder
+                .description("a description")
+                .name("int");
 
         // Act
         builder
-                .description("a description")
-                .name("int")
                 .minimum(20)
                 .maximum(0);
 
@@ -197,11 +204,12 @@ public class BoundedIntArgumentTest {
     void argument_validates_maximum_does_not_equals_minimum() {
         // Arrange
         var builder = new MandatoryBoundedIntArgument.Builder();
+        builder
+                .description("a description")
+                .name("int");
 
         // Act
         builder
-                .description("a description")
-                .name("int")
                 .minimum(20)
                 .maximum(20);
 
@@ -213,11 +221,12 @@ public class BoundedIntArgumentTest {
     void argument_validates_minimum_not_null() {
         // Arrange
         var builder = new MandatoryBoundedIntArgument.Builder();
-
-        // Act
         builder
                 .description("a description")
                 .name("int");
+
+        // Act
+        // builder.minimum();
 
         // Assert
         assertThrows(IllegalConstructorParameterException.class, builder::build);
