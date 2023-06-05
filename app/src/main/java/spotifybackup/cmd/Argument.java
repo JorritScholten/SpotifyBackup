@@ -1,6 +1,7 @@
 package spotifybackup.cmd;
 
 import org.apache.commons.text.WordUtils;
+import spotifybackup.cmd.exception.IllegalArgumentDescriptionException;
 import spotifybackup.cmd.exception.IllegalArgumentNameException;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
@@ -148,7 +149,7 @@ abstract public class Argument {
                 throw new IllegalArgumentNameException("Argument name can not be empty string.");
             }
             if (description == null) {
-                throw new IllegalConstructorParameterException("Argument description can not be null value.");
+                throw new IllegalArgumentDescriptionException("Argument description can not be null value.");
             }
             if (shortName != null && !((shortName >= 'a' && shortName <= 'z') || (shortName >= 'A' && shortName <= 'Z'))) {
                 throw new IllegalConstructorParameterException("Character used for short name should be in the alphabet.");

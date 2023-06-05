@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.TestInstantiationException;
 import spotifybackup.cmd.argument.FlagArgument;
+import spotifybackup.cmd.exception.IllegalArgumentDescriptionException;
 import spotifybackup.cmd.exception.IllegalArgumentNameException;
 
 import java.util.function.Supplier;
@@ -108,4 +109,49 @@ public class ArgumentBuildersTest {
         // Assert
         assertThrows(IllegalArgumentNameException.class, flagArgumentBuilder::build);
     }
+
+    /**
+     * This test ensures that Argument$Builder.validate() rejects when name is an empty string. FlagArgument is used
+     * because it is the simplest implemented Argument: it has no value or other validation steps beyond Argument
+     * itself.
+     */
+    @Test
+    void argument_builder_validates_name_not_empty() {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder();
+
+        // Act
+        flagArgumentBuilder
+                .description("a description")
+                .shortName('f')
+                .name("");
+
+        // Assert
+        assertThrows(IllegalArgumentNameException.class, flagArgumentBuilder::build);
+    }
+
+    /**
+     * This test ensures that Argument$Builder.validate() rejects when name is an empty string. FlagArgument is used
+     * because it is the simplest implemented Argument: it has no value or other validation steps beyond Argument
+     * itself.
+     */
+    @Test
+    void argument_builder_validates_description_not_null() {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder();
+
+        // Act
+        flagArgumentBuilder
+                .shortName('f')
+                .name("flag");
+
+        // Assert
+        assertThrows(IllegalArgumentDescriptionException.class, flagArgumentBuilder::build);
+    }
+
+    /**
+     * This test ensures that Argument$Builder.validate() rejects all faulty field values. FlagArgument is used because
+     * it is the simplest implemented Argument: it has no value or other validation steps beyond Argument itself.
+     */
+
 }
