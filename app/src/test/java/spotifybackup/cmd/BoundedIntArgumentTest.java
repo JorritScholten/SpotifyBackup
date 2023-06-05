@@ -3,6 +3,7 @@ package spotifybackup.cmd;
 import org.junit.jupiter.api.Test;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
+import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -87,7 +88,7 @@ public class BoundedIntArgumentTest {
                 .defaultValue(defaultValue);
 
         // Assert
-        assertThrows(IllegalArgumentException.class, builder::build);
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 
     @Test
@@ -115,8 +116,8 @@ public class BoundedIntArgumentTest {
     void default_argument_accepts_in_bounds_value() {
         // Arrange
         final int min = 0, value = 10, defaultValue = 5;
-        final String name = "int";
-        final String[] args = {"--int", String.valueOf(value)};
+        final String name = "int", name2 = "append";
+        final String[] args = {"--int", String.valueOf(value), "-a"};
 
         // Act
         var parser = new CmdParser.Builder()
@@ -126,6 +127,13 @@ public class BoundedIntArgumentTest {
                         .minimum(min)
                         .defaultValue(defaultValue)
                         .build())
+                .argument(new DefaultBoundedIntArgument.Builder()
+                        .name(name2)
+                        .defaultValue(defaultValue)
+                        .minimum(min)
+                        .description("")
+                        .shortName('a')
+                        .build())
                 .build();
 
         // Assert
@@ -133,6 +141,85 @@ public class BoundedIntArgumentTest {
             parser.parseArguments(args);
             assertEquals(value, parser.getValue(name));
             assertNotEquals(defaultValue, parser.getValue(name));
+            assertEquals(defaultValue, parser.getValue(name2));
+            assertNotEquals(value, parser.getValue(name2));
         });
+    }
+
+    @Test
+    void default_argument_validates_defaultValue_not_null() {
+        // Arrange
+        var builder = new DefaultBoundedIntArgument.Builder();
+
+        // Act
+        builder
+                .description("a description")
+                .name("int")
+                .minimum(0);
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
+    }
+
+    @Test
+    void default_argument_validates_defaultValue_in_bounds() {
+        // Arrange
+        var builder = new DefaultBoundedIntArgument.Builder();
+
+        // Act
+        builder
+                .description("a description")
+                .name("int")
+                .minimum(0)
+                .defaultValue(-5);
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
+    }
+
+    @Test
+    void argument_validates_maximum_is_greater_than_minimum() {
+        // Arrange
+        var builder = new MandatoryBoundedIntArgument.Builder();
+
+        // Act
+        builder
+                .description("a description")
+                .name("int")
+                .minimum(20)
+                .maximum(0);
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
+    }
+
+    @Test
+    void argument_validates_maximum_does_not_equals_minimum() {
+        // Arrange
+        var builder = new MandatoryBoundedIntArgument.Builder();
+
+        // Act
+        builder
+                .description("a description")
+                .name("int")
+                .minimum(20)
+                .maximum(20);
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
+    }
+
+    @Test
+    void argument_validates_minimum_not_null() {
+        // Arrange
+        var builder = new MandatoryBoundedIntArgument.Builder();
+
+        // Act
+        builder
+                .description("a description")
+                .name("int");
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 }
