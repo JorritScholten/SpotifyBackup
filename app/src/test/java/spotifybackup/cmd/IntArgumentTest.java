@@ -16,9 +16,10 @@ public class IntArgumentTest {
         // Arrange
         final Integer value = 34;
         final String[] args = {"-e", value.toString()};
+        final String name = "extra";
         var parser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
                         .build())
@@ -29,7 +30,7 @@ public class IntArgumentTest {
 
         // Assert
         assertDoesNotThrow(() -> {
-            assertEquals(value, parser.getValue("extra"));
+            assertEquals(value, parser.getValue(name));
         });
     }
 
@@ -38,9 +39,10 @@ public class IntArgumentTest {
         // Arrange
         final Integer value = -34;
         final String[] args = {"-e", value.toString()};
+        final String name = "extra";
         var parser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
                         .build())
@@ -51,7 +53,7 @@ public class IntArgumentTest {
 
         // Assert
         assertDoesNotThrow(() -> {
-            assertEquals(value, parser.getValue("extra"));
+            assertEquals(value, parser.getValue(name));
         });
     }
 
@@ -60,9 +62,10 @@ public class IntArgumentTest {
         // Arrange
         final int value = 34, defaultValue = 12;
         final String[] args = {"-e", Integer.toString(value)};
+        final String name = "extra";
         var parser = new CmdParser.Builder()
                 .argument(new DefaultIntArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
                         .defaultValue(defaultValue)
@@ -74,8 +77,9 @@ public class IntArgumentTest {
 
         // Assert
         assertDoesNotThrow(() -> {
-            assertNotEquals(defaultValue, parser.getValue("extra"));
-            assertEquals(value, parser.getValue("extra"));
+            assertNotEquals(defaultValue, parser.getValue(name));
+            assertEquals(value, parser.getValue(name));
+            assertTrue(parser.isPresent(name));
         });
     }
 
@@ -84,9 +88,10 @@ public class IntArgumentTest {
         // Arrange
         final int value = -34, defaultValue = 12;
         final String[] args = {"-e", Integer.toString(value)};
+        final String name = "extra";
         var parser = new CmdParser.Builder()
                 .argument(new DefaultIntArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
                         .defaultValue(defaultValue)
@@ -98,8 +103,9 @@ public class IntArgumentTest {
 
         // Assert
         assertDoesNotThrow(() -> {
-            assertNotEquals(defaultValue, parser.getValue("extra"));
-            assertEquals(value, parser.getValue("extra"));
+            assertNotEquals(defaultValue, parser.getValue(name));
+            assertEquals(value, parser.getValue(name));
+            assertTrue(parser.isPresent(name));
         });
     }
 
