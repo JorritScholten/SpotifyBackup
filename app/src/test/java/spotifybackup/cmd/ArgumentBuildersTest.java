@@ -123,11 +123,12 @@ public class ArgumentBuildersTest {
     @Test
     void argument_builder_validates_name_not_null() {
         // Arrange
-        var flagArgumentBuilder = new FlagArgument.Builder();
+        var flagArgumentBuilder = new FlagArgument.Builder()
+                .description("a description")
+                .shortName('f');
 
         // Act
-        flagArgumentBuilder.description("a description");
-        flagArgumentBuilder.shortName('f');
+        // flagArgumentBuilder.name()
 
         // Assert
         assertThrows(IllegalArgumentNameException.class, flagArgumentBuilder::build);
@@ -141,13 +142,12 @@ public class ArgumentBuildersTest {
     @Test
     void argument_builder_validates_name_not_empty() {
         // Arrange
-        var flagArgumentBuilder = new FlagArgument.Builder();
+        var flagArgumentBuilder = new FlagArgument.Builder()
+                .description("a description")
+                .shortName('f');
 
         // Act
-        flagArgumentBuilder
-                .description("a description")
-                .shortName('f')
-                .name("");
+        flagArgumentBuilder.name("");
 
         // Assert
         assertThrows(IllegalArgumentNameException.class, flagArgumentBuilder::build);
@@ -161,12 +161,12 @@ public class ArgumentBuildersTest {
     @Test
     void argument_builder_validates_description_not_null() {
         // Arrange
-        var flagArgumentBuilder = new FlagArgument.Builder();
-
-        // Act
-        flagArgumentBuilder
+        var flagArgumentBuilder = new FlagArgument.Builder()
                 .shortName('f')
                 .name("flag");
+
+        // Act
+        // flagArgumentBuilder.description()
 
         // Assert
         assertThrows(IllegalArgumentDescriptionException.class, flagArgumentBuilder::build);
@@ -180,13 +180,12 @@ public class ArgumentBuildersTest {
     @Test
     void argument_builder_validates_shortname() {
         // Arrange
-        var flagArgumentBuilder = new FlagArgument.Builder();
+        var flagArgumentBuilder = new FlagArgument.Builder()
+                .description("flag argument")
+                .name("flag");
 
         // Act
-        flagArgumentBuilder
-                .description("flag argument")
-                .shortName('#')
-                .name("flag");
+        flagArgumentBuilder.shortName('#');
 
         // Assert
         assertThrows(IllegalArgumentShortnameException.class, flagArgumentBuilder::build);

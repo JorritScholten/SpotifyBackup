@@ -160,7 +160,7 @@ public class BoundedIntArgumentTest {
                 .minimum(0);
 
         // Act
-        // builder.defaultValue();
+        // builder.defaultValue()
 
         // Assert
         assertThrows(IllegalConstructorParameterException.class, builder::build);
@@ -226,7 +226,7 @@ public class BoundedIntArgumentTest {
                 .name("int");
 
         // Act
-        // builder.minimum();
+        // builder.minimum()
 
         // Assert
         assertThrows(IllegalConstructorParameterException.class, builder::build);
