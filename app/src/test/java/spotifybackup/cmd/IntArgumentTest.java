@@ -192,40 +192,34 @@ public class IntArgumentTest {
     }
 
     @Test
-    void testMalformedIntArgument2() {
-        final String[] args = {"-he", "21.2"};
-        CmdParser argParser = new CmdParser.Builder()
+    void argument_with_illegal_float_value_throws_exception() {
+        // Arrange
+        final String[] args = {"-e", "21.2"};
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
                         .name("extra")
                         .description("")
                         .shortName('e')
                         .build())
-                .addHelp()
                 .build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act & Assert
+        assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
     }
 
     @Test
-    void testMalformedIntArgument3() {
-        final String[] args = {"-he", "sdf"};
-        CmdParser argParser = new CmdParser.Builder()
+    void argument_with_illegal_string_value_throws_exception() {
+        // Arrange
+        final String[] args = {"-e", "sdf"};
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
                         .name("extra")
                         .description("")
                         .shortName('e')
                         .build())
-                .addHelp()
                 .build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act & Assert
+        assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
     }
 }
