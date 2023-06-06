@@ -53,6 +53,26 @@ public class BoundedIntArgumentTest {
     }
 
     @Test
+    void mandatory_argument_without_value_throws_exception() {
+        // Arrange
+        final int min = 0, max = 20, value = 10;
+        final String name = "int";
+        final String[] args = {"-i"};
+        var argParser = new CmdParser.Builder()
+                .argument(new MandatoryBoundedIntArgument.Builder()
+                        .name(name)
+                        .shortName('i')
+                        .description("")
+                        .minimum(min)
+                        .maximum(max)
+                        .build())
+                .build();
+
+        // Act & Assert
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
+    }
+
+    @Test
     void mandatory_argument_accepts_in_bounds_value() {
         // Arrange
         final int min = 0, max = 20, value = 10;

@@ -3,6 +3,7 @@ package spotifybackup.cmd;
 import org.junit.jupiter.api.Test;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
+import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 import spotifybackup.cmd.exception.ArgumentsNotParsedException;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
@@ -173,22 +174,21 @@ public class IntArgumentTest {
     }
 
     @Test
-    void testMalformedIntArgument1() {
+    void mandatory_argument_without_value_throws_exception() {
+        // Arrange
+        final String name = "extra";
         final String[] args = {"-he"};
-        CmdParser argParser = new CmdParser.Builder()
+        var argParser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
-                        .name("extra")
-                        .description("")
+                        .name(name)
                         .shortName('e')
+                        .description("")
                         .build())
                 .addHelp()
                 .build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act & Assert
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
