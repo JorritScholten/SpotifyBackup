@@ -55,10 +55,11 @@ public class IntArgumentTest {
     }
 
     @Test
-    void testDefaultIntArgument1() {
+    void default_argument_loads_positive_value() {
+        // Arrange
         final int value = 34, defaultValue = 12;
         final String[] args = {"-e", Integer.toString(value)};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new DefaultIntArgument.Builder()
                         .name("extra")
                         .description("")
@@ -66,27 +67,38 @@ public class IntArgumentTest {
                         .defaultValue(defaultValue)
                         .build())
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertNotEquals(defaultValue, argParser.getValue("extra"));
-            assertEquals(value, argParser.getValue("extra"));
+            assertNotEquals(defaultValue, parser.getValue("extra"));
+            assertEquals(value, parser.getValue("extra"));
         });
     }
 
     @Test
-    void testDefaultIntArgument2() {
-        final int value = -34;
-        final String[] args = {"--extra", Integer.toString(value)};
-        CmdParser argParser = new CmdParser.Builder()
+    void default_argument_loads_negative_value() {
+        // Arrange
+        final int value = -34, defaultValue = 12;
+        final String[] args = {"-e", Integer.toString(value)};
+        var parser = new CmdParser.Builder()
                 .argument(new DefaultIntArgument.Builder()
                         .name("extra")
                         .description("")
-                        .defaultValue(value)
+                        .shortName('e')
+                        .defaultValue(defaultValue)
                         .build())
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
+            assertNotEquals(defaultValue, parser.getValue("extra"));
+            assertEquals(value, parser.getValue("extra"));
         });
     }
 
