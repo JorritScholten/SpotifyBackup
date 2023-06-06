@@ -9,7 +9,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IntArgumentsTest {
+public class IntArgumentTest {
     @Test
     void testIntArgument1() {
         final Integer value = 34;
