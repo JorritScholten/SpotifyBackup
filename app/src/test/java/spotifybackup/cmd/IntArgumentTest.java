@@ -1,6 +1,7 @@
 package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
+import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 import spotifybackup.cmd.exception.ArgumentsNotParsedException;
@@ -103,51 +104,18 @@ public class IntArgumentTest {
     }
 
     @Test
-    void testNullDefaultValueInt1() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultIntArgument.Builder()
-//                        .name("extra")
-                        .description("")
-                        .shortName('e')
-                        .defaultValue(20)
-                        .build()
-        ));
-    }
+    void default_argument_validates_defaultValue_not_null() {
+        // Arrange
+        var builder = new DefaultBoundedIntArgument.Builder();
+        builder.description("a description")
+                .name("int")
+                .minimum(0);
 
-    @Test
-    void testNullDefaultValueInt2() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultIntArgument.Builder()
-                        .name("extra")
-//                        .description("")
-                        .shortName('e')
-                        .defaultValue(20)
-                        .build()
-        ));
-    }
+        // Act
+        // builder.defaultValue()
 
-    @Test
-    void testNullDefaultValueInt3() {
-        assertDoesNotThrow(() -> new CmdParser.Builder().argument(
-                new DefaultIntArgument.Builder()
-                        .name("extra")
-                        .description("")
-//                        .shortName('e')
-                        .defaultValue(20)
-                        .build()
-        ));
-    }
-
-    @Test
-    void testNullDefaultValueInt4() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultIntArgument.Builder()
-                        .name("extra")
-                        .description("")
-                        .shortName('e')
-//                        .defaultValue(20)
-                        .build()
-        ));
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 
     @Test
