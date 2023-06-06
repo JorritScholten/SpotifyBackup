@@ -125,6 +125,54 @@ public class IntArgumentTest {
     }
 
     @Test
+    void default_argument_missing_from_input_returns_defaultValue() {
+        // Arrange
+        final int defaultValue = 12;
+        final String[] args = {};
+        final String name = "extra";
+        var parser = new CmdParser.Builder()
+                .argument(new DefaultIntArgument.Builder()
+                        .name(name)
+                        .description("")
+                        .defaultValue(defaultValue)
+                        .build())
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(defaultValue, parser.getValue(name));
+            assertFalse(parser.isPresent(name));
+        });
+    }
+
+    @Test
+    void default_argument_present_in_input_without_value_returns_defaultValue() {
+        // Arrange
+        final int defaultValue = 12;
+        final String name = "extra";
+        final String[] args = {("--" + name),};
+        var parser = new CmdParser.Builder()
+                .argument(new DefaultIntArgument.Builder()
+                        .name(name)
+                        .description("")
+                        .defaultValue(defaultValue)
+                        .build())
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(defaultValue, parser.getValue(name));
+            assertTrue(parser.isPresent(name));
+        });
+    }
+
+    @Test
     void testMalformedIntArgument1() {
         final String[] args = {"-he"};
         CmdParser argParser = new CmdParser.Builder()
