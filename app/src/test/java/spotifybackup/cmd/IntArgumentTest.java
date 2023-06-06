@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class IntArgumentTest {
     @Test
-    void mandatory_argument_loads_value() {
+    void mandatory_argument_loads_positive_value() {
         // Arrange
         final Integer value = 34;
         final String[] args = {"-e", value.toString()};
@@ -33,19 +33,24 @@ public class IntArgumentTest {
     }
 
     @Test
-    void testIntArgument2() {
+    void mandatory_argument_loads_negative_value() {
+        // Arrange
         final Integer value = -34;
         final String[] args = {"-e", value.toString()};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
                         .name("extra")
                         .description("")
                         .shortName('e')
                         .build())
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
+            assertEquals(value, parser.getValue("extra"));
         });
     }
 
