@@ -5,4 +5,4 @@
 build
 
 # Ignore Intellij Idea things
-.idea/workspace.xml
+.idea/*
