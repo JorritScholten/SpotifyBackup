@@ -1,6 +1,11 @@
 package spotifybackup.storage;
 
-//@Entity
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "genre")
 public class Genre {
-    private final long id=0;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private long id;
 }
