@@ -34,20 +34,26 @@ public class StringArgumentsTest {
     }
 
     @Test
-    void testStringArgument2() {
+    void mandatory_argument_loads_value_from_shortName() {
+        // Arrange
         final String value = "test_value";
+        final String name = "extra";
         final String[] args = {"-h", "-e", value};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryStringArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
+            assertEquals(value, parser.getValue(name));
         });
     }
 
