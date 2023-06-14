@@ -11,19 +11,25 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class StringArgumentsTest {
     @Test
-    void testStringArgument1() {
+    void mandatory_argument_loads_value_from_name() {
+        // Arrange
         final String value = "test_value";
-        final String[] args = {"-h", "--extra", value};
-        CmdParser argParser = new CmdParser.Builder()
+        final String name = "extra";
+        final String[] args = {"-h", "--" + name, value};
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryStringArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
+            assertEquals(value, parser.getValue(name));
         });
     }
 
