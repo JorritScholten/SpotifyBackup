@@ -58,21 +58,29 @@ public class StringArgumentsTest {
     }
 
     @Test
-    void testDefaultStringArgument1() {
-        final String value = "test_value";
-        final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser.Builder()
+    void default_argument_loads_value_from_name() {
+        // Arrange
+        final String value = "23.6", default_value = "a_value";
+        final String name = "extra";
+        final String[] args = {"-h", "--" + name, value};
+        var parser = new CmdParser.Builder()
                 .argument(new DefaultStringArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
-                        .defaultValue(value)
+                        .defaultValue(default_value)
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(value, argParser.getValue("extra"));
+            assertEquals(value, parser.getValue(name));
+            assertNotEquals(default_value, parser.getValue(name));
+            assertTrue(parser.isPresent(name));
         });
     }
 
