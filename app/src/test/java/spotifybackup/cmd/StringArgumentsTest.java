@@ -1,7 +1,8 @@
 package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
-import spotifybackup.cmd.argument.integer.DefaultIntArgument;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
@@ -58,10 +59,11 @@ public class StringArgumentsTest {
         });
     }
 
-    @Test
-    void default_argument_loads_value_from_name() {
+    @ParameterizedTest
+    @ValueSource(strings = {"some_string", "contains spaces", "23", "-23", "67.9", "-0.67"})
+    void default_argument_loads_value_from_name(final String value) {
         // Arrange
-        final String value = "23.6", default_value = "a_value";
+        final String default_value = "a_value";
         final String name = "extra";
         final String[] args = {"-h", "--" + name, value};
         var parser = new CmdParser.Builder()
