@@ -85,22 +85,29 @@ public class StringArgumentsTest {
     }
 
     @Test
-    void testDefaultStringArgument2() {
+    void default_argument_loads_value_from_shortName() {
+        // Arrange
         final String value = "test_value", defaultValue = "other_value";
+        final String name = "extra";
         final String[] args = {"-h", "-e", value};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new DefaultStringArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
                         .shortName('e')
                         .defaultValue(defaultValue)
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertNotEquals(defaultValue, argParser.getValue("extra"));
-            assertEquals(value, argParser.getValue("extra"));
+            assertEquals(value, parser.getValue(name));
+            assertNotEquals(defaultValue, parser.getValue(name));
+            assertTrue(parser.isPresent(name));
         });
     }
 
