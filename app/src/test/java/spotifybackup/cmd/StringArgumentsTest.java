@@ -1,6 +1,7 @@
 package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
+import spotifybackup.cmd.argument.integer.DefaultIntArgument;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
@@ -143,6 +144,55 @@ public class StringArgumentsTest {
 
         // Act & Assert
         assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
+    }
+
+    @Test
+    void default_argument_present_in_input_without_value_returns_defaultValue() {
+        // Arrange
+        final String defaultValue = "-16.78";
+        final String name = "extra";
+        final String[] args = {("--" + name),};
+        var parser = new CmdParser.Builder()
+                .argument(new DefaultStringArgument.Builder()
+                        .name(name)
+                        .description("")
+                        .defaultValue(defaultValue)
+                        .build())
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(defaultValue, parser.getValue(name));
+            assertTrue(parser.isPresent(name));
+        });
+    }
+
+    @Test
+    void default_argument_missing_in_input_returns_defaultValue() {
+        // Arrange
+        final String defaultValue = "-16.78";
+        final String name = "extra";
+        final String[] args = {};
+        var parser = new CmdParser.Builder()
+                .argument(new DefaultStringArgument.Builder()
+                        .name(name)
+                        .description("")
+                        .defaultValue(defaultValue)
+                        .build())
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(defaultValue, parser.getValue(name));
+            assertFalse(parser.isPresent(name));
+        });
     }
 
     @Test
