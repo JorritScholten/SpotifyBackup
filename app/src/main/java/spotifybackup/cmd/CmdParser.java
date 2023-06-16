@@ -254,7 +254,7 @@ public class CmdParser {
                 }
             }
             if (retval[i] == null) {
-                throw new MalformedInputException("Input not identified as an ArgType: " + args[i]);
+                throw new MalformedInputException("Input not identified as an ArgType: [" + args[i] + "]");
             }
         }
         return retval;
@@ -264,7 +264,7 @@ public class CmdParser {
         SHORT_ARGUMENT("^[-]{1}[a-zA-Z]{1}$"),
         SHORT_ARGUMENTS("^[-]{1}[a-zA-Z]{2,}$"),
         LONG_ARGUMENT("^[-]{2}[\\w]+$"),
-        VALUE("^([^-]{1,2}[\\w]+)|([-][\\d]+)$");
+        VALUE("^([-]?[\\d]+([.,]{1}[\\d]+)?)|([^-]{1,2}[\\w ]+)$");
 
         final Pattern regex;
 

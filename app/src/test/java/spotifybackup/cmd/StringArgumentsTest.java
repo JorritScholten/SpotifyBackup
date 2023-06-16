@@ -60,7 +60,7 @@ public class StringArgumentsTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"some_string", "contains spaces", "23", "-23", "67.9", "-0.67"})
+    @ValueSource(strings = {"some_string", "contains spaces", "23", "-23", "67.9", "-0.67", "-0,12"})
     void default_argument_loads_value_from_name(final String value) {
         // Arrange
         final String default_value = "a_value";
