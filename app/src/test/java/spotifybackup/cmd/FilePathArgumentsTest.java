@@ -12,9 +12,12 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilePathArgumentsTest {
+    @TempDir
+    static File sharedTempDir;
+
     @Test
-    void testFilePathArgument1(@TempDir File temp_dir) {
-        final String value = temp_dir.toString();
+    void testFilePathArgument1() {
+        final String value = sharedTempDir.toString();
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser.Builder()
@@ -32,9 +35,9 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testFilePathArgument2(@TempDir File temp_dir) {
+    void testFilePathArgument2() {
         assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", ".txt", temp_dir);
+            File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
             assert temp_file.exists();
             temp_file.deleteOnExit();
             final String value = temp_file.toString();
@@ -55,8 +58,8 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMalformedFilePathArgument1(@TempDir File temp_dir) {
-        final String value = temp_dir.toString();
+    void testMalformedFilePathArgument1() {
+        final String value = sharedTempDir.toString();
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
         CmdParser argParser = new CmdParser.Builder()
@@ -71,9 +74,9 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMalformedFilePathArgument2(@TempDir File temp_dir) {
+    void testMalformedFilePathArgument2() {
         assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", "txt", temp_dir);
+            File temp_file = File.createTempFile("test", "txt", sharedTempDir);
             assert temp_file.exists();
             temp_file.deleteOnExit();
             final String value = temp_file.toString();
@@ -105,34 +108,34 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMissingBuilderParameter2(@TempDir File temp_dir) {
+    void testMissingBuilderParameter2() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
                         .argument(new DefaultFilePathArgument.Builder()
                                         .name("extra")
                                         .description("")
 //                        .isDirectory()
-                                        .defaultValue(temp_dir)
+                                        .defaultValue(sharedTempDir)
                                         .build()
                         )
         );
     }
 
     @Test
-    void testMissingBuilderParameter3(@TempDir File temp_dir) {
+    void testMissingBuilderParameter3() {
         assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
                         .argument(new DefaultFilePathArgument.Builder()
                                         .name("extra")
                                         .description("")
                                         .isDirectory()
-//                        .defaultValue(temp_dir)
+//                        .defaultValue(sharedTempDir)
                                         .build()
                         )
         );
     }
 
     @Test
-    void testDefaultFilePathArgument1(@TempDir File temp_dir) {
-        final String value = temp_dir.toString();
+    void testDefaultFilePathArgument1() {
+        final String value = sharedTempDir.toString();
         assert new File(value).exists();
         final String[] args = {};
         CmdParser argParser = new CmdParser.Builder()
@@ -150,12 +153,12 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testDefaultFilePathArgument2(@TempDir File temp_dir) {
+    void testDefaultFilePathArgument2() {
         assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", ".txt", temp_dir);
+            File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
             assert temp_file.exists();
             temp_file.deleteOnExit();
-            File temp_file2 = File.createTempFile("test", ".txt", temp_dir);
+            File temp_file2 = File.createTempFile("test", ".txt", sharedTempDir);
             assert temp_file2.exists();
             temp_file2.deleteOnExit();
             final String value = temp_file.toString(), value2 = temp_file2.toString();
