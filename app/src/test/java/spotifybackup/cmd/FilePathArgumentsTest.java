@@ -178,13 +178,17 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testNullDefaultValue() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultFilePathArgument.Builder()
+    void default_argument_validates_defaultValue_not_null() {
+        // Arrange
+        var builder = new DefaultFilePathArgument.Builder()
                         .name("extra")
                         .description("")
-                        .isDirectory()
-                        .build()
-        ));
+                        .isDirectory();
+
+        // Act
+        // builder.defaultValue()
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 }
