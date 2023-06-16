@@ -44,22 +44,31 @@ public class FilePathArgumentsTest {
         });
     }
 
-    @Test
-    void testDefaultFilePathArgument1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"--extra", "-e"})
+    void default_argument_loads_directory_path_from_input(String identifier) {
+        // Arrange
         final String value = sharedTempDir.toString();
         assert new File(value).exists();
-        final String[] args = {};
-        CmdParser argParser = new CmdParser.Builder()
+        final String name = "extra";
+        final String[] args = {"-h", identifier, value};
+        var parser = new CmdParser.Builder()
                 .argument(new DefaultFilePathArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
+                        .shortName('e')
                         .defaultValue(new File(value))
                         .isDirectory()
                         .build())
+                .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
+            assertEquals(new File(value).getAbsoluteFile(), parser.getValue(name));
         });
     }
 
