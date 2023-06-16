@@ -10,6 +10,7 @@ import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,26 +73,33 @@ public class FilePathArgumentsTest {
         });
     }
 
-    @Test
-    void testFilePathArgument2() {
-        assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
-            assert temp_file.exists();
-            temp_file.deleteOnExit();
-            final String value = temp_file.toString();
-            assert new File(value).exists();
+    @ParameterizedTest
+    @ValueSource(strings = {"--extra", "-e"})
+    void mandatory_argument_loads_file_path_from_input(String identifier) throws IOException {
+        // Arrange
+        File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
+        assert temp_file.exists();
+        temp_file.deleteOnExit();
+        final String value = temp_file.toString();
+        assert new File(value).exists();
+        final String name = "extra";
+        final String[] args = {"-h", identifier, value};
+        var parser = new CmdParser.Builder()
+                .argument(new MandatoryFilePathArgument.Builder()
+                        .name(name)
+                        .description("")
+                        .shortName('e')
+                        .isFile()
+                        .build())
+                .addHelp()
+                .build();
 
-            final String[] args = {"-h", "--extra", value};
-            CmdParser argParser = new CmdParser.Builder()
-                    .argument(new MandatoryFilePathArgument.Builder()
-                            .name("extra")
-                            .description("")
-                            .isFile()
-                            .build())
-                    .addHelp()
-                    .build();
-            argParser.parseArguments(args);
-            assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(new File(value).getAbsoluteFile(), parser.getValue(name));
         });
     }
 
