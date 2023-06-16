@@ -198,22 +198,16 @@ public class StringArgumentsTest {
     }
 
     @Test
-    void testDefaultStringArgumentConstructor1() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultStringArgument.Builder()
-                        .name("extra")
-                        .description("")
-                        .build()
-        ));
-    }
+    void default_argument_validates_defaultValue_not_null() {
+        // Arrange
+        var builder = new DefaultStringArgument.Builder();
+        builder.description("a description")
+                .name("int");
 
-    @Test
-    void testDefaultStringArgumentConstructor2() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().argument(
-                new DefaultStringArgument.Builder()
-                        .description("")
-                        .defaultValue("string")
-                        .build()
-        ));
+        // Act
+        // builder.defaultValue()
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 }
