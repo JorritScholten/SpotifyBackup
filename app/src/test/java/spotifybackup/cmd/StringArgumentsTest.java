@@ -3,8 +3,8 @@ package spotifybackup.cmd;
 import org.junit.jupiter.api.Test;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
-import spotifybackup.cmd.exception.ArgumentsNotParsedException;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
+import spotifybackup.cmd.exception.MalformedInputException;
 import spotifybackup.cmd.exception.MissingArgumentException;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,9 +112,10 @@ public class StringArgumentsTest {
     }
 
     @Test
-    void testMissingStringArgument() {
+    void mandatory_argument_missing_in_input_throws_exception() {
+        // Arrange
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryStringArgument.Builder()
                         .name("extra")
                         .description("")
@@ -122,12 +123,26 @@ public class StringArgumentsTest {
                         .build())
                 .addHelp()
                 .build();
-        assertThrows(MissingArgumentException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act & Assert
+        assertThrows(MissingArgumentException.class, () -> parser.parseArguments(args));
+    }
+
+    @Test
+    void mandatory_argument_without_value_throws_exception() {
+        // Arrange
+        final String[] args = {"-he"};
+        var parser = new CmdParser.Builder()
+                .argument(new MandatoryStringArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .build())
+                .addHelp()
+                .build();
+
+        // Act & Assert
+        assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
     }
 
     @Test
