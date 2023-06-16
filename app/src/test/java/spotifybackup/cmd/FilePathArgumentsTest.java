@@ -103,31 +103,38 @@ public class FilePathArgumentsTest {
         });
     }
 
-    @Test
-    void testDefaultFilePathArgument2() {
-        assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
-            assert temp_file.exists();
-            temp_file.deleteOnExit();
-            File temp_file2 = File.createTempFile("test", ".txt", sharedTempDir);
-            assert temp_file2.exists();
-            temp_file2.deleteOnExit();
-            final String value = temp_file.toString(), value2 = temp_file2.toString();
-            assert new File(value).exists();
+    @ParameterizedTest
+    @ValueSource(strings = {"--extra", "-e"})
+    void default_argument_loads_file_path_from_input(String identifier) throws IOException {
+        // Arrange
+        File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
+        assert temp_file.exists();
+        temp_file.deleteOnExit();
+        File temp_file2 = File.createTempFile("test2", ".txt", sharedTempDir);
+        assert temp_file2.exists();
+        temp_file2.deleteOnExit();
+        final String value = temp_file.toString(), value2 = temp_file2.toString();
+        assert new File(value).exists();
+        final String name = "extra";
+        final String[] args = {"-h", identifier, value};
+        var parser = new CmdParser.Builder()
+                .argument(new DefaultFilePathArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(new File(value))
+                        .isFile()
+                        .build())
+                .addHelp()
+                .build();
 
-            final String[] args = {"-e", value2};
-            CmdParser argParser = new CmdParser.Builder()
-                    .argument(new DefaultFilePathArgument.Builder()
-                            .name("extra")
-                            .description("")
-                            .shortName('e')
-                            .defaultValue(new File(value))
-                            .isFile()
-                            .build())
-                    .build();
-            argParser.parseArguments(args);
-            assertEquals(new File(value2).getAbsoluteFile(), argParser.getValue("extra"));
-            assertNotEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(new File(value).getAbsoluteFile(), parser.getValue(name));
+            assertNotEquals(new File(value2).getAbsoluteFile(), parser.getValue(name));
         });
     }
 
