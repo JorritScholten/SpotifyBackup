@@ -35,6 +35,25 @@ public class FilePathArgumentsTest {
     }
 
     @Test
+    void testDefaultFilePathArgument1() {
+        final String value = sharedTempDir.toString();
+        assert new File(value).exists();
+        final String[] args = {};
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new DefaultFilePathArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .defaultValue(new File(value))
+                        .isDirectory()
+                        .build())
+                .build();
+        assertDoesNotThrow(() -> {
+            argParser.parseArguments(args);
+            assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
+        });
+    }
+
+    @Test
     void testFilePathArgument2() {
         assertDoesNotThrow(() -> {
             File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
@@ -54,6 +73,34 @@ public class FilePathArgumentsTest {
                     .build();
             argParser.parseArguments(args);
             assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
+        });
+    }
+
+    @Test
+    void testDefaultFilePathArgument2() {
+        assertDoesNotThrow(() -> {
+            File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
+            assert temp_file.exists();
+            temp_file.deleteOnExit();
+            File temp_file2 = File.createTempFile("test", ".txt", sharedTempDir);
+            assert temp_file2.exists();
+            temp_file2.deleteOnExit();
+            final String value = temp_file.toString(), value2 = temp_file2.toString();
+            assert new File(value).exists();
+
+            final String[] args = {"-e", value2};
+            CmdParser argParser = new CmdParser.Builder()
+                    .argument(new DefaultFilePathArgument.Builder()
+                            .name("extra")
+                            .description("")
+                            .shortName('e')
+                            .defaultValue(new File(value))
+                            .isFile()
+                            .build())
+                    .build();
+            argParser.parseArguments(args);
+            assertEquals(new File(value2).getAbsoluteFile(), argParser.getValue("extra"));
+            assertNotEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
         });
     }
 
@@ -131,53 +178,6 @@ public class FilePathArgumentsTest {
                                         .build()
                         )
         );
-    }
-
-    @Test
-    void testDefaultFilePathArgument1() {
-        final String value = sharedTempDir.toString();
-        assert new File(value).exists();
-        final String[] args = {};
-        CmdParser argParser = new CmdParser.Builder()
-                .argument(new DefaultFilePathArgument.Builder()
-                        .name("extra")
-                        .description("")
-                        .defaultValue(new File(value))
-                        .isDirectory()
-                        .build())
-                .build();
-        assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
-        });
-    }
-
-    @Test
-    void testDefaultFilePathArgument2() {
-        assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
-            assert temp_file.exists();
-            temp_file.deleteOnExit();
-            File temp_file2 = File.createTempFile("test", ".txt", sharedTempDir);
-            assert temp_file2.exists();
-            temp_file2.deleteOnExit();
-            final String value = temp_file.toString(), value2 = temp_file2.toString();
-            assert new File(value).exists();
-
-            final String[] args = {"-e", value2};
-            CmdParser argParser = new CmdParser.Builder()
-                    .argument(new DefaultFilePathArgument.Builder()
-                            .name("extra")
-                            .description("")
-                            .shortName('e')
-                            .defaultValue(new File(value))
-                            .isFile()
-                            .build())
-                    .build();
-            argParser.parseArguments(args);
-            assertEquals(new File(value2).getAbsoluteFile(), argParser.getValue("extra"));
-            assertNotEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
-        });
     }
 
     @Test
