@@ -3,6 +3,7 @@ package spotifybackup.cmd;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
@@ -135,6 +136,48 @@ public class FilePathArgumentsTest {
         assertDoesNotThrow(() -> {
             assertEquals(new File(value).getAbsoluteFile(), parser.getValue(name));
             assertNotEquals(new File(value2).getAbsoluteFile(), parser.getValue(name));
+        });
+    }
+
+    @ParameterizedTest
+    @NullSource
+    @ValueSource(strings = {"--extra", "-e"})
+    void default_argument_present_in_input_without_value_returns_defaultValue(String identifier) throws IOException {
+        // Arrange
+        File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
+        assert temp_file.exists();
+        temp_file.deleteOnExit();
+        final String default_value = temp_file.toString();
+        assert new File(default_value).exists();
+        final String name = "extra";
+        final String[] args;
+        if (identifier != null) {
+            args = new String[]{"-h", identifier};
+        } else {
+            args = new String[]{"-h"};
+        }
+        var parser = new CmdParser.Builder()
+                .argument(new DefaultFilePathArgument.Builder()
+                        .name(name)
+                        .description("")
+                        .shortName('e')
+                        .defaultValue(new File(default_value))
+                        .isFile()
+                        .build())
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
+        assertDoesNotThrow(() -> {
+            assertEquals(new File(default_value).getAbsoluteFile(), parser.getValue(name));
+            if (identifier != null) {
+                assertTrue(parser.isPresent(name));
+            } else {
+                assertFalse(parser.isPresent(name));
+            }
         });
     }
 
