@@ -2,6 +2,8 @@ package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
@@ -15,22 +17,30 @@ public class FilePathArgumentsTest {
     @TempDir
     static File sharedTempDir;
 
-    @Test
-    void testFilePathArgument1() {
+    @ParameterizedTest
+    @ValueSource(strings = {"--extra", "-e"})
+    void mandatory_argument_loads_directory_path_from_input(String identifier) {
+        // Arrange
         final String value = sharedTempDir.toString();
         assert new File(value).exists();
-        final String[] args = {"-h", "--extra", value};
-        CmdParser argParser = new CmdParser.Builder()
+        final String name = "extra";
+        final String[] args = {"-h", identifier, value};
+        var parser = new CmdParser.Builder()
                 .argument(new MandatoryFilePathArgument.Builder()
-                        .name("extra")
+                        .name(name)
                         .description("")
+                        .shortName('e')
                         .isDirectory()
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(new File(value).getAbsoluteFile(), argParser.getValue("extra"));
+            assertEquals(new File(value).getAbsoluteFile(), parser.getValue(name));
         });
     }
 
@@ -184,9 +194,9 @@ public class FilePathArgumentsTest {
     void default_argument_validates_defaultValue_not_null() {
         // Arrange
         var builder = new DefaultFilePathArgument.Builder()
-                        .name("extra")
-                        .description("")
-                        .isDirectory();
+                .name("extra")
+                .description("")
+                .isDirectory();
 
         // Act
         // builder.defaultValue()
