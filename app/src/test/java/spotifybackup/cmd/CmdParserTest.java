@@ -29,19 +29,21 @@ class CmdParserTest {
     }
 
     @Test
-    void testFlagByName() {
+    void parser_identifies_argument_by_name() {
+        // Arrange
         final String[] args = {"--help"};
-        CmdParser argParser = new CmdParser.Builder().addHelp().build();
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+        var parser = new CmdParser.Builder().addHelp().build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(Boolean.TRUE, argParser.getValue("help"));
+            assertEquals(Boolean.TRUE, parser.getValue("help"));
         });
         assertThrows(ArgumentNotPresentException.class, () ->
                 // "extra" flag not defined and thus should throw an exception
-                argParser.getValue("extra")
+                parser.getValue("extra")
         );
     }
 
