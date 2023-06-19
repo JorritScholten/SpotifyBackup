@@ -537,7 +537,8 @@ class CmdParserTest {
     }
 
     @Test
-    void testGetHelp1() {
+    void ensure_that_getHelp_output_is_formatted_correctly_for_default_width() {
+        // Arrange
         final String expectedOutput = """
                 Usage: --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]
 
@@ -576,26 +577,30 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
-        assertEquals(expectedOutput, argParser.getHelp(80));
+
+        // Act & Assert
+        assertEquals(expectedOutput, argParser.getHelp());
     }
 
     @Test
-    void testGetHelp2() {
+    void ensure_that_getHelp_output_is_formatted_correctly_for_125_width() {
+        // Arrange
         final String expectedOutput = """
                 Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]
-
+                                
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-
+                                
                 Mandatory arguments:
-                  --int INTEGER                some integer
-                  --txt FILEPATH               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-
+                  --int INTEGER                         some integer
+                  --txt FILEPATH                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                                        incididunt ut
+                                
                 Optional arguments:
-                  -h, --help                   Show this help message and exit.
-                  -i [INTEGER], --int2 [INTEGER]
-                                               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                  -s [STRING], --str [STRING]  some sort of string, dunno, not gonna use it.
-
+                  -h, --help                            Show this help message and exit.
+                  -i [INTEGER], --int2 [INTEGER]        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                                        incididunt ut
+                  -s [STRING], --str [STRING]           some sort of string, dunno, not gonna use it.
+                                
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                 """;
         CmdParser argParser = new CmdParser.Builder().arguments(
@@ -627,11 +632,13 @@ class CmdParserTest {
                 .programName("testName.jar")
                 .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
                 .build();
-        assertEquals(expectedOutput, argParser.getHelp(125));
+
+        // Act & Assert
+        assertEquals(expectedOutput, argParser.getHelp(125, 40));
     }
 
     @Test
-    void testGetHelp3() {
+    void ensure_that_getHelp_output_is_formatted_correctly_for_60_width() {
         final String expectedOutput = """
                 Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i
                 [INTEGER]] [-s [STRING]]
@@ -688,6 +695,8 @@ class CmdParserTest {
                 .programName("testName.jar")
                 .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
                 .build();
+
+        // Act & Assert
         assertEquals(expectedOutput, argParser.getHelp(60));
     }
 
