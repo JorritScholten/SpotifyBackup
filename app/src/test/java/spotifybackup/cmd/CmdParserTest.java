@@ -184,8 +184,9 @@ class CmdParserTest {
     }
 
     @Test
-    void testFlaggedDefaultArgument1() {
-        int defaultValue = 23;
+    void parser_with_default_argument_missing_value_in_input_is_handled() {
+        // Arrange
+        final int defaultValue = 23;
         final String[] args = {"-hx"};
         CmdParser argParser = new CmdParser.Builder()
                 .argument(new DefaultIntArgument.Builder()
@@ -196,8 +197,12 @@ class CmdParserTest {
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
             assertTrue(argParser.isPresent("extra"));
         });
