@@ -223,15 +223,17 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMissingBuilderParameter1() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
-                        .argument(new MandatoryFilePathArgument.Builder()
-                                        .name("extra")
-                                        .description("")
-//                        .isDirectory()
-                                        .build()
-                        )
-        );
+    void mandatory_argument_validates_that_path_type_is_not_null() {
+        // Arrange
+        var builder = new MandatoryFilePathArgument.Builder()
+                .name("extra")
+                .description("");
+
+        // Act
+//        builder.isDirectory();
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 
     @Test
