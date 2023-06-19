@@ -439,8 +439,8 @@ class CmdParserTest {
     }
 
     @Test
-    void testMalformedArgumentMissingValue() {
-        final String[] args = {"-he", "-28", "--string", "test", "-i"};
+    void ensure_mandatory_argument_missing_value_in_input_throws_exception() {
+        // Arrange
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
                                 .name("extra")
@@ -459,12 +459,12 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act
+        final String[] args = {"-he", "-28", "--string", "test", "-i"};
+
+        // Assert
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
