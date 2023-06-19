@@ -21,7 +21,6 @@ database and automated backups to an online repository.
           line without generating an exception
         - [ ] Clean up unit tests according to best practices as outlined in [Khorikov's book](
           https://www.manning.com/books/unit-testing)
-            - ArgumentBuildersTest.java
             - CmdParserTest.java
         - [x] Exchange public CmdParser telescoping constructors to using a builder pattern as outlined in
           [this article](

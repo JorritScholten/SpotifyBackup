@@ -696,7 +696,7 @@ class CmdParserTest {
      * ease future development.
      */
     @Test
-    void ensureAllArgumentConstructorAccessIsCorrect() {
+    void ensure_all_argument_constructor_access_is_correct_with_reflection() {
         for (var argument : scanResult.getSubclasses(Argument.class)) {
             var declaredConstructorInfo = argument.getDeclaredConstructorInfo();
             if (declaredConstructorInfo.size() != 1) {
@@ -720,7 +720,7 @@ class CmdParserTest {
      * was implemented to ease future development.
      */
     @Test
-    void ensureArgumentBuilderAccessIsCorrect() {
+    void ensure_argument_builder_access_is_correct_with_reflection() {
         for (var argument : scanResult.getSubclasses(Argument.class)) {
             var optionallyBuilder = argument
                     .getInnerClasses()
