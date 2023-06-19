@@ -276,8 +276,9 @@ class CmdParserTest {
     }
 
     @Test
-    void testMultipleFlaggedDefaultArguments1() {
-        int defaultValue = 23;
+    void parser_handles_multiple_arguments_identified_shortName_in_same_block() {
+        // Arrange
+        final int defaultValue = 23;
         final String[] args = {"-hxi"};
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new DefaultIntArgument.Builder()
@@ -294,8 +295,12 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
             assertEquals(defaultValue, argParser.getValue("extra"));
             assertEquals(defaultValue, argParser.getValue("int"));
             assertTrue(argParser.isPresent("extra"));
