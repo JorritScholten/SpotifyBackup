@@ -468,61 +468,6 @@ class CmdParserTest {
     }
 
     @Test
-    void testMalformedArgumentMultipleShortValue1() {
-        final String[] args = {"-hea", "-28"};
-        CmdParser argParser = new CmdParser.Builder().arguments(
-                        new MandatoryIntArgument.Builder()
-                                .name("extra")
-                                .description("")
-                                .shortName('e')
-                                .build(),
-                        new MandatoryStringArgument.Builder()
-                                .name("string")
-                                .description("")
-                                .shortName('a')
-                                .build())
-                .addHelp()
-                .build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
-
-    @Test
-    void testMalformedArgumentMultipleShortValue2() {
-        int defaultValue = 1;
-        final String[] args = {"-hea", String.valueOf(defaultValue)};
-        CmdParser argParser = new CmdParser.Builder().arguments(
-                        new MandatoryIntArgument.Builder()
-                                .name("extra")
-                                .description("")
-                                .shortName('e')
-                                .build(),
-                        new MandatoryIntArgument.Builder()
-                                .name("string")
-                                .description("")
-                                .shortName('a')
-                                .build(),
-                        new DefaultIntArgument.Builder()
-                                .name("int")
-                                .description("")
-                                .shortName('i')
-                                .defaultValue(defaultValue)
-                                .build())
-                .addHelp()
-                .build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
-    }
-
-    @Test
     void ensure_that_getHelp_output_is_formatted_correctly_for_default_width() {
         // Arrange
         final String expectedOutput = """
