@@ -48,9 +48,10 @@ class CmdParserTest {
     }
 
     @Test
-    void testFlagByShortName() {
+    void parser_identifies_argument_by_shortName() {
+        // Arrange
         final String[] args = {"-h"};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new FlagArgument.Builder()
                         .name("extra")
                         .description("")
@@ -58,10 +59,14 @@ class CmdParserTest {
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(Boolean.TRUE, argParser.getValue("help"));
-            assertEquals(Boolean.FALSE, argParser.getValue("extra"));
+            assertEquals(Boolean.TRUE, parser.getValue("help"));
+            assertEquals(Boolean.FALSE, parser.getValue("extra"));
         });
     }
 
