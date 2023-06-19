@@ -71,9 +71,9 @@ class CmdParserTest {
     }
 
     @Test
-    void testNullArgs() {
+    void ensure_parser_handles_empty_input() {
         final String[] args = {};
-        CmdParser argParser = new CmdParser.Builder()
+        var parser = new CmdParser.Builder()
                 .argument(new FlagArgument.Builder()
                         .name("extra")
                         .description("")
@@ -81,10 +81,14 @@ class CmdParserTest {
                         .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> parser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
-            assertEquals(Boolean.FALSE, argParser.getValue("help"));
-            assertEquals(Boolean.FALSE, argParser.getValue("extra"));
+            assertEquals(Boolean.FALSE, parser.getValue("help"));
+            assertEquals(Boolean.FALSE, parser.getValue("extra"));
         });
     }
 
