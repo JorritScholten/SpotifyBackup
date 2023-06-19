@@ -19,9 +19,8 @@ database and automated backups to an online repository.
         - [x] Deduplicate contents of `CmdParser.generateUsage()`
         - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command
           line without generating an exception
-        - [ ] Clean up unit tests according to best practices as outlined in [Khorikov's book](
+        - [x] Clean up unit tests according to best practices as outlined in [Khorikov's book](
           https://www.manning.com/books/unit-testing)
-            - CmdParserTest.java
         - [x] Exchange public CmdParser telescoping constructors to using a builder pattern as outlined in
           [this article](
           https://blogs.oracle.com/javamagazine/post/exploring-joshua-blochs-builder-design-pattern-in-java)
