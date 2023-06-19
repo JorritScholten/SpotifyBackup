@@ -182,7 +182,8 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMalformedFilePathArgument1() {
+    void argument_expecting_file_path_but_passed_directory_path_throws_exception() {
+        // Arrange
         final String value = sharedTempDir.toString();
         assert new File(value).exists();
         final String[] args = {"-h", "--extra", value};
@@ -194,6 +195,8 @@ public class FilePathArgumentsTest {
                         .shortName('e')
                         .build())
                 .build();
+
+        // Act & Assert
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
