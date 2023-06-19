@@ -93,19 +93,18 @@ class CmdParserTest {
     }
 
     @Test
-    void testDuplicateArgumentNames() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder().arguments(
-                new FlagArgument.Builder()
-                        .name("flag")
-                        .description("flag argument.")
-                        .shortName('f')
-                        .build(),
-                new FlagArgument.Builder()
+    void ensure_CmdParser_rejects_duplicate_names() {
+        // Arrange & Act
+        var parser = new CmdParser.Builder()
+                .argument(new FlagArgument.Builder()
                         .name("help")
                         .description("")
                         .shortName('e')
                         .build()
-        ).addHelp().build());
+                ).addHelp();
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, parser::build);
     }
 
     @Test
