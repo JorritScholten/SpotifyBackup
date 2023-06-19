@@ -7,6 +7,9 @@ import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.TestInstantiationException;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.exception.IllegalArgumentDescriptionException;
 import spotifybackup.cmd.exception.IllegalArgumentNameException;
@@ -41,6 +44,7 @@ public class ArgumentBuildersTest {
      * This test ensures that super.validate() is called all along the inheritance chain by triggering an exception in
      * Argument$Builder.validate(). This test was implemented to ease future development.
      * givenMalformedName_whenBuildingArguments_thenThrowException
+     *
      * @implNote Actual functionality can be one-lined with (but didn't for clarity's sake):
      * ((Argument.Builder<?>)argumentBuilder.getConstructors()[0].newInstance()).name("").build();
      */
@@ -177,15 +181,16 @@ public class ArgumentBuildersTest {
      * used because it is the simplest implemented Argument: it has no value or other validation steps beyond Argument
      * itself.
      */
-    @Test
-    void argument_builder_validates_shortname() {
+    @ParameterizedTest
+    @ValueSource(chars = {'1', '$', ' ', '-', 'ö'})
+    void argument_builder_validates_shortname(char shortName) {
         // Arrange
         var flagArgumentBuilder = new FlagArgument.Builder()
                 .description("flag argument")
                 .name("flag");
 
         // Act
-        flagArgumentBuilder.shortName('#');
+        flagArgumentBuilder.shortName(shortName);
 
         // Assert
         assertThrows(IllegalArgumentShortnameException.class, flagArgumentBuilder::build);
