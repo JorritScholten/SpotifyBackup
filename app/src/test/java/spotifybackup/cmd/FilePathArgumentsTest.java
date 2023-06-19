@@ -201,25 +201,25 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMalformedFilePathArgument2() {
-        assertDoesNotThrow(() -> {
-            File temp_file = File.createTempFile("test", "txt", sharedTempDir);
-            assert temp_file.exists();
-            temp_file.deleteOnExit();
-            final String value = temp_file.toString();
-            assert new File(value).exists();
+    void argument_expecting_directory_path_but_passed_file_path_throws_exception() throws IOException {
+        // Arrange
+        File temp_file = File.createTempFile("test", "txt", sharedTempDir);
+        assert temp_file.exists();
+        temp_file.deleteOnExit();
+        final String value = temp_file.toString();
+        assert new File(value).exists();
+        final String[] args = {"-h", "--extra", value};
+        CmdParser argParser = new CmdParser.Builder()
+                .argument(new MandatoryFilePathArgument.Builder()
+                        .name("extra")
+                        .description("")
+                        .isDirectory()
+                        .shortName('e')
+                        .build())
+                .build();
 
-            final String[] args = {"-h", "--extra", value};
-            CmdParser argParser = new CmdParser.Builder()
-                    .argument(new MandatoryFilePathArgument.Builder()
-                            .name("extra")
-                            .description("")
-                            .isDirectory()
-                            .shortName('e')
-                            .build())
-                    .build();
-            assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
-        });
+        // Act & Assert
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
