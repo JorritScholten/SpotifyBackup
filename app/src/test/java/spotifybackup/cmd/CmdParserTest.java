@@ -387,9 +387,9 @@ class CmdParserTest {
     }
 
     @Test
-    void testMultipleFlaggedDefaultArguments4() {
-        int defaultValue1 = 23, defaultValue2 = 12;
-        final String[] args = {"-hxi", String.valueOf(defaultValue2)};
+    void ensure_parser_rejects_grouped_value_arguments_in_same_block_with_a_value() {
+        // Arrange
+        final int defaultValue1 = 23, defaultValue2 = 12;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new DefaultIntArgument.Builder()
                                 .name("extra")
@@ -405,6 +405,11 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
+
+        // Act
+        final String[] args = {"-hxi", String.valueOf(defaultValue2)};
+
+        // Assert
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
