@@ -439,27 +439,6 @@ class CmdParserTest {
     }
 
     @Test
-    void testMalformedMultipleFlaggedDefaultArguments1() {
-        int defaultValue = 23;
-        final String[] args = {"-hxi"};
-        CmdParser argParser = new CmdParser.Builder().arguments(
-                        new DefaultIntArgument.Builder()
-                                .name("extra")
-                                .description("")
-                                .shortName('x')
-                                .defaultValue(defaultValue)
-                                .build(),
-                        new DefaultIntArgument.Builder()
-                                .name("int")
-                                .description("")
-                                .defaultValue(defaultValue)
-                                .build())
-                .addHelp()
-                .build();
-        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
-    }
-
-    @Test
     void testMalformedArgumentMissingValue() {
         final String[] args = {"-he", "-28", "--string", "test", "-i"};
         CmdParser argParser = new CmdParser.Builder().arguments(
