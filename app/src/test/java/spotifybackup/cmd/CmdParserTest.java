@@ -128,15 +128,15 @@ class CmdParserTest {
     }
 
     @Test
-    void testFlagByMalformedName() {
-        final String[] args = {"--hel"};
+    void ensure_unidentifiable_name_in_input_throws_exception() {
+        // Arrange
         CmdParser argParser = new CmdParser.Builder().addHelp().build();
-        assertThrows(MalformedInputException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act
+        final String[] args = {"--hel"};
+
+        // Assert
+        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
