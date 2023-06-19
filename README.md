@@ -23,7 +23,6 @@ database and automated backups to an online repository.
           https://www.manning.com/books/unit-testing)
             - ArgumentBuildersTest.java
             - CmdParserTest.java
-            - FilePathArgumentsTest.java
         - [x] Exchange public CmdParser telescoping constructors to using a builder pattern as outlined in
           [this article](
           https://blogs.oracle.com/javamagazine/post/exploring-joshua-blochs-builder-design-pattern-in-java)

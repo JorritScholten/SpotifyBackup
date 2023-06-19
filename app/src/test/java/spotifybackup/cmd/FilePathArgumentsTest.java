@@ -237,29 +237,18 @@ public class FilePathArgumentsTest {
     }
 
     @Test
-    void testMissingBuilderParameter2() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
-                        .argument(new DefaultFilePathArgument.Builder()
-                                        .name("extra")
-                                        .description("")
-//                        .isDirectory()
-                                        .defaultValue(sharedTempDir)
-                                        .build()
-                        )
-        );
-    }
+    void default_argument_validates_that_path_type_is_not_null() {
+        // Arrange
+        var builder = new DefaultFilePathArgument.Builder()
+                .name("extra")
+                .description("")
+                .defaultValue(sharedTempDir);
 
-    @Test
-    void testMissingBuilderParameter3() {
-        assertThrows(IllegalConstructorParameterException.class, () -> new CmdParser.Builder()
-                        .argument(new DefaultFilePathArgument.Builder()
-                                        .name("extra")
-                                        .description("")
-                                        .isDirectory()
-//                        .defaultValue(sharedTempDir)
-                                        .build()
-                        )
-        );
+        // Act
+//        builder.isDirectory();
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 
     @Test
