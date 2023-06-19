@@ -1,11 +1,17 @@
 package spotifybackup.app;
 
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Persistence;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 
 public class App {
     public static void main(String[] args) {
-        addition(args);
+//        addition(args);
+        System.out.println("starting main");
+        try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb")) {
+            System.out.println("genres in table: " + emf.createEntityManager().createNamedQuery("Genre.countBy").getFirstResult());
+        }
     }
 
     public static void addition(String[] args) {
