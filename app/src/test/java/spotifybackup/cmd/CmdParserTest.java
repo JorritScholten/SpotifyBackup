@@ -414,9 +414,9 @@ class CmdParserTest {
     }
 
     @Test
-    void testMultipleMandatoryArguments1() {
-        int defaultValue1 = 23;
-        final String[] args = {"-hxi", Integer.toString(defaultValue1)};
+    void ensure_parser_rejects_grouped_mandatory_value_arguments_in_same_block_with_a_value() {
+        // Arrange
+        final int defaultValue1 = 23;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
                                 .name("extra")
@@ -430,6 +430,11 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
+
+        // Act
+        final String[] args = {"-hxi", Integer.toString(defaultValue1)};
+
+        // Assert
         assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
     }
 
