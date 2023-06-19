@@ -349,8 +349,9 @@ class CmdParserTest {
     }
 
     @Test
-    void testMultipleFlaggedDefaultArguments3() {
-        int defaultValue1 = 23, defaultValue2 = 12;
+    void parser_handles_single_value_argument_with_multiple_nonvalue_arguments_in_same_block() {
+        // Arrange
+        final int defaultValue1 = 23, defaultValue2 = 12;
         final String[] args = {"-hxim", String.valueOf(defaultValue2)};
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new FlagArgument.Builder()
@@ -371,8 +372,12 @@ class CmdParserTest {
                                 .build())
                 .addHelp()
                 .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
         assertDoesNotThrow(() -> {
-            argParser.parseArguments(args);
             assertEquals(defaultValue2, argParser.getValue("int"));
             assertTrue(argParser.isPresent("extra"));
             assertTrue(argParser.isPresent("int"));
