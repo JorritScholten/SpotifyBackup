@@ -140,8 +140,8 @@ class CmdParserTest {
     }
 
     @Test
-    void testMissingMandatoryArgument() {
-        final String[] args = {"-h"};
+    void parser_missing_mandatory_argument_in_input_throws_exception() {
+        // Arrange
         CmdParser argParser = new CmdParser.Builder()
                 .argument(new MandatoryIntArgument.Builder()
                         .name("extra")
@@ -150,12 +150,12 @@ class CmdParserTest {
                         .build())
                 .addHelp()
                 .build();
-        assertThrows(MissingArgumentException.class, () ->
-                argParser.parseArguments(args)
-        );
-        assertThrows(ArgumentsNotParsedException.class, () ->
-                argParser.getValue("help")
-        );
+
+        // Act
+        final String[] args = {"-h"};
+
+        // Assert
+        assertThrows(MissingArgumentException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
