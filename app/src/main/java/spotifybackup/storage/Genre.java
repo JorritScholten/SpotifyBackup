@@ -21,4 +21,12 @@ public class Genre {
     private String name;
     @Lob
     private String description;
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "name = " + name + ", " +
+                "description = " + description + ")";
+    }
 }

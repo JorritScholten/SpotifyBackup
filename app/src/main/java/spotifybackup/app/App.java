@@ -12,11 +12,9 @@ public class App {
 //        addition(args);
         System.out.println("starting main");
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-//        try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb")) {
-//            System.out.println("genres in table: " + emf.createEntityManager().createNamedQuery("Genre.countBy").getFirstResult());
-//        }
+
         var genreRepository = new GenreRepository();
-        System.out.println("found id=0:" + genreRepository.find(0));
+        System.out.println("found id=0: " + genreRepository.find(0));
         System.out.println("found " + genreRepository.count() + " genre(s).");
     }
 
