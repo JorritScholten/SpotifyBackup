@@ -1,9 +1,8 @@
 package spotifybackup.app;
 
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
+import spotifybackup.storage.GenreRepository;
 
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -13,9 +12,12 @@ public class App {
 //        addition(args);
         System.out.println("starting main");
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb")) {
-            System.out.println("genres in table: " + emf.createEntityManager().createNamedQuery("Genre.countBy").getFirstResult());
-        }
+//        try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb")) {
+//            System.out.println("genres in table: " + emf.createEntityManager().createNamedQuery("Genre.countBy").getFirstResult());
+//        }
+        var genreRepository = new GenreRepository();
+        System.out.println("found id=0:" + genreRepository.find(0));
+        System.out.println("found " + genreRepository.count() + " genre(s).");
     }
 
     public static void addition(String[] args) {
