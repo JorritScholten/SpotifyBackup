@@ -6,7 +6,7 @@ import jakarta.persistence.Persistence;
 public class GenreRepository {
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb");
 
-    public Genre find(int id) {
+    public Genre find(long id) {
         try (var entityManager = emf.createEntityManager()) {
             Genre genre = entityManager.find(Genre.class, id);
             return genre;
