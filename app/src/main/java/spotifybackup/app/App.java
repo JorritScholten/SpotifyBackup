@@ -5,10 +5,14 @@ import jakarta.persistence.Persistence;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+
 public class App {
     public static void main(String[] args) {
 //        addition(args);
         System.out.println("starting main");
+        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         try (EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb")) {
             System.out.println("genres in table: " + emf.createEntityManager().createNamedQuery("Genre.countBy").getFirstResult());
         }
