@@ -9,6 +9,7 @@
         </description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>spotifybackup.app.App</class>
+        <class>spotifybackup.storage.Genre</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver"
                       value="org.h2.Driver"/>

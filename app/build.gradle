@@ -29,7 +29,6 @@ java {
 application {
     // Define the main class for the application.
     mainClass = 'spotifybackup.app.App'
-    mainModule = 'spotifybackup.app.main'
     applicationDefaultJvmArgs = ['-Dgreeting.language=en']
 }
 
