@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @AllArgsConstructor
+@Entity
 @NoArgsConstructor
 @Getter
 public class SpotifyID {

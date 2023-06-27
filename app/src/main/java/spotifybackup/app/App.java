@@ -2,6 +2,7 @@ package spotifybackup.app;
 
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
+import spotifybackup.storage.ArtistRepository;
 import spotifybackup.storage.GenreRepository;
 
 import java.util.logging.Level;
@@ -16,6 +17,10 @@ public class App {
         var genreRepository = new GenreRepository();
         System.out.println("found id=0: " + genreRepository.find(0));
         System.out.println("found " + genreRepository.count() + " genre(s).");
+
+        var artistRepository = new ArtistRepository();
+        artistRepository.seed();
+        System.out.println("found " + artistRepository.count() + " artist(s).");
     }
 
     public static void addition(String[] args) {

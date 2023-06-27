@@ -14,6 +14,7 @@ dependencies {
             'org.projectlombok:lombok:1.18.26',
             'com.h2database:h2:2.1.214'
     )
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
 }
 
 test {

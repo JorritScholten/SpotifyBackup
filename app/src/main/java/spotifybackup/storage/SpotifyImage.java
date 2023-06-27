@@ -2,13 +2,15 @@ package spotifybackup.storage;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.net.URL;
+import java.net.URI;
 
-@Entity
+@Builder
 @AllArgsConstructor
+@Entity
 @NoArgsConstructor
 @Getter
 public class SpotifyImage {
@@ -17,7 +19,7 @@ public class SpotifyImage {
     private long id;
 
     @Column(nullable = false)
-    private URL uri;
+    private URI url;
 
     @Column(nullable = false)
     private int width, height;
