@@ -11,29 +11,21 @@ database and automated backups to an online repository.
 - Good documentation and a user guide.
 - Write unit tests.
 - [ ] Implement a robust commandline interface in the style of the Python argparse package.
-    - [ ] Format code, write documentation and ensure compliance with style
-        - [ ] Write usage documentation in a markdown document
-        - [ ] Split CmdParser class into CmdParser and ParsedArguments to eliminate
-          `CmdParser.argumentsParsed` and clean up code structure
-        - [x] Use `Optional<Argument>` as return in the identifyArgument functions
-        - [x] Deduplicate contents of `CmdParser.generateUsage()`
-        - [ ] Change code structure so that `CmdParser.printHelp()` can be invoked from the command
-          line without generating an exception
-        - [x] Clean up unit tests according to best practices as outlined in [Khorikov's book](
-          https://www.manning.com/books/unit-testing)
-        - [x] Exchange public CmdParser telescoping constructors to using a builder pattern as outlined in
-          [this article](
-          https://blogs.oracle.com/javamagazine/post/exploring-joshua-blochs-builder-design-pattern-in-java)
-        - [x] Exchange various telescoping Arguments constructors to using builder patterns as with
-          CmdParser. Refactor code from using `DefaultArgument` parent class to `HasDefaultValue` interface
-          to enable easier code de-duplication
-        - [x] Remove MessageUtils from codebase
-        - [x] In CmdParser constructor exchange `Set<String> argumentNames` and `Set<Character>
-          argumentShortNames` for a `.stream()` call
-    - [ ] Add pretty printing (at a later point in time, look in to jANSI library?)
-    - [ ] Implement positional arguments (at a later point in time)
 - [ ] Create Spotify API wrapper.
 - [ ] Design a sensible SQL database that minimises data duplication.
+    - [x] Implement working Hibernate connection to embedded database.
+    - [ ] Implement complete storage class system to store all track information from Spotify about Playlists and User's
+      Liked Songs.
+        - [x] genres
+        - [x] spotify image
+        - [x] artists
+        - [x] spotify ID
+        - [ ] playlist information (we'll treat Liked Songs as a playlist)
+        - [ ] tracks in a playlist
+        - [ ] users
+        - [ ] tracks
+    - [ ] Implement system to automatically handle creation and validation of database
+    - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
 
 ## Documentation
 
