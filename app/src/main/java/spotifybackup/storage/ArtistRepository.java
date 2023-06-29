@@ -39,10 +39,16 @@ public class ArtistRepository {
                     .height(20)
                     .build();
             artistImages.add(spotifyImage2);
+            Set<Genre> genres = new HashSet<>();
+            genres.add(new Genre("rock"));
+            genres.add(new Genre("prog-rock"));
+            genres.add(new Genre("alt-rock"));
+
             var artist = new Artist.ArtistBuilder() //123, "Test artist", new SpotifyID("0123456789abcdef"), artistImages);
                     .name("Test artist")
                     .spotifyID(new SpotifyID("0123456789abcdef"))
                     .images(artistImages)
+                    .genres(genres)
                     .build();
 
             entityManager.getTransaction().begin();

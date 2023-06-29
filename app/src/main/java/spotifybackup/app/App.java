@@ -14,13 +14,13 @@ public class App {
         System.out.println("starting main");
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
 
-        var genreRepository = new GenreRepository();
-        System.out.println("found id=0: " + genreRepository.find(0));
-        System.out.println("found " + genreRepository.count() + " genre(s).");
-
         var artistRepository = new ArtistRepository();
         artistRepository.seed();
         System.out.println("found " + artistRepository.count() + " artist(s).");
+
+        var genreRepository = new GenreRepository();
+        System.out.println("found id=0: " + genreRepository.find(0));
+        System.out.println("found " + genreRepository.count() + " genre(s).");
     }
 
     public static void addition(String[] args) {
