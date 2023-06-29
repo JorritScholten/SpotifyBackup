@@ -5,20 +5,30 @@ import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 import spotifybackup.storage.ArtistRepository;
 import spotifybackup.storage.GenreRepository;
 
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
 public class App {
+    private static final Properties DB_ACCESS = new Properties();
+
+    static {
+        DB_ACCESS.put("hibernate.connection.driver_class", "org.h2.Driver");
+        DB_ACCESS.put("hibernate.connection.url", "jdbc:h2:~/test;DB_CLOSE_DELAY=-1");
+        DB_ACCESS.put("hibernate.connection.username", "sa");
+        DB_ACCESS.put("hibernate.connection.password", "");
+    }
+
     public static void main(String[] args) {
 //        addition(args);
         System.out.println("starting main");
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
 
-        var artistRepository = new ArtistRepository();
+        var artistRepository = new ArtistRepository(DB_ACCESS);
         artistRepository.seed();
         System.out.println("found " + artistRepository.count() + " artist(s).");
 
-        var genreRepository = new GenreRepository();
+        var genreRepository = new GenreRepository(DB_ACCESS);
         System.out.println("found id=1: " + genreRepository.find(1));
         System.out.println("found " + genreRepository.count() + " genre(s).");
     }

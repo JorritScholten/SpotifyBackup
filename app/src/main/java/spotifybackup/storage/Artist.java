@@ -24,14 +24,14 @@ public class Artist {
     @Column(nullable = false)
     private String name;
 
-    @OneToOne(cascade = {CascadeType.ALL})
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "spotify_id", referencedColumnName = "id")
     private SpotifyID spotifyID;
 
-    @OneToMany(cascade = {CascadeType.ALL})
+    @OneToMany(cascade = CascadeType.ALL)
     private Set<SpotifyImage> images;
 
-    @ManyToMany(cascade = {CascadeType.ALL})
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinColumn(nullable = true, name = "genre_id", referencedColumnName = "id")
     private Set<Genre> genres;
 }

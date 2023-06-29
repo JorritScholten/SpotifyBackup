@@ -6,10 +6,15 @@ import jakarta.persistence.Persistence;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 public class ArtistRepository {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("testdb");
+    private EntityManagerFactory emf; // = Persistence.createEntityManagerFactory("testdb");
+
+    public ArtistRepository(Properties DB_ACCESS) {
+        emf = Persistence.createEntityManagerFactory("testdb", DB_ACCESS);
+    }
 
     public Artist find(long id) {
         try (var entityManager = emf.createEntityManager()) {
