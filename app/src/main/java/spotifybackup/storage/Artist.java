@@ -29,6 +29,5 @@ public class Artist {
     private SpotifyID spotifyID;
 
     @OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(nullable = true, name = "image_id", referencedColumnName = "id")
     private Set<SpotifyImage> images;
 }
