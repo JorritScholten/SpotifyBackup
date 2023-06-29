@@ -4,4 +4,5 @@ module SpotifyBackup.app.main {
     requires com.h2database;
     requires jakarta.persistence;
     requires lombok;
+    requires java.naming;
 }

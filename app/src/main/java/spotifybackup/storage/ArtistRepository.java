@@ -26,26 +26,29 @@ public class ArtistRepository {
 
     public void seed() {
         try (var entityManager = emf.createEntityManager()) {
+            Set<SpotifyImage> artistImages = new HashSet<>();
             var spotifyImage1 = new SpotifyImage.SpotifyImageBuilder() //0, new URI("localhost:~/test1"), 1, 2);
                     .url(new URI("localhost:~/test1"))
                     .width(1)
                     .height(2)
                     .build();
+            artistImages.add(spotifyImage1);
             var spotifyImage2 = new SpotifyImage.SpotifyImageBuilder() //2, new URI("localhost:~/test2"), 10, 20);
                     .url(new URI("localhost:~/test12"))
                     .width(11)
                     .height(20)
                     .build();
-            Set<SpotifyImage> artistImages = new HashSet<>();
-            artistImages.add(spotifyImage1);
             artistImages.add(spotifyImage2);
-            var artist = new Artist();//123, "Test artist", new SpotifyID("0123456789abcdef"), artistImages);
-            artist.setName("Test artist");
-//            var id = new SpotifyID();
-//            id.setId("0123456789abcdef");
-            artist.setSpotifyID(new SpotifyID("0123456789abcdef"));
-            artist.setImages(artistImages);
+            var artist = new Artist.ArtistBuilder() //123, "Test artist", new SpotifyID("0123456789abcdef"), artistImages);
+                    .name("Test artist")
+                    .spotifyID(new SpotifyID("0123456789abcdef"))
+                    .images(artistImages)
+                    .build();
+
+            entityManager.getTransaction().begin();
             entityManager.persist(artist);
+            entityManager.flush();
+            entityManager.getTransaction().commit();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
