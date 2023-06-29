@@ -18,8 +18,7 @@ public class ArtistRepository {
 
     public Artist find(long id) {
         try (var entityManager = emf.createEntityManager()) {
-            Artist artist = entityManager.find(Artist.class, id);
-            return artist;
+            return entityManager.find(Artist.class, id);
         }
     }
 
