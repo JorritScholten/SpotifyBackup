@@ -51,10 +51,12 @@ public class ArtistRepository {
                     .genres(genres)
                     .build();
 
-            entityManager.getTransaction().begin();
-            entityManager.persist(artist);
-            entityManager.flush();
-            entityManager.getTransaction().commit();
+            if (entityManager.find(SpotifyID.class, artist.getSpotifyID().getId()) == null) {
+                entityManager.getTransaction().begin();
+                entityManager.persist(artist);
+                entityManager.flush();
+                entityManager.getTransaction().commit();
+            }
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }

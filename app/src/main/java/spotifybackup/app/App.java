@@ -19,7 +19,7 @@ public class App {
         System.out.println("found " + artistRepository.count() + " artist(s).");
 
         var genreRepository = new GenreRepository();
-        System.out.println("found id=0: " + genreRepository.find(0));
+        System.out.println("found id=1: " + genreRepository.find(1));
         System.out.println("found " + genreRepository.count() + " genre(s).");
     }
 
