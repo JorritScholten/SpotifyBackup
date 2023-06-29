@@ -12,6 +12,12 @@ database and automated backups to an online repository.
 - Write unit tests.
 - [x] Implement a robust commandline interface in the style of the Python argparse package.
 - [ ] Create Spotify API wrapper.
+    - [ ] Make successful GET request to Spotify API
+        - [ ] Handle OAuth 2.0 redirects
+    - [ ] Store artist GET request to db
+    - [ ] Write unit test using mocking (leaning towards EasyMock)
+    - [ ] Store track info to db
+    - [ ] Store playlist to db
 - [ ] Design a sensible SQL database that minimises data duplication.
 
 ## Documentation
