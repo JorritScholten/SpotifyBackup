@@ -31,6 +31,7 @@ public class Artist {
     @OneToMany(cascade = CascadeType.ALL)
     private Set<SpotifyImage> images;
 
+    // more info: https://stackoverflow.com/a/59523218
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinColumn(nullable = true, name = "genre_id", referencedColumnName = "id")
     private Set<Genre> genres;

@@ -13,10 +13,9 @@ public class App {
     private static final Properties DB_ACCESS = new Properties();
 
     static {
-        DB_ACCESS.put("hibernate.hikari.dataSourceClassName", "org.h2.jdbcx.JdbcDataSource");
         DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:~/test;DB_CLOSE_DELAY=-1");
-        DB_ACCESS.put("hibernate.hikari.dataSource.user", "sa");
-        DB_ACCESS.put("hibernate.hikari.dataSource.password", "");
+//        DB_ACCESS.put("hibernate.hikari.dataSource.user", "sa");
+//        DB_ACCESS.put("hibernate.hikari.dataSource.password", "");
     }
 
     public static void main(String[] args) {
