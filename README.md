@@ -14,7 +14,9 @@ database and automated backups to an online repository.
 - [ ] Make use of Spotify API wrapper. [Using this library](
   https://github.com/spotify-web-api-java/spotify-web-api-java/)
   - [ ] Make successful GET request to Spotify API
+    - [ ] Host temporary REST service
     - [ ] Handle OAuth 2.0 redirects
+    - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
   - [ ] Store artist GET request to db
   - [ ] Write unit test using mocking (leaning towards EasyMock)
   - [ ] Store track info to db

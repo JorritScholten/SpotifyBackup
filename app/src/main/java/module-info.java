@@ -7,4 +7,5 @@ module SpotifyBackup.app.main {
     requires java.naming;
     requires se.michaelthelin.spotify;
     requires org.apache.httpcomponents.core5.httpcore5;
+    requires java.desktop;
 }
