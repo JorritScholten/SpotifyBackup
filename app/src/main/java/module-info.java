@@ -5,4 +5,6 @@ module SpotifyBackup.app.main {
     requires jakarta.persistence;
     requires lombok;
     requires java.naming;
+    requires se.michaelthelin.spotify;
+    requires org.apache.httpcomponents.core5.httpcore5;
 }
