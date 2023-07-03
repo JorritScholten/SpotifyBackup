@@ -11,6 +11,13 @@ public class ApiWrapper {
 
     public ApiWrapper(SpotifyApi.Builder builder) {
         spotifyApi = builder.build();
+        System.out.println("authorizationCodeUri: " + spotifyApi.authorizationCodeUri().build().execute());
+    }
+
+    public void authorizationCodeSync() {
+        try {
+
+        }
     }
 
     public String getArtistName(String spotifyId) throws IOException {

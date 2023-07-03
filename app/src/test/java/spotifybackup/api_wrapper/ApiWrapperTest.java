@@ -22,10 +22,11 @@ public class ApiWrapperTest {
         try (var file = new FileReader(System.getProperty("user.home") + System.getProperty("file.separator") + ".java_spotify_backup.json")) {
             var parser = JsonParser.parseReader(file);
             apiWrapper = new ApiWrapper(SpotifyApi.builder()
-                    .setClientId(parser.getAsJsonObject().get("clientId").toString())
-                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").toString())
-                    .setRedirectUri(new URI(parser.getAsJsonObject().get("redirectUri").toString()))
+                    .setClientId(parser.getAsJsonObject().get("clientId").getAsString())
+                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").getAsString())
+                    .setRedirectUri(new URI(parser.getAsJsonObject().get("redirectUri").getAsString()))
             );
+            apiWrapper.authorizationCodeSync();
         }
     }
 
