@@ -13,9 +13,9 @@ database and automated backups to an online repository.
 - [x] Implement a robust commandline interface in the style of the Python argparse package.
 - [ ] Make use of Spotify API wrapper. [Using this library](
   https://github.com/spotify-web-api-java/spotify-web-api-java/)
-  - [ ] Make successful GET request to Spotify API
+  - [x] Make successful GET request to Spotify API
     - [x] Host temporary REST service
-    - [ ] Handle OAuth 2.0 redirects
+    - [x] Handle OAuth 2.0 redirects
     - [ ] Remove Thread.sleep() call to make everything asynchronous
     - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
   - [ ] Store artist GET request to db
