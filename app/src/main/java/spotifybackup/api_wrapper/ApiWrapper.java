@@ -22,9 +22,9 @@ import java.util.regex.Pattern;
 
 public class ApiWrapper {
     private final SpotifyApi spotifyApi;
-    static private boolean callbackTriggered = false;
-    static private Optional<String> code;
-    static private String state = UUID.randomUUID().toString();
+    private boolean callbackTriggered = false;
+    private Optional<String> code;
+    private String state = UUID.randomUUID().toString();
 
     public ApiWrapper(SpotifyApi.Builder builder) {
         spotifyApi = builder.build();
@@ -84,7 +84,7 @@ public class ApiWrapper {
         }
     }
 
-    static class CallbackHandler implements HttpHandler {
+    class CallbackHandler implements HttpHandler {
         @Override
         public void handle(HttpExchange t) throws IOException {
             String response = "Response from callback.";
