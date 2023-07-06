@@ -20,6 +20,7 @@ database and automated backups to an online repository.
     - [ ] Remove Thread.sleep() call to make everything asynchronous
     - [ ] Handle token refresh when current token expires
     - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
+    - [ ] Handle the various API response error codes
   - [ ] Store artist GET request to db
   - [ ] Write unit test using mocking (leaning towards EasyMock)
   - [ ] Store track info to db
