@@ -16,6 +16,7 @@ database and automated backups to an online repository.
   - [x] Make successful GET request to Spotify API
     - [x] Host temporary REST service
     - [x] Handle OAuth 2.0 redirects
+    - [ ] Change authentication to use PKCE as well so that the client doesn't need an API secret
     - [ ] Remove Thread.sleep() call to make everything asynchronous
     - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
   - [ ] Store artist GET request to db
