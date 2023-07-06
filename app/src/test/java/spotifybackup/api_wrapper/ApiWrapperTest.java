@@ -23,7 +23,7 @@ public class ApiWrapperTest {
             var parser = JsonParser.parseReader(file);
             apiWrapper = new ApiWrapper(SpotifyApi.builder()
                     .setClientId(parser.getAsJsonObject().get("clientId").getAsString())
-                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").getAsString())
+//                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").getAsString())
                     .setRedirectUri(new URI(parser.getAsJsonObject().get("redirectUri").getAsString()))
             );
             apiWrapper.authorizationCodeUri_Sync();

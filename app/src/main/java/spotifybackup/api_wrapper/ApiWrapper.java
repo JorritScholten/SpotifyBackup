@@ -3,10 +3,13 @@ package spotifybackup.api_wrapper;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.apache.hc.core5.http.ParseException;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
 import java.awt.*;
 import java.io.IOException;
@@ -14,29 +17,49 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CancellationException;
-import java.util.concurrent.CompletionException;
 import java.util.regex.Pattern;
 
 public class ApiWrapper {
     private final SpotifyApi spotifyApi;
+    final private boolean performPKCE;
     private boolean callbackTriggered = false;
     private Optional<String> code;
     private String state = UUID.randomUUID().toString();
+    private String key = RandomStringUtils.randomAlphanumeric(128);
+    private String keyDigest;
 
     public ApiWrapper(SpotifyApi.Builder builder) {
         spotifyApi = builder.build();
+        performPKCE = spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isEmpty();
+        if (performPKCE) {
+            try {
+                var md = MessageDigest.getInstance("SHA-256");
+                keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
+            } catch (NoSuchAlgorithmException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void authorizationCodeUri_Sync() throws IOException {
         //open redirect uri in browser or local window
         try {
-            final var authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-                    .state(state)
-                    .build();
+            AuthorizationCodeUriRequest authorizationCodeUriRequest;
+            if (performPKCE) {
+                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest)
+                        .state(state)
+                        .build();
+            } else {
+                authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
+                        .state(state)
+                        .build();
+            }
             final URI uri = authorizationCodeUriRequest.execute();
+
             // host https:localhost:8888/callback RESTfull webserver to catch callback code
             var redirectUri = spotifyApi.getRedirectURI();
             HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()), 0);
@@ -45,32 +68,27 @@ public class ApiWrapper {
             server.start();
 
             // execute above URL by opening browser window with it
-            System.out.println("URI: " + uri.toString());
             Desktop.getDesktop().browse(uri);
 
-            System.out.println("waiting for callback");
             while (!callbackTriggered) {
                 Thread.sleep(10);
             }
             server.stop(0);
             if (code.isEmpty()) {
-                System.err.println("callback triggered without valid code return.");
+                new RuntimeException("callback triggered without valid code return.");
             } else {
-                System.out.println("found code: " + code.get());
-                final var authorizationCodeRequest = spotifyApi.authorizationCode(code.get()).build();
-                final var authorizationCode = authorizationCodeRequest.execute();
-                spotifyApi.setAccessToken(authorizationCode.getAccessToken());
-                spotifyApi.setRefreshToken(authorizationCode.getRefreshToken());
+                AuthorizationCodeCredentials authorizationCodeCredentials;
+                if (performPKCE) {
+                    final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code.get(), key).build();
+                    authorizationCodeCredentials = authorizationCodePKCERequest.execute();
+                } else {
+                    final var authorizationCodeRequest = spotifyApi.authorizationCode(code.get()).build();
+                    authorizationCodeCredentials = authorizationCodeRequest.execute();
+                }
+                spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+                spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             }
-        } catch (CompletionException e) {
-            System.out.println("Error: " + e.getCause().getMessage());
-        } catch (CancellationException e) {
-            System.out.println("Async operation cancelled.");
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        } catch (SpotifyWebApiException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
@@ -94,7 +112,6 @@ public class ApiWrapper {
             os.close();
 
             // code is contained in URI query
-            System.out.println("callback header: " + t.getRequestURI().getQuery());
             var matcher = Pattern.compile("state=(?<state>[^&]*)&?")
                     .matcher(t.getRequestURI().getQuery());
             if (matcher.find() && state.equals(matcher.group("state"))) {
