@@ -115,12 +115,20 @@ public class ApiWrapper {
             var matcher = Pattern.compile("state=(?<state>[^&]*)&?")
                     .matcher(t.getRequestURI().getQuery());
             if (matcher.find() && state.equals(matcher.group("state"))) {
-                matcher = Pattern.compile("code=(?<code>[^&]*)&?")
+                matcher = Pattern.compile("error=(?<error>[^&]*)&?")
                         .matcher(t.getRequestURI().getQuery());
-                matcher.find();
-                code = Optional.ofNullable(matcher.group("code"));
+                if (matcher.find()) {
+                    code = Optional.empty();
+//                    throw new RuntimeException("Authorization has failed, reason: " + matcher.group("error"));
+                } else {
+                    matcher = Pattern.compile("code=(?<code>[^&]*)&?")
+                            .matcher(t.getRequestURI().getQuery());
+                    matcher.find();
+                    code = Optional.ofNullable(matcher.group("code"));
+                }
             } else {
                 code = Optional.empty();
+//                throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
             }
             callbackTriggered = true;
         }
