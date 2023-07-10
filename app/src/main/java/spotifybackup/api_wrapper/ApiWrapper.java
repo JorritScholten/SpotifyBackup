@@ -5,6 +5,7 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
@@ -22,38 +23,38 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.Semaphore;
 import java.util.regex.Pattern;
 
 public class ApiWrapper {
     private final SpotifyApi spotifyApi;
-    final private boolean performPKCE;
-    private boolean callbackTriggered = false;
-    private Optional<String> code;
-    private String state = UUID.randomUUID().toString();
-    private String key = RandomStringUtils.randomAlphanumeric(128);
-    private String keyDigest;
-    //    Future<Optional<String>> futureCode; // /*futureOptionalCode*/ = new CompletableFuture<>().
-    private Executor callbackHandlerExecutor = Executors.newCachedThreadPool();
+    private final boolean performPKCE;
+    private final Semaphore waitingForAPI = new Semaphore(1);
+    private final String state = UUID.randomUUID().toString();
+    private final String key;
+    private final String keyDigest;
+    private final CallbackHandler callbackHandler = new CallbackHandler();
 
     public ApiWrapper(SpotifyApi.Builder builder) {
         spotifyApi = builder.build();
         performPKCE = spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isEmpty();
         if (performPKCE) {
             try {
+                key = RandomStringUtils.randomAlphanumeric(128);
                 var md = MessageDigest.getInstance("SHA-256");
                 keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
+        } else {
+            keyDigest = null;
+            key = null;
         }
     }
 
-    public void authorizationCodeUri_Sync() throws IOException {
-        //open redirect uri in browser or local window
+    public void performTokenRequest() {
         try {
+            waitingForAPI.acquire();
             AuthorizationCodeUriRequest authorizationCodeUriRequest;
             if (performPKCE) {
                 authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest)
@@ -69,7 +70,7 @@ public class ApiWrapper {
             // host https:localhost:8888/callback RESTfull webserver to catch callback code
             var redirectUri = spotifyApi.getRedirectURI();
             HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()), 0);
-            server.createContext(redirectUri.getPath(), new CallbackHandler());
+            server.createContext(redirectUri.getPath(), callbackHandler);
             server.setExecutor(null);
             server.start();
 
@@ -79,88 +80,29 @@ public class ApiWrapper {
             }
             Desktop.getDesktop().browse(uri);
 
-            while (!callbackTriggered) {
-                Thread.sleep(10);
-            }
-            server.stop(0);
-            if (code.isEmpty()) {
-                new RuntimeException("callback triggered without valid code return.");
-            } else {
-                AuthorizationCodeCredentials authorizationCodeCredentials;
-                if (performPKCE) {
-                    final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code.get(), key).build();
-                    authorizationCodeCredentials = authorizationCodePKCERequest.execute();
+            CompletableFuture.runAsync(callbackHandler::waitForCode).thenRunAsync(() -> {
+                server.stop(0);
+                var code = callbackHandler.getCode();
+                if (code.isEmpty()) {
+                    new RuntimeException("callback triggered without valid code return.");
                 } else {
-                    final var authorizationCodeRequest = spotifyApi.authorizationCode(code.get()).build();
-                    authorizationCodeCredentials = authorizationCodeRequest.execute();
-                }
-                spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-                spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public void authorizationCodeUri_ASync() {
-        /*
-         * Most of this method is still synchronous, the asynchronous part of the function is the waiting for the users'
-         * confirmation.
-         */
-        try {
-            AuthorizationCodeUriRequest authorizationCodeUriRequest;
-            if (performPKCE) {
-                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest)
-                        .state(state)
-                        .build();
-            } else {
-                authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-                        .state(state)
-                        .build();
-            }
-            final URI uri = authorizationCodeUriRequest.execute();
-
-            // host https:localhost:8888/callback RESTfull webserver to catch callback code
-            var redirectUri = spotifyApi.getRedirectURI();
-            HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()), 0);
-            server.createContext(redirectUri.getPath(), new CallbackHandler());
-            server.setExecutor(callbackHandlerExecutor);
-            server.start();
-
-            // execute above URL by opening browser window with it
-            if (!(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
-                throw new RuntimeException("Desktop not supported, can't open URLs in web browser.");
-            }
-            Desktop.getDesktop().browse(uri);
-
-//            Callable<Optional<String>> waitForCodeTask = this::waitForCode;
-//            Future<Optional<String>> futureCode = new FutureTask<>(waitForCodeTask);
-            Future<Void> futureCode = CompletableFuture.runAsync(() -> {
-                while (!callbackTriggered) {
+                    AuthorizationCodeCredentials authorizationCodeCredentials;
                     try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
+                        if (performPKCE) {
+                            final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code.get(), key).build();
+                            authorizationCodeCredentials = authorizationCodePKCERequest.execute();
+                        } else {
+                            final var authorizationCodeRequest = spotifyApi.authorizationCode(code.get()).build();
+                            authorizationCodeCredentials = authorizationCodeRequest.execute();
+                        }
+                    } catch (Exception e) {
                         throw new RuntimeException(e);
                     }
+                    spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+                    spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
                 }
-                ;
+                waitingForAPI.release();
             });
-            futureCode.get();
-            server.stop(0);
-            if (code.isEmpty()) {
-                new RuntimeException("callback triggered without valid code return.");
-            } else {
-                AuthorizationCodeCredentials authorizationCodeCredentials;
-                if (performPKCE) {
-                    final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code.get(), key).build();
-                    authorizationCodeCredentials = authorizationCodePKCERequest.execute();
-                } else {
-                    final var authorizationCodeRequest = spotifyApi.authorizationCode(code.get()).build();
-                    authorizationCodeCredentials = authorizationCodeRequest.execute();
-                }
-                spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-                spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -168,22 +110,54 @@ public class ApiWrapper {
 
     public String getArtistName(String spotifyId) throws IOException {
         try {
+            waitingForAPI.acquire();
             final Artist artist = spotifyApi.getArtist(spotifyId).build().execute();
+            waitingForAPI.release();
             return artist.getName();
-        } catch (SpotifyWebApiException | org.apache.hc.core5.http.ParseException e) {
+        } catch (SpotifyWebApiException | ParseException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
     private class CallbackHandler implements HttpHandler {
-        private boolean handleCalled = false;
+        private final Semaphore waitingForHandle = new Semaphore(1);
+        private String responseQuery;
 
-        public void waitForCode() throws InterruptedException {
-            while (!handleCalled) {
-                Thread.sleep(10);
-//                callbackHandlerExecutor.
+        {
+            try {
+                waitingForHandle.acquire();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            handleCalled = false;
+        }
+
+        public void waitForCode() {
+            try {
+                waitingForHandle.acquire();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public Optional<String> getCode() {
+            Optional<String> code;
+            var matcher = Pattern.compile("state=(?<state>[^&]*)&?").matcher(responseQuery);
+            if (matcher.find() && state.equals(matcher.group("state"))) {
+                matcher = Pattern.compile("error=(?<error>[^&]*)&?").matcher(responseQuery);
+                if (matcher.find()) {
+                    throw new RuntimeException("Authorization has failed, reason: " + matcher.group("error"));
+                } else {
+                    matcher = Pattern.compile("code=(?<code>[^&]*)&?").matcher(responseQuery);
+                    if (matcher.find()) {
+                        code = Optional.ofNullable(matcher.group("code"));
+                    } else {
+                        throw new RuntimeException("Can't find code in successful authorization response.");
+                    }
+                }
+            } else {
+                throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
+            }
+            return code;
         }
 
         @Override
@@ -195,26 +169,8 @@ public class ApiWrapper {
             os.close();
 
             // code is contained in URI query
-            var matcher = Pattern.compile("state=(?<state>[^&]*)&?")
-                    .matcher(t.getRequestURI().getQuery());
-            if (matcher.find() && state.equals(matcher.group("state"))) {
-                matcher = Pattern.compile("error=(?<error>[^&]*)&?")
-                        .matcher(t.getRequestURI().getQuery());
-                if (matcher.find()) {
-                    code = Optional.empty();
-//                    throw new RuntimeException("Authorization has failed, reason: " + matcher.group("error"));
-                } else {
-                    matcher = Pattern.compile("code=(?<code>[^&]*)&?")
-                            .matcher(t.getRequestURI().getQuery());
-                    matcher.find();
-                    code = Optional.ofNullable(matcher.group("code"));
-                }
-            } else {
-                code = Optional.empty();
-//                throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
-            }
-            callbackTriggered = true;
-            handleCalled = true;
+            responseQuery = t.getRequestURI().getQuery();
+            waitingForHandle.release();
         }
     }
 }

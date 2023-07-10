@@ -17,10 +17,11 @@ database and automated backups to an online repository.
     - [x] Host temporary REST service
     - [x] Handle OAuth 2.0 redirects
     - [x] Change authentication to use PKCE as well so that the client doesn't need an API secret
-    - [ ] Remove Thread.sleep() call to make everything asynchronous
+    - [x] Remove Thread.sleep() call to make authorization request asynchronous
     - [ ] Handle token refresh when current token expires
     - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
     - [ ] Handle the various API response error codes
+    - [ ] Cleanup of concurrent and async tasks in ApiWrapper.java
   - [ ] Store artist GET request to db
   - [ ] Write unit test using mocking (leaning towards EasyMock)
   - [ ] Store track info to db
