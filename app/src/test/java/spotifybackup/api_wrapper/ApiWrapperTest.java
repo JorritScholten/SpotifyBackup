@@ -26,7 +26,8 @@ public class ApiWrapperTest {
 //                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").getAsString())
                     .setRedirectUri(new URI(parser.getAsJsonObject().get("redirectUri").getAsString()))
             );
-            apiWrapper.authorizationCodeUri_Sync();
+//            apiWrapper.authorizationCodeUri_Sync();
+            apiWrapper.authorizationCodeUri_ASync();
         }
     }
 
