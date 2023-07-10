@@ -20,7 +20,6 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
@@ -80,27 +79,23 @@ public class ApiWrapper {
             }
             Desktop.getDesktop().browse(uri);
 
-            CompletableFuture.runAsync(callbackHandler::waitForCode).thenRunAsync(() -> {
+            CompletableFuture.runAsync(() -> {
+                var code = callbackHandler.getCodeSync();
                 server.stop(0);
-                var code = callbackHandler.getCode();
-                if (code.isEmpty()) {
-                    new RuntimeException("callback triggered without valid code return.");
-                } else {
-                    AuthorizationCodeCredentials authorizationCodeCredentials;
-                    try {
-                        if (performPKCE) {
-                            final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code.get(), key).build();
-                            authorizationCodeCredentials = authorizationCodePKCERequest.execute();
-                        } else {
-                            final var authorizationCodeRequest = spotifyApi.authorizationCode(code.get()).build();
-                            authorizationCodeCredentials = authorizationCodeRequest.execute();
-                        }
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
+                AuthorizationCodeCredentials authorizationCodeCredentials;
+                try {
+                    if (performPKCE) {
+                        final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code, key).build();
+                        authorizationCodeCredentials = authorizationCodePKCERequest.execute();
+                    } else {
+                        final var authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
+                        authorizationCodeCredentials = authorizationCodeRequest.execute();
                     }
-                    spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-                    spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
                 }
+                spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+                spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
                 waitingForAPI.release();
             });
         } catch (Exception e) {
@@ -131,33 +126,36 @@ public class ApiWrapper {
             }
         }
 
-        public void waitForCode() {
+        /**
+         * @return code needed to request access tokens from Spotify API.
+         * @throws RuntimeException When there is a valid API response that won't return a usable code.
+         * @apiNote Function will block using private semaphore until CallbackHandler.handle() is called, should only be
+         * called asynchronously.
+         */
+        public String getCodeSync() throws RuntimeException {
             try {
                 waitingForHandle.acquire();
+                var matcher = Pattern.compile("state=(?<state>[^&]*)&?").matcher(responseQuery);
+                if (matcher.find() && state.equals(matcher.group("state"))) {
+                    matcher = Pattern.compile("error=(?<error>[^&]*)&?").matcher(responseQuery);
+                    if (matcher.find()) {
+                        throw new RuntimeException("Authorization has failed, reason: " + matcher.group("error"));
+                    } else {
+                        matcher = Pattern.compile("code=(?<code>[^&]*)&?").matcher(responseQuery);
+                        if (matcher.find()) {
+                            return matcher.group("code");
+                        } else {
+                            throw new RuntimeException("Can't find code in successful authorization response.");
+                        }
+                    }
+                } else {
+                    throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
+                }
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
+            } finally {
+                waitingForHandle.release();
             }
-        }
-
-        public Optional<String> getCode() {
-            Optional<String> code;
-            var matcher = Pattern.compile("state=(?<state>[^&]*)&?").matcher(responseQuery);
-            if (matcher.find() && state.equals(matcher.group("state"))) {
-                matcher = Pattern.compile("error=(?<error>[^&]*)&?").matcher(responseQuery);
-                if (matcher.find()) {
-                    throw new RuntimeException("Authorization has failed, reason: " + matcher.group("error"));
-                } else {
-                    matcher = Pattern.compile("code=(?<code>[^&]*)&?").matcher(responseQuery);
-                    if (matcher.find()) {
-                        code = Optional.ofNullable(matcher.group("code"));
-                    } else {
-                        throw new RuntimeException("Can't find code in successful authorization response.");
-                    }
-                }
-            } else {
-                throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
-            }
-            return code;
         }
 
         @Override

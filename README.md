@@ -21,7 +21,6 @@ database and automated backups to an online repository.
     - [ ] Handle token refresh when current token expires
     - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
     - [ ] Handle the various API response error codes
-    - [ ] Cleanup of concurrent and async tasks in ApiWrapper.java
   - [ ] Store artist GET request to db
   - [ ] Write unit test using mocking (leaning towards EasyMock)
   - [ ] Store track info to db
