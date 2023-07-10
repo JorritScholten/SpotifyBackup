@@ -68,6 +68,9 @@ public class ApiWrapper {
             server.start();
 
             // execute above URL by opening browser window with it
+            if (!(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
+                throw new RuntimeException("Desktop not supported, can't open URLs in web browser.");
+            }
             Desktop.getDesktop().browse(uri);
 
             while (!callbackTriggered) {
