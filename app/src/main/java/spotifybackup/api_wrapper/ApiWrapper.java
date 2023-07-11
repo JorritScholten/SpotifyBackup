@@ -66,7 +66,7 @@ public class ApiWrapper {
             }
             final URI uri = authorizationCodeUriRequest.execute();
 
-            // host https:localhost:8888/callback RESTfull webserver to catch callback code
+            // host http:localhost:8888/callback RESTfull webserver to catch callback code
             var redirectUri = spotifyApi.getRedirectURI();
             HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()), 0);
             server.createContext(redirectUri.getPath(), callbackHandler);

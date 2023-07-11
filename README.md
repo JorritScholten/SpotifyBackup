@@ -19,7 +19,6 @@ database and automated backups to an online repository.
     - [x] Change authentication to use PKCE as well so that the client doesn't need an API secret
     - [x] Remove Thread.sleep() call to make authorization request asynchronous
     - [x] Handle token refresh when current token expires
-    - [ ] Handle authorisation redirects as HTTPS request instead of HTTP
     - [ ] Handle the various API response error codes
   - [ ] Store artist GET request to db
   - [ ] Write unit test using mocking (leaning towards EasyMock)
