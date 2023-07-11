@@ -21,8 +21,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Semaphore;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 public class ApiWrapper {
@@ -33,6 +32,7 @@ public class ApiWrapper {
     private final String key;
     private final String keyDigest;
     private final CallbackHandler callbackHandler = new CallbackHandler();
+    private final ScheduledExecutorService tokenRefresh = Executors.newScheduledThreadPool(1);
 
     public ApiWrapper(SpotifyApi.Builder builder) {
         spotifyApi = builder.build();
@@ -97,8 +97,32 @@ public class ApiWrapper {
                 spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
                 spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
                 waitingForAPI.release();
+                scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
             });
         } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @param tokenExpiresIn Seconds until current token expires.
+     */
+    private void scheduleTokenRefresh(long tokenExpiresIn) {
+        // tokens should be valid for an hour so 5 seconds earlier seems reasonable
+        long refreshRate = tokenExpiresIn > 5 ? tokenExpiresIn - 5 : 5;
+        tokenRefresh.schedule(this::performTokenRefresh, refreshRate, TimeUnit.SECONDS);
+    }
+
+    private void performTokenRefresh() {
+        try {
+            waitingForAPI.acquire();
+            final var authorizationCodeCredentials = spotifyApi.authorizationCodePKCERefresh()
+                    .build().execute();
+            spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+            spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+            waitingForAPI.release();
+            scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
+        } catch (InterruptedException | SpotifyWebApiException | ParseException | IOException e) {
             throw new RuntimeException(e);
         }
     }
