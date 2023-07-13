@@ -10,6 +10,7 @@ import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.requests.AbstractRequest;
 import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
 import java.awt.*;
@@ -116,14 +117,13 @@ public class ApiWrapper {
     private void performTokenRefresh() {
         try {
             waitingForAPI.acquire();
-//            final var authorizationCodeCredentials = spotifyApi.authorizationCodePKCERefresh()
-//                    .build().execute();
-            AuthorizationCodeCredentials authorizationCodeCredentials;
+            AbstractRequest<AuthorizationCodeCredentials> authorizationRefreshRequest;
             if (performPKCE) {
-                authorizationCodeCredentials = spotifyApi.authorizationCodePKCERefresh().build().execute();
+                authorizationRefreshRequest = spotifyApi.authorizationCodePKCERefresh().build();
             } else {
-                authorizationCodeCredentials = spotifyApi.authorizationCodeRefresh().build().execute();
+                authorizationRefreshRequest = spotifyApi.authorizationCodeRefresh().build();
             }
+            final var authorizationCodeCredentials = authorizationRefreshRequest.execute();
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             waitingForAPI.release();
