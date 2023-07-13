@@ -116,8 +116,14 @@ public class ApiWrapper {
     private void performTokenRefresh() {
         try {
             waitingForAPI.acquire();
-            final var authorizationCodeCredentials = spotifyApi.authorizationCodePKCERefresh()
-                    .build().execute();
+//            final var authorizationCodeCredentials = spotifyApi.authorizationCodePKCERefresh()
+//                    .build().execute();
+            AuthorizationCodeCredentials authorizationCodeCredentials;
+            if (performPKCE) {
+                authorizationCodeCredentials = spotifyApi.authorizationCodePKCERefresh().build().execute();
+            } else {
+                authorizationCodeCredentials = spotifyApi.authorizationCodeRefresh().build().execute();
+            }
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             waitingForAPI.release();
