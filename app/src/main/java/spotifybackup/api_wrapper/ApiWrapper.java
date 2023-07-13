@@ -11,7 +11,6 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.requests.AbstractRequest;
-import se.michaelthelin.spotify.requests.authorization.authorization_code.AuthorizationCodeUriRequest;
 
 import java.awt.*;
 import java.io.IOException;
@@ -23,22 +22,26 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
 import java.util.concurrent.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class ApiWrapper {
     private final SpotifyApi spotifyApi;
-    private final boolean performPKCE;
     private final Semaphore waitingForAPI = new Semaphore(1);
     private final String state = UUID.randomUUID().toString();
     private final String key;
     private final String keyDigest;
     private final CallbackHandler callbackHandler = new CallbackHandler();
     private final ScheduledExecutorService tokenRefresh = Executors.newScheduledThreadPool(1);
+    // Strategy patterns
+    private final Supplier<AbstractRequest<AuthorizationCodeCredentials>> authorizationRefreshRequest;
+    private final AbstractRequest<URI> authorizationCodeUriRequest;
+    private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
 
     public ApiWrapper(SpotifyApi.Builder builder) {
         spotifyApi = builder.build();
-        performPKCE = spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isEmpty();
-        if (performPKCE) {
+        if (spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isEmpty()) {
             try {
                 key = RandomStringUtils.randomAlphanumeric(128);
                 var md = MessageDigest.getInstance("SHA-256");
@@ -46,25 +49,21 @@ public class ApiWrapper {
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
+            authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).build();
+            authorizationCodeRequest = (code) -> spotifyApi.authorizationCodePKCE(code, key).build();
+            authorizationRefreshRequest = () -> spotifyApi.authorizationCodePKCERefresh().build();
         } else {
             keyDigest = null;
             key = null;
+            authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().state(state).build();
+            authorizationCodeRequest = (code) -> spotifyApi.authorizationCode(code).build();
+            authorizationRefreshRequest = () -> spotifyApi.authorizationCodeRefresh().build();
         }
     }
 
     public void performTokenRequest() {
         try {
             waitingForAPI.acquire();
-            AuthorizationCodeUriRequest authorizationCodeUriRequest;
-            if (performPKCE) {
-                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest)
-                        .state(state)
-                        .build();
-            } else {
-                authorizationCodeUriRequest = spotifyApi.authorizationCodeUri()
-                        .state(state)
-                        .build();
-            }
             final URI uri = authorizationCodeUriRequest.execute();
 
             // host http:localhost:8888/callback RESTfull webserver to catch callback code
@@ -83,22 +82,15 @@ public class ApiWrapper {
             CompletableFuture.runAsync(() -> {
                 var code = callbackHandler.getCodeSync();
                 server.stop(0);
-                AuthorizationCodeCredentials authorizationCodeCredentials;
                 try {
-                    if (performPKCE) {
-                        final var authorizationCodePKCERequest = spotifyApi.authorizationCodePKCE(code, key).build();
-                        authorizationCodeCredentials = authorizationCodePKCERequest.execute();
-                    } else {
-                        final var authorizationCodeRequest = spotifyApi.authorizationCode(code).build();
-                        authorizationCodeCredentials = authorizationCodeRequest.execute();
-                    }
+                    final var authorizationCodeCredentials = authorizationCodeRequest.apply(code).execute();
+                    spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
+                    spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+                    waitingForAPI.release();
+                    scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
-                spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-                spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-                waitingForAPI.release();
-                scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
             });
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -117,13 +109,7 @@ public class ApiWrapper {
     private void performTokenRefresh() {
         try {
             waitingForAPI.acquire();
-            AbstractRequest<AuthorizationCodeCredentials> authorizationRefreshRequest;
-            if (performPKCE) {
-                authorizationRefreshRequest = spotifyApi.authorizationCodePKCERefresh().build();
-            } else {
-                authorizationRefreshRequest = spotifyApi.authorizationCodeRefresh().build();
-            }
-            final var authorizationCodeCredentials = authorizationRefreshRequest.execute();
+            final var authorizationCodeCredentials = authorizationRefreshRequest.get().execute();
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             waitingForAPI.release();
