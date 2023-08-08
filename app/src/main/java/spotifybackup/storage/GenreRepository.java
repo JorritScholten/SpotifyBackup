@@ -20,6 +20,7 @@ public class GenreRepository {
      * @return Genre object matching id.
      * @deprecated replace this method with find(Genre genre) and find(String genreName)
      */
+    @Deprecated
     public Genre find(long id) {
         try (var entityManager = emf.createEntityManager()) {
             Genre genre = entityManager.find(Genre.class, id);
