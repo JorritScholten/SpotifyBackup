@@ -17,18 +17,18 @@ dependencies {
         // Define dependency versions as constraints
         implementation(
                 'org.apache.commons:commons-text:1.10.0',
-                'org.hibernate.orm:hibernate-core:6.2.3.Final',
-                'org.hibernate.orm:hibernate-jpamodelgen:6.2.4.Final',
-                'org.hibernate.orm:hibernate-hikaricp:6.2.5.Final',
-                'org.projectlombok:lombok:1.18.26',
-                'com.h2database:h2:2.1.214'
+                'org.hibernate.orm:hibernate-core:6.2.7.Final',
+                'org.hibernate.orm:hibernate-jpamodelgen:6.2.7.Final',
+                'org.hibernate.orm:hibernate-hikaricp:6.2.7.Final',
+                'org.projectlombok:lombok:1.18.28',
+                'com.h2database:h2:2.2.220'
         )
     }
 
     // Use JUnit Jupiter for testing.
     testImplementation(
             'org.junit.jupiter:junit-jupiter:5.9.3',
-            'io.github.classgraph:classgraph:4.8.160',
+            'io.github.classgraph:classgraph:4.8.161',
             'io.github.toolfactory:jvm-driver:9.4.3'
     )
 }
