@@ -17,7 +17,7 @@ public class GenreRepository {
     /**
      * Find Genre by its name field.
      * @param genreName name of Genre.
-     * @return Genre if genreName is not blank.
+     * @return Genre if genreName is not blank and in the table.
      */
     public Optional<Genre> find(@NonNull String genreName) {
         if (genreName.isBlank()) {
@@ -36,8 +36,8 @@ public class GenreRepository {
     }
 
     /**
-     * Get count of genres in db.
-     * @return count of genres in db.
+     * Get count of genres in database.
+     * @return count of genres in database.
      */
     public long count() {
         try (var entityManager = emf.createEntityManager()) {
@@ -48,16 +48,16 @@ public class GenreRepository {
     /**
      * Check if Genre exists by name.
      * @param genreName name of Genre.
-     * @return true if Genre exists in db.
+     * @return true if Genre exists in database.
      */
     public boolean exists(@NonNull String genreName) {
         return find(genreName).isPresent();
     }
 
     /**
-     * Check if Genre exists in persistence context.
+     * Check if Genre exists in database.
      * @param genre Genre to check.
-     * @return true if genre exists in persistence context.
+     * @return true if genre exists in database.
      */
     public boolean exists(@NonNull Genre genre) {
         try (var entityManager = emf.createEntityManager()) {
@@ -91,7 +91,7 @@ public class GenreRepository {
     }
 
     /**
-     * Attempts to persist a list of genres by name, if a Genre already exists the already existing Genre is used.
+     * Attempts to persist an array of genres by name, if a Genre already exists the already existing Genre is used.
      * @param genreNames an array of genre names as define by Spotify.
      * @return Set of Genre objects.
      */
