@@ -5,8 +5,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 
-import java.net.URISyntaxException;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +17,7 @@ public class SpotifyImageRepositoryTest {
 
     @BeforeAll
     static void setup() {
+        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         final Properties DB_ACCESS = new Properties();
         DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
         DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
@@ -29,7 +31,7 @@ public class SpotifyImageRepositoryTest {
     }
 
     @Test
-    void ensure_image_can_be_persisted() throws URISyntaxException {
+    void ensure_image_can_be_persisted() {
         // Arrange
         final Image image = new Image.Builder()
                 .setUrl("https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228")
@@ -49,7 +51,7 @@ public class SpotifyImageRepositoryTest {
     }
 
     @Test
-    void ensure_unsized_image_can_be_persisted() throws URISyntaxException {
+    void ensure_unsized_image_can_be_persisted() {
         // Arrange
         final Image image = new Image.Builder()
                 .setUrl("https://i.scdn.co/image/ab6761610000f178129c7158f9565223cead0dd8")

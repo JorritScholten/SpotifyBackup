@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,6 +15,7 @@ public class GenreRepositoryTest {
 
     @BeforeAll
     static void setup() {
+        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         final Properties DB_ACCESS = new Properties();
         DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
         DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
