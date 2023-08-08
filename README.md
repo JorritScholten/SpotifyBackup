@@ -31,7 +31,7 @@ database and automated backups to an online repository.
             - remove seed method
             - create persistence methods so that testing can be done like GenreRepository
         - [ ] Create repository for Album
-        - [ ] Create repository for SpotifyID
+        - [x] Create repository for SpotifyID
         - [ ] Create repository for SpotifyImage
 
 ## Documentation
