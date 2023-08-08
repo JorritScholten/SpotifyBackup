@@ -11,6 +11,7 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.requests.AbstractRequest;
+import spotifybackup.storage.SpotifyID;
 
 import java.awt.*;
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.function.Function;
@@ -131,6 +133,29 @@ public class ApiWrapper {
             waitingForAPI.release();
             return artist.getName();
         } catch (SpotifyWebApiException | ParseException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @param spotifyId
+     * @return
+     * @throws IOException In case of networking issues.
+     */
+    public Optional<spotifybackup.storage.Artist> getArtist(String spotifyId) throws IOException {
+        try {
+            waitingForAPI.acquire();
+            final Artist artist = spotifyApi.getArtist(spotifyId).build().execute();
+            waitingForAPI.release();
+            return spotifybackup.storage.Artist.builder()
+                    .name(artist.getName())
+                    .spotifyID(new SpotifyID(artist.getId()))
+                    .genres(artist.getGenres())
+                    .images(artist.getImages())
+                    .build();
+        } catch (SpotifyWebApiException | ParseException e) {
+            return Optional.empty();
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
