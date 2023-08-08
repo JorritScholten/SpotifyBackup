@@ -26,6 +26,13 @@ database and automated backups to an online repository.
         - [ ] tracks
     - [ ] Implement system to automatically handle creation and validation of database
     - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
+        - [x] Create repository for Genre
+        - [ ] Create repository for Artist
+            - remove seed method
+            - create persistence methods so that testing can be done like GenreRepository
+        - [ ] Create repository for Album
+        - [ ] Create repository for SpotifyID
+        - [ ] Create repository for SpotifyImage
 
 ## Documentation
 
