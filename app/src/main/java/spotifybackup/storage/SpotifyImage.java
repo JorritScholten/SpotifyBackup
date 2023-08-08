@@ -1,26 +1,28 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.net.URI;
+import lombok.*;
 
 @Builder
-@AllArgsConstructor
 @Entity
 @NoArgsConstructor
 @Getter
+@AllArgsConstructor
+@NamedQueries({
+        @NamedQuery(name = "SpotifyImage.countBy", query = "select count(i) from SpotifyImage i"),
+        @NamedQuery(name = "SpotifyImage.findByUrl", query = "select i from SpotifyImage i where i.url = :url"),
+        @NamedQuery(name = "SpotifyImage.findByUrlWH",
+                query = "select i from SpotifyImage i where i.url = :url and i.width = :width and i.height = :height")
+})
 public class SpotifyImage {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @NonNull
     @Column(nullable = false)
-    private URI url;
+    private String url;
 
-    @Column(nullable = false)
-    private int width, height;
+    @Column
+    private Integer width, height;
 }

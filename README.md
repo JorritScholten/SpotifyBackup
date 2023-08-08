@@ -32,7 +32,7 @@ database and automated backups to an online repository.
             - create persistence methods so that testing can be done like GenreRepository
         - [ ] Create repository for Album
         - [x] Create repository for SpotifyID
-        - [ ] Create repository for SpotifyImage
+        - [x] Create repository for SpotifyImage
 
 ## Documentation
 
