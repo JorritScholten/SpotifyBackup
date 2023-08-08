@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 
 import java.util.Objects;
@@ -14,6 +15,7 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 @Getter
+@ToString
 public class SpotifyID {
     @Id
     @Column(length = 62)

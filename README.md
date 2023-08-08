@@ -28,8 +28,6 @@ database and automated backups to an online repository.
     - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for Genre
         - [ ] Create repository for Artist
-            - remove seed method
-            - create persistence methods so that testing can be done like GenreRepository
         - [ ] Create repository for Album
         - [x] Create repository for SpotifyID
         - [x] Create repository for SpotifyImage

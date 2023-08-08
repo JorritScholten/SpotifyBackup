@@ -12,7 +12,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @NamedQueries({
-        @NamedQuery(name = "Artist.countBy", query = "select count(a) from Artist a")
+        @NamedQuery(name = "Artist.countBy", query = "select count(a) from Artist a"),
+        @NamedQuery(name = "Artist.findBySpotifyID", query = "select a from Artist a where a.spotifyID = :spotifyID")
 })
 @NoArgsConstructor
 @Getter
@@ -32,7 +33,6 @@ public class Artist {
     private Set<SpotifyImage> images;
 
     // more info: https://stackoverflow.com/a/59523218
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinColumn(nullable = true, name = "genre_id", referencedColumnName = "id")
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<Genre> genres;
 }

@@ -92,7 +92,7 @@ public class GenreRepository {
 
     /**
      * Attempts to persist an array of genres by name, if a Genre already exists the already existing Genre is used.
-     * @param genreNames an array of genre names as define by Spotify.
+     * @param genreNames an array of genre names as defined by Spotify.
      * @return Set of Genre objects.
      */
     public Set<Genre> persistAll(@NonNull String[] genreNames) {
