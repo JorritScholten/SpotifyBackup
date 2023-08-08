@@ -8,10 +8,10 @@ import lombok.NonNull;
 import java.util.*;
 
 public class GenreRepository {
-    private final EntityManagerFactory emf; // = Persistence.createEntityManagerFactory("testdb");
+    private final EntityManagerFactory emf;
 
     public GenreRepository(Properties DB_ACCESS) {
-        emf = Persistence.createEntityManagerFactory("testdb", DB_ACCESS);
+        emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
 
     /**

@@ -10,10 +10,10 @@ import java.util.Properties;
 import java.util.Set;
 
 public class ArtistRepository {
-    private EntityManagerFactory emf; // = Persistence.createEntityManagerFactory("testdb");
+    private final EntityManagerFactory emf;
 
     public ArtistRepository(Properties DB_ACCESS) {
-        emf = Persistence.createEntityManagerFactory("testdb", DB_ACCESS);
+        emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
 
     public Artist find(long id) {

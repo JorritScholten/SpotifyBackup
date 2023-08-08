@@ -17,6 +17,7 @@ public class GenreRepositoryTest {
         DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
         DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
         DB_ACCESS.put("hibernate.show_sql", "true");
+        DB_ACCESS.put("persistenceUnitName", "test_genre");
         try {
             genreRepository = new GenreRepository(DB_ACCESS);
         } catch (ServiceException e) {
