@@ -15,19 +15,28 @@ public class SpotifyIDRepository {
     }
 
     /**
+     * Find SpotifyID by string value.
+     * @param id String containing a Spotify ID.
+     * @return SpotifyID if id matches the id field in the table and not blank.
+     */
+    public Optional<SpotifyID> find(@NonNull String id) {
+        if (id.isBlank()) {
+            return Optional.empty();
+        }
+        try (var entityManager = emf.createEntityManager()) {
+            return Optional.of(entityManager.find(SpotifyID.class, id));
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
      * Check if SpotifyID exists in persistence context by Spotify ID.
      * @param id Spotify ID to check.
      * @return true if Spotify ID exists in persistence context.
      */
     public boolean exists(@NonNull String id) {
-        if (id.isBlank()) {
-            return false;
-        }
-        try (var entityManager = emf.createEntityManager()) {
-            return entityManager.find(SpotifyID.class, id) != null;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
+        return find(id).isPresent();
     }
 
     /**
