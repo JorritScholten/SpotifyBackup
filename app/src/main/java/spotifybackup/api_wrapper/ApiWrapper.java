@@ -119,6 +119,11 @@ public class ApiWrapper {
         }
     }
 
+    /**
+     * @param spotifyId A String containing a Spotify ID of an artist.
+     * @return name of artist.
+     * @throws IOException In case of networking issues.
+     */
     public String getArtistName(String spotifyId) throws IOException {
         try {
             waitingForAPI.acquire();
