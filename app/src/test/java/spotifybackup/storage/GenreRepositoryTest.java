@@ -17,7 +17,7 @@ public class GenreRepositoryTest {
         DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
         DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
         DB_ACCESS.put("hibernate.show_sql", "true");
-        DB_ACCESS.put("persistenceUnitName", "test_genre");
+        DB_ACCESS.put("persistenceUnitName", "testdb");
         try {
             genreRepository = new GenreRepository(DB_ACCESS);
         } catch (ServiceException e) {
@@ -30,12 +30,15 @@ public class GenreRepositoryTest {
         // Arrange
         long oldCount = genreRepository.count();
         final String genreName = "rock";
+        assertFalse(genreRepository.exists(genreName),
+                "Genre with name " + genreName + " shouldn't already exist.");
 
         // Act
         genreRepository.persist(genreName);
 
         // Assert
         assertEquals(oldCount + 1, genreRepository.count());
+        assertTrue(genreRepository.exists(genreName));
     }
 
     @Test
@@ -64,5 +67,43 @@ public class GenreRepositoryTest {
         // Assert
         assertFalse(usedToExist, "Genre with name " + genreName + " shouldn't already exist.");
         assertTrue(genreRepository.exists(genreName));
+    }
+
+    @Test
+    void persist_multiple_new_genres() {
+        // Arrange
+        final String[] genreNames = {"pop", "grunge-rock", "ska", "trance"};
+        for (var genreName : genreNames) {
+            assertFalse(genreRepository.exists(genreName),
+                    "Genre with name " + genreName + " shouldn't already exist.");
+        }
+
+        // Act
+        final var persistedGenres = genreRepository.persistAll(genreNames);
+
+        // Assert
+        for (var persistedGenre : persistedGenres) {
+            assertTrue(genreRepository.exists(persistedGenre));
+        }
+    }
+
+    @Test
+    void persist_some_new_genres() {
+        // Arrange
+        final String[] genreNames = {"pop", "grunge-rock", "hip-hop", "house"};
+        assertTrue(genreRepository.exists(genreRepository.persist(genreNames[0]).orElseThrow()));
+        assertTrue(genreRepository.exists(genreRepository.persist(genreNames[1]).orElseThrow()));
+        assertFalse(genreRepository.exists(genreNames[2]),
+                "Genre with name " + genreNames[2] + " shouldn't already exist.");
+        assertFalse(genreRepository.exists(genreNames[3]),
+                "Genre with name " + genreNames[3] + " shouldn't already exist.");
+
+        // Act
+        final var persistedGenres = genreRepository.persistAll(genreNames);
+
+        // Assert
+        for (var persistedGenre : persistedGenres) {
+            assertTrue(genreRepository.exists(persistedGenre));
+        }
     }
 }

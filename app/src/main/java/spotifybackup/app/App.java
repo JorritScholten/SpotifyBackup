@@ -28,7 +28,7 @@ public class App {
         System.out.println("found " + artistRepository.count() + " artist(s).");
 
         var genreRepository = new GenreRepository(DB_ACCESS);
-        System.out.println("found id=1: " + genreRepository.find(1));
+        System.out.println("found genre \"rock\": " + genreRepository.exists("rock"));
         System.out.println("found " + genreRepository.count() + " genre(s).");
     }
 

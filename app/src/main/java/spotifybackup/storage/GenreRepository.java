@@ -15,16 +15,23 @@ public class GenreRepository {
     }
 
     /**
-     * Find Genre by its id field.
-     * @param id id of record in table.
-     * @return Genre object matching id.
-     * @deprecated replace this method with find(Genre genre) and find(String genreName)
+     * Find Genre by its name field.
+     * @param genreName name of Genre.
+     * @return Genre if genreName is not blank.
      */
-    @Deprecated
-    public Genre find(long id) {
+    public Optional<Genre> find(@NonNull String genreName) {
+        if (genreName.isBlank()) {
+            return Optional.empty();
+        }
+        genreName = genreName.toLowerCase(Locale.ENGLISH);
         try (var entityManager = emf.createEntityManager()) {
-            Genre genre = entityManager.find(Genre.class, id);
-            return genre;
+            var query = entityManager.createNamedQuery("Genre.findByName", Genre.class);
+            query.setParameter("name", genreName);
+            try {
+                return Optional.of(query.getSingleResult());
+            } catch (NoResultException e) {
+                return Optional.empty();
+            }
         }
     }
 
@@ -44,18 +51,19 @@ public class GenreRepository {
      * @return true if Genre exists in db.
      */
     public boolean exists(@NonNull String genreName) {
-        if (genreName.isBlank()) {
-            return false;
-        }
-        genreName = genreName.toLowerCase(Locale.ENGLISH);
+        return find(genreName).isPresent();
+    }
+
+    /**
+     * Check if Genre is in persistence context.
+     * @param genre Genre to check.
+     * @return true if genre exists in persistence context.
+     */
+    public boolean exists(@NonNull Genre genre) {
         try (var entityManager = emf.createEntityManager()) {
-            var query = entityManager.createNamedQuery("Genre.findByName", Genre.class);
-            query.setParameter("name", genreName);
-            try {
-                return query.getSingleResult() != null;
-            } catch (NoResultException e) {
-                return false;
-            }
+            return entityManager.find(Genre.class, genre.getId()) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
         }
     }
 
@@ -68,13 +76,11 @@ public class GenreRepository {
         if (genreName.isBlank()) {
             return Optional.empty();
         }
-        genreName = genreName.toLowerCase(Locale.ENGLISH);
-        try (var entityManager = emf.createEntityManager()) {
-            var query = entityManager.createNamedQuery("Genre.findByName", Genre.class);
-            query.setParameter("name", genreName);
-            try {
-                return Optional.of(query.getSingleResult());
-            } catch (NoResultException e) {
+        var optionalGenre = find(genreName);
+        if (optionalGenre.isPresent()) {
+            return optionalGenre;
+        } else {
+            try (var entityManager = emf.createEntityManager()) {
                 var newGenre = new Genre(genreName);
                 entityManager.getTransaction().begin();
                 entityManager.persist(newGenre);
