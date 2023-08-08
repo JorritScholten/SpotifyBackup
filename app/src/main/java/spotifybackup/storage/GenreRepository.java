@@ -36,8 +36,8 @@ public class GenreRepository {
     }
 
     /**
-     * Get count of genres in database.
-     * @return count of genres in database.
+     * Get count of genres in the database.
+     * @return count of genres in the database.
      */
     public long count() {
         try (var entityManager = emf.createEntityManager()) {
@@ -48,16 +48,16 @@ public class GenreRepository {
     /**
      * Check if Genre exists by name.
      * @param genreName name of Genre.
-     * @return true if Genre exists in database.
+     * @return true if Genre exists in the database.
      */
     public boolean exists(@NonNull String genreName) {
         return find(genreName).isPresent();
     }
 
     /**
-     * Check if Genre exists in database.
+     * Check if Genre exists in the database.
      * @param genre Genre to check.
-     * @return true if genre exists in database.
+     * @return true if genre exists in the database.
      */
     public boolean exists(@NonNull Genre genre) {
         try (var entityManager = emf.createEntityManager()) {
