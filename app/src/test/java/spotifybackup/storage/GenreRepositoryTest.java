@@ -34,11 +34,11 @@ public class GenreRepositoryTest {
                 "Genre with name " + genreName + " shouldn't already exist.");
 
         // Act
-        genreRepository.persist(genreName);
+        var persistedGenre = genreRepository.persist(genreName);
 
         // Assert
         assertEquals(oldCount + 1, genreRepository.count());
-        assertTrue(genreRepository.exists(genreName));
+        assertTrue(genreRepository.exists(persistedGenre.orElseThrow()));
     }
 
     @Test

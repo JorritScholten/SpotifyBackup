@@ -55,7 +55,7 @@ public class GenreRepository {
     }
 
     /**
-     * Check if Genre is in persistence context.
+     * Check if Genre exists in persistence context.
      * @param genre Genre to check.
      * @return true if genre exists in persistence context.
      */
