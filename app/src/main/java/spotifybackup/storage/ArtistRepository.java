@@ -5,8 +5,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
 
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 
 public class ArtistRepository {
     private final EntityManagerFactory emf;
@@ -79,10 +78,30 @@ public class ArtistRepository {
                     .name(apiArtist.getName())
                     .spotifyID(new SpotifyID(apiArtist.getId()))
                     .images(SpotifyImage.setFactory(apiArtist.getImages()))
-                    .genres(Genre.setFactory(apiArtist.getGenres()))
+//                    .genres(Genre.setFactory(apiArtist.getGenres()))
+//                    .genres(genreRepository.getAnyExisting(apiArtist.getGenres()))
                     .build();
             try (var entityManager = emf.createEntityManager()) {
                 entityManager.getTransaction().begin();
+
+//                var genreSet = genreRepository.getAnyExisting(apiArtist.getGenres());
+                Set<Genre> genreSet = new HashSet<>();
+                for (var genreName : apiArtist.getGenres()) {
+                    var query = entityManager.createNamedQuery("Genre.findByName", Genre.class);
+                    query.setParameter("name", genreName);
+                    try {
+                        genreSet.add(query.getSingleResult());
+                    } catch (NoResultException e) {
+                        genreSet.add(new Genre(genreName.toLowerCase(Locale.ENGLISH)));
+                    }
+                }
+
+                newArtist.addGenres(genreSet);
+//                entityManager.flush();
+                for (var genre : genreSet) {
+                    entityManager.persist(genre);
+                }
+//                entityManager.flush();
                 entityManager.persist(newArtist);
                 entityManager.getTransaction().commit();
                 return Optional.of(newArtist);

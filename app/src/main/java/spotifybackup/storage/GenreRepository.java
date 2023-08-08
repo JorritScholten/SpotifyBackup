@@ -103,5 +103,23 @@ public class GenreRepository {
         }
         return genreSet;
     }
+
+    public Set<Genre> getAnyExisting(@NonNull String[] genreNames) {
+        Set<Genre> genreSet = new HashSet<>();
+        for (var genreName : genreNames) {
+            var genre = find(genreName);
+//            genre.ifPresent(genreSet::add);
+//            genre.ifPresentOrElse(genreSet::add, () ->
+//                    genreSet.add(new Genre(genreName))
+//            );
+            if (genre.isPresent()) {
+//                genre.get().getArtists()
+                genreSet.add(genre.get());
+            } else {
+                genreSet.add(new Genre(genreName));
+            }
+        }
+        return genreSet;
+    }
 }
 
