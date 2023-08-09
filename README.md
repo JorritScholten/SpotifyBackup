@@ -11,7 +11,19 @@ database and automated backups to an online repository.
 - Good documentation and a user guide.
 - Write unit tests.
 - [x] Implement a robust commandline interface in the style of the Python argparse package.
-- [ ] Create Spotify API wrapper.
+- [ ] Make use of Spotify API wrapper. [Using this library](
+  https://github.com/spotify-web-api-java/spotify-web-api-java/)
+  - [x] Make successful GET request to Spotify API
+    - [x] Host temporary REST service
+    - [x] Handle OAuth 2.0 redirects
+    - [x] Change authentication to use PKCE as well so that the client doesn't need an API secret
+    - [x] Remove Thread.sleep() call to make authorization request asynchronous
+    - [x] Handle token refresh when current token expires
+    - [ ] Handle the various API response error codes
+  - [ ] Store artist GET request to db
+  - [ ] Write unit test using mocking (leaning towards EasyMock)
+  - [ ] Store track info to db
+  - [ ] Store playlist to db
 - [ ] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
     - [ ] Implement complete storage class system to store all track information from Spotify about Playlists and User's
