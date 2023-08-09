@@ -59,38 +59,52 @@ public class ApiWrapper {
         }
     }
 
+    /**
+     * host webserver to catch callback code from redirect url
+     */
+    private HttpServer startCallbackServer() {
+        try {
+            var redirectUri = spotifyApi.getRedirectURI();
+            HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()),
+                    0);
+            server.createContext(redirectUri.getPath(), callbackHandler);
+            server.setExecutor(null);
+            server.start();
+            return server;
+        } catch (IOException e) {
+            // issue with starting server
+            throw new RuntimeException(e);
+        }
+    }
+
     public void performTokenRequest() {
         try {
             waitingForAPI.acquire();
             final URI uri = authorizationCodeUriRequest.execute();
-
-            // host http:localhost:8888/callback RESTfull webserver to catch callback code
-            var redirectUri = spotifyApi.getRedirectURI();
-            HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()), 0);
-            server.createContext(redirectUri.getPath(), callbackHandler);
-            server.setExecutor(null);
-            server.start();
-
+            var server = startCallbackServer();
             // execute above URL by opening browser window with it
             if (!(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
                 throw new RuntimeException("Desktop not supported, can't open URLs in web browser.");
+            } else {
+                Desktop.getDesktop().browse(uri);
             }
-            Desktop.getDesktop().browse(uri);
-
             CompletableFuture.runAsync(() -> {
                 var code = callbackHandler.getCodeSync();
                 server.stop(0);
-                try {
-                    final var authorizationCodeCredentials = authorizationCodeRequest.apply(code).execute();
-                    spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
-                    spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-                    waitingForAPI.release();
-                    scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                waitingForAPI.release();
+                performTokenGet(code);
             });
-        } catch (Exception e) {
+        } catch (ParseException | NullPointerException | SpotifyWebApiException e) {
+            // error with authorizationCodeUriRequest.execute(); or its return value
+            throw new RuntimeException(e);
+        } catch (SecurityException e) {
+            // caused by denial of automatic opening of uri in browser
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            // caused by network issues
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            // caused by semaphore interruptions
             throw new RuntimeException(e);
         }
     }
@@ -105,14 +119,38 @@ public class ApiWrapper {
     }
 
     private void performTokenRefresh() {
+        performTokenGet(null);
+    }
+
+    /**
+     * Get access tokens (or refresh current ones) for Spotify API, what action is performed is decided by the value of
+     * spotifyApi.getAccessToken()
+     * @param requestCode code required to generate a new token set.
+     */
+    private void performTokenGet(String requestCode) {
         try {
             waitingForAPI.acquire();
-            final var authorizationCodeCredentials = authorizationRefreshRequest.get().execute();
+            AuthorizationCodeCredentials authorizationCodeCredentials;
+            if (spotifyApi.getAccessToken() == null) {
+                authorizationCodeCredentials = authorizationCodeRequest.apply(requestCode).execute();
+            } else {
+                authorizationCodeCredentials = authorizationRefreshRequest.get().execute();
+            }
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             waitingForAPI.release();
             scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
-        } catch (InterruptedException | SpotifyWebApiException | ParseException | IOException e) {
+        } catch (SpotifyWebApiException e) {
+            // spotify has returned an HTTP 4xx or 5xx status code
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            // caused by malformed HTTP response
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            // caused by network issues
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            // caused by semaphore interruptions
             throw new RuntimeException(e);
         }
     }
@@ -130,7 +168,14 @@ public class ApiWrapper {
             final Artist artist = spotifyApi.getArtist(spotifyId).build().execute();
             waitingForAPI.release();
             return artist.getName();
-        } catch (SpotifyWebApiException | ParseException | InterruptedException e) {
+        } catch (SpotifyWebApiException e) {
+            // spotify has returned an HTTP 4xx or 5xx status code
+            throw new RuntimeException(e);
+        } catch (ParseException e) {
+            // caused by malformed HTTP response
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            // caused by semaphore interruptions
             throw new RuntimeException(e);
         }
     }
@@ -150,6 +195,7 @@ public class ApiWrapper {
         } catch (SpotifyWebApiException | ParseException e) {
             return Optional.empty();
         } catch (InterruptedException e) {
+            // caused by semaphore interruptions
             throw new RuntimeException(e);
         }
     }
@@ -162,6 +208,7 @@ public class ApiWrapper {
             try {
                 waitingForHandle.acquire();
             } catch (InterruptedException e) {
+                // caused by semaphore interruptions
                 throw new RuntimeException(e);
             }
         }
@@ -192,6 +239,7 @@ public class ApiWrapper {
                     throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
                 }
             } catch (InterruptedException e) {
+                // caused by semaphore interruptions
                 throw new RuntimeException(e);
             } finally {
                 waitingForHandle.release();
