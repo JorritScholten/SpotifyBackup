@@ -7,14 +7,15 @@ plugins {
 dependencies {
     implementation(
             'org.apache.commons:commons-text:1.10.0',
-            'org.hibernate.orm:hibernate-core:6.2.3.Final',
-            'org.hibernate.orm:hibernate-jpamodelgen:6.2.4.Final',
-            'org.hibernate.orm:hibernate-hikaricp:6.2.5.Final',
-            'org.projectlombok:lombok:1.18.26',
-            'com.h2database:h2:2.1.214',
-            'org.slf4j:slf4j-nop:2.0.7'
+            'org.hibernate.orm:hibernate-core:6.2.7.Final',
+            'org.hibernate.orm:hibernate-jpamodelgen:6.2.7.Final',
+            'org.hibernate.orm:hibernate-hikaricp:6.2.7.Final',
+            'org.projectlombok:lombok:1.18.28',
+            'com.h2database:h2:2.2.220',
+            'org.slf4j:slf4j-nop:2.0.7',
+            'se.michaelthelin.spotify:spotify-web-api-java:8.0.0'
     )
-    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.28'
 }
 
 test {

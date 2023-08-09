@@ -19,17 +19,9 @@ public class App {
     }
 
     public static void main(String[] args) {
-//        addition(args);
         System.out.println("starting main");
+//        addition(args);
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-
-        var artistRepository = new ArtistRepository(DB_ACCESS);
-        artistRepository.seed();
-        System.out.println("found " + artistRepository.count() + " artist(s).");
-
-        var genreRepository = new GenreRepository(DB_ACCESS);
-        System.out.println("found id=1: " + genreRepository.find(1));
-        System.out.println("found " + genreRepository.count() + " genre(s).");
     }
 
     public static void addition(String[] args) {
