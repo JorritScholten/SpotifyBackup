@@ -36,7 +36,7 @@ public class ApiWrapperTest {
             """)
     public void request_artist_name(String spotifyId, String name) throws IOException {
         // Act
-        final String artistName = apiWrapper.getArtistName(spotifyId);
+        final String artistName = apiWrapper.getArtist(spotifyId).orElseThrow().getName();
 
         // Assert
         assertEquals(artistName, name);
