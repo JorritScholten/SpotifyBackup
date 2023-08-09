@@ -203,7 +203,15 @@ public class ApiWrapper {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
-            String response = "Response from callback.";
+            String response = """
+                    <div>Response from callback.<noscript> JS blocked, tab/window can be closed.</noscript></div>
+                    <script>
+                    window.onload = function(){
+                    setTimeout(function(){
+                       window.close();
+                      },100);
+                    };
+                    </script>""";
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes(StandardCharsets.UTF_8));
