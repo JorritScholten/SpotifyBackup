@@ -57,6 +57,11 @@ public class ApiWrapper {
             authorizationCodeRequest = (code) -> spotifyApi.authorizationCode(code).build();
             authorizationRefreshRequest = () -> spotifyApi.authorizationCodeRefresh().build();
         }
+        try { // ensure that the first networking operation performed is performTokenRequest()
+            waitingForAPI.acquire();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -79,7 +84,6 @@ public class ApiWrapper {
 
     public void performTokenRequest() {
         try {
-            waitingForAPI.acquire();
             final URI uri = authorizationCodeUriRequest.execute();
             var server = startCallbackServer();
             // execute above URL by opening browser window with it
@@ -102,9 +106,6 @@ public class ApiWrapper {
             throw new RuntimeException(e);
         } catch (IOException e) {
             // caused by network issues
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            // caused by semaphore interruptions
             throw new RuntimeException(e);
         }
     }
