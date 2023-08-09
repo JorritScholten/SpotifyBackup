@@ -9,14 +9,14 @@ import java.util.*;
 
 public class ArtistRepository {
     private final EntityManagerFactory emf;
-    private final GenreRepository genreRepository;
-    private final SpotifyImageRepository spotifyImageRepository;
+    //    private final GenreRepository genreRepository;
+//    private final SpotifyImageRepository spotifyImageRepository;
     private final SpotifyIDRepository spotifyIDRepository;
 
     public ArtistRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
-        genreRepository = new GenreRepository(DB_ACCESS);
-        spotifyImageRepository = new SpotifyImageRepository(DB_ACCESS);
+//        genreRepository = new GenreRepository(DB_ACCESS);
+//        spotifyImageRepository = new SpotifyImageRepository(DB_ACCESS);
         spotifyIDRepository = new SpotifyIDRepository(DB_ACCESS);
     }
 
@@ -77,14 +77,21 @@ public class ArtistRepository {
             var newArtist = Artist.builder()
                     .name(apiArtist.getName())
                     .spotifyID(new SpotifyID(apiArtist.getId()))
-                    .images(SpotifyImage.setFactory(apiArtist.getImages()))
-//                    .genres(Genre.setFactory(apiArtist.getGenres()))
-//                    .genres(genreRepository.getAnyExisting(apiArtist.getGenres()))
                     .build();
             try (var entityManager = emf.createEntityManager()) {
                 entityManager.getTransaction().begin();
 
-//                var genreSet = genreRepository.getAnyExisting(apiArtist.getGenres());
+                Set<SpotifyImage> imageSet = new HashSet<>();
+                for (var image : apiArtist.getImages()) {
+                    var newSpotifyImage = SpotifyImage.builder()
+                            .url(image.getUrl())
+                            .width(image.getWidth())
+                            .height(image.getHeight())
+                            .build();
+                    imageSet.add(newSpotifyImage);
+                }
+                newArtist.addImages(imageSet);
+
                 Set<Genre> genreSet = new HashSet<>();
                 for (var genreName : apiArtist.getGenres()) {
                     var query = entityManager.createNamedQuery("Genre.findByName", Genre.class);
@@ -95,13 +102,11 @@ public class ArtistRepository {
                         genreSet.add(new Genre(genreName.toLowerCase(Locale.ENGLISH)));
                     }
                 }
-
                 newArtist.addGenres(genreSet);
-//                entityManager.flush();
+
                 for (var genre : genreSet) {
                     entityManager.persist(genre);
                 }
-//                entityManager.flush();
                 entityManager.persist(newArtist);
                 entityManager.getTransaction().commit();
                 return Optional.of(newArtist);

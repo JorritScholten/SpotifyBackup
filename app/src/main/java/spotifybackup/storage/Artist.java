@@ -15,31 +15,36 @@ import java.util.Set;
 })
 @NoArgsConstructor
 @Getter
-//@Table(name = "artist")
 public class Artist {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 
     // more info: https://stackoverflow.com/a/59523218
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.EAGER, cascade =
+            {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<Genre> genres = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @NonNull
     @Column(nullable = false)
     private String name;
 
+    @NonNull
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "spotify_id", referencedColumnName = "id")
+    @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
     private SpotifyID spotifyID;
 
     void addGenres(@NonNull Set<Genre> newGenres) {
         for (var genre : newGenres) {
             genres.add(genre);
             genre.addArtist(this);
-//            genre.getArtists().add(this);
         }
+    }
+
+    void addImages(@NonNull Set<SpotifyImage> newImages) {
+        images.addAll(newImages);
     }
 }
