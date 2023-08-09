@@ -17,6 +17,13 @@ import java.util.Set;
 @Getter
 //@Table(name = "artist")
 public class Artist {
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private final Set<SpotifyImage> images = new HashSet<>();
+
+    // more info: https://stackoverflow.com/a/59523218
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    private final Set<Genre> genres = new HashSet<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
@@ -28,20 +35,7 @@ public class Artist {
     @JoinColumn(name = "spotify_id", referencedColumnName = "id")
     private SpotifyID spotifyID;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private Set<SpotifyImage> images;
-
-    //    @JoinTable(
-//            name = "artists_genres",
-//            joinColumns = @JoinColumn(name = "artist_id", referencedColumnName = "id"),
-//            inverseJoinColumns = @JoinColumn(name = "genre_id", referencedColumnName = "id")
-//    )
-//    @Setter
-    // more info: https://stackoverflow.com/a/59523218
-    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    private final Set<Genre> genres = new HashSet<>();
-
-    public void addGenres(@NonNull Set<Genre> newGenres) {
+    void addGenres(@NonNull Set<Genre> newGenres) {
         for (var genre : newGenres) {
             genres.add(genre);
             genre.addArtist(this);

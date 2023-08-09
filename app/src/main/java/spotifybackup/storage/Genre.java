@@ -49,7 +49,7 @@ public class Genre {
      * @param genreNames an array of genre names as defined by Spotify.
      * @return Set of Genres.
      */
-    public static Set<Genre> setFactory(@NonNull String[] genreNames) {
+    static Set<Genre> setFactory(@NonNull String[] genreNames) {
         Set<Genre> genreSet = new HashSet<>();
         for (var genreName : genreNames) {
             if(!genreName.isBlank()){
