@@ -27,7 +27,8 @@ database and automated backups to an online repository.
     - [ ] Implement system to automatically handle creation and validation of database
     - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for Genre
-        - [ ] Create repository for Artist
+        - [x] Create repository for Artist
+            - Need to implement method to handle SimplifiedArtist objects, will require integration with Spotify API.
         - [ ] Create repository for Album
         - [x] Create repository for SpotifyID
         - [x] Create repository for SpotifyImage

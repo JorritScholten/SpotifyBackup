@@ -33,7 +33,7 @@ public class SpotifyIDRepository {
     /**
      * Check if SpotifyID exists in persistence context by Spotify ID.
      * @param id Spotify ID to check.
-     * @return true if Spotify ID exists in persistence context.
+     * @return true if Spotify ID exists in the database.
      */
     public boolean exists(@NonNull String id) {
         return find(id).isPresent();
@@ -42,7 +42,7 @@ public class SpotifyIDRepository {
     /**
      * Check if SpotifyID exists in persistence context.
      * @param spotifyID SpotifyID to check.
-     * @return true if spotifyID exists in persistence context.
+     * @return true if spotifyID exists in the database.
      */
     public boolean exists(@NonNull SpotifyID spotifyID) {
         return exists(spotifyID.getId());
