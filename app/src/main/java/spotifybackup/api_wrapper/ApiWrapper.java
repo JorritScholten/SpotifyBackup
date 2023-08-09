@@ -95,7 +95,6 @@ public class ApiWrapper {
             CompletableFuture.runAsync(() -> {
                 var code = callbackHandler.getCodeSync();
                 server.stop(0);
-                waitingForAPI.release();
                 performTokenGet(code);
             });
         } catch (ParseException | NullPointerException | SpotifyWebApiException e) {
@@ -126,20 +125,19 @@ public class ApiWrapper {
     /**
      * Get access tokens (or refresh current ones) for Spotify API, what action is performed is decided by the value of
      * spotifyApi.getAccessToken()
-     * @param requestCode code required to generate a new token set.
+     * @param requestCode code required to generate a new token set, can be null for token refresh.
      */
     private void performTokenGet(String requestCode) {
         try {
-            waitingForAPI.acquire();
             AuthorizationCodeCredentials authorizationCodeCredentials;
             if (spotifyApi.getAccessToken() == null) {
                 authorizationCodeCredentials = authorizationCodeRequest.apply(requestCode).execute();
             } else {
+                waitingForAPI.acquire();
                 authorizationCodeCredentials = authorizationRefreshRequest.get().execute();
             }
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            waitingForAPI.release();
             scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
         } catch (SpotifyWebApiException e) {
             // spotify has returned an HTTP 4xx or 5xx status code
@@ -153,6 +151,8 @@ public class ApiWrapper {
         } catch (InterruptedException e) {
             // caused by semaphore interruptions
             throw new RuntimeException(e);
+        } finally {
+            waitingForAPI.release();
         }
     }
 
