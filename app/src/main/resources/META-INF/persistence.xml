@@ -10,7 +10,7 @@
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <class>spotifybackup.storage.Genre</class>
         <class>spotifybackup.storage.SpotifyID</class>
-        <class>spotifybackup.storage.Artist</class>
+        <class>spotifybackup.storage.SpotifyArtist</class>
         <class>spotifybackup.storage.SpotifyImage</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>

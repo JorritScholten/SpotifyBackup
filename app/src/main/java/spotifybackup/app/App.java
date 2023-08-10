@@ -2,8 +2,6 @@ package spotifybackup.app;
 
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
-import spotifybackup.storage.ArtistRepository;
-import spotifybackup.storage.GenreRepository;
 
 import java.util.Properties;
 import java.util.logging.Level;

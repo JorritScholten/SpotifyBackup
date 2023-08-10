@@ -11,8 +11,8 @@ import java.util.logging.LogManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ArtistRepositoryTest {
-    static private ArtistRepository artistRepository;
+public class SpotifyArtistRepositoryTest {
+    static private SpotifyArtistRepository spotifyArtistRepository;
 
     @BeforeAll
     static void setup() {
@@ -23,7 +23,7 @@ public class ArtistRepositoryTest {
         DB_ACCESS.put("hibernate.show_sql", "false");
         DB_ACCESS.put("persistenceUnitName", "testdb");
         try {
-            artistRepository = new ArtistRepository(DB_ACCESS);
+            spotifyArtistRepository = new SpotifyArtistRepository(DB_ACCESS);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
@@ -70,16 +70,16 @@ public class ArtistRepositoryTest {
                     "uri": "spotify:artist:4LAz9VRX8Nat9kvIzgkg2v"
                   }
                 """);
-        assertFalse(artistRepository.exists(apiArtist),
+        assertFalse(spotifyArtistRepository.exists(apiArtist),
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
 
         // Act
-        var persistedArtist = artistRepository.persist(apiArtist);
+        var persistedArtist = spotifyArtistRepository.persist(apiArtist);
 
         // Assert
-        assertTrue(artistRepository.exists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
-        assertTrue(artistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
-        assertTrue(artistRepository.exists(persistedArtist), "Can't find Artist by Object reference.");
+        assertTrue(spotifyArtistRepository.exists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
+        assertTrue(spotifyArtistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
+        assertTrue(spotifyArtistRepository.exists(persistedArtist), "Can't find Artist by Object reference.");
         assertEquals(apiArtist.getGenres().length, persistedArtist.getGenres().size());
         assertEquals(apiArtist.getImages().length, persistedArtist.getImages().size());
     }
@@ -87,7 +87,7 @@ public class ArtistRepositoryTest {
     @Test
     void ensure_multiple_artists_can_be_persisted() {
         // Arrange
-        final long oldCount = artistRepository.count();
+        final long oldCount = spotifyArtistRepository.count();
         final Artist[] apiArtists = {new Artist.JsonUtil().createModelObject("""
                 {
                   "external_urls": {
@@ -201,25 +201,25 @@ public class ArtistRepositoryTest {
                 """),
         };
         for (var apiArtist : apiArtists) {
-            assertFalse(artistRepository.exists(apiArtist),
+            assertFalse(spotifyArtistRepository.exists(apiArtist),
                     "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
         }
 
         // Act
-        var persistedArtists = artistRepository.persistAll(apiArtists);
+        var persistedArtists = spotifyArtistRepository.persistAll(apiArtists);
 
         // Assert
         for (var apiArtist : apiArtists) {
             var persistedArtist = persistedArtists.stream()
                     .filter(a -> a.getSpotifyID().getId().equals(apiArtist.getId()))
                     .findAny();
-            assertTrue(artistRepository.exists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
-            assertTrue(artistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
+            assertTrue(spotifyArtistRepository.exists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
+            assertTrue(spotifyArtistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
             assertTrue(persistedArtist.isPresent());
-            assertTrue(artistRepository.exists(persistedArtist.get()), "Can't find Artist by Object reference.");
+            assertTrue(spotifyArtistRepository.exists(persistedArtist.get()), "Can't find Artist by Object reference.");
             assertEquals(apiArtist.getGenres().length, persistedArtist.get().getGenres().size());
             assertEquals(apiArtist.getImages().length, persistedArtist.get().getImages().size());
         }
-        assertEquals(oldCount + apiArtists.length, artistRepository.count());
+        assertEquals(oldCount + apiArtists.length, spotifyArtistRepository.count());
     }
 }

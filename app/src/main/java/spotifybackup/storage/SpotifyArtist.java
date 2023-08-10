@@ -8,14 +8,14 @@ import java.util.Set;
 
 @Builder
 @AllArgsConstructor
-@Entity(name = "Artist")
+@Entity(name = "SpotifyArtist")
 @NamedQueries({
-        @NamedQuery(name = "Artist.countBy", query = "select count(a) from Artist a"),
-        @NamedQuery(name = "Artist.findBySpotifyID", query = "select a from Artist a where a.spotifyID = :spotifyID")
+        @NamedQuery(name = "Artist.countBy", query = "select count(a) from SpotifyArtist a"),
+        @NamedQuery(name = "Artist.findBySpotifyID", query = "select a from SpotifyArtist a where a.spotifyID = :spotifyID")
 })
 @NoArgsConstructor
 @Getter
-public class Artist {
+public class SpotifyArtist {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 

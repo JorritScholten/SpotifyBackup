@@ -8,7 +8,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
-import spotifybackup.storage.ArtistRepository;
+import spotifybackup.storage.SpotifyArtistRepository;
+import spotifybackup.storage.SpotifyArtist;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -54,7 +55,7 @@ public class ApiWrapperIntegrationTest {
     public void persist_requested_artist() throws IOException {
         // Arrange
         final String artistId = "5VPCIIfZPK8KPsgz4jmOEC", artistName = "The Blue Stones";
-        ArtistRepository artistRepository;
+        SpotifyArtistRepository spotifyArtistRepository;
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         final Properties DB_ACCESS = new Properties();
         DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
@@ -62,19 +63,19 @@ public class ApiWrapperIntegrationTest {
         DB_ACCESS.put("hibernate.show_sql", "false");
         DB_ACCESS.put("persistenceUnitName", "testdb");
         try {
-            artistRepository = new ArtistRepository(DB_ACCESS);
+            spotifyArtistRepository = new SpotifyArtistRepository(DB_ACCESS);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
-        final long oldCount = artistRepository.count();
+        final long oldCount = spotifyArtistRepository.count();
 
         // Act
         final Artist apiArtist = apiWrapper.getArtist(artistId).orElseThrow();
-        final spotifybackup.storage.Artist artist = artistRepository.persist(apiArtist);
+        final SpotifyArtist spotifyArtist = spotifyArtistRepository.persist(apiArtist);
 
         // Assert
-        assertNotNull(artist);
-        assertEquals(artist.getName(), artistName);
-        assertEquals(artistRepository.count(), oldCount + 1);
+        assertNotNull(spotifyArtist);
+        assertEquals(spotifyArtist.getName(), artistName);
+        assertEquals(spotifyArtistRepository.count(), oldCount + 1);
     }
 }

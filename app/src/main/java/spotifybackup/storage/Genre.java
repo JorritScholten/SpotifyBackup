@@ -19,7 +19,7 @@ import java.util.Set;
 public class Genre {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "genres",
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
-    private final Set<Artist> artists = new HashSet<>();
+    private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -47,7 +47,7 @@ public class Genre {
         return genreSet;
     }
 
-    void addArtist(@NonNull Artist artist) {
-        artists.add(artist);
+    void addArtist(@NonNull SpotifyArtist spotifyArtist) {
+        spotifyArtists.add(spotifyArtist);
     }
 }
