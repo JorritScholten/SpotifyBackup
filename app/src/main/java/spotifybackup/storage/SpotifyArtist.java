@@ -24,6 +24,10 @@ public class SpotifyArtist {
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyGenre> spotifyGenres = new HashSet<>();
 
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyArtists", cascade =
+            {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    private final Set<SpotifyTrack> spotifyTracks = new HashSet<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

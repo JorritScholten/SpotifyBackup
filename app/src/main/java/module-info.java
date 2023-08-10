@@ -11,4 +11,6 @@ module SpotifyBackup.app.main {
     requires org.apache.httpcomponents.core5.httpcore5;
     requires java.desktop;
     requires jdk.httpserver;
+    requires nv.i18n;
+    requires io.hypersistence.utils.hibernate.type;
 }

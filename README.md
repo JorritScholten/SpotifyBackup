@@ -20,7 +20,7 @@ database and automated backups to an online repository.
     - [x] Remove Thread.sleep() call to make authorization request asynchronous
     - [x] Handle token refresh when current token expires
     - [ ] Handle the various API response error codes
-  - [ ] Store artist GET request to db
+  - [x] Store artist GET request to db
   - [ ] Write unit test using mocking (leaning towards EasyMock)
   - [ ] Store track info to db
   - [ ] Store playlist to db
@@ -35,15 +35,17 @@ database and automated backups to an online repository.
         - [ ] playlist information (we'll treat Liked Songs as a playlist)
         - [ ] tracks in a playlist
         - [ ] users
-        - [ ] tracks
+        - [x] tracks
+        - [ ] albums
     - [ ] Implement system to automatically handle creation and validation of database
     - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
-        - [x] Create repository for Genre
-        - [x] Create repository for Artist
+        - [x] Create repository for SpotifyGenre
+        - [x] Create repository for SpotifyArtist
             - Need to implement method to handle SimplifiedArtist objects, will require integration with Spotify API.
-        - [ ] Create repository for Album
+        - [ ] Create repository for SpotifyAlbum
         - [x] Create repository for SpotifyID
         - [x] Create repository for SpotifyImage
+        - [ ] Create repository for SpotifyTrack
 
 ## Documentation
 
