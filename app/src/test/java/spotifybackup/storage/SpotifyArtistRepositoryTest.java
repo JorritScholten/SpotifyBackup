@@ -80,7 +80,7 @@ public class SpotifyArtistRepositoryTest {
         assertTrue(spotifyArtistRepository.exists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
         assertTrue(spotifyArtistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
         assertTrue(spotifyArtistRepository.exists(persistedArtist), "Can't find Artist by Object reference.");
-        assertEquals(apiArtist.getGenres().length, persistedArtist.getGenres().size());
+        assertEquals(apiArtist.getGenres().length, persistedArtist.getSpotifyGenres().size());
         assertEquals(apiArtist.getImages().length, persistedArtist.getImages().size());
     }
 
@@ -217,7 +217,7 @@ public class SpotifyArtistRepositoryTest {
             assertTrue(spotifyArtistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
             assertTrue(persistedArtist.isPresent());
             assertTrue(spotifyArtistRepository.exists(persistedArtist.get()), "Can't find Artist by Object reference.");
-            assertEquals(apiArtist.getGenres().length, persistedArtist.get().getGenres().size());
+            assertEquals(apiArtist.getGenres().length, persistedArtist.get().getSpotifyGenres().size());
             assertEquals(apiArtist.getImages().length, persistedArtist.get().getImages().size());
         }
         assertEquals(oldCount + apiArtists.length, spotifyArtistRepository.count());

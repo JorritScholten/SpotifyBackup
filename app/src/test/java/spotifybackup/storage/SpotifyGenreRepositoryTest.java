@@ -10,8 +10,8 @@ import java.util.logging.LogManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class GenreRepositoryTest {
-    static private GenreRepository genreRepository;
+public class SpotifyGenreRepositoryTest {
+    static private SpotifyGenreRepository spotifyGenreRepository;
 
     @BeforeAll
     static void setup() {
@@ -22,7 +22,7 @@ public class GenreRepositoryTest {
         DB_ACCESS.put("hibernate.show_sql", "true");
         DB_ACCESS.put("persistenceUnitName", "testdb");
         try {
-            genreRepository = new GenreRepository(DB_ACCESS);
+            spotifyGenreRepository = new SpotifyGenreRepository(DB_ACCESS);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
@@ -31,45 +31,45 @@ public class GenreRepositoryTest {
     @Test
     void ensure_genre_can_be_persisted() {
         // Arrange
-        long oldCount = genreRepository.count();
+        long oldCount = spotifyGenreRepository.count();
         final String genreName = "rock";
-        assertFalse(genreRepository.exists(genreName),
+        assertFalse(spotifyGenreRepository.exists(genreName),
                 "Genre with name " + genreName + " shouldn't already exist.");
 
         // Act
-        var persistedGenre = genreRepository.persist(genreName);
+        var persistedGenre = spotifyGenreRepository.persist(genreName);
 
         // Assert
-        assertEquals(oldCount + 1, genreRepository.count());
-        assertTrue(genreRepository.exists(persistedGenre.orElseThrow()));
+        assertEquals(oldCount + 1, spotifyGenreRepository.count());
+        assertTrue(spotifyGenreRepository.exists(persistedGenre.orElseThrow()));
     }
 
     @Test
     void ensure_genres_arent_duplicated() {
         // Arrange
         final String genreName = "new genre";
-        genreRepository.persist(genreName);
-        long oldCount = genreRepository.count();
+        spotifyGenreRepository.persist(genreName);
+        long oldCount = spotifyGenreRepository.count();
 
         // Act
-        genreRepository.persist(genreName);
+        spotifyGenreRepository.persist(genreName);
 
         // Assert
-        assertEquals(oldCount, genreRepository.count());
+        assertEquals(oldCount, spotifyGenreRepository.count());
     }
 
     @Test
     void ensure_persisted_genre_exists_in_db() {
         // Arrange
         final String genreName = "jazz";
-        final var usedToExist = genreRepository.exists(genreName);
+        final var usedToExist = spotifyGenreRepository.exists(genreName);
 
         // Act
-        genreRepository.persist(genreName);
+        spotifyGenreRepository.persist(genreName);
 
         // Assert
         assertFalse(usedToExist, "Genre with name " + genreName + " shouldn't already exist.");
-        assertTrue(genreRepository.exists(genreName));
+        assertTrue(spotifyGenreRepository.exists(genreName));
     }
 
     @Test
@@ -77,16 +77,16 @@ public class GenreRepositoryTest {
         // Arrange
         final String[] genreNames = {"pop", "grunge-rock", "ska", "trance"};
         for (var genreName : genreNames) {
-            assertFalse(genreRepository.exists(genreName),
+            assertFalse(spotifyGenreRepository.exists(genreName),
                     "Genre with name " + genreName + " shouldn't already exist.");
         }
 
         // Act
-        final var persistedGenres = genreRepository.persistAll(genreNames);
+        final var persistedGenres = spotifyGenreRepository.persistAll(genreNames);
 
         // Assert
         for (var persistedGenre : persistedGenres) {
-            assertTrue(genreRepository.exists(persistedGenre));
+            assertTrue(spotifyGenreRepository.exists(persistedGenre));
         }
     }
 
@@ -94,19 +94,19 @@ public class GenreRepositoryTest {
     void persist_some_new_genres() {
         // Arrange
         final String[] genreNames = {"pop", "grunge-rock", "hip-hop", "house"};
-        assertTrue(genreRepository.exists(genreRepository.persist(genreNames[0]).orElseThrow()));
-        assertTrue(genreRepository.exists(genreRepository.persist(genreNames[1]).orElseThrow()));
-        assertFalse(genreRepository.exists(genreNames[2]),
+        assertTrue(spotifyGenreRepository.exists(spotifyGenreRepository.persist(genreNames[0]).orElseThrow()));
+        assertTrue(spotifyGenreRepository.exists(spotifyGenreRepository.persist(genreNames[1]).orElseThrow()));
+        assertFalse(spotifyGenreRepository.exists(genreNames[2]),
                 "Genre with name " + genreNames[2] + " shouldn't already exist.");
-        assertFalse(genreRepository.exists(genreNames[3]),
+        assertFalse(spotifyGenreRepository.exists(genreNames[3]),
                 "Genre with name " + genreNames[3] + " shouldn't already exist.");
 
         // Act
-        final var persistedGenres = genreRepository.persistAll(genreNames);
+        final var persistedGenres = spotifyGenreRepository.persistAll(genreNames);
 
         // Assert
         for (var persistedGenre : persistedGenres) {
-            assertTrue(genreRepository.exists(persistedGenre));
+            assertTrue(spotifyGenreRepository.exists(persistedGenre));
         }
     }
 }

@@ -8,7 +8,7 @@
             Persistence unit for Spotify information
         </description>
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
-        <class>spotifybackup.storage.Genre</class>
+        <class>spotifybackup.storage.SpotifyGenre</class>
         <class>spotifybackup.storage.SpotifyID</class>
         <class>spotifybackup.storage.SpotifyArtist</class>
         <class>spotifybackup.storage.SpotifyImage</class>

@@ -7,17 +7,17 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-@Entity(name = "Genre")
+@Entity(name = "SpotifyGenre")
 @NoArgsConstructor
 @Getter
 @RequiredArgsConstructor
 @ToString
 @NamedQueries({
-        @NamedQuery(name = "Genre.countBy", query = "select count(g) from Genre g"),
-        @NamedQuery(name = "Genre.findByName", query = "select g from Genre g where g.name = :name")
+        @NamedQuery(name = "SpotifyGenre.countBy", query = "select count(g) from SpotifyGenre g"),
+        @NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name")
 })
-public class Genre {
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "genres",
+public class SpotifyGenre {
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyGenres",
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();
 
@@ -29,22 +29,19 @@ public class Genre {
     @NonNull
     private String name;
 
-    @Lob
-    private String description;
-
     /**
      * Factory method to create a Set of Genres from an array of genre names.
      * @param genreNames an array of genre names as defined by Spotify.
-     * @return Set of Genres.
+     * @return Set of SpotifyGenres.
      */
-    static Set<Genre> setFactory(@NonNull String[] genreNames) {
-        Set<Genre> genreSet = new HashSet<>();
+    static Set<SpotifyGenre> setFactory(@NonNull String[] genreNames) {
+        Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
         for (var genreName : genreNames) {
             if (!genreName.isBlank()) {
-                genreSet.add(new Genre(genreName.toLowerCase(Locale.ENGLISH)));
+                spotifyGenreSet.add(new SpotifyGenre(genreName.toLowerCase(Locale.ENGLISH)));
             }
         }
-        return genreSet;
+        return spotifyGenreSet;
     }
 
     void addArtist(@NonNull SpotifyArtist spotifyArtist) {
