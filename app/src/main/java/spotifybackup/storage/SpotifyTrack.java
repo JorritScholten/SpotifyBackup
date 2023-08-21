@@ -55,4 +55,11 @@ public class SpotifyTrack {
     @Column(length = 2)
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
+
+    @Setter
+    private boolean isSimplified;
+
+    void addArtist(@NonNull SpotifyArtist spotifyArtist) {
+        spotifyArtists.add(spotifyArtist);
+    }
 }

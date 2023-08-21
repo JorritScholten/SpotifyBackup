@@ -64,4 +64,7 @@ public class SpotifyAlbum {
 
     @NonNull
     private ReleaseDatePrecision releaseDatePrecision;
+
+    @Setter
+    private boolean isSimplified;
 }

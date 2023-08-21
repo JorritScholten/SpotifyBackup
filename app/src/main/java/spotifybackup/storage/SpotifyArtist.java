@@ -45,6 +45,9 @@ public class SpotifyArtist {
     @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
     private SpotifyID spotifyID;
 
+    @Setter
+    private boolean isSimplified;
+
     void addGenres(@NonNull Set<SpotifyGenre> newSpotifyGenres) {
         for (var genre : newSpotifyGenres) {
             spotifyGenres.add(genre);
