@@ -36,7 +36,7 @@ database and automated backups to an online repository.
         - [ ] tracks in a playlist
         - [ ] users
         - [x] tracks
-        - [ ] albums
+        - [x] albums
     - [ ] Implement system to automatically handle creation and validation of database
     - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for SpotifyGenre

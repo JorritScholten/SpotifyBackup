@@ -17,12 +17,16 @@ import java.util.Set;
 @Getter
 public class SpotifyArtist {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private final Set<SpotifyImage> images = new HashSet<>();
+    private final Set<SpotifyImage> spotifyImages = new HashSet<>();
 
     // more info: https://stackoverflow.com/a/59523218
     @ManyToMany(fetch = FetchType.EAGER, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyGenre> spotifyGenres = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyArtists", cascade =
+            {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    private final Set<SpotifyAlbum> spotifyAlbums = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyArtists", cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
@@ -49,6 +53,14 @@ public class SpotifyArtist {
     }
 
     void addImages(@NonNull Set<SpotifyImage> newImages) {
-        images.addAll(newImages);
+        spotifyImages.addAll(newImages);
+    }
+
+    void addTracks(){
+
+    }
+
+    void addAlbums(){
+
     }
 }
