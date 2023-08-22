@@ -46,7 +46,8 @@ public class SpotifyArtist {
     private SpotifyID spotifyID;
 
     @Setter
-    private boolean isSimplified;
+    @NonNull
+    private Boolean isSimplified;
 
     void addGenres(@NonNull Set<SpotifyGenre> newSpotifyGenres) {
         for (var genre : newSpotifyGenres) {

@@ -142,6 +142,7 @@ public class SpotifyArtistRepository {
             var newArtist = SpotifyArtist.builder()
                     .name(apiArtist.getName())
                     .spotifyID(new SpotifyID(apiArtist.getId()))
+                    .isSimplified(false)
                     .build();
             try (var entityManager = emf.createEntityManager()) {
                 entityManager.getTransaction().begin();

@@ -1,6 +1,5 @@
 package spotifybackup.storage;
 
-import com.neovisionaries.i18n.CountryCode;
 import io.hypersistence.utils.hibernate.type.array.StringArrayType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,11 +36,14 @@ public class SpotifyTrack {
     @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
     private SpotifyID spotifyID;
 
-    private int discNumber;
+    @NonNull
+    private Integer discNumber;
 
-    private int duration_ms;
+    @NonNull
+    private Integer duration_ms;
 
-    private boolean explicit;
+    @NonNull
+    private Boolean explicit;
 
     @NonNull
     @Column(length = 12, nullable = false)
@@ -57,7 +59,8 @@ public class SpotifyTrack {
     private String[] availableMarkets;
 
     @Setter
-    private boolean isSimplified;
+    @NonNull
+    private Boolean isSimplified;
 
     void addArtist(@NonNull SpotifyArtist spotifyArtist) {
         spotifyArtists.add(spotifyArtist);
