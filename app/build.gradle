@@ -2,6 +2,7 @@ plugins {
     id 'spotifybackup.java-application-conventions'
     id 'application'
     id 'java'
+    id 'extra-java-module-info'
 }
 
 dependencies {
@@ -19,6 +20,12 @@ dependencies {
             'io.hypersistence:hypersistence-utils-hibernate-62:3.5.0'
     )
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
+}
+
+extraJavaModuleInfo {
+    module("nv-i18n-1.29.jar", "nv.i18n", "1.29") {
+        exports("com.neovisionaries.i18n")
+    }
 }
 
 test {
