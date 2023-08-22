@@ -72,32 +72,32 @@ public class SpotifyTrackRepository {
         if (optionalTrack.isPresent()) {
             return optionalTrack.get();
         } else {
-            var newTrackBuilder = SpotifyTrack.builder();
-            if(spotifyIDRepository.exists(apiTrack.getAlbum().getId())){
-                newTrackBuilder.spotifyAlbum(/*get spotify album object from spotify id*/);
-            }else {
-                // store simplified album object
-                // update data from simplified album with complete album later
-            }
-            newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
-            newTrackBuilder.discNumber(apiTrack.getDiscNumber());
-            newTrackBuilder.duration_ms(apiTrack.getDurationMs());
-            newTrackBuilder.explicit(apiTrack.getIsExplicit());
-            if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
-                newTrackBuilder.isrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));
-            }
-            newTrackBuilder.name(apiTrack.getName());
-            if (apiTrack.getAvailableMarkets().length > 0) {
-                newTrackBuilder.availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()));
-            }
-            var newTrack = newTrackBuilder.build();
-            for(var simplifiedApiArtist:apiTrack.getArtists()){
-                if(spotifyIDRepository.exists(simplifiedApiArtist.getId())){
-                    var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
-                    query.setParameter("spotifyID", simplifiedApiArtist.getId());
-                    newTrack.addArtist(query.getSingleResult());
-                }else {
-                    // persist simplified artist
+            try (var entityManager = emf.createEntityManager()) {
+                var newTrackBuilder = SpotifyTrack.builder();
+                newTrackBuilder.isSimplified(false);
+//                if (spotifyIDRepository.exists(apiTrack.getAlbum().getId())) {
+//                    var query = entityManager.createNamedQuery("SpotifyAlbum.findBySpotifyID", SpotifyAlbum.class);
+//                    query.setParameter("spotifyID", apiTrack.getAlbum().getId());
+//                    newTrackBuilder.spotifyAlbum(query.getSingleResult());
+//                } else {
+//                    // store simplified album object
+//                    // update data from simplified album with complete album later
+//                }
+                newTrackBuilder.spotifyAlbum(SpotifyAlbumRepository.persist(entityManager, apiTrack.getAlbum()));
+                newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
+                newTrackBuilder.discNumber(apiTrack.getDiscNumber());
+                newTrackBuilder.duration_ms(apiTrack.getDurationMs());
+                newTrackBuilder.explicit(apiTrack.getIsExplicit());
+                if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
+                    newTrackBuilder.isrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));
+                }
+                newTrackBuilder.name(apiTrack.getName());
+                if (apiTrack.getAvailableMarkets().length > 0) {
+                    newTrackBuilder.availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()));
+                }
+                var newTrack = newTrackBuilder.build();
+                for (var simplifiedApiArtist : apiTrack.getArtists()) {
+                    newTrack.addArtist(SpotifyArtistRepository.persist(entityManager, simplifiedApiArtist));
                 }
             }
         }
