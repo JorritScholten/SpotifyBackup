@@ -52,7 +52,7 @@ public class SpotifyAlbum {
     private String isrcID;
 
     @Type(StringArrayType.class)
-    @Column(length = 2)
+    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
 

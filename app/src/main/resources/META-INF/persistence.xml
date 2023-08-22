@@ -12,6 +12,8 @@
         <class>spotifybackup.storage.SpotifyID</class>
         <class>spotifybackup.storage.SpotifyArtist</class>
         <class>spotifybackup.storage.SpotifyImage</class>
+        <class>spotifybackup.storage.SpotifyAlbum</class>
+        <class>spotifybackup.storage.SpotifyTrack</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.hikari.dataSourceClassName" value="org.h2.jdbcx.JdbcDataSource"/>

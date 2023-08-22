@@ -25,7 +25,7 @@ public class SpotifyTrack {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name="album_id", nullable = false)
+    @JoinColumn(name = "album_id", nullable = false)
     private SpotifyAlbum spotifyAlbum;
 
     @Id
@@ -52,7 +52,7 @@ public class SpotifyTrack {
     private String name;
 
     @Type(StringArrayType.class)
-    @Column(length = 2)
+    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
 
