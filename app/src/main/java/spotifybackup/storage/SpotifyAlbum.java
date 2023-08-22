@@ -68,4 +68,8 @@ public class SpotifyAlbum {
     @Setter
     @NonNull
     private Boolean isSimplified;
+
+    void addArtist(@NonNull SpotifyArtist spotifyArtist) {
+        spotifyArtists.add(spotifyArtist);
+    }
 }

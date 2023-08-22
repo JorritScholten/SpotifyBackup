@@ -45,6 +45,9 @@ public class SpotifyArtistRepository {
      * @return Artist if id matches the spotify_id field in the table and not blank.
      */
     static Optional<SpotifyArtist> find(EntityManager entityManager, @NonNull String id) {
+        if (id.isBlank()) {
+            return Optional.empty();
+        }
         var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
         query.setParameter("spotifyID", id);
         try {

@@ -75,14 +75,6 @@ public class SpotifyTrackRepository {
             try (var entityManager = emf.createEntityManager()) {
                 var newTrackBuilder = SpotifyTrack.builder();
                 newTrackBuilder.isSimplified(false);
-//                if (spotifyIDRepository.exists(apiTrack.getAlbum().getId())) {
-//                    var query = entityManager.createNamedQuery("SpotifyAlbum.findBySpotifyID", SpotifyAlbum.class);
-//                    query.setParameter("spotifyID", apiTrack.getAlbum().getId());
-//                    newTrackBuilder.spotifyAlbum(query.getSingleResult());
-//                } else {
-//                    // store simplified album object
-//                    // update data from simplified album with complete album later
-//                }
                 newTrackBuilder.spotifyAlbum(SpotifyAlbumRepository.persist(entityManager, apiTrack.getAlbum()));
                 newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
                 newTrackBuilder.discNumber(apiTrack.getDiscNumber());
@@ -101,17 +93,5 @@ public class SpotifyTrackRepository {
                 }
             }
         }
-    }
-
-    /**
-     * @param markets Array of CountryCode objects.
-     * @return Array of Strings containing ISO 3166-1 alpha-2 market codes.
-     */
-    private String[] convertMarkets(CountryCode[] markets) {
-        Set<String> stringifiedMarkets = new HashSet<>();
-        for (var market : markets) {
-            stringifiedMarkets.add(market.getAlpha2());
-        }
-        return stringifiedMarkets.toArray(String[]::new);
     }
 }
