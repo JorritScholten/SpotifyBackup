@@ -12,7 +12,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity(name = "SpotifyTrack")
 @NamedQueries({
-        @NamedQuery(name = "SpotifyTrack.countBy", query = "select count(t) from SpotifyArtist t"),
+        @NamedQuery(name = "SpotifyTrack.countBy", query = "select count(t) from SpotifyTrack t"),
         @NamedQuery(name = "SpotifyTrack.findBySpotifyID", query = "select t from SpotifyTrack t where t.spotifyID = :spotifyID")
 })
 @NoArgsConstructor
