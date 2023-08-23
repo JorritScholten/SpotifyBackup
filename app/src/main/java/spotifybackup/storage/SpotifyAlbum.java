@@ -47,8 +47,7 @@ public class SpotifyAlbum {
     @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
     private SpotifyID spotifyID;
 
-    @NonNull
-    @Column(length = 12, nullable = false)
+    @Column(length = 12)
     private String isrcID;
 
     @Type(StringArrayType.class)

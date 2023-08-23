@@ -12,11 +12,11 @@ import java.util.Set;
 
 public class SpotifyAlbumRepository {
     static Optional<SpotifyAlbum> find(EntityManager entityManager, @NonNull String id) {
-        if (id.isBlank()) {
+        if (id.isBlank() || entityManager.find(SpotifyID.class, id) == null) {
             return Optional.empty();
         }
         var query = entityManager.createNamedQuery("SpotifyAlbum.findBySpotifyID", SpotifyAlbum.class);
-        query.setParameter("spotifyID", id);
+        query.setParameter("spotifyID", entityManager.find(SpotifyID.class, id));
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
