@@ -64,11 +64,11 @@ public class SpotifyArtistRepository {
      */
     public Optional<SpotifyArtist> find(@NonNull String id) {
         try (var entityManager = emf.createEntityManager()) {
-            var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
             final var optionalSpotifyID = spotifyIDRepository.find(id);
             if (optionalSpotifyID.isEmpty()) {
                 return Optional.empty();
             } else {
+                var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
                 query.setParameter("spotifyID", optionalSpotifyID.get());
                 try {
                     return Optional.of(query.getSingleResult());
