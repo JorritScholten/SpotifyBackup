@@ -231,7 +231,7 @@
   "external_urls": {
     "spotify": "https://open.spotify.com/album/76FXHQhTuT4QMIxfL09gX8"
   },
-  "genres": [],
+  "genres": ["pop rap", "pop"],
   "href": "https://api.spotify.com/v1/albums/76FXHQhTuT4QMIxfL09gX8",
   "id": "76FXHQhTuT4QMIxfL09gX8",
   "images": [

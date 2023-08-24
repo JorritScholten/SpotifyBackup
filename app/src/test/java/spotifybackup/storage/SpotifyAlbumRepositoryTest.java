@@ -42,6 +42,7 @@ public class SpotifyAlbumRepositoryTest {
         );
         assertFalse(spotifyAlbumRepository.exists(apiAlbum),
                 "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
+        assertTrue(apiAlbum.getGenres().length > 0, "Album should have 1 or more genres.");
 
         // Act
         var persistedAlbum = spotifyAlbumRepository.persist(apiAlbum);
@@ -51,6 +52,8 @@ public class SpotifyAlbumRepositoryTest {
         assertTrue(spotifyAlbumRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
         assertTrue(spotifyAlbumRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
         assertEquals(apiAlbum.getArtists().length, persistedAlbum.getSpotifyArtists().size());
+        assertEquals(apiAlbum.getGenres().length, persistedAlbum.getSpotifyGenres().size());
+        assertEquals(apiAlbum.getImages().length, persistedAlbum.getSpotifyImages().size());
         assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getSpotifyTracks().size());
     }
 }
