@@ -43,7 +43,8 @@ database and automated backups to an online repository.
         - [x] Create repository for SpotifyArtist
         - [ ] Create repository for SpotifyAlbum
         - [x] Create repository for SpotifyID
-        - [x] Create repository for SpotifyImage
+        - [ ] Create repository for SpotifyImage
+          - implement de-duping persistence method
         - [x] Create repository for SpotifyTrack
 
 ## Documentation
