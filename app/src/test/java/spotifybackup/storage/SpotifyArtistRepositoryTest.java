@@ -5,6 +5,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -13,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SpotifyArtistRepositoryTest {
     static private SpotifyArtistRepository spotifyArtistRepository;
+    static final String testDir = "src/test/java/spotifybackup/storage/";
 
     @BeforeAll
     static void setup() {
@@ -30,46 +37,11 @@ public class SpotifyArtistRepositoryTest {
     }
 
     @Test
-    void ensure_artist_can_be_persisted() {
+    void ensure_artist_can_be_persisted() throws IOException {
         // Arrange
-        final Artist apiArtist = new Artist.JsonUtil().createModelObject("""
-                {
-                    "external_urls": {
-                      "spotify": "https://open.spotify.com/artist/4LAz9VRX8Nat9kvIzgkg2v"
-                    },
-                    "followers": {
-                      "href": null,
-                      "total": 39002
-                    },
-                    "genres": [
-                      "alternative rock",
-                      "rock"
-                    ],
-                    "href": "https://api.spotify.com/v1/artists/4LAz9VRX8Nat9kvIzgkg2v",
-                    "id": "4LAz9VRX8Nat9kvIzgkg2v",
-                    "images": [
-                      {
-                        "url": "https://i.scdn.co/image/ab6761610000e5ebfa16c573e959a8cec07c6441",
-                        "height": 640,
-                        "width": 640
-                      },
-                      {
-                        "url": "https://i.scdn.co/image/ab67616100005174fa16c573e959a8cec07c6441",
-                        "height": 320,
-                        "width": 320
-                      },
-                      {
-                        "url": "https://i.scdn.co/image/ab6761610000f178fa16c573e959a8cec07c6441",
-                        "height": 160,
-                        "width": 160
-                      }
-                    ],
-                    "name": "Rivers Cuomo",
-                    "popularity": 54,
-                    "type": "artist",
-                    "uri": "spotify:artist:4LAz9VRX8Nat9kvIzgkg2v"
-                  }
-                """);
+        final Artist apiArtist = new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Rivers_Cuomo.json")))
+        );
         assertFalse(spotifyArtistRepository.exists(apiArtist),
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
 
@@ -85,120 +57,16 @@ public class SpotifyArtistRepositoryTest {
     }
 
     @Test
-    void ensure_multiple_artists_can_be_persisted() {
+    void ensure_multiple_artists_can_be_persisted() throws IOException {
         // Arrange
         final long oldCount = spotifyArtistRepository.count();
-        final Artist[] apiArtists = {new Artist.JsonUtil().createModelObject("""
-                {
-                  "external_urls": {
-                    "spotify": "https://open.spotify.com/artist/5BcAKTbp20cv7tC5VqPFoC"
-                  },
-                  "followers": {
-                    "href": null,
-                    "total": 2642025
-                  },
-                  "genres": [
-                    "pop rap",
-                    "seattle hip hop"
-                  ],
-                  "href": "https://api.spotify.com/v1/artists/5BcAKTbp20cv7tC5VqPFoC",
-                  "id": "5BcAKTbp20cv7tC5VqPFoC",
-                  "images": [
-                    {
-                      "height": 640,
-                      "url": "https://i.scdn.co/image/ab6761610000e5eb3c2f1ba4c1a3de141e63d775",
-                      "width": 640
-                    },
-                    {
-                      "height": 320,
-                      "url": "https://i.scdn.co/image/ab676161000051743c2f1ba4c1a3de141e63d775",
-                      "width": 320
-                    },
-                    {
-                      "height": 160,
-                      "url": "https://i.scdn.co/image/ab6761610000f1783c2f1ba4c1a3de141e63d775",
-                      "width": 160
-                    }
-                  ],
-                  "name": "Macklemore & Ryan Lewis",
-                  "popularity": 72,
-                  "type": "artist",
-                  "uri": "spotify:artist:5BcAKTbp20cv7tC5VqPFoC"
-                }
-                """), new Artist.JsonUtil().createModelObject("""
-                {
-                  "external_urls": {
-                    "spotify": "https://open.spotify.com/artist/3JhNCzhSMTxs9WLGJJxWOY"
-                  },
-                  "followers": {
-                    "href": null,
-                    "total": 2103751
-                  },
-                  "genres": [
-                    "pop rap",
-                    "seattle hip hop"
-                  ],
-                  "href": "https://api.spotify.com/v1/artists/3JhNCzhSMTxs9WLGJJxWOY",
-                  "id": "3JhNCzhSMTxs9WLGJJxWOY",
-                  "images": [
-                    {
-                      "height": 640,
-                      "url": "https://i.scdn.co/image/ab6761610000e5eb488b3b242f97163a7f8e17b9",
-                      "width": 640
-                    },
-                    {
-                      "height": 320,
-                      "url": "https://i.scdn.co/image/ab67616100005174488b3b242f97163a7f8e17b9",
-                      "width": 320
-                    },
-                    {
-                      "height": 160,
-                      "url": "https://i.scdn.co/image/ab6761610000f178488b3b242f97163a7f8e17b9",
-                      "width": 160
-                    }
-                  ],
-                  "name": "Macklemore",
-                  "popularity": 75,
-                  "type": "artist",
-                  "uri": "spotify:artist:3JhNCzhSMTxs9WLGJJxWOY"
-                }
-                """), new Artist.JsonUtil().createModelObject("""
-                {
-                  "external_urls": {
-                    "spotify": "https://open.spotify.com/artist/4myTppRgh0rojLxx8RycOp"
-                  },
-                  "followers": {
-                    "href": null,
-                    "total": 19410
-                  },
-                  "genres": [
-                    "pop rap"
-                  ],
-                  "href": "https://api.spotify.com/v1/artists/4myTppRgh0rojLxx8RycOp",
-                  "id": "4myTppRgh0rojLxx8RycOp",
-                  "images": [
-                    {
-                      "height": 640,
-                      "url": "https://i.scdn.co/image/ab6761610000e5eb22a807b9b7c5d50042db2657",
-                      "width": 640
-                    },
-                    {
-                      "height": 320,
-                      "url": "https://i.scdn.co/image/ab6761610000517422a807b9b7c5d50042db2657",
-                      "width": 320
-                    },
-                    {
-                      "height": 160,
-                      "url": "https://i.scdn.co/image/ab6761610000f17822a807b9b7c5d50042db2657",
-                      "width": 160
-                    }
-                  ],
-                  "name": "Ryan Lewis",
-                  "popularity": 72,
-                  "type": "artist",
-                  "uri": "spotify:artist:4myTppRgh0rojLxx8RycOp"
-                }
-                """),
+        final Artist[] apiArtists = {new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Macklemore_&_Ryan_Lewis.json")))
+                ), new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Macklemore.json")))
+                ), new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Ryan_Lewis.json")))
+                ),
         };
         for (var apiArtist : apiArtists) {
             assertFalse(spotifyArtistRepository.exists(apiArtist),

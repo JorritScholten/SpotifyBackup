@@ -1,0 +1,33 @@
+{
+  "external_urls": {
+    "spotify": "https://open.spotify.com/artist/5BcAKTbp20cv7tC5VqPFoC"
+  },
+  "followers": {
+    "href": null,
+    "total": 2642025
+  },
+  "genres": ["pop rap", "seattle hip hop"],
+  "href": "https://api.spotify.com/v1/artists/5BcAKTbp20cv7tC5VqPFoC",
+  "id": "5BcAKTbp20cv7tC5VqPFoC",
+  "images": [
+    {
+      "height": 640,
+      "url": "https://i.scdn.co/image/ab6761610000e5eb3c2f1ba4c1a3de141e63d775",
+      "width": 640
+    },
+    {
+      "height": 320,
+      "url": "https://i.scdn.co/image/ab676161000051743c2f1ba4c1a3de141e63d775",
+      "width": 320
+    },
+    {
+      "height": 160,
+      "url": "https://i.scdn.co/image/ab6761610000f1783c2f1ba4c1a3de141e63d775",
+      "width": 160
+    }
+  ],
+  "name": "Macklemore & Ryan Lewis",
+  "popularity": 72,
+  "type": "artist",
+  "uri": "spotify:artist:5BcAKTbp20cv7tC5VqPFoC"
+}
