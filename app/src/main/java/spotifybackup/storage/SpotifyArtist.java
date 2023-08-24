@@ -56,15 +56,22 @@ public class SpotifyArtist {
         }
     }
 
-    void addImages(@NonNull Set<SpotifyImage> newImages) {
-        spotifyImages.addAll(newImages);
+    void addImages(@NonNull Set<SpotifyImage> newSpotifyImages) {
+        spotifyImages.addAll(newSpotifyImages);
     }
 
-    void addTracks(){
-
+    /** Non-owning side. */
+    void addTracks(@NonNull Set<SpotifyTrack> newSpotifyTracks) {
+        spotifyTracks.addAll(newSpotifyTracks);
     }
 
-    void addAlbums(){
+    /** Non-owning side. */
+    void addTrack(@NonNull SpotifyTrack newSpotifyTrack) {
+        spotifyTracks.add(newSpotifyTrack);
+    }
 
+    /** Non-owning side. */
+    void addAlbum(@NonNull SpotifyAlbum newSpotifyAlbum) {
+        spotifyAlbums.add(newSpotifyAlbum);
     }
 }

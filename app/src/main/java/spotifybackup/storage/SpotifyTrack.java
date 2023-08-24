@@ -62,7 +62,12 @@ public class SpotifyTrack {
     @NonNull
     private Boolean isSimplified;
 
-    void addArtist(@NonNull SpotifyArtist spotifyArtist) {
-        spotifyArtists.add(spotifyArtist);
+    void addArtist(@NonNull SpotifyArtist newSpotifyArtist) {
+        spotifyArtists.add(newSpotifyArtist);
+        newSpotifyArtist.addTrack(this);
+    }
+
+    void addArtists(@NonNull Set<SpotifyArtist> newSpotifyArtists) {
+        newSpotifyArtists.forEach(this::addArtist);
     }
 }

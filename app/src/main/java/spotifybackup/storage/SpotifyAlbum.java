@@ -68,7 +68,33 @@ public class SpotifyAlbum {
     @NonNull
     private Boolean isSimplified;
 
-    void addArtist(@NonNull SpotifyArtist spotifyArtist) {
-        spotifyArtists.add(spotifyArtist);
+    void addArtist(@NonNull Set<SpotifyArtist> newSpotifyArtists) {
+        newSpotifyArtists.forEach(this::addArtist);
+    }
+
+    void addArtist(@NonNull SpotifyArtist newSpotifyArtist) {
+        spotifyArtists.add(newSpotifyArtist);
+        newSpotifyArtist.addAlbum(this);
+    }
+
+    void addGenres(@NonNull Set<SpotifyGenre> newSpotifyGenres) {
+        for (var newGenre : newSpotifyGenres) {
+            spotifyGenres.add(newGenre);
+            newGenre.addAlbum(this);
+        }
+    }
+
+    void addImages(@NonNull Set<SpotifyImage> newSpotifyImages) {
+        spotifyImages.addAll(newSpotifyImages);
+    }
+
+    /** Non-owning side. */
+    void addTracks(@NonNull Set<SpotifyTrack> newSpotifyTracks) {
+        spotifyTracks.addAll(newSpotifyTracks);
+    }
+
+    /** Non-owning side. */
+    void addTrack(@NonNull SpotifyTrack newSpotifyTrack) {
+        spotifyTracks.add(newSpotifyTrack);
     }
 }

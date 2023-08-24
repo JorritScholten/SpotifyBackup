@@ -8,7 +8,6 @@ import jakarta.persistence.Persistence;
 import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
-import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.util.HashSet;
 import java.util.Optional;
@@ -17,11 +16,9 @@ import java.util.Set;
 
 public class SpotifyAlbumRepository {
     private final EntityManagerFactory emf;
-    private final SpotifyIDRepository spotifyIDRepository;
 
     public SpotifyAlbumRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
-        spotifyIDRepository = new SpotifyIDRepository(DB_ACCESS);
     }
 
     /**

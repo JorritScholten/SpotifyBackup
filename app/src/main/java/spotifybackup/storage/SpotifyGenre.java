@@ -48,7 +48,13 @@ public class SpotifyGenre {
         return spotifyGenreSet;
     }
 
+    /** Non-owning side. */
     void addArtist(@NonNull SpotifyArtist spotifyArtist) {
         spotifyArtists.add(spotifyArtist);
+    }
+
+    /** Non-owning side. */
+    void addAlbum(@NonNull SpotifyAlbum spotifyAlbum){
+        spotifyAlbums.add(spotifyAlbum);
     }
 }

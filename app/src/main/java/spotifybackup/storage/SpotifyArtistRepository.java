@@ -119,7 +119,7 @@ public class SpotifyArtistRepository {
     /**
      * Check if Artist exists in the database by Spotify ID string value.
      * @param id String containing a Spotify ID.
-     * @return true if Artist specified by id exists in the database.
+     * @return true if SpotifyArtist specified by id exists in the database.
      */
     public boolean exists(@NonNull String id) {
         return find(id).isPresent();
