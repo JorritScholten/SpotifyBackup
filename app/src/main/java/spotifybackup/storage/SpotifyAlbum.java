@@ -47,6 +47,7 @@ public class SpotifyAlbum {
     @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
     private SpotifyID spotifyID;
 
+    @Setter
     @Column(length = 12)
     private String isrcID;
 

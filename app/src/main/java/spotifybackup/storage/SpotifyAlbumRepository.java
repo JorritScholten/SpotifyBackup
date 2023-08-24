@@ -70,6 +70,29 @@ public class SpotifyAlbumRepository {
         }
     }
 
+    /**
+     * Checks if Album exists in the database by Spotify ID string value.
+     * @param id String containing a Spotify ID.
+     * @return true if SpotifyAlbum specified by id exists in the database.
+     */
+    public boolean exists(@NonNull String id) {
+        try (var entityManager = emf.createEntityManager()) {
+            return find(entityManager, id).isPresent();
+        }
+    }
+
+    /**
+     * Check if Album exists in the database.
+     * @param spotifyAlbum SpotifyAlbum to check
+     * @return true if album exists in the database.
+     */
+    public boolean exists(@NonNull SpotifyAlbum spotifyAlbum) {
+        try (var entityManager = emf.createEntityManager()) {
+            return entityManager.find(SpotifyAlbum.class, spotifyAlbum.getId()) != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
 
     /**
      * Attempts to persist a Album from the output of the spotify-web-api.
@@ -102,9 +125,10 @@ public class SpotifyAlbumRepository {
                     newAlbum.addArtist(SpotifyArtistRepository.persist(entityManager, simplifiedApiArtist));
                 }
                 for (var simplifiedApiTrack : apiAlbum.getTracks().getItems()){
-                    newAlbum.addTrack(SpotifyTrackRepository.persist(entityManager, simplifiedApiTrack));
+                    newAlbum.addTrack(SpotifyTrackRepository.persist(entityManager, simplifiedApiTrack, newAlbum));
                 }
-                // handle genres as well
+                newAlbum.addImages(SpotifyImageRepository.imageSetFactory(apiAlbum.getImages()));
+                newAlbum.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiAlbum.getGenres()));
                 entityManager.persist(newAlbum);
                 entityManager.getTransaction().commit();
                 return newAlbum;

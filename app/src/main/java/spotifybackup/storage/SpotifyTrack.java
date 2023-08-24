@@ -40,13 +40,16 @@ public class SpotifyTrack {
     private Integer discNumber;
 
     @NonNull
+    private Integer trackNumber;
+
+    @NonNull
     private Integer duration_ms;
 
     @NonNull
     private Boolean explicit;
 
-    @NonNull
-    @Column(length = 12, nullable = false)
+    @Setter
+    @Column(length = 12)
     private String isrcID;
 
     @NonNull
