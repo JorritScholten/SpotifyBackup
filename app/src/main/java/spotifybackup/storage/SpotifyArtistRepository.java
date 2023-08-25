@@ -7,17 +7,14 @@ import jakarta.persistence.Persistence;
 import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 
 import java.util.*;
 
 public class SpotifyArtistRepository {
     private final EntityManagerFactory emf;
-    private final SpotifyIDRepository spotifyIDRepository;
 
     public SpotifyArtistRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
-        spotifyIDRepository = new SpotifyIDRepository(DB_ACCESS);
     }
 
     /**
@@ -64,18 +61,7 @@ public class SpotifyArtistRepository {
      */
     public Optional<SpotifyArtist> find(@NonNull String id) {
         try (var entityManager = emf.createEntityManager()) {
-            final var optionalSpotifyID = spotifyIDRepository.find(id);
-            if (optionalSpotifyID.isEmpty()) {
-                return Optional.empty();
-            } else {
-                var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
-                query.setParameter("spotifyID", optionalSpotifyID.get());
-                try {
-                    return Optional.of(query.getSingleResult());
-                } catch (NoResultException e) {
-                    return Optional.empty();
-                }
-            }
+            return find(entityManager, id);
         }
     }
 

@@ -10,11 +10,7 @@
         <module name="SpotifyBackup.app.main" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="20">
-      <module name="SpotifyBackup.buildSrc" target="17" />
-      <module name="SpotifyBackup.buildSrc.main" target="17" />
-      <module name="SpotifyBackup.buildSrc.test" target="17" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="20" />
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
