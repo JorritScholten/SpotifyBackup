@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class SpotifyAlbumRepositoryTest {
     static private SpotifyAlbumRepository spotifyAlbumRepository;
-    static final String testDir = "src/test/java/spotifybackup/storage/";
+    static final String albumDir = "src/test/java/spotifybackup/storage/spotify_api_get/album/";
 
     @BeforeAll
     static void setup() {
@@ -38,7 +38,7 @@ public class SpotifyAlbumRepositoryTest {
     void ensure_album_can_be_persisted() throws IOException {
         // Arrange
         final Album apiAlbum = new Album.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-album-The_Heist.json")))
+                new String(Files.readAllBytes(Path.of(albumDir + "The_Heist.json")))
         );
         assertFalse(spotifyAlbumRepository.exists(apiAlbum),
                 "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");

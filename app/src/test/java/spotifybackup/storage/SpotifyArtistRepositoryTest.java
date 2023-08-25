@@ -6,11 +6,8 @@ import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
@@ -19,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SpotifyArtistRepositoryTest {
     static private SpotifyArtistRepository spotifyArtistRepository;
-    static final String testDir = "src/test/java/spotifybackup/storage/";
+    static final String artistDir = "src/test/java/spotifybackup/storage/spotify_api_get/artist/";
 
     @BeforeAll
     static void setup() {
@@ -40,7 +37,7 @@ public class SpotifyArtistRepositoryTest {
     void ensure_artist_can_be_persisted() throws IOException {
         // Arrange
         final Artist apiArtist = new Artist.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Rivers_Cuomo.json")))
+                new String(Files.readAllBytes(Path.of(artistDir + "Rivers_Cuomo.json")))
         );
         assertFalse(spotifyArtistRepository.exists(apiArtist),
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
@@ -61,11 +58,11 @@ public class SpotifyArtistRepositoryTest {
         // Arrange
         final long oldCount = spotifyArtistRepository.count();
         final Artist[] apiArtists = {new Artist.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Macklemore_&_Ryan_Lewis.json")))
+                new String(Files.readAllBytes(Path.of(artistDir + "Macklemore_&_Ryan_Lewis.json")))
                 ), new Artist.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Macklemore.json")))
+                new String(Files.readAllBytes(Path.of(artistDir + "Macklemore.json")))
                 ), new Artist.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(testDir + "spotify-get-an-artist-Ryan_Lewis.json")))
+                new String(Files.readAllBytes(Path.of(artistDir + "Ryan_Lewis.json")))
                 ),
         };
         for (var apiArtist : apiArtists) {
