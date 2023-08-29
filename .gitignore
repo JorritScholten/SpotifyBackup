@@ -3,6 +3,7 @@
 
 # Ignore Gradle build output directory
 build
+app/bin
 
 # Ignore Intellij Idea things
 .idea/workspace.xml
