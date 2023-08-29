@@ -30,6 +30,11 @@ public class SpotifyObjectRepository {
         DB_ACCESS.put("hibernate.hbm2ddl.auto", "validate");
         DB_ACCESS.put("hibernate.show_sql", "false");
         DB_ACCESS.put("persistenceUnitName", "SpotifyObjects");
+        DB_ACCESS.put("hibernate.hikari.dataSource.url", generateDataSourceUrl(dbPath));
+        return new SpotifyObjectRepository(DB_ACCESS);
+    }
+
+    private static String generateDataSourceUrl(File dbPath) {
         var dataSourceUrl = new StringBuilder("jdbc:h2:");
         dataSourceUrl.append(dbPath.getAbsolutePath());
         if (dbPath.getAbsolutePath().endsWith(".mv.db")) {
@@ -40,8 +45,7 @@ public class SpotifyObjectRepository {
             dataSourceUrl.append(dbPath.getAbsolutePath());
         }
         dataSourceUrl.append(";DB_CLOSE_DELAY=-1");
-        DB_ACCESS.put("hibernate.hikari.dataSource.url", dataSourceUrl);
-        return new SpotifyObjectRepository(DB_ACCESS);
+        return dataSourceUrl.toString();
     }
 
     public List<SpotifyGenre> findAllGenres() {
