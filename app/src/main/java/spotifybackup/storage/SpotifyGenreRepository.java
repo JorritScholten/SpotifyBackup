@@ -67,6 +67,15 @@ public class SpotifyGenreRepository {
     }
 
     /**
+     * Get list of all SpotifyGenre records in the database.
+     * @return List of SpotifyGenre objects.
+     */
+    static List<SpotifyGenre> findAll(EntityManager entityManager) {
+        var query = entityManager.createNamedQuery("SpotifyGenre.findAll", SpotifyGenre.class);
+        return query.getResultList();
+    }
+
+    /**
      * Find SpotifyGenre by its name field.
      * @param genreName name of SpotifyGenre.
      * @return SpotifyGenre if genreName is not blank and in the table.

@@ -14,7 +14,8 @@ import java.util.Set;
 @ToString
 @NamedQueries({
         @NamedQuery(name = "SpotifyGenre.countBy", query = "select count(g) from SpotifyGenre g"),
-        @NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name")
+        @NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name"),
+        @NamedQuery(name = "SpotifyGenre.findAll", query = "select * from SpotifyGenre")
 })
 public class SpotifyGenre {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyGenres",
@@ -54,7 +55,7 @@ public class SpotifyGenre {
     }
 
     /** Non-owning side. */
-    void addAlbum(@NonNull SpotifyAlbum spotifyAlbum){
+    void addAlbum(@NonNull SpotifyAlbum spotifyAlbum) {
         spotifyAlbums.add(spotifyAlbum);
     }
 }
