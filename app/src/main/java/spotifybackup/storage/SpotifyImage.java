@@ -19,7 +19,7 @@ import java.util.Set;
         @NamedQuery(name = "SpotifyImage.findByUrlWH",
                 query = "select i from SpotifyImage i where i.url = :url and i.width = :width and i.height = :height")
 })
-public class SpotifyImage {
+public final class SpotifyImage extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

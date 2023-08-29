@@ -53,4 +53,21 @@ public class SpotifyObjectRepository {
             return SpotifyGenreRepository.findAll(em);
         }
     }
+
+    /**
+     * Checks if SpotifyObject exists in the database.
+     * @param spotifyObject entity object to check.
+     * @return true if spotifyObject exists.
+     */
+    public boolean exists(@NonNull SpotifyObject spotifyObject) {
+        try (var em = emf.createEntityManager()) {
+            if (spotifyObject instanceof SpotifyGenre g) {
+                return em.contains(g);
+            } else if (spotifyObject instanceof SpotifyImage i) {
+                return em.contains(i);
+            } else {
+                return false;
+            }
+        }
+    }
 }
