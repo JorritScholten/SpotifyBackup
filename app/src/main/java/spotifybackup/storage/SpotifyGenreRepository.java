@@ -89,7 +89,9 @@ public class SpotifyGenreRepository {
     /**
      * Get count of genres in the database.
      * @return count of genres in the database.
+     * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public long count() {
         try (var entityManager = emf.createEntityManager()) {
             return (Long) entityManager.createNamedQuery("SpotifyGenre.countBy").getSingleResult();

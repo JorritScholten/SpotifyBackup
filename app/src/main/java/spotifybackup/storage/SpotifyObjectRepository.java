@@ -34,6 +34,20 @@ public class SpotifyObjectRepository {
         return new SpotifyObjectRepository(DB_ACCESS);
     }
 
+    /**
+     * Factory method to create SpotifyObjectRepository to new database, data is not persisted across multiple runs.
+     * @apiNote Should only be used for testing.
+     */
+    public static SpotifyObjectRepository testFactory(boolean show_sql) {
+        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
+        final Properties DB_ACCESS = new Properties();
+        DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
+        DB_ACCESS.put("hibernate.show_sql", show_sql ? "true" : "false");
+        DB_ACCESS.put("persistenceUnitName", "SpotifyObjectsTest");
+        DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/spotifyObjectsTest;DB_CLOSE_DELAY=-1");
+        return new SpotifyObjectRepository(DB_ACCESS);
+    }
+
     private static String generateDataSourceUrl(File dbPath) {
         var dataSourceUrl = new StringBuilder("jdbc:h2:");
         dataSourceUrl.append(dbPath.getAbsolutePath());
@@ -68,6 +82,16 @@ public class SpotifyObjectRepository {
             } else {
                 return false;
             }
+        }
+    }
+
+    /**
+     * Get count of genres in the database.
+     * @return count of genres in the database.
+     */
+    public long countGenres() {
+        try (var em = emf.createEntityManager()) {
+            return (Long) em.createNamedQuery("SpotifyGenre.countBy").getSingleResult();
         }
     }
 }
