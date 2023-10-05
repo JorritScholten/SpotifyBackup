@@ -5,8 +5,7 @@ import jakarta.persistence.Persistence;
 import lombok.NonNull;
 
 import java.io.File;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 
@@ -86,12 +85,51 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
+     * @param genreName name of genre as defined by Spotify.
+     * @return SpotifyGenre if genreName is not blank.
+     */
+    public Optional<SpotifyGenre> persistGenre(@NonNull String genreName) {
+        try (var em = emf.createEntityManager()) {
+            return SpotifyGenreRepository.persist(em, genreName);
+        }
+    }
+
+    /**
+     * Attempts to persist an array of genres by name, if a Genre already exists the already existing SpotifyGenre is
+     * used.
+     * @param genreNames an array of genre names as defined by Spotify.
+     * @return Set of SpotifyGenre objects.
+     */
+    public Set<SpotifyGenre> persistAllGenres(@NonNull String[] genreNames) {
+        try (var em = emf.createEntityManager()) {
+            Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
+            for (var genreName : genreNames) {
+                var genre = SpotifyGenreRepository.persist(em, genreName);
+                genre.ifPresent(spotifyGenreSet::add);
+            }
+            return spotifyGenreSet;
+        }
+    }
+
+    /**
      * Get count of genres in the database.
      * @return count of genres in the database.
      */
     public long countGenres() {
         try (var em = emf.createEntityManager()) {
             return (Long) em.createNamedQuery("SpotifyGenre.countBy").getSingleResult();
+        }
+    }
+
+    /**
+     * Check if SpotifyGenre exists by name.
+     * @param genreName name of Genre.
+     * @return true if genreName exists as a SpotifyGenre in the database.
+     */
+    public boolean genreExists(String genreName) {
+        try (var em = emf.createEntityManager()) {
+            return SpotifyGenreRepository.find(em, genreName).isPresent();
         }
     }
 }
