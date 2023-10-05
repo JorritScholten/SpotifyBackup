@@ -11,6 +11,9 @@ import java.util.*;
 public class SpotifyGenreRepository {
     private final EntityManagerFactory emf;
 
+    /**
+     * @deprecated Use SpotifyObjectRepository instead.
+     */
     public SpotifyGenreRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
@@ -79,6 +82,7 @@ public class SpotifyGenreRepository {
      * Find SpotifyGenre by its name field.
      * @param genreName name of SpotifyGenre.
      * @return SpotifyGenre if genreName is not blank and in the table.
+     * @deprecated Use SpotifyObjectRepository instead.
      */
     public Optional<SpotifyGenre> find(@NonNull String genreName) {
         try (var entityManager = emf.createEntityManager()) {
@@ -102,6 +106,7 @@ public class SpotifyGenreRepository {
      * Check if SpotifyGenre exists by name.
      * @param genreName name of Genre.
      * @return true if genreName exists as a SpotifyGenre in the database.
+     * @deprecated Use SpotifyObjectRepository instead.
      */
     public boolean exists(@NonNull String genreName) {
         return find(genreName).isPresent();
@@ -111,6 +116,7 @@ public class SpotifyGenreRepository {
      * Check if SpotifyGenre exists in the database.
      * @param spotifyGenre SpotifyGenre to check.
      * @return true if spotifyGenre exists in the database.
+     * @deprecated Use SpotifyObjectRepository instead.
      */
     public boolean exists(@NonNull SpotifyGenre spotifyGenre) {
         try (var entityManager = emf.createEntityManager()) {
@@ -124,6 +130,7 @@ public class SpotifyGenreRepository {
      * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
      * @param genreName name of genre as defined by Spotify.
      * @return SpotifyGenre if genreName is not blank.
+     * @deprecated Use SpotifyObjectRepository instead.
      */
     public Optional<SpotifyGenre> persist(@NonNull String genreName) {
         try (var entityManager = emf.createEntityManager()) {
@@ -139,6 +146,7 @@ public class SpotifyGenreRepository {
      * used.
      * @param genreNames an array of genre names as defined by Spotify.
      * @return Set of SpotifyGenre objects.
+     * @deprecated Use SpotifyObjectRepository instead.
      */
     public Set<SpotifyGenre> persistAll(@NonNull String[] genreNames) {
         Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
