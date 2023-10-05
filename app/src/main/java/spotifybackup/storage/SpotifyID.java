@@ -18,7 +18,6 @@ import java.util.Objects;
 @ToString
 public class SpotifyID {
     @Id
-    @Column(length = 62)
     private String id;
 
     @Override
