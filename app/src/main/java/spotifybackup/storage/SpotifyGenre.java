@@ -15,7 +15,7 @@ import java.util.Set;
 @NamedQueries({
         @NamedQuery(name = "SpotifyGenre.countBy", query = "select count(g) from SpotifyGenre g"),
         @NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name"),
-        @NamedQuery(name = "SpotifyGenre.findAll", query = "select * from SpotifyGenre")
+        @NamedQuery(name = "SpotifyGenre.findAll", query = "from SpotifyGenre")
 })
 public final class SpotifyGenre extends SpotifyObject{
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyGenres",
