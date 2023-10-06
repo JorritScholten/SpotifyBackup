@@ -40,9 +40,13 @@ public class SpotifyGenreRepository {
      * @return SpotifyGenre if genreName is not blank.
      */
     static Optional<SpotifyGenre> persist(EntityManager entityManager, @NonNull String genreName) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         if (genreName.isBlank()) {
             return Optional.empty();
         }
+        genreName = genreName.toLowerCase(Locale.ENGLISH);
         var optionalGenre = find(entityManager, genreName);
         if (optionalGenre.isPresent()) {
             return optionalGenre;

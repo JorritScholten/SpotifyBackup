@@ -72,7 +72,7 @@ public class SpotifyGenreRepositoryTest {
         }
 
         // Act
-        final var persistedGenres = spotifyObjectRepository.persistAllGenres(genreNames);
+        final var persistedGenres = spotifyObjectRepository.persistGenres(genreNames);
 
         // Assert
         for (var persistedGenre : persistedGenres) {
@@ -92,7 +92,7 @@ public class SpotifyGenreRepositoryTest {
                 "Genre with name " + genreNames[3] + " shouldn't already exist.");
 
         // Act
-        final var persistedGenres = spotifyObjectRepository.persistAllGenres(genreNames);
+        final var persistedGenres = spotifyObjectRepository.persistGenres(genreNames);
 
         // Assert
         for (var persistedGenre : persistedGenres) {

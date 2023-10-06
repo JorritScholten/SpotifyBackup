@@ -75,9 +75,9 @@ public class SpotifyObjectRepository {
     public boolean exists(@NonNull SpotifyObject spotifyObject) {
         try (var em = emf.createEntityManager()) {
             if (spotifyObject instanceof SpotifyGenre g) {
-                return em.contains(g);
+                return em.find(SpotifyGenre.class, g.getId()) != null;
             } else if (spotifyObject instanceof SpotifyImage i) {
-                return em.contains(i);
+                return em.find(SpotifyImage.class, i.getId()) != null;
             } else {
                 return false;
             }
@@ -91,7 +91,10 @@ public class SpotifyObjectRepository {
      */
     public Optional<SpotifyGenre> persistGenre(@NonNull String genreName) {
         try (var em = emf.createEntityManager()) {
-            return SpotifyGenreRepository.persist(em, genreName);
+            em.getTransaction().begin();
+            var persistedGenre = SpotifyGenreRepository.persist(em, genreName);
+            em.getTransaction().commit();
+            return persistedGenre;
         }
     }
 
@@ -101,13 +104,15 @@ public class SpotifyObjectRepository {
      * @param genreNames an array of genre names as defined by Spotify.
      * @return Set of SpotifyGenre objects.
      */
-    public Set<SpotifyGenre> persistAllGenres(@NonNull String[] genreNames) {
+    public Set<SpotifyGenre> persistGenres(@NonNull String[] genreNames) {
         try (var em = emf.createEntityManager()) {
             Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
+            em.getTransaction().begin();
             for (var genreName : genreNames) {
                 var genre = SpotifyGenreRepository.persist(em, genreName);
                 genre.ifPresent(spotifyGenreSet::add);
             }
+            em.getTransaction().commit();
             return spotifyGenreSet;
         }
     }
@@ -127,7 +132,7 @@ public class SpotifyObjectRepository {
      * @param genreName name of Genre.
      * @return true if genreName exists as a SpotifyGenre in the database.
      */
-    public boolean genreExists(String genreName) {
+    public boolean genreExists(@NonNull String genreName) {
         try (var em = emf.createEntityManager()) {
             return SpotifyGenreRepository.find(em, genreName).isPresent();
         }
