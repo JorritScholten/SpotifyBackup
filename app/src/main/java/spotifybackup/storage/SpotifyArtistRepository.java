@@ -19,6 +19,7 @@ public class SpotifyArtistRepository {
     /**
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public SpotifyArtistRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
@@ -107,6 +108,7 @@ public class SpotifyArtistRepository {
      * @return count of genres in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public long count() {
         try (var entityManager = emf.createEntityManager()) {
             return (Long) entityManager.createNamedQuery("SpotifyArtist.countBy").getSingleResult();
@@ -119,6 +121,7 @@ public class SpotifyArtistRepository {
      * @return Artist if id matches the spotify_id field in the table and not blank.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public Optional<SpotifyArtist> find(@NonNull String id) {
         try (var entityManager = emf.createEntityManager()) {
             return find(entityManager, id);
@@ -131,6 +134,7 @@ public class SpotifyArtistRepository {
      * @return true if artist exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public boolean exists(@NonNull SpotifyArtist spotifyArtist) {
         try (var entityManager = emf.createEntityManager()) {
             return entityManager.find(SpotifyArtist.class, spotifyArtist.getId()) != null;
@@ -145,6 +149,7 @@ public class SpotifyArtistRepository {
      * @return Artist if apiArtist already exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public Optional<SpotifyArtist> find(@NonNull Artist apiArtist) {
         return find(apiArtist.getId());
     }
@@ -155,6 +160,7 @@ public class SpotifyArtistRepository {
      * @return true if SpotifyArtist specified by id exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public boolean exists(@NonNull String id) {
         return find(id).isPresent();
     }
@@ -165,6 +171,7 @@ public class SpotifyArtistRepository {
      * @return true if apiArtist exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public boolean exists(@NonNull Artist apiArtist) {
         return find(apiArtist).isPresent();
     }
@@ -175,6 +182,7 @@ public class SpotifyArtistRepository {
      * @return Artist already in the database with matching Spotify ID or new Artist if apiArtist has a new Spotify ID.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public SpotifyArtist persist(@NonNull Artist apiArtist) {
         try (var entityManager = emf.createEntityManager()) {
             entityManager.getTransaction().begin();
@@ -190,6 +198,7 @@ public class SpotifyArtistRepository {
      * @return Set of SpotifyArtist objects.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public Set<SpotifyArtist> persistAll(@NonNull Artist[] apiArtists) {
         Set<SpotifyArtist> spotifyArtistSet = new HashSet<>();
         for (var apiArtist : apiArtists) {

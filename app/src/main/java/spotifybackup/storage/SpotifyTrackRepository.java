@@ -17,6 +17,7 @@ public class SpotifyTrackRepository {
     /**
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public SpotifyTrackRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
@@ -142,6 +143,7 @@ public class SpotifyTrackRepository {
      * @return count of tracks in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public long count() {
         try (var entityManager = emf.createEntityManager()) {
             return (Long) entityManager.createNamedQuery("SpotifyTrack.countBy").getSingleResult();
@@ -154,6 +156,7 @@ public class SpotifyTrackRepository {
      * @return Artist if id matches the spotify_id field in the table and not blank.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public Optional<SpotifyTrack> find(@NonNull String id) {
         try (var entityManager = emf.createEntityManager()) {
             return find(entityManager, id);
@@ -166,6 +169,7 @@ public class SpotifyTrackRepository {
      * @return SpotifyTrack if apiTrack already exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public Optional<SpotifyTrack> find(@NonNull Track apiTrack) {
         return find(apiTrack.getId());
     }
@@ -176,6 +180,7 @@ public class SpotifyTrackRepository {
      * @return true if apiTrack exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public boolean exists(@NonNull Track apiTrack) {
         return find(apiTrack).isPresent();
     }
@@ -186,6 +191,7 @@ public class SpotifyTrackRepository {
      * @return true if SpotifyTrack specified by id exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public boolean exists(@NonNull String id) {
         return find(id).isPresent();
     }
@@ -196,6 +202,7 @@ public class SpotifyTrackRepository {
      * @return true if track exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public boolean exists(@NonNull SpotifyTrack track) {
         return find(track.getSpotifyID().getId()).isPresent();
     }
@@ -207,6 +214,7 @@ public class SpotifyTrackRepository {
      * Spotify ID.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public SpotifyTrack persist(@NonNull Track apiTrack) {
         try (var entityManager = emf.createEntityManager()) {
             entityManager.getTransaction().begin();
@@ -222,6 +230,7 @@ public class SpotifyTrackRepository {
      * @return List of SpotifyTrack objects.
      * @deprecated Use SpotifyObjectRepository instead.
      */
+    @Deprecated
     public List<SpotifyTrack> persistAll(@NonNull Track[] apiTracks) {
         List<SpotifyTrack> spotifyTracks = new ArrayList<>();
         for (var apiTrack : apiTracks) {
