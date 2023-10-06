@@ -1,4 +1,4 @@
 package spotifybackup.storage;
 
-public sealed abstract class SpotifyObject permits SpotifyGenre, SpotifyImage {
+public sealed abstract class SpotifyObject permits SpotifyGenre, SpotifyImage, SpotifyID {
 }

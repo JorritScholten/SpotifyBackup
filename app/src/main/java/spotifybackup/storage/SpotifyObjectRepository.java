@@ -79,6 +79,8 @@ public class SpotifyObjectRepository {
                 return em.find(SpotifyGenre.class, g.getId()) != null;
             } else if (spotifyObject instanceof SpotifyImage i) {
                 return em.find(SpotifyImage.class, i.getId()) != null;
+            } else if (spotifyObject instanceof SpotifyID spotifyID) {
+                return em.find(SpotifyID.class, spotifyID.getId()) != null;
             } else {
                 return false;
             }
@@ -195,6 +197,45 @@ public class SpotifyObjectRepository {
             }
             em.getTransaction().commit();
             return imageSet;
+        }
+    }
+
+    /**
+     * Check if SpotifyID exists in persistence context by Spotify ID.
+     * @param id Spotify ID to check.
+     * @return true if Spotify ID exists in the database.
+     */
+    public boolean spotifyIDExists(@NonNull String id) {
+        if (id.isBlank()) {
+            return false;
+        }
+        try (var entityManager = emf.createEntityManager()) {
+            return entityManager.find(SpotifyID.class, id) != null;
+        } catch (IllegalArgumentException | NullPointerException e) {
+            return false;
+        }
+    }
+
+    /**
+     * Attempts to persist a Spotify ID by its string representation, if it already exists returns already existing
+     * SpotifyID.
+     * @param id Spotify ID to persist (base-62 identifier as defined by Spotify).
+     * @return SpotifyID if id is not blank.
+     */
+    public Optional<SpotifyID> persistSpotifyID(@NonNull String id) {
+        if (id.isBlank()) {
+            return Optional.empty();
+        }
+        try (var entityManager = emf.createEntityManager()) {
+            try {
+                return Optional.of(entityManager.find(SpotifyID.class, id));
+            } catch (IllegalArgumentException | NullPointerException e) {
+                var newID = new SpotifyID(id);
+                entityManager.getTransaction().begin();
+                entityManager.persist(newID);
+                entityManager.getTransaction().commit();
+                return Optional.of(newID);
+            }
         }
     }
 }
