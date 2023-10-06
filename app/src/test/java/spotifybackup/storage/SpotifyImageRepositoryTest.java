@@ -5,26 +5,16 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SpotifyImageRepositoryTest {
-    static private SpotifyImageRepository spotifyImageRepository;
+    static private SpotifyObjectRepository spotifyObjectRepository;
 
     @BeforeAll
     static void setup() {
-        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        final Properties DB_ACCESS = new Properties();
-        DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
-        DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
-        DB_ACCESS.put("hibernate.show_sql", "true");
-        DB_ACCESS.put("persistenceUnitName", "testdb");
         try {
-            spotifyImageRepository = new SpotifyImageRepository(DB_ACCESS);
+            spotifyObjectRepository = SpotifyObjectRepository.testFactory(true);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
@@ -38,16 +28,16 @@ public class SpotifyImageRepositoryTest {
                 .setHeight(300)
                 .setWidth(300)
                 .build();
-        assertFalse(spotifyImageRepository.exists(image),
+        assertFalse(spotifyObjectRepository.imageExists(image),
                 "Image with url " + image.getUrl() + " shouldn't already exist.");
 
         // Act
-        var persistedImage = spotifyImageRepository.persist(image);
+        var persistedImage = spotifyObjectRepository.persistImage(image);
 
         // Assert
         assertTrue(persistedImage.isPresent());
-        assertTrue(spotifyImageRepository.exists(image.getUrl()));
-        assertTrue(spotifyImageRepository.exists(persistedImage.orElseThrow()));
+        assertTrue(spotifyObjectRepository.imageExists(image));
+        assertTrue(spotifyObjectRepository.exists(persistedImage.orElseThrow()));
     }
 
     @Test
@@ -56,16 +46,16 @@ public class SpotifyImageRepositoryTest {
         final Image image = new Image.Builder()
                 .setUrl("https://i.scdn.co/image/ab6761610000f178129c7158f9565223cead0dd8")
                 .build();
-        assertFalse(spotifyImageRepository.exists(image),
+        assertFalse(spotifyObjectRepository.imageExists(image),
                 "Image with url " + image.getUrl() + " shouldn't already exist.");
 
         // Act
-        var persistedImage = spotifyImageRepository.persist(image);
+        var persistedImage = spotifyObjectRepository.persistImage(image);
 
         // Assert
         assertTrue(persistedImage.isPresent());
-        assertTrue(spotifyImageRepository.exists(image.getUrl()));
-        assertTrue(spotifyImageRepository.exists(persistedImage.orElseThrow()));
+        assertTrue(spotifyObjectRepository.imageExists(image.getUrl()));
+        assertTrue(spotifyObjectRepository.exists(persistedImage.orElseThrow()));
     }
 
     @Test
@@ -89,16 +79,16 @@ public class SpotifyImageRepositoryTest {
                         .build()
         };
         for (var image : images) {
-            assertFalse(spotifyImageRepository.exists(image),
+            assertFalse(spotifyObjectRepository.imageExists(image),
                     "Image with url " + image.getUrl() + " shouldn't already exist.");
         }
 
         // Act
-        final var persistedImages = spotifyImageRepository.persistAll(images);
+        final var persistedImages = spotifyObjectRepository.persistImages(images);
 
         // Assert
         for (var persistedImage : persistedImages) {
-            assertTrue(spotifyImageRepository.exists(persistedImage));
+            assertTrue(spotifyObjectRepository.exists(persistedImage));
         }
     }
 }
