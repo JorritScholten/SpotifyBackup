@@ -146,7 +146,11 @@ public class SpotifyObjectRepository {
      */
     public boolean imageExists(@NonNull Image image) {
         try (var em = emf.createEntityManager()) {
-            return SpotifyImageRepository.find(em, image).isPresent();
+            if (image.getHeight() != null && image.getWidth() != null) {
+                return SpotifyImageRepository.find(em, image).isPresent();
+            } else {
+                return SpotifyImageRepository.find(em, image.getUrl()).isPresent();
+            }
         }
     }
 
