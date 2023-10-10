@@ -41,16 +41,16 @@ public class SpotifyArtistRepositoryTest {
         final Artist apiArtist = new Artist.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(artistDir + "Rivers_Cuomo.json")))
         );
-        assertFalse(spotifyArtistRepository.exists(apiArtist),
+        assertFalse(spotifyObjectRepository.artistExists(apiArtist),
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
 
         // Act
-        var persistedArtist = spotifyArtistRepository.persist(apiArtist);
+        var persistedArtist = spotifyObjectRepository.persistArtist(apiArtist);
 
         // Assert
-        assertTrue(spotifyArtistRepository.exists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
-        assertTrue(spotifyArtistRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
-        assertTrue(spotifyArtistRepository.exists(persistedArtist), "Can't find Artist by Object reference.");
+        assertTrue(spotifyObjectRepository.spotifyIDExists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
+        assertTrue(spotifyObjectRepository.artistExists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(persistedArtist), "Can't find Artist by Object reference.");
         assertEquals(apiArtist.getGenres().length, persistedArtist.getSpotifyGenres().size());
         assertEquals(apiArtist.getImages().length, persistedArtist.getSpotifyImages().size());
     }
