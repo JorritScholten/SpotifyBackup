@@ -81,6 +81,8 @@ public class SpotifyObjectRepository {
                 return em.find(SpotifyImage.class, i.getId()) != null;
             } else if (spotifyObject instanceof SpotifyID spotifyID) {
                 return em.find(SpotifyID.class, spotifyID.getId()) != null;
+            } else if (spotifyObject instanceof SpotifyArtist a) {
+                return em.find(SpotifyArtist.class, a.getId()) != null;
             } else {
                 return false;
             }

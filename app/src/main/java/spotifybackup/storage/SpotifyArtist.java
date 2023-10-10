@@ -15,7 +15,7 @@ import java.util.Set;
 })
 @NoArgsConstructor
 @Getter
-public class SpotifyArtist {
+public final class SpotifyArtist extends SpotifyObject {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> spotifyImages = new HashSet<>();
 

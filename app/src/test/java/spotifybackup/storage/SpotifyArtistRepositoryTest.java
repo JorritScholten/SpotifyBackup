@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class SpotifyArtistRepositoryTest {
     static private SpotifyArtistRepository spotifyArtistRepository;
+    static private SpotifyObjectRepository spotifyObjectRepository;
     static final String artistDir = "src/test/java/spotifybackup/storage/spotify_api_get/artist/";
 
     @BeforeAll
@@ -28,6 +29,7 @@ public class SpotifyArtistRepositoryTest {
         DB_ACCESS.put("persistenceUnitName", "testdb");
         try {
             spotifyArtistRepository = new SpotifyArtistRepository(DB_ACCESS);
+            spotifyObjectRepository = SpotifyObjectRepository.testFactory(true);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
