@@ -68,6 +68,9 @@ public class SpotifyAlbumRepository {
      * Spotify ID.
      */
     static SpotifyAlbum persist(EntityManager entityManager, @NonNull AlbumSimplified apiAlbum) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         var optionalAlbum = find(entityManager, apiAlbum);
         if (optionalAlbum.isPresent()) {
             return optionalAlbum.get();
@@ -96,6 +99,9 @@ public class SpotifyAlbumRepository {
      * Spotify ID.
      */
     static SpotifyAlbum persist(EntityManager entityManager, @NonNull Album apiAlbum) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         var optionalAlbum = find(entityManager, apiAlbum);
         if (optionalAlbum.isPresent()) {
             return optionalAlbum.get();

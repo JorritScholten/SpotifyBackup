@@ -77,6 +77,9 @@ public class SpotifyTrackRepository {
      * Spotify ID.
      */
     static SpotifyTrack persist(EntityManager entityManager, @NonNull TrackSimplified apiTrack, @NonNull SpotifyAlbum spotifyAlbum) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         var optionalTrack = find(entityManager, apiTrack);
         if (optionalTrack.isPresent()) {
             return optionalTrack.get();
@@ -109,6 +112,9 @@ public class SpotifyTrackRepository {
      * Spotify ID.
      */
     static SpotifyTrack persist(EntityManager entityManager, @NonNull Track apiTrack) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         var optionalTrack = find(entityManager, apiTrack);
         if (optionalTrack.isPresent()) {
             return optionalTrack.get();

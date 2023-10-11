@@ -67,6 +67,9 @@ public class SpotifyArtistRepository {
      * new Spotify ID.
      */
     static SpotifyArtist persist(EntityManager entityManager, @NonNull ArtistSimplified apiArtist) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         var optionalArtist = find(entityManager, apiArtist);
         if (optionalArtist.isPresent()) {
             return optionalArtist.get();
@@ -87,6 +90,9 @@ public class SpotifyArtistRepository {
      * @return Artist already in the database with matching Spotify ID or new Artist if apiArtist has a new Spotify ID.
      */
     static SpotifyArtist persist(EntityManager entityManager, @NonNull Artist apiArtist) {
+        if (!entityManager.getTransaction().isActive()) {
+            throw new RuntimeException("Method will only work from within an active transaction.");
+        }
         var optionalArtist = find(entityManager, apiArtist);
         if (optionalArtist.isPresent()) {
             return optionalArtist.get();
