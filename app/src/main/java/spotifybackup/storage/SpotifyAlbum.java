@@ -19,7 +19,7 @@ import java.util.Set;
 })
 @NoArgsConstructor
 @Getter
-public class SpotifyAlbum {
+public final class SpotifyAlbum extends SpotifyObject {
     @OneToMany(mappedBy = "spotifyAlbum")
     private final Set<SpotifyTrack> spotifyTracks = new HashSet<>();
 
