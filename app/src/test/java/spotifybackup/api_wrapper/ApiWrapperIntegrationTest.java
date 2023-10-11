@@ -8,17 +8,13 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
-import spotifybackup.storage.SpotifyArtistRepository;
 import spotifybackup.storage.SpotifyArtist;
+import spotifybackup.storage.SpotifyObjectRepository;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -27,7 +23,7 @@ public class ApiWrapperIntegrationTest {
     static ApiWrapper apiWrapper;
 
     @BeforeAll
-    public static void perform_authentication() throws URISyntaxException, FileNotFoundException, IOException {
+    public static void perform_authentication() throws URISyntaxException, IOException {
         try (var file = new FileReader(System.getProperty("user.home") + System.getProperty("file.separator") + ".java_spotify_backup.json")) {
             var parser = JsonParser.parseReader(file);
             apiWrapper = new ApiWrapper(SpotifyApi.builder()
@@ -55,27 +51,21 @@ public class ApiWrapperIntegrationTest {
     public void persist_requested_artist() throws IOException {
         // Arrange
         final String artistId = "5VPCIIfZPK8KPsgz4jmOEC", artistName = "The Blue Stones";
-        SpotifyArtistRepository spotifyArtistRepository;
-        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        final Properties DB_ACCESS = new Properties();
-        DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/test;DB_CLOSE_DELAY=-1");
-        DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
-        DB_ACCESS.put("hibernate.show_sql", "false");
-        DB_ACCESS.put("persistenceUnitName", "testdb");
+        SpotifyObjectRepository spotifyObjectRepository;
         try {
-            spotifyArtistRepository = new SpotifyArtistRepository(DB_ACCESS);
+            spotifyObjectRepository = SpotifyObjectRepository.testFactory(true);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
-        final long oldCount = spotifyArtistRepository.count();
+        final long oldCount = spotifyObjectRepository.countArtists();
 
         // Act
         final Artist apiArtist = apiWrapper.getArtist(artistId).orElseThrow();
-        final SpotifyArtist spotifyArtist = spotifyArtistRepository.persist(apiArtist);
+        final SpotifyArtist spotifyArtist = spotifyObjectRepository.persistArtist(apiArtist);
 
         // Assert
         assertNotNull(spotifyArtist);
         assertEquals(spotifyArtist.getName(), artistName);
-        assertEquals(spotifyArtistRepository.count(), oldCount + 1);
+        assertEquals(spotifyObjectRepository.countArtists(), oldCount + 1);
     }
 }
