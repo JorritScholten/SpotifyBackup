@@ -105,7 +105,7 @@ public class SpotifyArtistRepository {
 
     /**
      * Get count of artists in the database.
-     * @return count of genres in the database.
+     * @return count of artists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
     @Deprecated
