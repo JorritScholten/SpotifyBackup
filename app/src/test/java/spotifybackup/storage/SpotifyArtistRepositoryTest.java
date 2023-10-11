@@ -63,7 +63,7 @@ public class SpotifyArtistRepositoryTest {
         }
 
         // Act
-        var persistedArtists = spotifyObjectRepository.persistAll(apiArtists);
+        var persistedArtists = spotifyObjectRepository.persistArtists(apiArtists);
 
         // Assert
         for (var apiArtist : apiArtists) {

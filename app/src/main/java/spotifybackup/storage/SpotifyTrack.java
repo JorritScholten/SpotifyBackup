@@ -17,7 +17,7 @@ import java.util.Set;
 })
 @NoArgsConstructor
 @Getter
-public class SpotifyTrack {
+public final class SpotifyTrack extends SpotifyObject {
     @ManyToMany(fetch = FetchType.EAGER, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();
