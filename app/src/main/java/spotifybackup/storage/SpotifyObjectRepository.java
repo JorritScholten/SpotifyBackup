@@ -78,21 +78,15 @@ public class SpotifyObjectRepository {
      */
     public boolean exists(@NonNull SpotifyObject spotifyObject) {
         try (var em = emf.createEntityManager()) {
-            if (spotifyObject instanceof SpotifyGenre g) {
-                return em.find(SpotifyGenre.class, g.getId()) != null;
-            } else if (spotifyObject instanceof SpotifyImage i) {
-                return em.find(SpotifyImage.class, i.getId()) != null;
-            } else if (spotifyObject instanceof SpotifyID i) {
-                return em.find(SpotifyID.class, i.getId()) != null;
-            } else if (spotifyObject instanceof SpotifyArtist a) {
-                return em.find(SpotifyArtist.class, a.getId()) != null;
-            } else if (spotifyObject instanceof SpotifyAlbum a) {
-                return em.find(SpotifyAlbum.class, a.getId()) != null;
-            } else if (spotifyObject instanceof SpotifyTrack t) {
-                return em.find(SpotifyTrack.class, t.getId()) != null;
-            } else {
-                return false;
-            }
+            return switch (spotifyObject) {
+                case SpotifyGenre g -> em.find(g.getClass(), g.getId());
+                case SpotifyImage i -> em.find(i.getClass(), i.getId());
+                case SpotifyID i -> em.find(i.getClass(), i.getId());
+                case SpotifyArtist a -> em.find(a.getClass(), a.getId());
+                case SpotifyAlbum a -> em.find(a.getClass(), a.getId());
+                case SpotifyTrack t -> em.find(t.getClass(), t.getId());
+                default -> null;
+            } != null;
         }
     }
 
