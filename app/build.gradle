@@ -19,7 +19,7 @@ dependencies {
             'com.neovisionaries:nv-i18n:1.29',
             'io.hypersistence:hypersistence-utils-hibernate-62:3.5.3'
     )
-    annotationProcessor 'org.projectlombok:lombok:1.18.28'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
 
 extraJavaModuleInfo {
