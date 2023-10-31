@@ -7,6 +7,7 @@ import org.hibernate.annotations.Type;
 import se.michaelthelin.spotify.enums.AlbumType;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -69,7 +70,8 @@ public final class SpotifyAlbum extends SpotifyObject {
     private AlbumType spotifyAlbumType;
 
     @NonNull
-    private String releaseDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate releaseDate;
 
     @NonNull
     @Enumerated(EnumType.STRING)

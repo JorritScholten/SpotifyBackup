@@ -81,7 +81,7 @@ public class SpotifyAlbumRepository {
                     .spotifyAlbumType(apiAlbum.getAlbumType())
                     .name(apiAlbum.getName())
                     .availableMarkets(convertMarkets(apiAlbum.getAvailableMarkets()))
-                    .releaseDate(apiAlbum.getReleaseDate())
+                    .releaseDate(SpotifyObject.convertDate(apiAlbum.getReleaseDate(), apiAlbum.getReleaseDatePrecision()))
                     .releaseDatePrecision(apiAlbum.getReleaseDatePrecision())
                     .build();
             for (var apiArtist : apiAlbum.getArtists()) {
@@ -111,7 +111,7 @@ public class SpotifyAlbumRepository {
             newAlbumBuilder.spotifyID(new SpotifyID(apiAlbum.getId()));
             newAlbumBuilder.name(apiAlbum.getName());
             newAlbumBuilder.spotifyAlbumType(apiAlbum.getAlbumType());
-            newAlbumBuilder.releaseDate(apiAlbum.getReleaseDate());
+            newAlbumBuilder.releaseDate(SpotifyObject.convertDate(apiAlbum.getReleaseDate(), apiAlbum.getReleaseDatePrecision()));
             newAlbumBuilder.releaseDatePrecision(apiAlbum.getReleaseDatePrecision());
             if (apiAlbum.getAvailableMarkets().length > 0) {
                 newAlbumBuilder.availableMarkets(convertMarkets(apiAlbum.getAvailableMarkets()));
