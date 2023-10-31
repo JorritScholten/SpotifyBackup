@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.SpotifyApi;
@@ -19,6 +20,7 @@ import java.net.URISyntaxException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+@EnabledIfEnvironmentVariable(named = "EnableIntegrationTests", matches = "true")
 public class ApiWrapperIntegrationTest {
     static ApiWrapper apiWrapper;
 
