@@ -130,6 +130,12 @@ public class SpotifyTrackRepository {
             if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
                 newTrackBuilder.isrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));
             }
+            if (apiTrack.getExternalIds().getExternalIds().containsKey("ean")) {
+                newTrackBuilder.eanID(apiTrack.getExternalIds().getExternalIds().get("ean"));
+            }
+            if (apiTrack.getExternalIds().getExternalIds().containsKey("upc")) {
+                newTrackBuilder.upcID(apiTrack.getExternalIds().getExternalIds().get("upc"));
+            }
             newTrackBuilder.name(apiTrack.getName());
             if (apiTrack.getAvailableMarkets().length > 0) {
                 newTrackBuilder.availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()));

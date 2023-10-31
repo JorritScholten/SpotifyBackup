@@ -51,6 +51,14 @@ public final class SpotifyAlbum extends SpotifyObject {
     @Column(length = 12)
     private String isrcID;
 
+    @Setter
+    @Column(length = 12)
+    private String upcID;
+
+    @Setter
+    @Column(length = 13)
+    private String eanID;
+
     @Type(StringArrayType.class)
     @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
     // Array of ISO 3166-1 alpha-2 codes

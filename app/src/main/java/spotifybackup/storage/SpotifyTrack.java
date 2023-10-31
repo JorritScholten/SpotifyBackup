@@ -52,6 +52,14 @@ public final class SpotifyTrack extends SpotifyObject {
     @Column(length = 12)
     private String isrcID;
 
+    @Setter
+    @Column(length = 12)
+    private String upcID;
+
+    @Setter
+    @Column(length = 13)
+    private String eanID;
+
     @NonNull
     @Column(nullable = false)
     private String name;

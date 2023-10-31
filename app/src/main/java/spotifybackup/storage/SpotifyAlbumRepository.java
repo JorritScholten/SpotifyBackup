@@ -119,6 +119,12 @@ public class SpotifyAlbumRepository {
             if (apiAlbum.getExternalIds().getExternalIds().containsKey("isrc")) {
                 newAlbumBuilder.isrcID(apiAlbum.getExternalIds().getExternalIds().get("isrc"));
             }
+            if (apiAlbum.getExternalIds().getExternalIds().containsKey("ean")) {
+                newAlbumBuilder.eanID(apiAlbum.getExternalIds().getExternalIds().get("ean"));
+            }
+            if (apiAlbum.getExternalIds().getExternalIds().containsKey("upc")) {
+                newAlbumBuilder.upcID(apiAlbum.getExternalIds().getExternalIds().get("upc"));
+            }
             var newAlbum = newAlbumBuilder.build();
             for (var simplifiedApiArtist : apiAlbum.getArtists()) {
                 newAlbum.addArtist(SpotifyArtistRepository.persist(entityManager, simplifiedApiArtist));
