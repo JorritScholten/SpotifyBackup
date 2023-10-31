@@ -57,12 +57,14 @@ public final class SpotifyAlbum extends SpotifyObject {
     private String[] availableMarkets;
 
     @NonNull
+    @Enumerated(EnumType.STRING)
     private AlbumType spotifyAlbumType;
 
     @NonNull
     private String releaseDate;
 
     @NonNull
+    @Enumerated(EnumType.STRING)
     private ReleaseDatePrecision releaseDatePrecision;
 
     @Setter

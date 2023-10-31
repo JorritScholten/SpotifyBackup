@@ -85,7 +85,8 @@ public class SpotifyObjectRepository {
                 case SpotifyArtist a -> em.find(a.getClass(), a.getId());
                 case SpotifyAlbum a -> em.find(a.getClass(), a.getId());
                 case SpotifyTrack t -> em.find(t.getClass(), t.getId());
-                default -> null;
+                default -> throw new RuntimeException("Unsupported SpotifyObject queried, add implementation for: "
+                        + spotifyObject.getClass());
             } != null;
         }
     }
