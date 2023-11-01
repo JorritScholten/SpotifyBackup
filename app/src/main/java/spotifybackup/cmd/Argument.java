@@ -35,19 +35,20 @@ abstract public class Argument {
             throw new IllegalArgumentException("Illegal value for nameWidth or maxWidth.");
         }
         StringBuilder helpText = new StringBuilder("  ");
-        Formatter formatter = new Formatter(helpText);
 
         // generate usage/name block
-        if (isMandatory) {
-            if (hasShortName()) {
-                formatter.format("-%c%s, ", shortName, hasValue ? " " + getValueName() : "");
+        try(Formatter formatter = new Formatter(helpText)) {
+            if (isMandatory) {
+                if (hasShortName()) {
+                    formatter.format("-%c%s, ", shortName, hasValue ? " " + getValueName() : "");
+                }
+                formatter.format("--%s%s", name, hasValue ? " " + getValueName() : "");
+            } else {
+                if (hasShortName()) {
+                    formatter.format("-%c%s, ", shortName, hasValue ? " [" + getValueName() + "]" : "");
+                }
+                formatter.format("--%s%s", name, hasValue ? " [" + getValueName() + "]" : "");
             }
-            formatter.format("--%s%s", name, hasValue ? " " + getValueName() : "");
-        } else {
-            if (hasShortName()) {
-                formatter.format("-%c%s, ", shortName, hasValue ? " [" + getValueName() + "]" : "");
-            }
-            formatter.format("--%s%s", name, hasValue ? " [" + getValueName() + "]" : "");
         }
 
         // switch to new line if usage/name block is too wide

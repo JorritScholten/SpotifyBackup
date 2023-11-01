@@ -137,15 +137,15 @@ public class CmdParser {
         var sortedArguments = new ArrayList<>(arguments.stream().filter(Argument::getMandatory).toList());
         sortedArguments.addAll(arguments.stream().filter(not(Argument::getMandatory)).toList());
         StringBuilder usageText = new StringBuilder();
-        Formatter formatter = new Formatter(usageText);
-
-        formatter.format("Usage: %s", programName != null ? programName + " " : "");
-        for (var argument : sortedArguments) {
-            formatter.format(argument.isMandatory ? "-%s%s " : "[-%s%s] ",
-                    argument.hasShortName() ? argument.shortName : "-" + argument.name,
-                    !argument.hasValue ? "" : argument.isMandatory ?
-                            (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]")
-            );
+        try(Formatter formatter = new Formatter(usageText)) {
+            formatter.format("Usage: %s", programName != null ? programName + " " : "");
+            for (var argument : sortedArguments) {
+                formatter.format(argument.isMandatory ? "-%s%s " : "[-%s%s] ",
+                        argument.hasShortName() ? argument.shortName : "-" + argument.name,
+                        !argument.hasValue ? "" : argument.isMandatory ?
+                                (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]")
+                );
+            }
         }
         return WordUtils.wrap(usageText.toString().strip(), maxWidth);
     }
