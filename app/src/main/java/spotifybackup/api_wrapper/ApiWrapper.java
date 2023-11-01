@@ -205,6 +205,9 @@ public class ApiWrapper {
     }
 
     private class CallbackHandler implements HttpHandler {
+        private static final Pattern statePattern = Pattern.compile("state=(?<state>[^&]*)&?");
+        private static final Pattern errorPattern = Pattern.compile("error=(?<error>[^&]*)&?");
+        private static final Pattern codePattern = Pattern.compile("code=(?<code>[^&]*)&?");
         private final Semaphore waitingForHandle = new Semaphore(1);
         private String responseQuery;
 
@@ -226,21 +229,19 @@ public class ApiWrapper {
         public String getCodeSync() throws RuntimeException {
             try {
                 waitingForHandle.acquire();
-                var matcher = Pattern.compile("state=(?<state>[^&]*)&?").matcher(responseQuery);
-                if (matcher.find() && state.equals(matcher.group("state"))) {
-                    matcher = Pattern.compile("error=(?<error>[^&]*)&?").matcher(responseQuery);
-                    if (matcher.find()) {
-                        throw new RuntimeException("Authorization has failed, reason: " + matcher.group("error"));
-                    } else {
-                        matcher = Pattern.compile("code=(?<code>[^&]*)&?").matcher(responseQuery);
-                        if (matcher.find()) {
-                            return matcher.group("code");
-                        } else {
-                            throw new RuntimeException("Can't find code in successful authorization response.");
-                        }
-                    }
-                } else {
+                var stateMatcher = statePattern.matcher(responseQuery);
+                if (!stateMatcher.find() || !state.equals(stateMatcher.group("state"))) {
                     throw new RuntimeException("Found state mismatch in authorization response, aborting request.");
+                }
+                var errorMatcher = errorPattern.matcher(responseQuery);
+                if (errorMatcher.find()) {
+                    throw new RuntimeException("Authorization has failed, reason: " + errorMatcher.group("error"));
+                }
+                var codeMatcher = codePattern.matcher(responseQuery);
+                if (codeMatcher.find()) {
+                    return codeMatcher.group("code");
+                } else {
+                    throw new RuntimeException("Can't find code in successful authorization response.");
                 }
             } catch (InterruptedException e) {
                 // caused by semaphore interruptions
