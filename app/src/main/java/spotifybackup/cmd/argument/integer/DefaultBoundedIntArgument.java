@@ -44,7 +44,7 @@ public class DefaultBoundedIntArgument extends BoundedIntArgument implements Has
             }
             if (defaultValue < getMin() || defaultValue > getMax()) {
                 throw new IllegalConstructorParameterException(
-                        DefaultBoundedIntArgument.generateOutOfBoundsText(getMin(), getMax(), defaultValue));
+                        BoundedIntArgument.generateOutOfBoundsText(getMin(), getMax(), defaultValue));
             }
         }
 
