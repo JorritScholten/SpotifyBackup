@@ -14,7 +14,7 @@ import java.util.Set;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 
-public class SpotifyAlbumRepository {
+class SpotifyAlbumRepository {
     /** Shouldn't be used, exists to prevent implicit public constructor. */
     private SpotifyAlbumRepository() {
         throw new ConstructorUsageException();
