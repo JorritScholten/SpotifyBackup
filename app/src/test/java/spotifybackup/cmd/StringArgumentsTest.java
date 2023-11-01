@@ -11,7 +11,7 @@ import spotifybackup.cmd.exception.MissingArgumentException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class StringArgumentsTest {
+class StringArgumentsTest {
     @Test
     void mandatory_argument_loads_value_from_name() {
         // Arrange

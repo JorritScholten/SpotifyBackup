@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ArgumentBuildersTest {
+class ArgumentBuildersTest {
     static private ScanResult scanResult;
     static private ClassInfoList abstractBuilders, implementedBuilders;
     static private Supplier<ClassInfoList> allBuilders = () -> abstractBuilders.union(implementedBuilders);

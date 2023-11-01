@@ -8,7 +8,7 @@ import se.michaelthelin.spotify.model_objects.specification.Image;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class SpotifyImageRepositoryTest {
+class SpotifyImageRepositoryTest {
     static private SpotifyObjectRepository spotifyObjectRepository;
 
     @BeforeAll

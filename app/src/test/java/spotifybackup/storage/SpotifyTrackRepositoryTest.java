@@ -11,7 +11,7 @@ import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SpotifyTrackRepositoryTest {
+class SpotifyTrackRepositoryTest {
     static final String trackDir = "src/test/java/spotifybackup/storage/spotify_api_get/track/";
     static private SpotifyObjectRepository spotifyObjectRepository;
 

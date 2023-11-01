@@ -15,7 +15,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class FilePathArgumentsTest {
+class FilePathArgumentsTest {
     @TempDir
     static File sharedTempDir;
 

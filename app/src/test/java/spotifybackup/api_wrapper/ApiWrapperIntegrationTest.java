@@ -41,7 +41,7 @@ public class ApiWrapperIntegrationTest {
     @CsvSource(textBlock = """
             2exebQUDoIoT0dXA8BcN1P, Home
             """)
-    public void request_artist_name(String spotifyId, String name) throws IOException {
+    void request_artist_name(String spotifyId, String name) throws IOException {
         // Act
         final String artistName = apiWrapper.getArtist(spotifyId).orElseThrow().getName();
 
@@ -50,7 +50,7 @@ public class ApiWrapperIntegrationTest {
     }
 
     @Test
-    public void persist_requested_artist() throws IOException {
+    void persist_requested_artist() throws IOException {
         // Arrange
         final String artistId = "5VPCIIfZPK8KPsgz4jmOEC", artistName = "The Blue Stones";
         SpotifyObjectRepository spotifyObjectRepository;

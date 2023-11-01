@@ -8,7 +8,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class BoundedIntArgumentTest {
+class BoundedIntArgumentTest {
     @Test
     void mandatory_argument_rejects_below_bounds_value() {
         // Arrange
