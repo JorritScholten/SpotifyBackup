@@ -26,8 +26,8 @@ public final class SpotifyImage extends SpotifyObject {
     @Column(nullable = false)
     private String url;
 
-    @Column
-    private Integer width, height;
+    private Integer width;
+    private Integer height;
 
     /**
      * Factory method to create a Set of SpotifyImages from an Image array.
