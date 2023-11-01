@@ -15,11 +15,6 @@ public class MandatoryStringArgument extends StringArgument {
             super(true);
         }
 
-        @Override
-        protected void validate() throws IllegalConstructorParameterException {
-            super.validate();
-        }
-
         /**
          * @throws IllegalConstructorParameterException When trying assign name as null or assigning shortName a
          *                                              character not in the alphabet.

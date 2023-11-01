@@ -39,11 +39,6 @@ public class FlagArgument extends Argument {
         }
 
         @Override
-        protected void validate() throws IllegalConstructorParameterException {
-            super.validate();
-        }
-
-        @Override
         public FlagArgument build() throws IllegalConstructorParameterException {
             validate();
             return new FlagArgument(this);

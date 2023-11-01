@@ -21,11 +21,6 @@ public class MandatoryFilePathArgument extends FilePathArgument {
         }
 
         @Override
-        protected void validate() throws IllegalConstructorParameterException {
-            super.validate();
-        }
-
-        @Override
         public MandatoryFilePathArgument build() throws IllegalConstructorParameterException {
             validate();
             return new MandatoryFilePathArgument(this);
