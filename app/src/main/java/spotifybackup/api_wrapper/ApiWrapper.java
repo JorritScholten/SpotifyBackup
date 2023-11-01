@@ -47,14 +47,14 @@ public class ApiWrapper {
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
                 authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).build();
-                authorizationCodeRequest = (code) -> spotifyApi.authorizationCodePKCE(code, key).build();
+                authorizationCodeRequest = code -> spotifyApi.authorizationCodePKCE(code, key).build();
                 authorizationRefreshRequest = () -> spotifyApi.authorizationCodePKCERefresh().build();
             } catch (NoSuchAlgorithmException e) {
                 throw new RuntimeException(e);
             }
         } else {
             authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().state(state).build();
-            authorizationCodeRequest = (code) -> spotifyApi.authorizationCode(code).build();
+            authorizationCodeRequest = code -> spotifyApi.authorizationCode(code).build();
             authorizationRefreshRequest = () -> spotifyApi.authorizationCodeRefresh().build();
         }
         try { // ensure that the first networking operation performed is performTokenRequest()
@@ -208,7 +208,7 @@ public class ApiWrapper {
         private final Semaphore waitingForHandle = new Semaphore(1);
         private String responseQuery;
 
-        {
+        CallbackHandler() {
             try {
                 waitingForHandle.acquire();
             } catch (InterruptedException e) {
