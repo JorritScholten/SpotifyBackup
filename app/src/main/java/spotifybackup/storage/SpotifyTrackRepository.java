@@ -11,6 +11,8 @@ import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 
 import java.util.*;
 
+import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
+
 public class SpotifyTrackRepository {
     private final EntityManagerFactory emf;
 
@@ -77,9 +79,7 @@ public class SpotifyTrackRepository {
      * Spotify ID.
      */
     static SpotifyTrack persist(EntityManager entityManager, @NonNull TrackSimplified apiTrack, @NonNull SpotifyAlbum spotifyAlbum) {
-        if (!entityManager.getTransaction().isActive()) {
-            throw new RuntimeException("Method will only work from within an active transaction.");
-        }
+        ensureTransactionActive.accept(entityManager);
         var optionalTrack = find(entityManager, apiTrack);
         if (optionalTrack.isPresent()) {
             return optionalTrack.get();
@@ -112,9 +112,7 @@ public class SpotifyTrackRepository {
      * Spotify ID.
      */
     static SpotifyTrack persist(EntityManager entityManager, @NonNull Track apiTrack) {
-        if (!entityManager.getTransaction().isActive()) {
-            throw new RuntimeException("Method will only work from within an active transaction.");
-        }
+        ensureTransactionActive.accept(entityManager);
         var optionalTrack = find(entityManager, apiTrack);
         if (optionalTrack.isPresent()) {
             return optionalTrack.get();

@@ -7,11 +7,12 @@ import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
-import spotifybackup.storage.exception.TransactionInactiveException;
 
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+
+import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 
 public class SpotifyAlbumRepository {
     /** Shouldn't be used, exists to prevent implicit public constructor. */
@@ -62,7 +63,7 @@ public class SpotifyAlbumRepository {
      * Spotify ID.
      */
     static SpotifyAlbum persist(EntityManager entityManager, @NonNull AlbumSimplified apiAlbum) {
-        if (!entityManager.getTransaction().isActive()) throw new TransactionInactiveException();
+        ensureTransactionActive.accept(entityManager);
         var optionalAlbum = find(entityManager, apiAlbum);
         if (optionalAlbum.isPresent()) {
             return optionalAlbum.get();
@@ -91,7 +92,7 @@ public class SpotifyAlbumRepository {
      * Spotify ID.
      */
     static SpotifyAlbum persist(EntityManager entityManager, @NonNull Album apiAlbum) {
-        if (!entityManager.getTransaction().isActive()) throw new TransactionInactiveException();
+        ensureTransactionActive.accept(entityManager);
         var optionalAlbum = find(entityManager, apiAlbum);
         if (optionalAlbum.isPresent()) {
             return optionalAlbum.get();
