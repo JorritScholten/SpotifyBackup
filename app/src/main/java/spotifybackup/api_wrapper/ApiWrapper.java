@@ -165,7 +165,7 @@ public class ApiWrapper {
      * @throws IOException In case of networking issues (HTTP 3xx status code).
      * @deprecated Use getArtist() instead and use .getName() on the return value.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public String getArtistName(@NonNull String spotifyId) throws IOException {
         try {
             waitingForAPI.acquire();

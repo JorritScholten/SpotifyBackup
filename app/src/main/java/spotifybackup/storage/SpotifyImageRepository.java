@@ -18,7 +18,7 @@ public class SpotifyImageRepository {
     /**
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public SpotifyImageRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
@@ -105,7 +105,7 @@ public class SpotifyImageRepository {
      * @return SpotifyImage if url matches the url field in the table and not blank.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Optional<SpotifyImage> find(@NonNull String url) {
         if (url.isBlank()) {
             return Optional.empty();
@@ -127,7 +127,7 @@ public class SpotifyImageRepository {
      * @return SpotifyImage if image matches a record in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Optional<SpotifyImage> find(@NonNull Image image) {
         try (var entityManager = emf.createEntityManager()) {
             return find(entityManager, image);
@@ -140,7 +140,7 @@ public class SpotifyImageRepository {
      * @return true if url is present in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public boolean exists(@NonNull String url) {
         return find(url).isPresent();
     }
@@ -151,7 +151,7 @@ public class SpotifyImageRepository {
      * @return true if image matches a record in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public boolean exists(@NonNull Image image) {
         return find(image).isPresent();
     }
@@ -162,7 +162,7 @@ public class SpotifyImageRepository {
      * @return true if spotifyImage exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public boolean exists(@NonNull SpotifyImage spotifyImage) {
         try (var entityManager = emf.createEntityManager()) {
             return entityManager.find(SpotifyImage.class, spotifyImage.getId()) != null;
@@ -177,7 +177,7 @@ public class SpotifyImageRepository {
      * @return SpotifyImage if already in the database or images' url is not too long or empty.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Optional<SpotifyImage> persist(@NonNull Image image) {
         try (var entityManager = emf.createEntityManager()) {
             entityManager.getTransaction().begin();
@@ -194,7 +194,7 @@ public class SpotifyImageRepository {
      * @return Set of SpotifyImage objects.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Set<SpotifyImage> persistAll(@NonNull Image[] images) {
         Set<SpotifyImage> imageSet = new HashSet<>();
         for (var image : images) {

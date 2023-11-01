@@ -13,7 +13,7 @@ public class SpotifyIDRepository {
     /**
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public SpotifyIDRepository(Properties DB_ACCESS) {
         emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
     }
@@ -24,7 +24,7 @@ public class SpotifyIDRepository {
      * @return SpotifyID if id matches the id field in the table and not blank.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Optional<SpotifyID> find(@NonNull String id) {
         if (id.isBlank()) {
             return Optional.empty();
@@ -42,7 +42,7 @@ public class SpotifyIDRepository {
      * @return true if Spotify ID exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public boolean exists(@NonNull String id) {
         return find(id).isPresent();
     }
@@ -53,7 +53,7 @@ public class SpotifyIDRepository {
      * @return true if spotifyID exists in the database.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public boolean exists(@NonNull SpotifyID spotifyID) {
         return exists(spotifyID.getId());
     }
@@ -65,7 +65,7 @@ public class SpotifyIDRepository {
      * @return SpotifyID if id is not blank.
      * @deprecated Use SpotifyObjectRepository instead.
      */
-    @Deprecated
+    @Deprecated(forRemoval = true)
     public Optional<SpotifyID> persist(@NonNull String id) {
         if (id.isBlank()) {
             return Optional.empty();
