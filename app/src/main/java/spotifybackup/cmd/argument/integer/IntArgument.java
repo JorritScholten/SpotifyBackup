@@ -29,7 +29,7 @@ abstract class IntArgument extends Argument {
         }
     }
 
-    abstract protected static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
+    protected abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
         protected Builder(boolean isMandatory) {
             super(isMandatory, true);
         }

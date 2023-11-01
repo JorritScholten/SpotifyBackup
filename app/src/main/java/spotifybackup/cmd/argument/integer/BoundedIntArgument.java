@@ -50,7 +50,7 @@ abstract class BoundedIntArgument extends Argument {
         }
     }
 
-    abstract protected static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
+    protected abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
         private Integer min, max;
 
         protected Builder(boolean isMandatory) {

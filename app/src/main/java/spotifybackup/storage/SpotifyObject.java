@@ -5,7 +5,7 @@ import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public sealed abstract class SpotifyObject permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack {
+public abstract sealed class SpotifyObject permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack {
     static LocalDate convertDate(String date, ReleaseDatePrecision precision) {
         return LocalDate.parse(switch (precision) {
             case DAY -> date;

@@ -5,7 +5,7 @@ import spotifybackup.cmd.exception.*;
 
 import java.util.Formatter;
 
-abstract public class Argument {
+public abstract class Argument {
     /** If true and missing from input then program will throw an Exception, flags cannot be mandatory. */
     protected final boolean isMandatory;
     protected final boolean hasValue;
@@ -86,22 +86,22 @@ abstract public class Argument {
         return isMandatory;
     }
 
-    abstract protected String getValueName();
+    protected abstract String getValueName();
 
     /**
      * Gets value inherent to argument.
      * @return value of argument.
      */
-    abstract public Object getValue();
+    public abstract Object getValue();
 
     /**
      * Set value of argument when parsing command line arguments.
      * @param value String from String[] args.
      * @throws MalformedInputException when input string cannot be parsed as underlying type.
      */
-    abstract protected void setValue(final String value) throws MalformedInputException;
+    protected abstract void setValue(final String value) throws MalformedInputException;
 
-    abstract protected static class Builder<T extends Builder<T>> {
+    protected abstract static class Builder<T extends Builder<T>> {
         private final boolean isMandatory;
         private final boolean hasValue;
         private String name;
@@ -143,7 +143,7 @@ abstract public class Argument {
             if (name == null) {
                 throw new IllegalArgumentNameException("Argument name can not be null value.");
             }
-            if (name.length() == 0) {
+            if (name.isEmpty()) {
                 throw new IllegalArgumentNameException("Argument name can not be empty string.");
             }
             if (description == null) {
