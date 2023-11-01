@@ -9,10 +9,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "SpotifyArtist")
-@NamedQueries({
-        @NamedQuery(name = "SpotifyArtist.countBy", query = "select count(a) from SpotifyArtist a"),
-        @NamedQuery(name = "SpotifyArtist.findBySpotifyID", query = "select a from SpotifyArtist a where a.spotifyID = :spotifyID")
-})
+@NamedQuery(name = "SpotifyArtist.countBy", query = "select count(a) from SpotifyArtist a")
+@NamedQuery(name = "SpotifyArtist.findBySpotifyID", query = "select a from SpotifyArtist a where a.spotifyID = :spotifyID")
 @NoArgsConstructor
 @Getter
 public final class SpotifyArtist extends SpotifyObject {

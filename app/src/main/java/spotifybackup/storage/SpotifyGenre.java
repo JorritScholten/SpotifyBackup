@@ -12,12 +12,10 @@ import java.util.Set;
 @Getter
 @RequiredArgsConstructor
 @ToString
-@NamedQueries({
-        @NamedQuery(name = "SpotifyGenre.countBy", query = "select count(g) from SpotifyGenre g"),
-        @NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name"),
-        @NamedQuery(name = "SpotifyGenre.findAll", query = "from SpotifyGenre")
-})
-public final class SpotifyGenre extends SpotifyObject{
+@NamedQuery(name = "SpotifyGenre.countBy", query = "select count(g) from SpotifyGenre g")
+@NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name")
+@NamedQuery(name = "SpotifyGenre.findAll", query = "from SpotifyGenre")
+public final class SpotifyGenre extends SpotifyObject {
     @ManyToMany(fetch = FetchType.EAGER, mappedBy = "spotifyGenres",
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();

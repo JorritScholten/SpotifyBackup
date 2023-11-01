@@ -13,12 +13,10 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @ToString
-@NamedQueries({
-        @NamedQuery(name = "SpotifyImage.countBy", query = "select count(i) from SpotifyImage i"),
-        @NamedQuery(name = "SpotifyImage.findByUrl", query = "select i from SpotifyImage i where i.url = :url"),
-        @NamedQuery(name = "SpotifyImage.findByUrlWH",
-                query = "select i from SpotifyImage i where i.url = :url and i.width = :width and i.height = :height")
-})
+@NamedQuery(name = "SpotifyImage.countBy", query = "select count(i) from SpotifyImage i")
+@NamedQuery(name = "SpotifyImage.findByUrl", query = "select i from SpotifyImage i where i.url = :url")
+@NamedQuery(name = "SpotifyImage.findByUrlWH",
+        query = "select i from SpotifyImage i where i.url = :url and i.width = :width and i.height = :height")
 public final class SpotifyImage extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
