@@ -14,6 +14,7 @@ public class MandatoryIntArgument extends IntArgument {
             super(true);
         }
 
+        @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
         }

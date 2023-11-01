@@ -75,6 +75,7 @@ abstract class FilePathArgument extends Argument {
             return getThis();
         }
 
+        @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
             if (isFolder == null) {

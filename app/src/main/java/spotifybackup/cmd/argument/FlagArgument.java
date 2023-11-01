@@ -21,7 +21,7 @@ public class FlagArgument extends Argument {
      */
     @Override
     public Boolean getValue() {
-        return (Boolean) isPresent;
+        return isPresent;
     }
 
     /**
@@ -30,6 +30,7 @@ public class FlagArgument extends Argument {
      */
     @Override
     protected void setValue(String value) {
+        // The value of a flag is true if it is present, therefore setValue doesn't need to do anything.
     }
 
     public static class Builder extends Argument.Builder<Builder> {
@@ -37,6 +38,7 @@ public class FlagArgument extends Argument {
             super(false, false);
         }
 
+        @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
         }

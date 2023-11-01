@@ -36,6 +36,7 @@ public class DefaultBoundedIntArgument extends BoundedIntArgument implements Has
             return this;
         }
 
+        @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
             if (defaultValue == null) {

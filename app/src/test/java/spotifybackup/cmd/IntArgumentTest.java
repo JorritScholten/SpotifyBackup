@@ -11,7 +11,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IntArgumentTest {
+class IntArgumentTest {
     @Test
     void mandatory_argument_loads_positive_value() {
         // Arrange

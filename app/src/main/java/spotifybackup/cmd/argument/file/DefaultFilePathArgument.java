@@ -37,6 +37,7 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
             return this;
         }
 
+        @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
             if (defaultValue == null) {

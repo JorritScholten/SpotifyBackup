@@ -20,6 +20,7 @@ public class MandatoryFilePathArgument extends FilePathArgument {
             super(true);
         }
 
+        @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();
         }
