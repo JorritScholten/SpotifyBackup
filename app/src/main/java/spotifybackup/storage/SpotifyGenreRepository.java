@@ -1,24 +1,18 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
-import jakarta.persistence.Persistence;
 import lombok.NonNull;
+import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.*;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 
-public class SpotifyGenreRepository {
-    private final EntityManagerFactory emf;
-
-    /**
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public SpotifyGenreRepository(Properties DB_ACCESS) {
-        emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
+class SpotifyGenreRepository {
+    /** @apiNote Should not be used, exists to prevent implicit public constructor. */
+    private SpotifyGenreRepository() {
+        throw new ConstructorUsageException();
     }
 
     /**
@@ -79,90 +73,6 @@ public class SpotifyGenreRepository {
     static List<SpotifyGenre> findAll(EntityManager entityManager) {
         var query = entityManager.createNamedQuery("SpotifyGenre.findAll", SpotifyGenre.class);
         return query.getResultList();
-    }
-
-    /**
-     * Find SpotifyGenre by its name field.
-     * @param genreName name of SpotifyGenre.
-     * @return SpotifyGenre if genreName is not blank and in the table.
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public Optional<SpotifyGenre> find(@NonNull String genreName) {
-        try (var entityManager = emf.createEntityManager()) {
-            return find(entityManager, genreName);
-        }
-    }
-
-    /**
-     * Get count of genres in the database.
-     * @return count of genres in the database.
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public long count() {
-        try (var entityManager = emf.createEntityManager()) {
-            return (Long) entityManager.createNamedQuery("SpotifyGenre.countBy").getSingleResult();
-        }
-    }
-
-    /**
-     * Check if SpotifyGenre exists by name.
-     * @param genreName name of Genre.
-     * @return true if genreName exists as a SpotifyGenre in the database.
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public boolean exists(@NonNull String genreName) {
-        return find(genreName).isPresent();
-    }
-
-    /**
-     * Check if SpotifyGenre exists in the database.
-     * @param spotifyGenre SpotifyGenre to check.
-     * @return true if spotifyGenre exists in the database.
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public boolean exists(@NonNull SpotifyGenre spotifyGenre) {
-        try (var entityManager = emf.createEntityManager()) {
-            return entityManager.find(SpotifyGenre.class, spotifyGenre.getId()) != null;
-        } catch (IllegalArgumentException e) {
-            return false;
-        }
-    }
-
-    /**
-     * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
-     * @param genreName name of genre as defined by Spotify.
-     * @return SpotifyGenre if genreName is not blank.
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public Optional<SpotifyGenre> persist(@NonNull String genreName) {
-        try (var entityManager = emf.createEntityManager()) {
-            entityManager.getTransaction().begin();
-            var spotifyGenre = persist(entityManager, genreName);
-            entityManager.getTransaction().commit();
-            return spotifyGenre;
-        }
-    }
-
-    /**
-     * Attempts to persist an array of genres by name, if a Genre already exists the already existing SpotifyGenre is
-     * used.
-     * @param genreNames an array of genre names as defined by Spotify.
-     * @return Set of SpotifyGenre objects.
-     * @deprecated Use SpotifyObjectRepository instead.
-     */
-    @Deprecated(forRemoval = true)
-    public Set<SpotifyGenre> persistAll(@NonNull String[] genreNames) {
-        Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
-        for (var genreName : genreNames) {
-            var genre = persist(genreName);
-            genre.ifPresent(spotifyGenreSet::add);
-        }
-        return spotifyGenreSet;
     }
 }
 
