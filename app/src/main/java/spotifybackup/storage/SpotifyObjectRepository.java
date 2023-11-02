@@ -27,7 +27,7 @@ public class SpotifyObjectRepository {
      */
     public static SpotifyObjectRepository factory(@NonNull File dbPath) {
         if (!(dbPath.isFile() && dbPath.exists() && dbPath.canRead() && dbPath.canWrite())) {
-            throw new RuntimeException("Supplied filepath to database is unusable: " + dbPath);
+            throw new IllegalArgumentException("Supplied filepath to database is unusable: " + dbPath);
         }
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         final Properties DB_ACCESS = new Properties();
@@ -86,7 +86,7 @@ public class SpotifyObjectRepository {
                 case SpotifyArtist a -> em.find(a.getClass(), a.getId());
                 case SpotifyAlbum a -> em.find(a.getClass(), a.getId());
                 case SpotifyTrack t -> em.find(t.getClass(), t.getId());
-                default -> throw new RuntimeException("Unsupported SpotifyObject queried, add implementation for: "
+                default -> throw new IllegalStateException("Unsupported SpotifyObject queried, add implementation for: "
                         + spotifyObject.getClass());
             } != null;
         }
@@ -152,32 +152,13 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     * Get count of genres in the database.
-     * @return count of genres in the database.
-     */
-    public long countGenres() {
-        try (var em = emf.createEntityManager()) {
-            return (Long) em.createNamedQuery("SpotifyGenre.countBy").getSingleResult();
-        }
-    }
-
-    /**
-     * Get count of artists in the database.
-     * @return count of artists in the database.
-     */
-    public long countArtists() {
-        try (var em = emf.createEntityManager()) {
-            return (Long) em.createNamedQuery("SpotifyArtist.countBy").getSingleResult();
-        }
-    }
-
-    /**
-     * Get count of tracks in the database.
+     * Get count of type of SpotifyObject in the database.
+     * @param type Entity type to perform count on.
      * @return count of tracks in the database.
      */
-    public long countTracks() {
+    public long count(SpotifyObject.SubTypes type) {
         try (var em = emf.createEntityManager()) {
-            return (Long) em.createNamedQuery("SpotifyTrack.countBy").getSingleResult();
+            return (Long) em.createNamedQuery(type.name + ".countBy").getSingleResult();
         }
     }
 

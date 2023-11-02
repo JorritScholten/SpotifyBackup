@@ -49,7 +49,7 @@ class SpotifyArtistRepositoryTest {
     @Test
     void ensure_multiple_artists_can_be_persisted() throws IOException {
         // Arrange
-        final long oldCount = spotifyObjectRepository.countArtists();
+        final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST);
         final Artist[] apiArtists = {new Artist.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(artistDir + "Macklemore_&_Ryan_Lewis.json")))
         ), new Artist.JsonUtil().createModelObject(
@@ -79,6 +79,6 @@ class SpotifyArtistRepositoryTest {
             assertTrue(apiArtist.getImages().length > 0);
             assertEquals(apiArtist.getImages().length, persistedArtist.get().getSpotifyImages().size());
         }
-        assertEquals(oldCount + apiArtists.length, spotifyObjectRepository.countArtists());
+        assertEquals(oldCount + apiArtists.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
     }
 }

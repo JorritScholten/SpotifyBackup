@@ -21,4 +21,18 @@ public abstract sealed class SpotifyObject permits SpotifyGenre, SpotifyImage, S
             case YEAR -> date + "01-01";
         }, DateTimeFormatter.ISO_LOCAL_DATE);
     }
+
+    public enum SubTypes {
+        GENRE("SpotifyGenre"),
+        IMAGE("SpotifyImage"),
+        ID("SpotifyID"),
+        ARTIST("SpotifyArtist"),
+        ALBUM("SpotifyAlbum"),
+        TRACK("SpotifyTrack");
+        final String name;
+
+        SubTypes(String name) {
+            this.name = name;
+        }
+    }
 }

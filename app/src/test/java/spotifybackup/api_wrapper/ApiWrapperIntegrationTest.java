@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import spotifybackup.storage.SpotifyArtist;
+import spotifybackup.storage.SpotifyObject;
 import spotifybackup.storage.SpotifyObjectRepository;
 
 import java.io.FileReader;
@@ -59,7 +60,7 @@ public class ApiWrapperIntegrationTest {
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
-        final long oldCount = spotifyObjectRepository.countArtists();
+        final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST);
 
         // Act
         final Artist apiArtist = apiWrapper.getArtist(artistId).orElseThrow();
@@ -68,6 +69,6 @@ public class ApiWrapperIntegrationTest {
         // Assert
         assertNotNull(spotifyArtist);
         assertEquals(spotifyArtist.getName(), artistName);
-        assertEquals(spotifyObjectRepository.countArtists(), oldCount + 1);
+        assertEquals(spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST), oldCount + 1);
     }
 }

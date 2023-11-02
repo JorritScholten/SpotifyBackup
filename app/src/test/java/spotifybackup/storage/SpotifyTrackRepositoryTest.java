@@ -49,7 +49,7 @@ class SpotifyTrackRepositoryTest {
     @Test
     void ensure_multiple_tracks_can_be_persisted() throws IOException {
         // Arrange
-        final long oldCount = spotifyObjectRepository.countTracks();
+        final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK);
         final Track[] apiTracks = {new Track.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(trackDir + "Can't_Hold_Us_(feat._Ray_Dalton).json")))
         ), new Track.JsonUtil().createModelObject(
@@ -75,6 +75,6 @@ class SpotifyTrackRepositoryTest {
             assertEquals(apiTrack.getArtists().length, persistedTrack.get().getSpotifyArtists().size());
             assertEquals(apiTrack.getAlbum().getId(), persistedTrack.get().getSpotifyAlbum().getSpotifyID().getId());
         }
-        assertEquals(oldCount + apiTracks.length, spotifyObjectRepository.countTracks());
+        assertEquals(oldCount + apiTracks.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
     }
 }
