@@ -12,7 +12,7 @@ class SpotifyIDRepositoryTest {
     @BeforeAll
     static void setup() {
         try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(true);
+            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }

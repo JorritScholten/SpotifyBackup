@@ -18,7 +18,7 @@ class SpotifyArtistRepositoryTest {
     @BeforeAll
     static void setup() {
         try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(true);
+            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
@@ -30,7 +30,7 @@ class SpotifyArtistRepositoryTest {
         final Artist apiArtist = new Artist.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(artistDir + "Rivers_Cuomo.json")))
         );
-        assertFalse(spotifyObjectRepository.artistExists(apiArtist),
+        assertFalse(spotifyObjectRepository.exists(apiArtist),
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
 
         // Act
@@ -38,7 +38,7 @@ class SpotifyArtistRepositoryTest {
 
         // Assert
         assertTrue(spotifyObjectRepository.spotifyIDExists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
-        assertTrue(spotifyObjectRepository.artistExists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(persistedArtist), "Can't find Artist by Object reference.");
         assertTrue(apiArtist.getGenres().length > 0);
         assertEquals(apiArtist.getGenres().length, persistedArtist.getSpotifyGenres().size());
@@ -58,7 +58,7 @@ class SpotifyArtistRepositoryTest {
                 new String(Files.readAllBytes(Path.of(artistDir + "Ryan_Lewis.json")))
         )};
         for (var apiArtist : apiArtists) {
-            assertFalse(spotifyObjectRepository.artistExists(apiArtist),
+            assertFalse(spotifyObjectRepository.exists(apiArtist),
                     "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
         }
 
@@ -71,7 +71,7 @@ class SpotifyArtistRepositoryTest {
                     .filter(a -> a.getSpotifyID().getId().equals(apiArtist.getId()))
                     .findAny();
             assertTrue(spotifyObjectRepository.spotifyIDExists(apiArtist.getId()), "Can't find Artist by Spotify ID.");
-            assertTrue(spotifyObjectRepository.artistExists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
+            assertTrue(spotifyObjectRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
             assertTrue(persistedArtist.isPresent());
             assertTrue(spotifyObjectRepository.exists(persistedArtist.get()), "Can't find Artist by Object reference.");
             assertTrue(apiArtist.getGenres().length > 0);
