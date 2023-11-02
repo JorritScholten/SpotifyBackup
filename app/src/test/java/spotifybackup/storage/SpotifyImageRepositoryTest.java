@@ -46,15 +46,17 @@ class SpotifyImageRepositoryTest {
         final Image image = new Image.Builder()
                 .setUrl("https://i.scdn.co/image/ab6761610000f178129c7158f9565223cead0dd8")
                 .build();
-        assertFalse(spotifyObjectRepository.exists(image) || spotifyObjectRepository.imageExists(image.getUrl()),
-                "Image with url " + image.getUrl() + " shouldn't already exist.");
+        assertFalse(spotifyObjectRepository.exists(image) ||
+                        spotifyObjectRepository.exists(image.getUrl(), SpotifyImage.class),
+                "Image with url " + image.getUrl() + " shouldn't already exist."
+        );
 
         // Act
         var persistedImage = spotifyObjectRepository.persistImage(image);
 
         // Assert
         assertTrue(persistedImage.isPresent());
-        assertTrue(spotifyObjectRepository.imageExists(image.getUrl()));
+        assertTrue(spotifyObjectRepository.exists(image.getUrl(), SpotifyImage.class));
         assertTrue(spotifyObjectRepository.exists(image));
         assertTrue(spotifyObjectRepository.exists(persistedImage.orElseThrow()));
     }

@@ -23,7 +23,7 @@ class SpotifyGenreRepositoryTest {
         // Arrange
         long oldCount = spotifyObjectRepository.count(SpotifyGenre.class);
         final String genreName = "rock";
-        assertFalse(spotifyObjectRepository.genreExists(genreName),
+        assertFalse(spotifyObjectRepository.exists(genreName, SpotifyGenre.class),
                 "Genre with name " + genreName + " shouldn't already exist.");
 
         // Act
@@ -52,14 +52,14 @@ class SpotifyGenreRepositoryTest {
     void ensure_persisted_genre_exists_in_db() {
         // Arrange
         final String genreName = "jazz";
-        final var usedToExist = spotifyObjectRepository.genreExists(genreName);
+        final var usedToExist = spotifyObjectRepository.exists(genreName, SpotifyGenre.class);
 
         // Act
         spotifyObjectRepository.persistGenre(genreName);
 
         // Assert
         assertFalse(usedToExist, "Genre with name " + genreName + " shouldn't already exist.");
-        assertTrue(spotifyObjectRepository.genreExists(genreName));
+        assertTrue(spotifyObjectRepository.exists(genreName, SpotifyGenre.class));
     }
 
     @Test
@@ -67,7 +67,7 @@ class SpotifyGenreRepositoryTest {
         // Arrange
         final String[] genreNames = {"pop", "grunge-rock", "ska", "trance"};
         for (var genreName : genreNames) {
-            assertFalse(spotifyObjectRepository.genreExists(genreName),
+            assertFalse(spotifyObjectRepository.exists(genreName, SpotifyGenre.class),
                     "Genre with name " + genreName + " shouldn't already exist.");
         }
 
@@ -86,9 +86,9 @@ class SpotifyGenreRepositoryTest {
         final String[] genreNames = {"pop", "grunge-rock", "hip-hop", "house"};
         assertTrue(spotifyObjectRepository.exists(spotifyObjectRepository.persistGenre(genreNames[0]).orElseThrow()));
         assertTrue(spotifyObjectRepository.exists(spotifyObjectRepository.persistGenre(genreNames[1]).orElseThrow()));
-        assertFalse(spotifyObjectRepository.genreExists(genreNames[2]),
+        assertFalse(spotifyObjectRepository.exists(genreNames[2], SpotifyGenre.class),
                 "Genre with name " + genreNames[2] + " shouldn't already exist.");
-        assertFalse(spotifyObjectRepository.genreExists(genreNames[3]),
+        assertFalse(spotifyObjectRepository.exists(genreNames[3], SpotifyGenre.class),
                 "Genre with name " + genreNames[3] + " shouldn't already exist.");
 
         // Act

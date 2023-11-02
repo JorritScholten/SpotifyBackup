@@ -93,38 +93,22 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     * Check if SpotifyGenre exists by name.
-     * @param genreName name of Genre.
-     * @return true if genreName exists as a SpotifyGenre in the database.
+     * Check if SpotifyImage, SpotifyGenre, or SpotifyID exists by its url, name or Spotify ID respectively.
+     * @param value String to check.
+     * @param type  Entity type to check.
+     * @throws IllegalArgumentException if value is blank.
+     * @return true if value matches field in the database.
      */
-    public boolean genreExists(@NonNull String genreName) {
+    public boolean exists(@NonNull String value, Class<? extends SpotifyObject> type) {
+        if (value.isBlank()) throw new IllegalArgumentException("Value should not be blank.");
         try (var em = emf.createEntityManager()) {
-            return SpotifyGenreRepository.find(em, genreName).isPresent();
-        }
-    }
-
-    /**
-     * Check if SpotifyImage exists by its url field.
-     * @param url source URL of the image.
-     * @return SpotifyImage if url matches the url field in the table and not blank.
-     */
-    public boolean imageExists(@NonNull String url) {
-        try (var em = emf.createEntityManager()) {
-            return SpotifyImageRepository.find(em, url).isPresent();
-        }
-    }
-
-    /**
-     * Check if SpotifyID exists in persistence context by Spotify ID.
-     * @param id Spotify ID to check.
-     * @return true if Spotify ID exists in the database.
-     */
-    public boolean spotifyIDExists(@NonNull String id) {
-        if (id.isBlank()) return false;
-        try (var em = emf.createEntityManager()) {
-            return em.find(SpotifyID.class, id) != null;
-        } catch (IllegalArgumentException | NullPointerException e) {
-            return false;
+            return switch (SpotifyObject.accessSubTypeByClass.apply(type)) {
+                case GENRE -> SpotifyGenreRepository.find(em, value).isPresent();
+                case IMAGE -> SpotifyImageRepository.find(em, value).isPresent();
+                case ID -> em.find(SpotifyID.class, value) != null;
+                default -> throw new IllegalArgumentException(SpotifyObject.accessSubTypeByClass.apply(type).name +
+                        " not a valid type for this method.");
+            };
         }
     }
 

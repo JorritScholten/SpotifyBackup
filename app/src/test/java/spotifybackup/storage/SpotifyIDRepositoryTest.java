@@ -22,7 +22,7 @@ class SpotifyIDRepositoryTest {
     void ensure_id_can_be_persisted() {
         // Arrange
         final String newID = "abc90o328trjrsdffgj";
-        assertFalse(spotifyObjectRepository.spotifyIDExists(newID));
+        assertFalse(spotifyObjectRepository.exists(newID, SpotifyID.class));
 
         // Act
         var persistedID = spotifyObjectRepository.persistSpotifyID(newID);
@@ -38,7 +38,7 @@ class SpotifyIDRepositoryTest {
         // Arrange
         final String newID = "123";
         final var newIDObject = spotifyObjectRepository.persistSpotifyID(newID).orElseThrow();
-        assertTrue(spotifyObjectRepository.spotifyIDExists(newID));
+        assertTrue(spotifyObjectRepository.exists(newID, SpotifyID.class));
 
         // Act
         final var duplicateIDObject = spotifyObjectRepository.persistSpotifyID(newID).orElseThrow();
@@ -59,6 +59,6 @@ class SpotifyIDRepositoryTest {
 
         // Assert
         assertTrue(optionalSpotifyID.isEmpty());
-        assertFalse(spotifyObjectRepository.spotifyIDExists(blank));
+        assertThrows(IllegalArgumentException.class, () -> spotifyObjectRepository.exists(blank, SpotifyID.class));
     }
 }

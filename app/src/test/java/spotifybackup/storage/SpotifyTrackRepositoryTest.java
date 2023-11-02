@@ -37,7 +37,8 @@ class SpotifyTrackRepositoryTest {
         var persistedTrack = spotifyObjectRepository.persistTrack(apiTrack);
 
         // Assert
-        assertTrue(spotifyObjectRepository.spotifyIDExists(apiTrack.getId()), "Can't find Track by Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(apiTrack.getId(), SpotifyID.class),
+                "Can't find Track by Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(apiTrack), "Can't find Track by apiTrack/Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(persistedTrack), "Can't find Track by Object reference.");
         assertTrue(apiTrack.getArtists().length > 0);
@@ -68,7 +69,8 @@ class SpotifyTrackRepositoryTest {
             var persistedTrack = persistedTracks.stream()
                     .filter(t -> t.getSpotifyID().getId().equals(apiTrack.getId()))
                     .findAny();
-            assertTrue(spotifyObjectRepository.spotifyIDExists(apiTrack.getId()), "Can't find Track by Spotify ID.");
+            assertTrue(spotifyObjectRepository.exists(apiTrack.getId(), SpotifyID.class),
+                    "Can't find Track by Spotify ID.");
             assertTrue(spotifyObjectRepository.exists(apiTrack), "Can't find Track by apiTrack/Spotify ID.");
             assertTrue(persistedTrack.isPresent());
             assertTrue(apiTrack.getArtists().length > 0);

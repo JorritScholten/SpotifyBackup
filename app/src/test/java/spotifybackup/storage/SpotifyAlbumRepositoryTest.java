@@ -38,7 +38,8 @@ class SpotifyAlbumRepositoryTest {
         var persistedAlbum = spotifyObjectRepository.persistAlbum(apiAlbum);
 
         // Assert
-        assertTrue(spotifyObjectRepository.spotifyIDExists(apiAlbum.getId()), "Can't find Album by Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
+                "Can't find Album by Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
         assertTrue(apiAlbum.getArtists().length > 0);
