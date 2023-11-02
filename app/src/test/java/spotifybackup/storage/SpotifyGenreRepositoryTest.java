@@ -21,7 +21,7 @@ class SpotifyGenreRepositoryTest {
     @Test
     void ensure_genre_can_be_persisted() {
         // Arrange
-        long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.GENRE);
+        long oldCount = spotifyObjectRepository.count(SpotifyGenre.class);
         final String genreName = "rock";
         assertFalse(spotifyObjectRepository.genreExists(genreName),
                 "Genre with name " + genreName + " shouldn't already exist.");
@@ -30,7 +30,7 @@ class SpotifyGenreRepositoryTest {
         var persistedGenre = spotifyObjectRepository.persistGenre(genreName);
 
         // Assert
-        assertEquals(oldCount + 1, spotifyObjectRepository.count(SpotifyObject.SubTypes.GENRE));
+        assertEquals(oldCount + 1, spotifyObjectRepository.count(SpotifyGenre.class));
         assertTrue(spotifyObjectRepository.exists(persistedGenre.orElseThrow()));
     }
 
@@ -39,13 +39,13 @@ class SpotifyGenreRepositoryTest {
         // Arrange
         final String genreName = "new genre";
         spotifyObjectRepository.persistGenre(genreName);
-        long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.GENRE);
+        long oldCount = spotifyObjectRepository.count(SpotifyGenre.class);
 
         // Act
         spotifyObjectRepository.persistGenre(genreName);
 
         // Assert
-        assertEquals(oldCount, spotifyObjectRepository.count(SpotifyObject.SubTypes.GENRE));
+        assertEquals(oldCount, spotifyObjectRepository.count(SpotifyGenre.class));
     }
 
     @Test

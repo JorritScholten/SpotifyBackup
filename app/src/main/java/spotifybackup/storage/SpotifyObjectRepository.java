@@ -154,12 +154,21 @@ public class SpotifyObjectRepository {
     /**
      * Get count of type of SpotifyObject in the database.
      * @param type Entity type to perform count on.
-     * @return count of tracks in the database.
+     * @return count of SpotifyObject in the database.
      */
     public long count(SpotifyObject.SubTypes type) {
         try (var em = emf.createEntityManager()) {
             return (Long) em.createNamedQuery(type.name + ".countBy").getSingleResult();
         }
+    }
+
+    /**
+     * Get count of type of SpotifyObject in the database.
+     * @param type Entity type to perform count on.
+     * @return count of SpotifyObject in the database.
+     */
+    public long count(Class<? extends SpotifyObject> type) {
+        return count(SpotifyObject.accessSubTypeByClass.apply(type));
     }
 
     /**

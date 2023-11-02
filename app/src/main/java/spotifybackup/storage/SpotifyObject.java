@@ -6,13 +6,32 @@ import spotifybackup.storage.exception.TransactionInactiveException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
-public abstract sealed class SpotifyObject permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack {
+public abstract sealed class SpotifyObject
+        permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack {
+
+    private static final Map<Class<? extends SpotifyObject>, SubTypes> mapSubtypeByClass = new HashMap<>();
+
+    /** Helper method to get enum by class type. */
+    static Function<Class<? extends SpotifyObject>, SubTypes> accessSubTypeByClass = t -> {
+        if (t.equals(SpotifyObject.class)) throw new IllegalArgumentException("SpotifyObject.class not a valid value.");
+        else return mapSubtypeByClass.get(t);
+    };
+
     /** Checks entityManager to ensure transaction is active, throws exception if it isn't. */
     static Consumer<EntityManager> ensureTransactionActive = (EntityManager entityManager) -> {
         if (!entityManager.getTransaction().isActive()) throw new TransactionInactiveException();
     };
+
+    static {
+        for (var subType : SubTypes.values()) {
+            mapSubtypeByClass.put(subType.type, subType);
+        }
+    }
 
     static LocalDate convertDate(String date, ReleaseDatePrecision precision) {
         return LocalDate.parse(switch (precision) {
@@ -23,16 +42,19 @@ public abstract sealed class SpotifyObject permits SpotifyGenre, SpotifyImage, S
     }
 
     public enum SubTypes {
-        GENRE("SpotifyGenre"),
-        IMAGE("SpotifyImage"),
-        ID("SpotifyID"),
-        ARTIST("SpotifyArtist"),
-        ALBUM("SpotifyAlbum"),
-        TRACK("SpotifyTrack");
-        final String name;
+        GENRE(SpotifyGenre.class),
+        IMAGE(SpotifyImage.class),
+        ID(SpotifyID.class),
+        ARTIST(SpotifyArtist.class),
+        ALBUM(SpotifyAlbum.class),
+        TRACK(SpotifyTrack.class);
 
-        SubTypes(String name) {
-            this.name = name;
+        final String name;
+        final Class<? extends SpotifyObject> type;
+
+        SubTypes(Class<? extends SpotifyObject> type) {
+            this.type = type;
+            name = type.getSimpleName();
         }
     }
 }
