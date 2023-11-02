@@ -9,7 +9,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.function.Consumer;
 
 public abstract sealed class SpotifyObject permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack {
-    static Consumer<EntityManager> ensureTransactionActive = entityManager -> {
+    /** Checks entityManager to ensure transaction is active, throws exception if it isn't. */
+    static Consumer<EntityManager> ensureTransactionActive = (EntityManager entityManager) -> {
         if (!entityManager.getTransaction().isActive()) throw new TransactionInactiveException();
     };
 
