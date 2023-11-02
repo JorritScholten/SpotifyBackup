@@ -4,6 +4,8 @@ import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class SpotifyIDRepositoryTest {
@@ -25,7 +27,7 @@ class SpotifyIDRepositoryTest {
         assertFalse(spotifyObjectRepository.exists(newID, SpotifyID.class));
 
         // Act
-        var persistedID = spotifyObjectRepository.persistSpotifyID(newID);
+        var persistedID = spotifyObjectRepository.persistSpotifyID(new SpotifyID(newID));
 
         // Assert
         assertTrue(persistedID.isPresent());
@@ -37,11 +39,11 @@ class SpotifyIDRepositoryTest {
     void ensure_duplicate_ids_arent_persisted() {
         // Arrange
         final String newID = "123";
-        final var newIDObject = spotifyObjectRepository.persistSpotifyID(newID).orElseThrow();
+        final var newIDObject = spotifyObjectRepository.persistSpotifyID(new SpotifyID(newID)).orElseThrow();
         assertTrue(spotifyObjectRepository.exists(newID, SpotifyID.class));
 
         // Act
-        final var duplicateIDObject = spotifyObjectRepository.persistSpotifyID(newID).orElseThrow();
+        final var duplicateIDObject = spotifyObjectRepository.persistSpotifyID(new SpotifyID(newID)).orElseThrow();
 
         // Assert
         assertTrue(spotifyObjectRepository.exists(duplicateIDObject));
@@ -53,12 +55,9 @@ class SpotifyIDRepositoryTest {
     void ensure_blank_ids_arent_persisted() {
         // Arrange
         final String blank = "";
+        final var blankID = new SpotifyID(blank);
 
-        // Act
-        final var optionalSpotifyID = spotifyObjectRepository.persistSpotifyID(blank);
-
-        // Assert
-        assertTrue(optionalSpotifyID.isEmpty());
-        assertThrows(IllegalArgumentException.class, () -> spotifyObjectRepository.exists(blank, SpotifyID.class));
+        // Act & Assert
+        assertThrows(IllegalArgumentException.class, () -> spotifyObjectRepository.persistSpotifyID(blankID));
     }
 }
