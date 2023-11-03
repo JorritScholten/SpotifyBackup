@@ -4,8 +4,10 @@ import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
+import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.HashSet;
@@ -83,6 +85,11 @@ class SpotifyAlbumRepository {
             entityManager.persist(newAlbum);
             return newAlbum;
         }
+    }
+
+    static SpotifyAlbum persist(EntityManager entityManager, @NonNull AbstractModelObject apiAlbum) {
+        if(apiAlbum instanceof Album a) return persist(entityManager, a);
+        else throw new IllegalArgumentException("apiAlbum should be of type Album here.");
     }
 
     /**

@@ -35,7 +35,7 @@ class SpotifyAlbumRepositoryTest {
         assertTrue(apiAlbum.getGenres().length > 0, "Album should have 1 or more genres.");
 
         // Act
-        var persistedAlbum = spotifyObjectRepository.persistAlbum(apiAlbum);
+        var persistedAlbum = spotifyObjectRepository.persist(apiAlbum);
 
         // Assert
         assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),

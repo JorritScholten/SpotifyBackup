@@ -238,13 +238,8 @@ public class SpotifyObjectRepository {
      * @return SpotifyAlbum already in the database with matching Spotify ID or new SpotifyAlbum if apiAlbum has a new
      * Spotify ID.
      */
-    public SpotifyAlbum persistAlbum(@NonNull Album apiAlbum) {
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            var spotifyAlbum = SpotifyAlbumRepository.persist(em, apiAlbum);
-            em.getTransaction().commit();
-            return spotifyAlbum;
-        }
+    public SpotifyAlbum persist(@NonNull Album apiAlbum) {
+        return (SpotifyAlbum) persistAbstractModel.apply(apiAlbum).apply(emf).apply(SpotifyAlbumRepository::persist);
     }
 
     /**
