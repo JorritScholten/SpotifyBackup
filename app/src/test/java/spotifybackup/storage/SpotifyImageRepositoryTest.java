@@ -32,7 +32,7 @@ class SpotifyImageRepositoryTest {
                 "Image with url " + image.getUrl() + " shouldn't already exist.");
 
         // Act
-        var persistedImage = spotifyObjectRepository.persistImage(image);
+        var persistedImage = spotifyObjectRepository.persist(image);
 
         // Assert
         assertTrue(persistedImage.isPresent());
@@ -52,7 +52,7 @@ class SpotifyImageRepositoryTest {
         );
 
         // Act
-        var persistedImage = spotifyObjectRepository.persistImage(image);
+        var persistedImage = spotifyObjectRepository.persist(image);
 
         // Assert
         assertTrue(persistedImage.isPresent());

@@ -3,6 +3,7 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
+import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
@@ -64,6 +65,11 @@ class SpotifyImageRepository {
         } catch (NoResultException e) {
             return Optional.empty();
         }
+    }
+
+    static Optional<SpotifyImage> persist(EntityManager entityManager, @NonNull AbstractModelObject image) {
+        if(image instanceof Image i) return persist(entityManager, i);
+        else throw new IllegalArgumentException("image should be of type Image here.");
     }
 
     /**
