@@ -3,7 +3,10 @@ package spotifybackup.storage;
 import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import se.michaelthelin.spotify.model_objects.specification.Album;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -83,5 +86,28 @@ class SpotifyArtistRepositoryTest {
             assertEquals(apiArtist.getImages().length, persistedArtist.get().getSpotifyImages().size());
         }
         assertEquals(oldCount + apiArtists.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
+    }
+
+    @Test
+    void ensure_simplified_artist_can_be_filled_in_with_unsimplified() throws IOException {
+        // Arrange
+        final String artistJson =  new String(Files.readAllBytes(Path.of(artistDir + "Texas.json")));
+        final var apiArtistSimple = new ArtistSimplified.JsonUtil().createModelObject(artistJson);
+        final var apiArtist = new Artist.JsonUtil().createModelObject(artistJson);
+        assertNotEquals(0, apiArtist.getGenres().length);
+        final var artistSimple = spotifyObjectRepository.persist(apiArtistSimple);
+        assertTrue(spotifyObjectRepository.exists(artistSimple));
+        assertTrue(artistSimple.getIsSimplified());
+        assertEquals(0, artistSimple.getSpotifyGenres().size());
+
+        // Act
+        final var artist = spotifyObjectRepository.persist(apiArtist);
+
+        // Assert
+        assertEquals(artistSimple.getId(), artist.getId());
+        assertEquals(artistSimple.getSpotifyID(), artist.getSpotifyID());
+        assertFalse(artist.getIsSimplified());
+        assertNotEquals(0, artist.getSpotifyGenres().size());
+        assertEquals(apiArtist.getGenres().length, artist.getSpotifyGenres().size());
     }
 }

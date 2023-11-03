@@ -78,6 +78,7 @@ class SpotifyArtistRepository {
 
     static SpotifyArtist persist(EntityManager entityManager, @NonNull AbstractModelObject apiArtist) {
         if (apiArtist instanceof Artist a) return persist(entityManager, a);
+        else if (apiArtist instanceof ArtistSimplified aS) return persist(entityManager, aS);
         else throw new IllegalArgumentException("apiArtist should be of type Artist here.");
     }
 
@@ -90,7 +91,15 @@ class SpotifyArtistRepository {
         ensureTransactionActive.accept(entityManager);
         var optionalArtist = find(entityManager, apiArtist);
         if (optionalArtist.isPresent()) {
-            return optionalArtist.get();
+            if(!optionalArtist.get().getIsSimplified())return optionalArtist.get();
+            else {
+                final var simpleArtist = optionalArtist.get();
+                simpleArtist.setIsSimplified(false);
+                simpleArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiArtist.getImages()));
+                simpleArtist.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiArtist.getGenres()));
+                entityManager.persist(simpleArtist);
+                return simpleArtist;
+            }
         } else {
             var newArtist = SpotifyArtist.builder()
                     .name(apiArtist.getName())

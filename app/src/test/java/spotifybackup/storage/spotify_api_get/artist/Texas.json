@@ -1,0 +1,37 @@
+{
+  "external_urls": {
+    "spotify": "https://open.spotify.com/artist/5JsdVATHNPE0XdMFMRoSuf"
+  },
+  "followers": {
+    "href": null,
+    "total": 478860
+  },
+  "genres": [
+    "new romantic",
+    "new wave pop",
+    "scottish rock"
+  ],
+  "href": "https://api.spotify.com/v1/artists/5JsdVATHNPE0XdMFMRoSuf",
+  "id": "5JsdVATHNPE0XdMFMRoSuf",
+  "images": [
+    {
+      "height": 640,
+      "url": "https://i.scdn.co/image/ab6761610000e5ebd58e352c6bc134d6967d5b11",
+      "width": 640
+    },
+    {
+      "height": 320,
+      "url": "https://i.scdn.co/image/ab67616100005174d58e352c6bc134d6967d5b11",
+      "width": 320
+    },
+    {
+      "height": 160,
+      "url": "https://i.scdn.co/image/ab6761610000f178d58e352c6bc134d6967d5b11",
+      "width": 160
+    }
+  ],
+  "name": "Texas",
+  "popularity": 54,
+  "type": "artist",
+  "uri": "spotify:artist:5JsdVATHNPE0XdMFMRoSuf"
+}

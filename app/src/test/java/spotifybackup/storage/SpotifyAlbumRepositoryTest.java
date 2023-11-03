@@ -61,6 +61,7 @@ class SpotifyAlbumRepositoryTest {
         final var albumSimple = spotifyObjectRepository.persist(apiAlbumSimple);
         assertTrue(spotifyObjectRepository.exists(albumSimple));
         assertTrue(albumSimple.getIsSimplified());
+        assertNotEquals(0, apiAlbum.getTracks().getTotal());
         assertEquals(0, albumSimple.getSpotifyTracks().size());
 
         // Act
@@ -71,6 +72,6 @@ class SpotifyAlbumRepositoryTest {
         assertEquals(albumSimple.getSpotifyID(), album.getSpotifyID());
         assertFalse(album.getIsSimplified());
         assertNotEquals(0, album.getSpotifyTracks().size());
-        assertEquals(apiAlbum.getTracks().getItems().length, album.getSpotifyTracks().size());
+        assertEquals(apiAlbum.getTracks().getTotal(), album.getSpotifyTracks().size());
     }
 }
