@@ -45,6 +45,7 @@ public final class SpotifyArtist extends SpotifyObject {
 
     @Setter
     @NonNull
+    @Column(name = "simplified")
     private Boolean isSimplified;
 
     void addGenres(@NonNull Set<SpotifyGenre> newSpotifyGenres) {

@@ -47,36 +47,39 @@ public final class SpotifyAlbum extends SpotifyObject {
     private SpotifyID spotifyID;
 
     @Setter
-    @Column(length = 12)
+    @Column(length = 12, name = "ISRC")
     private String isrcID;
 
     @Setter
-    @Column(length = 12)
+    @Column(length = 12, name = "UPC")
     private String upcID;
 
     @Setter
-    @Column(length = 13)
+    @Column(length = 13, name = "EAN")
     private String eanID;
 
     @Type(StringArrayType.class)
-    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
+    @Column(length = 2, columnDefinition = "varchar(2) ARRAY", name = "available_markets")
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
 
     @NonNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "spotify_album_type")
     private AlbumType spotifyAlbumType;
 
     @NonNull
-    @Column(columnDefinition = "DATE")
+    @Column(columnDefinition = "DATE", name = "release_date")
     private LocalDate releaseDate;
 
     @NonNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "release_date_precision")
     private ReleaseDatePrecision releaseDatePrecision;
 
     @Setter
     @NonNull
+    @Column(name = "simplified")
     private Boolean isSimplified;
 
     void addArtist(@NonNull Set<SpotifyArtist> newSpotifyArtists) {

@@ -7,7 +7,6 @@ import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.HashSet;

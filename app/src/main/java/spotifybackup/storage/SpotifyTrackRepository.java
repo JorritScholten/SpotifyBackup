@@ -5,7 +5,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
@@ -88,7 +87,7 @@ class SpotifyTrackRepository {
             newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
             newTrackBuilder.discNumber(apiTrack.getDiscNumber());
             newTrackBuilder.trackNumber(apiTrack.getTrackNumber());
-            newTrackBuilder.duration_ms(apiTrack.getDurationMs());
+            newTrackBuilder.durationMs(apiTrack.getDurationMs());
             newTrackBuilder.explicit(apiTrack.getIsExplicit());
             newTrackBuilder.name(apiTrack.getName());
             if (apiTrack.getAvailableMarkets().length > 0) {
@@ -126,7 +125,7 @@ class SpotifyTrackRepository {
             newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
             newTrackBuilder.discNumber(apiTrack.getDiscNumber());
             newTrackBuilder.trackNumber(apiTrack.getTrackNumber());
-            newTrackBuilder.duration_ms(apiTrack.getDurationMs());
+            newTrackBuilder.durationMs(apiTrack.getDurationMs());
             newTrackBuilder.explicit(apiTrack.getIsExplicit());
             if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
                 newTrackBuilder.isrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));

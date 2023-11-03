@@ -35,27 +35,30 @@ public final class SpotifyTrack extends SpotifyObject {
     private SpotifyID spotifyID;
 
     @NonNull
+    @Column(name = "disc_number")
     private Integer discNumber;
 
     @NonNull
+    @Column(name = "track_number")
     private Integer trackNumber;
 
     @NonNull
-    private Integer duration_ms;
+    @Column(name = "duration_ms")
+    private Integer durationMs;
 
     @NonNull
     private Boolean explicit;
 
     @Setter
-    @Column(length = 12)
+    @Column(length = 12, name = "ISRC")
     private String isrcID;
 
     @Setter
-    @Column(length = 12)
+    @Column(length = 12, name = "UPC")
     private String upcID;
 
     @Setter
-    @Column(length = 13)
+    @Column(length = 13, name = "EAN")
     private String eanID;
 
     @NonNull
@@ -63,12 +66,13 @@ public final class SpotifyTrack extends SpotifyObject {
     private String name;
 
     @Type(StringArrayType.class)
-    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
+    @Column(length = 2, columnDefinition = "varchar(2) ARRAY", name = "available_markets")
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
 
     @Setter
     @NonNull
+    @Column(name = "simplified")
     private Boolean isSimplified;
 
     void addArtist(@NonNull SpotifyArtist newSpotifyArtist) {
