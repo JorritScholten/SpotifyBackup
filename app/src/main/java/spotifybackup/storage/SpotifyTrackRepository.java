@@ -1,6 +1,5 @@
 package spotifybackup.storage;
 
-import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
@@ -9,28 +8,15 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
+import static spotifybackup.storage.SpotifyObject.convertMarkets;
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 
 class SpotifyTrackRepository {
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
     private SpotifyTrackRepository() {
         throw new ConstructorUsageException();
-    }
-
-    /**
-     * @param markets Array of CountryCode objects.
-     * @return Array of Strings containing ISO 3166-1 alpha-2 market codes.
-     */
-    private static String[] convertMarkets(CountryCode[] markets) {
-        Set<String> stringifiedMarkets = new HashSet<>();
-        for (var market : markets) {
-            stringifiedMarkets.add(market.getAlpha2());
-        }
-        return stringifiedMarkets.toArray(String[]::new);
     }
 
     /**
@@ -103,7 +89,7 @@ class SpotifyTrackRepository {
     }
 
     static SpotifyTrack persist(EntityManager entityManager, @NonNull AbstractModelObject apiTrack) {
-        if(apiTrack instanceof Track t) return persist(entityManager, t);
+        if (apiTrack instanceof Track t) return persist(entityManager, t);
         else throw new IllegalArgumentException("apiTrack should be of type Track here.");
     }
 

@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
+import static spotifybackup.storage.SpotifyObject.*;
 
 class SpotifyAlbumRepository {
     private static final Function<EntityManager, BiConsumer<Album, SpotifyAlbum>> setNotSimpleFields =
@@ -98,7 +98,7 @@ class SpotifyAlbumRepository {
                     .spotifyAlbumType(apiAlbum.getAlbumType())
                     .name(apiAlbum.getName())
                     .availableMarkets(convertMarkets(apiAlbum.getAvailableMarkets()))
-                    .releaseDate(SpotifyObject.convertDate(apiAlbum.getReleaseDate(), apiAlbum.getReleaseDatePrecision()))
+                    .releaseDate(convertDate(apiAlbum.getReleaseDate(), apiAlbum.getReleaseDatePrecision()))
                     .releaseDatePrecision(apiAlbum.getReleaseDatePrecision())
                     .build();
             for (var apiArtist : apiAlbum.getArtists()) {
@@ -139,7 +139,7 @@ class SpotifyAlbumRepository {
                     .spotifyID(new SpotifyID(apiAlbum.getId()))
                     .name(apiAlbum.getName())
                     .spotifyAlbumType(apiAlbum.getAlbumType())
-                    .releaseDate(SpotifyObject.convertDate(apiAlbum.getReleaseDate(), apiAlbum.getReleaseDatePrecision()))
+                    .releaseDate(convertDate(apiAlbum.getReleaseDate(), apiAlbum.getReleaseDatePrecision()))
                     .releaseDatePrecision(apiAlbum.getReleaseDatePrecision())
                     .availableMarkets(convertMarkets(apiAlbum.getAvailableMarkets()))
                     .build();
@@ -147,17 +147,5 @@ class SpotifyAlbumRepository {
             entityManager.persist(newAlbum);
             return newAlbum;
         }
-    }
-
-    /**
-     * @param markets Array of CountryCode objects.
-     * @return Array of Strings containing ISO 3166-1 alpha-2 market codes.
-     */
-    private static String[] convertMarkets(CountryCode[] markets) {
-        Set<String> stringifiedMarkets = new HashSet<>();
-        for (var market : markets) {
-            stringifiedMarkets.add(market.getAlpha2());
-        }
-        return stringifiedMarkets.toArray(String[]::new);
     }
 }

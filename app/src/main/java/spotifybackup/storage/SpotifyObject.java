@@ -1,13 +1,17 @@
 package spotifybackup.storage;
 
+import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
+import lombok.NonNull;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 import spotifybackup.storage.exception.TransactionInactiveException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -39,6 +43,18 @@ public abstract sealed class SpotifyObject
             case MONTH -> date + "01";
             case YEAR -> date + "01-01";
         }, DateTimeFormatter.ISO_LOCAL_DATE);
+    }
+
+    /**
+     * @param markets Array of CountryCode objects.
+     * @return Array of Strings containing ISO 3166-1 alpha-2 market codes.
+     */
+    static String[] convertMarkets(@NonNull CountryCode[] markets) {
+        Set<String> stringifiedMarkets = new HashSet<>();
+        for (var market : markets) {
+            stringifiedMarkets.add(market.getAlpha2());
+        }
+        return stringifiedMarkets.toArray(String[]::new);
     }
 
     public enum SubTypes {
