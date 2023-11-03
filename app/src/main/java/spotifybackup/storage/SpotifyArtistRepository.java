@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
+import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 
@@ -82,6 +83,11 @@ public class SpotifyArtistRepository {
             entityManager.persist(newArtist);
             return newArtist;
         }
+    }
+
+    static SpotifyArtist persist(EntityManager entityManager, @NonNull AbstractModelObject apiArtist) {
+        if(apiArtist instanceof Artist a) return persist(entityManager, a);
+        else throw new IllegalArgumentException("apiArtist should be of type Artist here.");
     }
 
     /**

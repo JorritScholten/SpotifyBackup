@@ -64,7 +64,7 @@ public class ApiWrapperIntegrationTest {
 
         // Act
         final Artist apiArtist = apiWrapper.getArtist(artistId).orElseThrow();
-        final SpotifyArtist spotifyArtist = spotifyObjectRepository.persistArtist(apiArtist);
+        final SpotifyArtist spotifyArtist = spotifyObjectRepository.persist(apiArtist);
 
         // Assert
         assertNotNull(spotifyArtist);

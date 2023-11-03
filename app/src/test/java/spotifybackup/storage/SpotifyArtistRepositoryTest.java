@@ -34,7 +34,7 @@ class SpotifyArtistRepositoryTest {
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
 
         // Act
-        var persistedArtist = spotifyObjectRepository.persistArtist(apiArtist);
+        var persistedArtist = spotifyObjectRepository.persist(apiArtist);
 
         // Assert
         assertTrue(spotifyObjectRepository.exists(apiArtist.getId(), SpotifyID.class),
