@@ -34,7 +34,7 @@ class SpotifyTrackRepositoryTest {
                 "Track with Spotify ID " + apiTrack.getId() + " shouldn't already exist.");
 
         // Act
-        var persistedTrack = spotifyObjectRepository.persistTrack(apiTrack);
+        var persistedTrack = spotifyObjectRepository.persist(apiTrack);
 
         // Assert
         assertTrue(spotifyObjectRepository.exists(apiTrack.getId(), SpotifyID.class),

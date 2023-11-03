@@ -68,7 +68,7 @@ class SpotifyImageRepository {
 
     static SpotifyImage persist(EntityManager entityManager, @NonNull AbstractModelObject apiImage) {
         if(apiImage instanceof Image i) return persist(entityManager, i);
-        else throw new IllegalArgumentException("image should be of type Image here.");
+        else throw new IllegalArgumentException("apiImage should be of type Image here.");
     }
 
     /**

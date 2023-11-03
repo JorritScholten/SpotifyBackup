@@ -4,6 +4,8 @@ import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
+import se.michaelthelin.spotify.model_objects.AbstractModelObject;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
@@ -99,6 +101,11 @@ class SpotifyTrackRepository {
             entityManager.persist(newTrack);
             return newTrack;
         }
+    }
+
+    static SpotifyTrack persist(EntityManager entityManager, @NonNull AbstractModelObject apiTrack) {
+        if(apiTrack instanceof Track t) return persist(entityManager, t);
+        else throw new IllegalArgumentException("apiTrack should be of type Track here.");
     }
 
     /**

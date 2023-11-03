@@ -228,13 +228,8 @@ public class SpotifyObjectRepository {
      * @return SpotifyTrack already in the database with matching Spotify ID or new SpotifyTrack if apiTrack has a new
      * Spotify ID.
      */
-    public SpotifyTrack persistTrack(@NonNull Track apiTrack) {
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            var spotifyTrack = SpotifyTrackRepository.persist(em, apiTrack);
-            em.getTransaction().commit();
-            return spotifyTrack;
-        }
+    public SpotifyTrack persist(@NonNull Track apiTrack) {
+        return (SpotifyTrack) persistAbstractModel.apply(apiTrack).apply(emf).apply(SpotifyTrackRepository::persist);
     }
 
     /**
