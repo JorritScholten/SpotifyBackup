@@ -62,7 +62,7 @@ class SpotifyTrackRepositoryTest {
         }
 
         // Act
-        var persistedTracks = spotifyObjectRepository.persistTracks(apiTracks);
+        var persistedTracks = spotifyObjectRepository.persist(apiTracks);
 
         // Assert
         for (var apiTrack : apiTracks) {

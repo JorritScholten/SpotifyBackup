@@ -22,9 +22,7 @@ class SpotifyGenreRepository {
         ensureTransactionActive.accept(entityManager);
         Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
         for (var genreName : genreNames) {
-            var optionalGenre = persist(entityManager, genreName);
-            optionalGenre.ifPresent(spotifyGenreSet::add);
-            optionalGenre.ifPresent(entityManager::persist);
+            spotifyGenreSet.add(persist(entityManager, genreName));
         }
         return spotifyGenreSet;
     }
@@ -34,19 +32,17 @@ class SpotifyGenreRepository {
      * @param genreName name of genre as defined by Spotify.
      * @return SpotifyGenre if genreName is not blank.
      */
-    static Optional<SpotifyGenre> persist(EntityManager entityManager, @NonNull String genreName) {
+    static SpotifyGenre persist(EntityManager entityManager, @NonNull String genreName) {
         ensureTransactionActive.accept(entityManager);
-        if (genreName.isBlank()) {
-            return Optional.empty();
-        }
+        if (genreName.isBlank()) throw new IllegalArgumentException("genreName should not be blank.");
         genreName = genreName.toLowerCase(Locale.ENGLISH);
         var optionalGenre = find(entityManager, genreName);
         if (optionalGenre.isPresent()) {
-            return optionalGenre;
+            return optionalGenre.get();
         } else {
             var newGenre = new SpotifyGenre(genreName);
             entityManager.persist(newGenre);
-            return Optional.of(newGenre);
+            return newGenre;
         }
     }
 

@@ -19,6 +19,7 @@ import java.util.logging.LogManager;
 
 public class SpotifyObjectRepository {
     private final EntityManagerFactory emf;
+    private static final String PERSISTENCE_UNIT_NAME = "persistenceUnitName";
 
     private final Function<AbstractModelObject, Function<EntityManagerFactory, Function<
             BiFunction<EntityManager, AbstractModelObject, ? extends SpotifyObject>,
@@ -31,8 +32,8 @@ public class SpotifyObjectRepository {
         }
     };
 
-    private SpotifyObjectRepository(Properties DB_ACCESS) {
-        emf = Persistence.createEntityManagerFactory(DB_ACCESS.getProperty("persistenceUnitName"), DB_ACCESS);
+    private SpotifyObjectRepository(Properties dbAccess) {
+        emf = Persistence.createEntityManagerFactory(dbAccess.getProperty(PERSISTENCE_UNIT_NAME), dbAccess);
     }
 
     /**
@@ -44,26 +45,26 @@ public class SpotifyObjectRepository {
             throw new IllegalArgumentException("Supplied filepath to database is unusable: " + dbPath);
         }
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        final Properties DB_ACCESS = new Properties();
-        DB_ACCESS.put("hibernate.hbm2ddl.auto", "validate");
-        DB_ACCESS.put("hibernate.show_sql", "false");
-        DB_ACCESS.put("persistenceUnitName", "SpotifyObjects");
-        DB_ACCESS.put("hibernate.hikari.dataSource.url", generateDataSourceUrl(dbPath));
-        return new SpotifyObjectRepository(DB_ACCESS);
+        final Properties dbAccess = new Properties();
+        dbAccess.put("hibernate.hbm2ddl.auto", "validate");
+        dbAccess.put("hibernate.show_sql", "false");
+        dbAccess.put(PERSISTENCE_UNIT_NAME, "SpotifyObjects");
+        dbAccess.put("hibernate.hikari.dataSource.url", generateDataSourceUrl(dbPath));
+        return new SpotifyObjectRepository(dbAccess);
     }
 
     /**
      * Factory method to create SpotifyObjectRepository to new database, data is not persisted across multiple runs.
      * @apiNote Should only be used for testing.
      */
-    public static SpotifyObjectRepository testFactory(boolean show_sql) {
+    public static SpotifyObjectRepository testFactory(boolean showSql) {
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        final Properties DB_ACCESS = new Properties();
-        DB_ACCESS.put("hibernate.hbm2ddl.auto", "create");
-        DB_ACCESS.put("hibernate.show_sql", show_sql ? "true" : "false");
-        DB_ACCESS.put("persistenceUnitName", "SpotifyObjectsTest");
-        DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/spotifyObjectsTest;DB_CLOSE_DELAY=-1");
-        return new SpotifyObjectRepository(DB_ACCESS);
+        final Properties dbAccess = new Properties();
+        dbAccess.put("hibernate.hbm2ddl.auto", "create");
+        dbAccess.put("hibernate.show_sql", showSql ? "true" : "false");
+        dbAccess.put(PERSISTENCE_UNIT_NAME, "SpotifyObjectsTest");
+        dbAccess.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/spotifyObjectsTest;DB_CLOSE_DELAY=-1");
+        return new SpotifyObjectRepository(dbAccess);
     }
 
     private static String generateDataSourceUrl(File dbPath) {
@@ -78,12 +79,6 @@ public class SpotifyObjectRepository {
         }
         dataSourceUrl.append(";DB_CLOSE_DELAY=-1");
         return dataSourceUrl.toString();
-    }
-
-    public List<SpotifyGenre> findAllGenres() {
-        try (var em = emf.createEntityManager()) {
-            return SpotifyGenreRepository.findAll(em);
-        }
     }
 
     /**
@@ -174,7 +169,7 @@ public class SpotifyObjectRepository {
      * @param genreName name of genre as defined by Spotify.
      * @return SpotifyGenre if genreName is not blank.
      */
-    public Optional<SpotifyGenre> persistGenre(@NonNull String genreName) {
+    public SpotifyGenre persist(@NonNull String genreName) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             var persistedGenre = SpotifyGenreRepository.persist(em, genreName);
@@ -199,16 +194,18 @@ public class SpotifyObjectRepository {
      * @return SpotifyID if id is not blank.
      * @throws IllegalArgumentException if id value in SpotifyID is blank.
      */
-    public Optional<SpotifyID> persistSpotifyID(@NonNull SpotifyID newID) {
+    public SpotifyID persist(@NonNull SpotifyID newID) {
         if (newID.getId().isBlank()) throw new IllegalArgumentException("ID value in SpotifyID should not be blank.");
         try (var em = emf.createEntityManager()) {
             try {
-                return Optional.of(em.find(SpotifyID.class, newID.getId()));
+                var foundId = em.find(SpotifyID.class, newID.getId());
+                if (foundId == null) throw new NullPointerException();
+                else return foundId;
             } catch (IllegalArgumentException | NullPointerException e) {
                 em.getTransaction().begin();
                 em.persist(newID);
                 em.getTransaction().commit();
-                return Optional.of(newID);
+                return newID;
             }
         }
     }
@@ -248,13 +245,12 @@ public class SpotifyObjectRepository {
      * @param genreNames an array of genre names as defined by Spotify.
      * @return Set of SpotifyGenre objects.
      */
-    public Set<SpotifyGenre> persistGenres(@NonNull String[] genreNames) {
+    public Set<SpotifyGenre> persist(@NonNull String[] genreNames) {
         try (var em = emf.createEntityManager()) {
             Set<SpotifyGenre> spotifyGenreSet = new HashSet<>();
             em.getTransaction().begin();
             for (var genreName : genreNames) {
-                var genre = SpotifyGenreRepository.persist(em, genreName);
-                genre.ifPresent(spotifyGenreSet::add);
+                spotifyGenreSet.add(SpotifyGenreRepository.persist(em, genreName));
             }
             em.getTransaction().commit();
             return spotifyGenreSet;
@@ -267,7 +263,7 @@ public class SpotifyObjectRepository {
      * @param images Array of Image objects generated by spotify-web-api.
      * @return Set of SpotifyImage objects.
      */
-    public Set<SpotifyImage> persistImages(@NonNull Image[] images) {
+    public Set<SpotifyImage> persist(@NonNull Image[] images) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Set<SpotifyImage> imageSet = new HashSet<>();
@@ -284,7 +280,7 @@ public class SpotifyObjectRepository {
      * @param apiArtists An array of Artist objects generated by the spotify-web-api.
      * @return Set of SpotifyArtist objects.
      */
-    public Set<SpotifyArtist> persistArtists(@NonNull Artist[] apiArtists) {
+    public Set<SpotifyArtist> persist(@NonNull Artist[] apiArtists) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Set<SpotifyArtist> spotifyArtistSet = new HashSet<>();
@@ -301,7 +297,7 @@ public class SpotifyObjectRepository {
      * @param apiTracks An array of Track objects generated by the spotify-web-api.
      * @return List of SpotifyTrack objects.
      */
-    public List<SpotifyTrack> persistTracks(@NonNull Track[] apiTracks) {
+    public List<SpotifyTrack> persist(@NonNull Track[] apiTracks) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             List<SpotifyTrack> spotifyTracks = new ArrayList<>();

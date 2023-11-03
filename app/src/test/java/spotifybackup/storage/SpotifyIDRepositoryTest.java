@@ -4,8 +4,6 @@ import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class SpotifyIDRepositoryTest {
@@ -27,23 +25,22 @@ class SpotifyIDRepositoryTest {
         assertFalse(spotifyObjectRepository.exists(newID, SpotifyID.class));
 
         // Act
-        var persistedID = spotifyObjectRepository.persistSpotifyID(new SpotifyID(newID));
+        var persistedID = spotifyObjectRepository.persist(new SpotifyID(newID));
 
         // Assert
-        assertTrue(persistedID.isPresent());
-        assertTrue(spotifyObjectRepository.exists(persistedID.orElseThrow()));
-        assertEquals(newID, persistedID.get().getId());
+        assertTrue(spotifyObjectRepository.exists(persistedID));
+        assertEquals(newID, persistedID.getId());
     }
 
     @Test
     void ensure_duplicate_ids_arent_persisted() {
         // Arrange
         final String newID = "123";
-        final var newIDObject = spotifyObjectRepository.persistSpotifyID(new SpotifyID(newID)).orElseThrow();
+        final var newIDObject = spotifyObjectRepository.persist(new SpotifyID(newID));
         assertTrue(spotifyObjectRepository.exists(newID, SpotifyID.class));
 
         // Act
-        final var duplicateIDObject = spotifyObjectRepository.persistSpotifyID(new SpotifyID(newID)).orElseThrow();
+        final var duplicateIDObject = spotifyObjectRepository.persist(new SpotifyID(newID));
 
         // Assert
         assertTrue(spotifyObjectRepository.exists(duplicateIDObject));
@@ -58,6 +55,6 @@ class SpotifyIDRepositoryTest {
         final var blankID = new SpotifyID(blank);
 
         // Act & Assert
-        assertThrows(IllegalArgumentException.class, () -> spotifyObjectRepository.persistSpotifyID(blankID));
+        assertThrows(IllegalArgumentException.class, () -> spotifyObjectRepository.persist(blankID));
     }
 }

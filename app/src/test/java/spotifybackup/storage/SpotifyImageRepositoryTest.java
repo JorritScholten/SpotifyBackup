@@ -85,7 +85,7 @@ class SpotifyImageRepositoryTest {
         }
 
         // Act
-        final var persistedImages = spotifyObjectRepository.persistImages(images);
+        final var persistedImages = spotifyObjectRepository.persist(images);
 
         // Assert
         for (var persistedImage : persistedImages) {
