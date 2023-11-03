@@ -4,6 +4,7 @@ import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Album;
+import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -49,5 +50,27 @@ class SpotifyAlbumRepositoryTest {
         assertTrue(apiAlbum.getImages().length > 0);
         assertEquals(apiAlbum.getImages().length, persistedAlbum.getSpotifyImages().size());
         assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getSpotifyTracks().size());
+    }
+
+    @Test
+    void ensure_simplified_album_can_be_filled_in_with_unsimplified() throws IOException {
+        // Arrange
+        final String albumJson = new String(Files.readAllBytes(Path.of(albumDir + "Ecliptica_(International_Version).json")));
+        final AlbumSimplified apiAlbumSimple = new AlbumSimplified.JsonUtil().createModelObject(albumJson);
+        final Album apiAlbum = new Album.JsonUtil().createModelObject(albumJson);
+        final var albumSimple = spotifyObjectRepository.persist(apiAlbumSimple);
+        assertTrue(spotifyObjectRepository.exists(albumSimple));
+        assertTrue(albumSimple.getIsSimplified());
+        assertEquals(0, albumSimple.getSpotifyTracks().size());
+
+        // Act
+        final var album = spotifyObjectRepository.persist(apiAlbum);
+
+        // Assert
+        assertEquals(albumSimple.getId(), album.getId());
+        assertEquals(albumSimple.getSpotifyID(), album.getSpotifyID());
+        assertFalse(album.getIsSimplified());
+        assertNotEquals(0, album.getSpotifyTracks().size());
+        assertEquals(apiAlbum.getTracks().getItems().length, album.getSpotifyTracks().size());
     }
 }

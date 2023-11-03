@@ -5,10 +5,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
-import se.michaelthelin.spotify.model_objects.specification.Album;
-import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.Image;
-import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.*;
 
 import java.io.File;
 import java.util.*;
@@ -236,6 +233,10 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyAlbum persist(@NonNull Album apiAlbum) {
+        return (SpotifyAlbum) persistAbstractModel.apply(apiAlbum).apply(emf).apply(SpotifyAlbumRepository::persist);
+    }
+
+    public SpotifyAlbum persist(@NonNull AlbumSimplified apiAlbum) {
         return (SpotifyAlbum) persistAbstractModel.apply(apiAlbum).apply(emf).apply(SpotifyAlbumRepository::persist);
     }
 

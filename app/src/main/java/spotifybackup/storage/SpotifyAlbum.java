@@ -51,7 +51,7 @@ public final class SpotifyAlbum extends SpotifyObject {
     private String isrcID;
 
     @Setter
-    @Column(length = 12, name = "UPC")
+    @Column(length = 13, name = "UPC")
     private String upcID;
 
     @Setter
