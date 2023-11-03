@@ -35,9 +35,8 @@ class SpotifyImageRepositoryTest {
         var persistedImage = spotifyObjectRepository.persist(image);
 
         // Assert
-        assertTrue(persistedImage.isPresent());
         assertTrue(spotifyObjectRepository.exists(image));
-        assertTrue(spotifyObjectRepository.exists(persistedImage.orElseThrow()));
+        assertTrue(spotifyObjectRepository.exists(persistedImage));
     }
 
     @Test
@@ -55,10 +54,9 @@ class SpotifyImageRepositoryTest {
         var persistedImage = spotifyObjectRepository.persist(image);
 
         // Assert
-        assertTrue(persistedImage.isPresent());
         assertTrue(spotifyObjectRepository.exists(image.getUrl(), SpotifyImage.class));
         assertTrue(spotifyObjectRepository.exists(image));
-        assertTrue(spotifyObjectRepository.exists(persistedImage.orElseThrow()));
+        assertTrue(spotifyObjectRepository.exists(persistedImage));
     }
 
     @Test
