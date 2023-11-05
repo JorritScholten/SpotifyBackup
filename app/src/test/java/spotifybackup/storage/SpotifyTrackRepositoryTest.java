@@ -3,6 +3,7 @@ package spotifybackup.storage;
 import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 
 import java.io.IOException;
@@ -12,7 +13,9 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.*;
 
 class SpotifyTrackRepositoryTest {
-    static final String trackDir = "src/test/java/spotifybackup/storage/spotify_api_get/track/";
+    static final String testDataDir = "src/test/java/spotifybackup/storage/spotify_api_get/";
+    static final String albumDir = testDataDir + "album/";
+    static final String trackDir = testDataDir + "track/";
     static private SpotifyObjectRepository spotifyObjectRepository;
 
     @BeforeAll
@@ -78,5 +81,34 @@ class SpotifyTrackRepositoryTest {
             assertEquals(apiTrack.getAlbum().getId(), persistedTrack.get().getSpotifyAlbum().getSpotifyID().getId());
         }
         assertEquals(oldCount + apiTracks.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
+    }
+
+    @Test
+    void ensure_simplified_track_can_be_filled_in_with_unsimplified() throws IOException {
+        // Arrange
+        final Album apiAlbum = new Album.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(albumDir + "King.json")))
+        );
+        final var album = spotifyObjectRepository.persist(apiAlbum);
+        assertTrue(spotifyObjectRepository.exists(album));
+        final var apiTrack = new Track.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(trackDir + "King.json")))
+        );
+        assertTrue(spotifyObjectRepository.exists(apiTrack));
+        assertFalse(apiTrack.getExternalIds().getExternalIds().get("isrc").isBlank(),
+                "Track needs to have an external id for this test.");
+        var simpleTrack = (SpotifyTrack) spotifyObjectRepository.find(apiTrack.getId()).orElseThrow();
+        assertTrue(simpleTrack.getIsSimplified());
+        assertNull(simpleTrack.getIsrcID());
+
+        // Act
+        final var track = spotifyObjectRepository.persist(apiTrack);
+
+        // Assert
+        assertEquals(simpleTrack.getId(), track.getId());
+        assertEquals(simpleTrack.getSpotifyID(), track.getSpotifyID());
+        assertFalse(track.getIsSimplified());
+        assertNotNull(track.getIsrcID());
+        assertFalse(track.getIsrcID().isBlank());
     }
 }

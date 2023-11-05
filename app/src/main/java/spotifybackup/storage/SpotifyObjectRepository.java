@@ -15,9 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 
 public class SpotifyObjectRepository {
-    private final EntityManagerFactory emf;
     private static final String PERSISTENCE_UNIT_NAME = "persistenceUnitName";
-
+    private final EntityManagerFactory emf;
     private final Function<AbstractModelObject, Function<EntityManagerFactory, Function<
             BiFunction<EntityManager, AbstractModelObject, ? extends SpotifyObject>,
             ? extends SpotifyObject>>> persistAbstractModel = apiObject -> factory -> persist -> {
@@ -138,6 +137,25 @@ public class SpotifyObjectRepository {
                 default ->
                         throw new IllegalStateException("Object type not yet handled by implementation: " + apiObject);
             };
+        }
+    }
+
+    /**
+     * Find SpotifyTrack, SpotifyAlbum or SpotifyArtist by Spotify ID string value.
+     * @param spotifyID String containing a Spotify ID.
+     * @return SpotifyTrack, SpotifyAlbum or SpotifyArtist if id matches the spotify_id field in the table and not blank.
+     */
+    public Optional<? extends SpotifyObject> find(@NonNull String spotifyID) {
+        try (var em = emf.createEntityManager()) {
+            var albumOptional = SpotifyAlbumRepository.find(em, spotifyID);
+            if (albumOptional.isPresent()) return albumOptional;
+            var artistOptional = SpotifyArtistRepository.find(em, spotifyID);
+            if (artistOptional.isPresent()) return artistOptional;
+            var trackOptional = SpotifyTrackRepository.find(em, spotifyID);
+            if (trackOptional.isPresent()) return trackOptional;
+            // Nothing matches the specified Spotify ID, line above and below can be compacted but there will be more
+            // types with a Spotify ID in the future.
+            return Optional.empty();
         }
     }
 

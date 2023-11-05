@@ -9,11 +9,26 @@ import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static spotifybackup.storage.SpotifyObject.convertMarkets;
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 
 class SpotifyTrackRepository {
+    private static final Function<EntityManager, BiConsumer<Track, SpotifyTrack>> setNotSimpleFields =
+            entityManager -> (apiTrack, track) -> {
+                if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
+                    track.setIsrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));
+                }
+                if (apiTrack.getExternalIds().getExternalIds().containsKey("ean")) {
+                    track.setEanID(apiTrack.getExternalIds().getExternalIds().get("ean"));
+                }
+                if (apiTrack.getExternalIds().getExternalIds().containsKey("upc")) {
+                    track.setUpcID(apiTrack.getExternalIds().getExternalIds().get("upc"));
+                }
+            };
+
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
     private SpotifyTrackRepository() {
         throw new ConstructorUsageException();
@@ -67,19 +82,17 @@ class SpotifyTrackRepository {
         if (optionalTrack.isPresent()) {
             return optionalTrack.get();
         } else {
-            var newTrackBuilder = SpotifyTrack.builder();
-            newTrackBuilder.isSimplified(true);
-            newTrackBuilder.spotifyAlbum(spotifyAlbum);
-            newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
-            newTrackBuilder.discNumber(apiTrack.getDiscNumber());
-            newTrackBuilder.trackNumber(apiTrack.getTrackNumber());
-            newTrackBuilder.durationMs(apiTrack.getDurationMs());
-            newTrackBuilder.explicit(apiTrack.getIsExplicit());
-            newTrackBuilder.name(apiTrack.getName());
-            if (apiTrack.getAvailableMarkets().length > 0) {
-                newTrackBuilder.availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()));
-            }
-            var newTrack = newTrackBuilder.build();
+            var newTrack = SpotifyTrack.builder()
+                    .isSimplified(true)
+                    .spotifyAlbum(spotifyAlbum)
+                    .spotifyID(new SpotifyID(apiTrack.getId()))
+                    .discNumber(apiTrack.getDiscNumber())
+                    .trackNumber(apiTrack.getTrackNumber())
+                    .durationMs(apiTrack.getDurationMs())
+                    .explicit(apiTrack.getIsExplicit())
+                    .name(apiTrack.getName())
+                    .availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()))
+                    .build();
             for (var simplifiedApiArtist : apiTrack.getArtists()) {
                 newTrack.addArtist(SpotifyArtistRepository.persist(entityManager, simplifiedApiArtist));
             }
@@ -103,33 +116,30 @@ class SpotifyTrackRepository {
         ensureTransactionActive.accept(entityManager);
         var optionalTrack = find(entityManager, apiTrack);
         if (optionalTrack.isPresent()) {
-            return optionalTrack.get();
+            if (!optionalTrack.get().getIsSimplified()) return optionalTrack.get();
+            else {
+                final var simpleTrack = optionalTrack.get();
+                simpleTrack.setIsSimplified(false);
+                setNotSimpleFields.apply(entityManager).accept(apiTrack, simpleTrack);
+                entityManager.persist(simpleTrack);
+                return simpleTrack;
+            }
         } else {
-            var newTrackBuilder = SpotifyTrack.builder();
-            newTrackBuilder.isSimplified(false);
-            newTrackBuilder.spotifyAlbum(SpotifyAlbumRepository.persist(entityManager, apiTrack.getAlbum()));
-            newTrackBuilder.spotifyID(new SpotifyID(apiTrack.getId()));
-            newTrackBuilder.discNumber(apiTrack.getDiscNumber());
-            newTrackBuilder.trackNumber(apiTrack.getTrackNumber());
-            newTrackBuilder.durationMs(apiTrack.getDurationMs());
-            newTrackBuilder.explicit(apiTrack.getIsExplicit());
-            if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
-                newTrackBuilder.isrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));
-            }
-            if (apiTrack.getExternalIds().getExternalIds().containsKey("ean")) {
-                newTrackBuilder.eanID(apiTrack.getExternalIds().getExternalIds().get("ean"));
-            }
-            if (apiTrack.getExternalIds().getExternalIds().containsKey("upc")) {
-                newTrackBuilder.upcID(apiTrack.getExternalIds().getExternalIds().get("upc"));
-            }
-            newTrackBuilder.name(apiTrack.getName());
-            if (apiTrack.getAvailableMarkets().length > 0) {
-                newTrackBuilder.availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()));
-            }
-            var newTrack = newTrackBuilder.build();
+            var newTrack = SpotifyTrack.builder()
+                    .isSimplified(false)
+                    .spotifyAlbum(SpotifyAlbumRepository.persist(entityManager, apiTrack.getAlbum()))
+                    .spotifyID(new SpotifyID(apiTrack.getId()))
+                    .discNumber(apiTrack.getDiscNumber())
+                    .trackNumber(apiTrack.getTrackNumber())
+                    .durationMs(apiTrack.getDurationMs())
+                    .explicit(apiTrack.getIsExplicit())
+                    .name(apiTrack.getName())
+                    .availableMarkets(convertMarkets(apiTrack.getAvailableMarkets()))
+                    .build();
             for (var simplifiedApiArtist : apiTrack.getArtists()) {
                 newTrack.addArtist(SpotifyArtistRepository.persist(entityManager, simplifiedApiArtist));
             }
+            setNotSimpleFields.apply(entityManager).accept(apiTrack, newTrack);
             entityManager.persist(newTrack);
             return newTrack;
 
