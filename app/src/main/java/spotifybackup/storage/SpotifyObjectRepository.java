@@ -151,11 +151,7 @@ public class SpotifyObjectRepository {
             if (albumOptional.isPresent()) return albumOptional;
             var artistOptional = SpotifyArtistRepository.find(em, spotifyID);
             if (artistOptional.isPresent()) return artistOptional;
-            var trackOptional = SpotifyTrackRepository.find(em, spotifyID);
-            if (trackOptional.isPresent()) return trackOptional;
-            // Nothing matches the specified Spotify ID, line above and below can be compacted but there will be more
-            // types with a Spotify ID in the future.
-            return Optional.empty();
+            return SpotifyTrackRepository.find(em, spotifyID);
         }
     }
 
