@@ -97,9 +97,9 @@ class SpotifyTrackRepositoryTest {
         assertTrue(spotifyObjectRepository.exists(apiTrack));
         assertFalse(apiTrack.getExternalIds().getExternalIds().get("isrc").isBlank(),
                 "Track needs to have an external id for this test.");
-        var simpleTrack = (SpotifyTrack) spotifyObjectRepository.find(apiTrack.getId()).orElseThrow();
+        final var simpleTrack = (SpotifyTrack) spotifyObjectRepository.find(apiTrack.getId()).orElseThrow();
         assertTrue(simpleTrack.getIsSimplified());
-        assertNull(simpleTrack.getIsrcID());
+        assertTrue(simpleTrack.getIsrcID().isEmpty());
 
         // Act
         final var track = spotifyObjectRepository.persist(apiTrack);
@@ -108,7 +108,7 @@ class SpotifyTrackRepositoryTest {
         assertEquals(simpleTrack.getId(), track.getId());
         assertEquals(simpleTrack.getSpotifyID(), track.getSpotifyID());
         assertFalse(track.getIsSimplified());
-        assertNotNull(track.getIsrcID());
-        assertFalse(track.getIsrcID().isBlank());
+        assertTrue(track.getIsrcID().isPresent());
+        assertFalse(track.getIsrcID().orElseThrow().isBlank());
     }
 }

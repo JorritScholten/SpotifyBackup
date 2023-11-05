@@ -9,6 +9,7 @@ import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -47,17 +48,21 @@ public final class SpotifyAlbum extends SpotifyObject {
     private SpotifyID spotifyID;
 
     @Setter
+    @Getter(AccessLevel.NONE)
     @Column(length = 12, name = "ISRC")
     private String isrcID;
 
     @Setter
+    @Getter(AccessLevel.NONE)
     @Column(name = "UPC")
     private String upcID;
 
     @Setter
+    @Getter(AccessLevel.NONE)
     @Column(name = "EAN")
     private String eanID;
 
+    @NonNull
     @Type(StringArrayType.class)
     @Column(length = 2, columnDefinition = "varchar(2) ARRAY", name = "available_markets")
     // Array of ISO 3166-1 alpha-2 codes
@@ -81,6 +86,18 @@ public final class SpotifyAlbum extends SpotifyObject {
     @NonNull
     @Column(name = "simplified")
     private Boolean isSimplified;
+
+    public Optional<String> getIsrcID() {
+        return Optional.ofNullable(isrcID);
+    }
+
+    public Optional<String> getUpcID() {
+        return Optional.ofNullable(upcID);
+    }
+
+    public Optional<String> getEanID() {
+        return Optional.ofNullable(eanID);
+    }
 
     void addArtist(@NonNull Set<SpotifyArtist> newSpotifyArtists) {
         newSpotifyArtists.forEach(this::addArtist);

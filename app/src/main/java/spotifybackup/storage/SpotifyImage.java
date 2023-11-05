@@ -5,6 +5,7 @@ import lombok.*;
 import se.michaelthelin.spotify.model_objects.specification.Image;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Builder
@@ -26,7 +27,9 @@ public final class SpotifyImage extends SpotifyObject {
     @Column(nullable = false)
     private String url;
 
+    @Getter(AccessLevel.NONE)
     private Integer width;
+    @Getter(AccessLevel.NONE)
     private Integer height;
 
     /**
@@ -45,5 +48,13 @@ public final class SpotifyImage extends SpotifyObject {
             imageSet.add(newSpotifyImage);
         }
         return imageSet;
+    }
+
+    public Optional<Integer> getHeight() {
+        return height.describeConstable();
+    }
+
+    public Optional<Integer> getWidth() {
+        return width.describeConstable();
     }
 }
