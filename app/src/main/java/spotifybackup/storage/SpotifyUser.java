@@ -20,10 +20,10 @@ public final class SpotifyUser extends SpotifyObject {
     private final Set<SpotifyImage> images = new HashSet<>();
 
     @OneToMany(mappedBy = "addedBy")
-    private final Set<SpotifyPlaylistItem> playlistItems = new HashSet<>();
+    private final Set<SpotifyPlaylistItem> addedPlaylistItems = new HashSet<>();
 
     @OneToMany(mappedBy = "owner")
-    private final Set<SpotifyPlaylist> playlists = new HashSet<>();
+    private final Set<SpotifyPlaylist> ownedPlaylists = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,7 +38,7 @@ public final class SpotifyUser extends SpotifyObject {
     private String displayName;
 
     @Getter(AccessLevel.NONE)
-    @Column(columnDefinition = "varchar(2)")
+    @Column(name = "country_code", columnDefinition = "varchar(2)")
     private String countryCode;
 
     @Getter(AccessLevel.NONE)
