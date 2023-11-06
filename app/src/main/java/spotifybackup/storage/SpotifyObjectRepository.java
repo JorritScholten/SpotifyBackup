@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 
 public class SpotifyObjectRepository {
-    private static final String PERSISTENCE_UNIT_NAME = "persistenceUnitName";
+    private static final String URL_DATASOURCE_NAME = "hibernate.hikari.dataSource.url";
     private final EntityManagerFactory emf;
     private final Function<AbstractModelObject, Function<EntityManagerFactory, Function<
             BiFunction<EntityManager, AbstractModelObject, ? extends SpotifyObject>,
@@ -28,8 +28,9 @@ public class SpotifyObjectRepository {
         }
     };
 
-    private SpotifyObjectRepository(Properties dbAccess) {
-        emf = Persistence.createEntityManagerFactory(dbAccess.getProperty(PERSISTENCE_UNIT_NAME), dbAccess);
+    private SpotifyObjectRepository(@NonNull String persistenceUnitName, @NonNull Properties dbAccess) {
+        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
+        emf = Persistence.createEntityManagerFactory(persistenceUnitName, dbAccess);
     }
 
     /**
@@ -40,13 +41,9 @@ public class SpotifyObjectRepository {
         if (!(dbPath.isFile() && dbPath.exists() && dbPath.canRead() && dbPath.canWrite())) {
             throw new IllegalArgumentException("Supplied filepath to database is unusable: " + dbPath);
         }
-        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         final Properties dbAccess = new Properties();
-        dbAccess.put("hibernate.hbm2ddl.auto", "validate");
-        dbAccess.put("hibernate.show_sql", "false");
-        dbAccess.put(PERSISTENCE_UNIT_NAME, "SpotifyObjects");
-        dbAccess.put("hibernate.hikari.dataSource.url", generateDataSourceUrl(dbPath));
-        return new SpotifyObjectRepository(dbAccess);
+        dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(dbPath));
+        return new SpotifyObjectRepository("SpotifyObjects", dbAccess);
     }
 
     /**
@@ -54,13 +51,10 @@ public class SpotifyObjectRepository {
      * @apiNote Should only be used for testing.
      */
     public static SpotifyObjectRepository testFactory(boolean showSql) {
-        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
         final Properties dbAccess = new Properties();
-        dbAccess.put("hibernate.hbm2ddl.auto", "create");
         dbAccess.put("hibernate.show_sql", showSql ? "true" : "false");
-        dbAccess.put(PERSISTENCE_UNIT_NAME, "SpotifyObjectsTest");
-        dbAccess.put("hibernate.hikari.dataSource.url", "jdbc:h2:./build/spotifyObjectsTest;DB_CLOSE_DELAY=-1");
-        return new SpotifyObjectRepository(dbAccess);
+        dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(new File("build/spotifyObjectsTest")));
+        return new SpotifyObjectRepository("SpotifyObjectsTest", dbAccess);
     }
 
     private static String generateDataSourceUrl(File dbPath) {
