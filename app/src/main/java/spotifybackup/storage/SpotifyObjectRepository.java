@@ -65,7 +65,6 @@ public class SpotifyObjectRepository {
 
     private static String generateDataSourceUrl(File dbPath) {
         var dataSourceUrl = new StringBuilder("jdbc:h2:");
-        dataSourceUrl.append(dbPath.getAbsolutePath());
         if (dbPath.getAbsolutePath().endsWith(".mv.db")) {
             dataSourceUrl.append(dbPath.getAbsolutePath(), 0, dbPath.getAbsolutePath().length() - 6);
         } else if (dbPath.getAbsolutePath().endsWith(".db")) {
