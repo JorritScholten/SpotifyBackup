@@ -20,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 public final class SpotifyAlbum extends SpotifyObject {
-    @OneToMany(mappedBy = "spotifyAlbum")
+    @OneToMany(mappedBy = "album")
     private final Set<SpotifyTrack> spotifyTracks = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

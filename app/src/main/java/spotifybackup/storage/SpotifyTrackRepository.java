@@ -84,7 +84,7 @@ class SpotifyTrackRepository {
         } else {
             var newTrack = SpotifyTrack.builder()
                     .isSimplified(true)
-                    .spotifyAlbum(spotifyAlbum)
+                    .album(spotifyAlbum)
                     .spotifyID(new SpotifyID(apiTrack.getId()))
                     .discNumber(apiTrack.getDiscNumber())
                     .trackNumber(apiTrack.getTrackNumber())
@@ -127,7 +127,7 @@ class SpotifyTrackRepository {
         } else {
             var newTrack = SpotifyTrack.builder()
                     .isSimplified(false)
-                    .spotifyAlbum(SpotifyAlbumRepository.persist(entityManager, apiTrack.getAlbum()))
+                    .album(SpotifyAlbumRepository.persist(entityManager, apiTrack.getAlbum()))
                     .spotifyID(new SpotifyID(apiTrack.getId()))
                     .discNumber(apiTrack.getDiscNumber())
                     .trackNumber(apiTrack.getTrackNumber())

@@ -19,7 +19,7 @@ import java.util.Set;
 public final class SpotifyTrack extends SpotifyObject {
     @ManyToMany(fetch = FetchType.EAGER, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();
+    private final Set<SpotifyArtist> artists = new HashSet<>();
 
     @OneToMany(mappedBy = "track")
     private final Set<SpotifyPlaylistItem> playlistItems = new HashSet<>();
@@ -27,7 +27,7 @@ public final class SpotifyTrack extends SpotifyObject {
     @NonNull
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)
-    private SpotifyAlbum spotifyAlbum;
+    private SpotifyAlbum album;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -96,7 +96,7 @@ public final class SpotifyTrack extends SpotifyObject {
     }
 
     void addArtist(@NonNull SpotifyArtist newSpotifyArtist) {
-        spotifyArtists.add(newSpotifyArtist);
+        artists.add(newSpotifyArtist);
         newSpotifyArtist.addTrack(this);
     }
 
