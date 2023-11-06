@@ -147,6 +147,10 @@ public class SpotifyObjectRepository {
      */
     public Optional<? extends SpotifyObject> find(@NonNull String spotifyID) {
         try (var em = emf.createEntityManager()) {
+//            var userOptional = SpotifyUserRepository.find(em, spotifyID);
+//            if (userOptional.isPresent()) return userOptional;
+//            var playlistOptional = SpotifyPlaylistRepository.find(em, spotifyID);
+//            if (playlistOptional.isPresent()) return playlistOptional;
             var albumOptional = SpotifyAlbumRepository.find(em, spotifyID);
             if (albumOptional.isPresent()) return albumOptional;
             var artistOptional = SpotifyArtistRepository.find(em, spotifyID);

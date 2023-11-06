@@ -21,6 +21,9 @@ public final class SpotifyTrack extends SpotifyObject {
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();
 
+    @OneToMany(mappedBy = "track")
+    private final Set<SpotifyPlaylistItem> playlistItems = new HashSet<>();
+
     @NonNull
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)

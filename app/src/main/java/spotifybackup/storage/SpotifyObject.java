@@ -16,7 +16,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract sealed class SpotifyObject
-        permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack {
+        permits SpotifyGenre, SpotifyImage, SpotifyID, SpotifyArtist, SpotifyAlbum, SpotifyTrack, SpotifyPlaylist
+        , SpotifyPlaylistItem, SpotifyUser {
 
     private static final Map<Class<? extends SpotifyObject>, SubTypes> mapSubtypeByClass = new HashMap<>();
 
@@ -63,7 +64,10 @@ public abstract sealed class SpotifyObject
         ID(SpotifyID.class),
         ARTIST(SpotifyArtist.class),
         ALBUM(SpotifyAlbum.class),
-        TRACK(SpotifyTrack.class);
+        TRACK(SpotifyTrack.class),
+        PLAYLIST(SpotifyPlaylist.class),
+        PLAYLIST_ITEM(SpotifyPlaylistItem.class),
+        USER(SpotifyUser.class);
 
         final String name;
         final Class<? extends SpotifyObject> type;
