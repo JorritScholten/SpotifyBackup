@@ -44,12 +44,12 @@ class SpotifyAlbumRepositoryTest {
         assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
         assertTrue(apiAlbum.getArtists().length > 0);
-        assertEquals(apiAlbum.getArtists().length, persistedAlbum.getSpotifyArtists().size());
+        assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
         assertTrue(apiAlbum.getGenres().length > 0);
-        assertEquals(apiAlbum.getGenres().length, persistedAlbum.getSpotifyGenres().size());
+        assertEquals(apiAlbum.getGenres().length, persistedAlbum.getGenres().size());
         assertTrue(apiAlbum.getImages().length > 0);
-        assertEquals(apiAlbum.getImages().length, persistedAlbum.getSpotifyImages().size());
-        assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getSpotifyTracks().size());
+        assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
+        assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
     }
 
     @Test
@@ -62,7 +62,7 @@ class SpotifyAlbumRepositoryTest {
         assertTrue(spotifyObjectRepository.exists(albumSimple));
         assertTrue(albumSimple.getIsSimplified());
         assertNotEquals(0, apiAlbum.getTracks().getTotal());
-        assertEquals(0, albumSimple.getSpotifyTracks().size());
+        assertEquals(0, albumSimple.getTracks().size());
 
         // Act
         final var album = spotifyObjectRepository.persist(apiAlbum);
@@ -71,7 +71,7 @@ class SpotifyAlbumRepositoryTest {
         assertEquals(albumSimple.getId(), album.getId());
         assertEquals(albumSimple.getSpotifyID(), album.getSpotifyID());
         assertFalse(album.getIsSimplified());
-        assertNotEquals(0, album.getSpotifyTracks().size());
-        assertEquals(apiAlbum.getTracks().getTotal(), album.getSpotifyTracks().size());
+        assertNotEquals(0, album.getTracks().size());
+        assertEquals(apiAlbum.getTracks().getTotal(), album.getTracks().size());
     }
 }

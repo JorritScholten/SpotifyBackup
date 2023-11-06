@@ -21,18 +21,18 @@ import java.util.Set;
 @Getter
 public final class SpotifyAlbum extends SpotifyObject {
     @OneToMany(mappedBy = "album")
-    private final Set<SpotifyTrack> spotifyTracks = new HashSet<>();
+    private final Set<SpotifyTrack> tracks = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private final Set<SpotifyImage> spotifyImages = new HashSet<>();
+    private final Set<SpotifyImage> images = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
-    private final Set<SpotifyArtist> spotifyArtists = new HashSet<>();
+    private final Set<SpotifyArtist> artists = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.EAGER, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
-    private final Set<SpotifyGenre> spotifyGenres = new HashSet<>();
+    private final Set<SpotifyGenre> genres = new HashSet<>();
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -104,28 +104,28 @@ public final class SpotifyAlbum extends SpotifyObject {
     }
 
     void addArtist(@NonNull SpotifyArtist newSpotifyArtist) {
-        spotifyArtists.add(newSpotifyArtist);
+        artists.add(newSpotifyArtist);
         newSpotifyArtist.addAlbum(this);
     }
 
     void addGenres(@NonNull Set<SpotifyGenre> newSpotifyGenres) {
         for (var newGenre : newSpotifyGenres) {
-            spotifyGenres.add(newGenre);
+            genres.add(newGenre);
             newGenre.addAlbum(this);
         }
     }
 
     void addImages(@NonNull Set<SpotifyImage> newSpotifyImages) {
-        spotifyImages.addAll(newSpotifyImages);
+        images.addAll(newSpotifyImages);
     }
 
     /** Non-owning side. */
     void addTracks(@NonNull Set<SpotifyTrack> newSpotifyTracks) {
-        spotifyTracks.addAll(newSpotifyTracks);
+        tracks.addAll(newSpotifyTracks);
     }
 
     /** Non-owning side. */
     void addTrack(@NonNull SpotifyTrack newSpotifyTrack) {
-        spotifyTracks.add(newSpotifyTrack);
+        tracks.add(newSpotifyTrack);
     }
 }
