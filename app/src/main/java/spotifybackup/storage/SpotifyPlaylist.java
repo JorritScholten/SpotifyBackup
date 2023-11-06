@@ -11,6 +11,7 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "SpotifyPlaylist")
+@NamedQuery(name = "SpotifyPlaylist.countBy", query = "select count(p) from SpotifyPlaylist p")
 @NamedQuery(name = "SpotifyPlaylist.findBySpotifyID", query = "select p from SpotifyPlaylist p where p.spotifyID = :spotifyID")
 @NoArgsConstructor
 public final class SpotifyPlaylist extends SpotifyObject {

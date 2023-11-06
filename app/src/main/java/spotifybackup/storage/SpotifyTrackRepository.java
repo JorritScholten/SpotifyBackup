@@ -58,9 +58,7 @@ class SpotifyTrackRepository {
      * @return SpotifyTrack if id matches the spotify_id field in the table and not blank.
      */
     static Optional<SpotifyTrack> find(EntityManager entityManager, @NonNull String id) {
-        if (id.isBlank() || entityManager.find(SpotifyID.class, id) == null) {
-            return Optional.empty();
-        }
+        if (id.isBlank() || entityManager.find(SpotifyID.class, id) == null) return Optional.empty();
         var query = entityManager.createNamedQuery("SpotifyTrack.findBySpotifyID", SpotifyTrack.class);
         query.setParameter("spotifyID", entityManager.find(SpotifyID.class, id));
         try {

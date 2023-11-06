@@ -42,9 +42,7 @@ class SpotifyArtistRepository {
      * @return SpotifyArtist if id matches the spotify_id field in the table and not blank.
      */
     static Optional<SpotifyArtist> find(EntityManager entityManager, @NonNull String id) {
-        if (id.isBlank() || entityManager.find(SpotifyID.class, id) == null) {
-            return Optional.empty();
-        }
+        if (id.isBlank() || entityManager.find(SpotifyID.class, id) == null) return Optional.empty();
         var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
         query.setParameter("spotifyID", entityManager.find(SpotifyID.class, id));
         try {
@@ -91,7 +89,7 @@ class SpotifyArtistRepository {
         ensureTransactionActive.accept(entityManager);
         var optionalArtist = find(entityManager, apiArtist);
         if (optionalArtist.isPresent()) {
-            if(!optionalArtist.get().getIsSimplified())return optionalArtist.get();
+            if (!optionalArtist.get().getIsSimplified()) return optionalArtist.get();
             else {
                 final var simpleArtist = optionalArtist.get();
                 simpleArtist.setIsSimplified(false);

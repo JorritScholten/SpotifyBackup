@@ -12,7 +12,8 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "SpotifyUser")
-@NamedQuery(name = "SpotifyUser.findBySpotifyID", query = "select u from SpotifyUser u where u.spotifyID = :spotifyID")
+@NamedQuery(name = "SpotifyUser.countBy", query = "select count(u) from SpotifyUser u")
+@NamedQuery(name = "SpotifyUser.findBySpotifyUserID", query = "select u from SpotifyUser u where u.spotifyUserID = :spotifyUserID")
 @NoArgsConstructor
 public final class SpotifyUser extends SpotifyObject {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -29,9 +30,8 @@ public final class SpotifyUser extends SpotifyObject {
     private long id;
 
     @NonNull
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
-    private SpotifyID spotifyID;
+    @Column(name = "spotify_user_id", nullable = false)
+    private String spotifyUserID;
 
     @Getter(AccessLevel.NONE)
     @Column(name = "display_name")
@@ -56,5 +56,9 @@ public final class SpotifyUser extends SpotifyObject {
 
     public Optional<String> getDisplayName() {
         return Optional.ofNullable(displayName);
+    }
+
+    void addImages(@NonNull Set<SpotifyImage> newSpotifyImages) {
+        images.addAll(newSpotifyImages);
     }
 }
