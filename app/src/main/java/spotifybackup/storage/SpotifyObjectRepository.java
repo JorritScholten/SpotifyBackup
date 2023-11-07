@@ -126,12 +126,7 @@ public class SpotifyObjectRepository {
                 case Track apiTrack -> SpotifyTrackRepository.find(em, apiTrack.getId()).isPresent();
                 case Album apiAlbum -> SpotifyAlbumRepository.find(em, apiAlbum.getId()).isPresent();
                 case Artist apiArtist -> SpotifyArtistRepository.find(em, apiArtist).isPresent();
-                case Image image -> {
-                    if (image.getHeight() != null && image.getWidth() != null)
-                        yield SpotifyImageRepository.find(em, image).isPresent();
-                    else
-                        yield SpotifyImageRepository.find(em, image.getUrl()).isPresent();
-                }
+                case Image apiImage -> SpotifyImageRepository.find(em, apiImage).isPresent();
                 case User apiUser -> SpotifyUserRepository.find(em, apiUser).isPresent();
                 case Playlist apiPlaylist -> SpotifyPlaylistRepository.find(em, apiPlaylist).isPresent();
                 default ->

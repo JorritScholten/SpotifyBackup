@@ -39,6 +39,7 @@ class SpotifyImageRepository {
      * @return SpotifyImage if image matches a record in the database.
      */
     static Optional<SpotifyImage> find(EntityManager entityManager, @NonNull Image image) {
+        if (image.getHeight() == null || image.getWidth() == null) return find(entityManager, image.getUrl());
         var query = entityManager.createNamedQuery("SpotifyImage.findByUrlWH", SpotifyImage.class);
         query.setParameter("url", image.getUrl());
         query.setParameter("width", image.getWidth());
@@ -56,9 +57,7 @@ class SpotifyImageRepository {
      * @return SpotifyImage if url matches the url field in the table and not blank.
      */
     static Optional<SpotifyImage> find(EntityManager entityManager, @NonNull String url) {
-        if (url.isBlank()) {
-            return Optional.empty();
-        }
+        if (url.isBlank()) return Optional.empty();
         var query = entityManager.createNamedQuery("SpotifyImage.findByUrl", SpotifyImage.class);
         query.setParameter("url", url);
         try {

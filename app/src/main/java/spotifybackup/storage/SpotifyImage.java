@@ -24,7 +24,7 @@ public final class SpotifyImage extends SpotifyObject {
     private long id;
 
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String url;
 
     @Getter(AccessLevel.NONE)
