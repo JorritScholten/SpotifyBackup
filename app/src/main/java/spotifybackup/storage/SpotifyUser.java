@@ -30,7 +30,7 @@ public final class SpotifyUser extends SpotifyObject {
     private long id;
 
     @NonNull
-    @Column(name = "spotify_user_id", nullable = false)
+    @Column(name = "spotify_user_id", nullable = false, unique = true)
     private String spotifyUserID;
 
     @Getter(AccessLevel.NONE)
