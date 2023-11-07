@@ -74,7 +74,8 @@ class SpotifyTrackRepository {
      * @return SpotifyTrack already in the database with matching Spotify ID or new SpotifyTrack if apiTrack has a new
      * Spotify ID.
      */
-    static SpotifyTrack persist(EntityManager entityManager, @NonNull TrackSimplified apiTrack, @NonNull SpotifyAlbum spotifyAlbum) {
+    static SpotifyTrack persist(EntityManager entityManager, @NonNull TrackSimplified apiTrack,
+                                @NonNull SpotifyAlbum spotifyAlbum) {
         ensureTransactionActive.accept(entityManager);
         var optionalTrack = find(entityManager, apiTrack);
         if (optionalTrack.isPresent()) {

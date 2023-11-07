@@ -3,7 +3,7 @@ package spotifybackup.storage;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Getter
@@ -11,7 +11,10 @@ import java.util.Optional;
 @AllArgsConstructor
 @Entity(name = "SpotifyPlaylistItem")
 @NamedQuery(name = "SpotifyPlaylistItem.countBy", query = "select count(i) from SpotifyPlaylistItem i")
-@NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistID", query = "select i from SpotifyPlaylistItem i where i.playlist = :playlistID")
+@NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistIDAndTrackID",
+        query = "select i from SpotifyPlaylistItem i where i.playlist = :playlistID and i.track = :trackID")
+@NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistIDAndTrackIDAndUserID",
+        query = "select i from SpotifyPlaylistItem i where i.playlist = :playlistID and i.track = :trackID and i.addedBy = :addedBy")
 @NoArgsConstructor
 public final class SpotifyPlaylistItem extends SpotifyObject {
     @Id
@@ -34,14 +37,14 @@ public final class SpotifyPlaylistItem extends SpotifyObject {
     private SpotifyUser addedBy;
 
     @Getter(AccessLevel.NONE)
-    @Column(columnDefinition = "DATE", name = "date_added")
-    private LocalDate dateAdded;
+    @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE", name = "date_added")
+    private ZonedDateTime dateAdded;
 
     public Optional<SpotifyUser> getAddedBy() {
         return Optional.ofNullable(addedBy);
     }
 
-    public Optional<LocalDate> getDateAdded() {
+    public Optional<ZonedDateTime> getDateAdded() {
         return Optional.ofNullable(dateAdded);
     }
 }

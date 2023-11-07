@@ -62,7 +62,7 @@ class SpotifyUserRepository {
             var newUser = SpotifyUser.builder()
                     .spotifyUserID(apiUser.getId())
                     .displayName(apiUser.getDisplayName())
-                    .countryCode(apiUser.getCountry().getAlpha2())
+                    .countryCode(apiUser.getCountry() == null ? null : apiUser.getCountry().getAlpha2())
                     .productType(apiUser.getProduct())
                     .build();
             newUser.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiUser.getImages()));

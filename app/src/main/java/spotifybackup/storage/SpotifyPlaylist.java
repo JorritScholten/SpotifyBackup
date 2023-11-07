@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -39,6 +40,7 @@ public final class SpotifyPlaylist extends SpotifyObject {
     @Column(nullable = false)
     private String name;
 
+    @Setter
     @Getter(AccessLevel.NONE)
     private String description;
 
@@ -54,7 +56,26 @@ public final class SpotifyPlaylist extends SpotifyObject {
     @Column(name = "snapshot_id")
     private String snapshotId;
 
+    @Setter
+    @NonNull
+    @Column(name = "simplified")
+    private Boolean isSimplified;
+
     public Optional<String> getDescription() {
         return Optional.ofNullable(description);
+    }
+
+    void addImages(@NonNull Set<SpotifyImage> newSpotifyImages) {
+        images.addAll(newSpotifyImages);
+    }
+
+    /** Non-owning side. */
+    void addPlaylistItem(@NonNull SpotifyPlaylistItem newPlaylistItem) {
+        tracks.add(newPlaylistItem);
+    }
+
+    /** Non-owning side. */
+    void addPlaylistItems(@NonNull List<SpotifyPlaylistItem> newPlaylistItems) {
+        newPlaylistItems.forEach(this::addPlaylistItem);
     }
 }
