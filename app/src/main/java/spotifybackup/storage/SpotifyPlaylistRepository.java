@@ -89,7 +89,6 @@ class SpotifyPlaylistRepository {
                     .isPublic(apiPlaylist.getIsPublicAccess())
                     .snapshotId(apiPlaylist.getSnapshotId())
                     .build();
-            newPlaylist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiPlaylist.getImages()));
             entityManager.persist(newPlaylist);
             return newPlaylist;
         }
@@ -125,7 +124,6 @@ class SpotifyPlaylistRepository {
                     .isPublic(apiPlaylist.getIsPublicAccess())
                     .snapshotId(apiPlaylist.getSnapshotId())
                     .build();
-            newPlaylist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiPlaylist.getImages()));
             entityManager.persist(newPlaylist);
             setNotSimpleFields.apply(entityManager).accept(apiPlaylist, newPlaylist);
             entityManager.persist(newPlaylist);

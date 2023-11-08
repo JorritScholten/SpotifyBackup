@@ -16,9 +16,6 @@ import java.util.Set;
 @NamedQuery(name = "SpotifyPlaylist.findBySpotifyID", query = "select p from SpotifyPlaylist p where p.spotifyID = :spotifyID")
 @NoArgsConstructor
 public final class SpotifyPlaylist extends SpotifyObject {
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private final Set<SpotifyImage> images = new HashSet<>();
-
     @OneToMany(mappedBy = "playlist")
     private final Set<SpotifyPlaylistItem> tracks = new HashSet<>();
 
@@ -63,10 +60,6 @@ public final class SpotifyPlaylist extends SpotifyObject {
 
     public Optional<String> getDescription() {
         return Optional.ofNullable(description);
-    }
-
-    void addImages(@NonNull Set<SpotifyImage> newSpotifyImages) {
-        images.addAll(newSpotifyImages);
     }
 
     /** Non-owning side. */
