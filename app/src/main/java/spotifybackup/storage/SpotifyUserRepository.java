@@ -59,6 +59,7 @@ class SpotifyUserRepository {
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         } else {
+            if (apiUser.getId().isBlank()) throw new IllegalArgumentException("Spotify User ID can not be blank.");
             var newUser = SpotifyUser.builder()
                     .spotifyUserID(apiUser.getId())
                     .displayName(apiUser.getDisplayName())
