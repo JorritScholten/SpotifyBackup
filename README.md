@@ -24,29 +24,33 @@ database and automated backups to an online repository.
   - [ ] Write unit test using mocking (leaning towards EasyMock)
   - [ ] Store track info to db
   - [ ] Store playlist to db
-- [ ] Design a sensible SQL database that minimises data duplication.
+  - [ ] Store Liked Songs to db
+- [x] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
-    - [ ] Implement complete storage class system to store all track information from Spotify about Playlists and User's
-      Liked Songs.
+    - [x] Implement complete storage class system to store all track information from Spotify about Playlists and Users
+      Liked/Saved Songs.
         - [x] genres
         - [x] spotify image
         - [x] artists
         - [x] spotify ID
-        - [ ] playlist information (we'll treat Liked Songs as a playlist)
-        - [ ] tracks in a playlist
-        - [ ] users
+        - [x] playlist information (we'll treat Liked Songs as a playlist)
+        - [x] tracks in a playlist
+        - [x] users
         - [x] tracks
         - [x] albums
     - [x] Implement system to automatically handle creation and validation of database
-    - [ ] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
+    - [x] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for SpotifyGenre
         - [x] Create repository for SpotifyArtist
-        - [ ] Create repository for SpotifyAlbum
+        - [x] Create repository for SpotifyAlbum
         - [x] Create repository for SpotifyID
-        - [ ] Create repository for SpotifyImage
-          - implement de-duping persistence method
+        - [x] Create repository for SpotifyImage
         - [x] Create repository for SpotifyTrack
+        - [x] Create repository for SpotifyUser
+        - [x] Create repository for SpotifyPlaylist
+          - [x] Create repository for SpotifyPlaylistItem
+          - [ ] Handle storage of Users Liked/Saved Songs as a playlist
 
-## Documentation
+[//]: # (## Documentation)
 
-[*See wiki page on github*](https://github.com/JorritScholten/SpotifyBackup/wiki)
+[//]: # ([*See wiki page on github*]&#40;https://github.com/JorritScholten/SpotifyBackup/wiki&#41;)
