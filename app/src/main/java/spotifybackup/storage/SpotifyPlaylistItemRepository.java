@@ -91,9 +91,10 @@ class SpotifyPlaylistItemRepository {
             var newItem = SpotifyPlaylistItem.builder()
                     .track(SpotifyTrackRepository.persist(entityManager, (Track) apiPlaylistItem.getTrack()))
                     .playlist(playlist)
-                    .addedBy(apiPlaylistItem.getAddedBy() == null ? null :
-                            SpotifyUserRepository.persist(entityManager, apiPlaylistItem.getAddedBy()))
-                    .dateAdded(ZonedDateTime.ofInstant(apiPlaylistItem.getAddedAt().toInstant(), ZoneOffset.UTC))
+                    .addedBy(apiPlaylistItem.getAddedBy() == null || apiPlaylistItem.getAddedBy().getId().isBlank() ?
+                            null : SpotifyUserRepository.persist(entityManager, apiPlaylistItem.getAddedBy()))
+                    .dateAdded(apiPlaylistItem.getAddedAt() == null ? null :
+                            ZonedDateTime.ofInstant(apiPlaylistItem.getAddedAt().toInstant(), ZoneOffset.UTC))
                     .build();
             entityManager.persist(newItem);
             return newItem;

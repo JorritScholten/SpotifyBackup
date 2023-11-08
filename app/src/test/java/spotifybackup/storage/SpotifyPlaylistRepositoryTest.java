@@ -4,6 +4,7 @@ import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -44,5 +45,28 @@ class SpotifyPlaylistRepositoryTest {
         assertTrue(spotifyObjectRepository.exists(apiPlaylist), "Can't find SpotifyPlaylist by apiPlaylist/Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(persistedPlaylist), "Can't find SpotifyPlaylist by Object reference.");
         assertEquals(apiPlaylist.getId(), persistedPlaylist.getSpotifyID().getId());
+    }
+
+    @Test
+    void ensure_simplified_playlist_can_be_filled_in_with_unsimplified() throws IOException {
+        // Arrange
+        final String playlistJson = new String(Files.readAllBytes(Path.of(playlistDir + "The_Blue_Stones.json")));
+        final PlaylistSimplified apiPlaylistSimple = new PlaylistSimplified.JsonUtil().createModelObject(playlistJson);
+        final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(playlistJson);
+        final var playlistSimple = spotifyObjectRepository.persist(apiPlaylistSimple);
+        assertTrue(spotifyObjectRepository.exists(playlistSimple));
+        assertTrue(playlistSimple.getIsSimplified());
+        assertNotEquals(0, apiPlaylist.getTracks().getTotal());
+        assertEquals(0, playlistSimple.getTracks().size());
+
+        // Act
+        final var playlist = spotifyObjectRepository.persist(apiPlaylist);
+
+        // Assert
+        assertEquals(playlistSimple.getId(), playlist.getId());
+        assertEquals(playlistSimple.getSpotifyID(), playlist.getSpotifyID());
+        assertFalse(playlist.getIsSimplified());
+        assertNotEquals(0, playlist.getTracks().size());
+        assertEquals(apiPlaylist.getTracks().getTotal(), playlist.getTracks().size());
     }
 }

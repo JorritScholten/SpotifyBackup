@@ -1,0 +1,2015 @@
+{
+  "collaborative": false,
+  "description": "This is The Blue Stones. The essential tracks, all in one playlist.",
+  "external_urls": {
+    "spotify": "https://open.spotify.com/playlist/37i9dQZF1DZ06evO3uQKXu"
+  },
+  "followers": {
+    "href": null,
+    "total": 7493
+  },
+  "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DZ06evO3uQKXu",
+  "id": "37i9dQZF1DZ06evO3uQKXu",
+  "images": [
+    {
+      "height": null,
+      "url": "https://thisis-images.spotifycdn.com/37i9dQZF1DZ06evO3uQKXu-large.jpg",
+      "width": null
+    }
+  ],
+  "name": "This Is The Blue Stones",
+  "owner": {
+    "display_name": "Spotify",
+    "external_urls": {
+      "spotify": "https://open.spotify.com/user/spotify"
+    },
+    "href": "https://api.spotify.com/v1/users/spotify",
+    "id": "spotify",
+    "type": "user",
+    "uri": "spotify:user:spotify"
+  },
+  "primary_color": null,
+  "public": false,
+  "snapshot_id": "MjgzMjQxNDQsMDAwMDAwMDA1YWUyYjYxYmM5NmUxNWM1MDk4MDIwMzVlMDZhZTQ0NQ==",
+  "tracks": {
+    "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DZ06evO3uQKXu/tracks?offset=0&limit=100&market=US&locale=en-GB,en;q=0.5",
+    "items": [
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6ESjsIQSb9iKqCkDo3S2sc"
+            },
+            "href": "https://api.spotify.com/v1/albums/6ESjsIQSb9iKqCkDo3S2sc",
+            "id": "6ESjsIQSb9iKqCkDo3S2sc",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273c8cda1be549790f809b8e7e0",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02c8cda1be549790f809b8e7e0",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851c8cda1be549790f809b8e7e0",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Black Holes",
+            "release_date": "2018-10-26",
+            "release_date_precision": "day",
+            "total_tracks": 11,
+            "type": "album",
+            "uri": "spotify:album:6ESjsIQSb9iKqCkDo3S2sc"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 185960,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "TCACN1677390"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/6JsiDFQRx7GHcuf2UroSYB"
+          },
+          "href": "https://api.spotify.com/v1/tracks/6JsiDFQRx7GHcuf2UroSYB",
+          "id": "6JsiDFQRx7GHcuf2UroSYB",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Black Holes (Solid Ground)",
+          "popularity": 60,
+          "preview_url": "https://p.scdn.co/mp3-preview/e8428440db77adc8922df727fc5ee60c4be43b78?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 3,
+          "type": "track",
+          "uri": "spotify:track:6JsiDFQRx7GHcuf2UroSYB"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3UqBWziPrsp5pXDR2cJI2P"
+            },
+            "href": "https://api.spotify.com/v1/albums/3UqBWziPrsp5pXDR2cJI2P",
+            "id": "3UqBWziPrsp5pXDR2cJI2P",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b27346d2a4d667c2e75cfa716fc8",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e0246d2a4d667c2e75cfa716fc8",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d0000485146d2a4d667c2e75cfa716fc8",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster",
+            "release_date": "2022-11-04",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:3UqBWziPrsp5pXDR2cJI2P"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 199974,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472203401"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/3Kv6xg4YmBgx9cuHMnq2UQ"
+          },
+          "href": "https://api.spotify.com/v1/tracks/3Kv6xg4YmBgx9cuHMnq2UQ",
+          "id": "3Kv6xg4YmBgx9cuHMnq2UQ",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Healing",
+          "popularity": 55,
+          "preview_url": "https://p.scdn.co/mp3-preview/f0d17b5ba71d2f7b8cbf66cfa8d76b83ed1f5830?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 1,
+          "type": "track",
+          "uri": "spotify:track:3Kv6xg4YmBgx9cuHMnq2UQ"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6uI7YirquMLS8hkRFgJ16B"
+            },
+            "href": "https://api.spotify.com/v1/albums/6uI7YirquMLS8hkRFgJ16B",
+            "id": "6uI7YirquMLS8hkRFgJ16B",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273ab0021560ff11309c3aa603c",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02ab0021560ff11309c3aa603c",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851ab0021560ff11309c3aa603c",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Hidden Gems",
+            "release_date": "2021-03-19",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:6uI7YirquMLS8hkRFgJ16B"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 222936,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK471904601"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/5PUlGG3xO8PUuDcYKuaeZH"
+          },
+          "href": "https://api.spotify.com/v1/tracks/5PUlGG3xO8PUuDcYKuaeZH",
+          "id": "5PUlGG3xO8PUuDcYKuaeZH",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Shakin' Off The Rust",
+          "popularity": 55,
+          "preview_url": "https://p.scdn.co/mp3-preview/2fa3db1a75015ccdd0d057a274e2bab4973443a9?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 2,
+          "type": "track",
+          "uri": "spotify:track:5PUlGG3xO8PUuDcYKuaeZH"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "single",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6NaZcYtaFNZyHtmJ8GtMTb"
+            },
+            "href": "https://api.spotify.com/v1/albums/6NaZcYtaFNZyHtmJ8GtMTb",
+            "id": "6NaZcYtaFNZyHtmJ8GtMTb",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273e7da99eac8a08ad5ab9f4457",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02e7da99eac8a08ad5ab9f4457",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851e7da99eac8a08ad5ab9f4457",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster Remixes",
+            "release_date": "2023-07-21",
+            "release_date_precision": "day",
+            "total_tracks": 6,
+            "type": "album",
+            "uri": "spotify:album:6NaZcYtaFNZyHtmJ8GtMTb"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/1oBaxYLLGDof9ThVJOtmGM"
+              },
+              "href": "https://api.spotify.com/v1/artists/1oBaxYLLGDof9ThVJOtmGM",
+              "id": "1oBaxYLLGDof9ThVJOtmGM",
+              "name": "TYRANTS",
+              "type": "artist",
+              "uri": "spotify:artist:1oBaxYLLGDof9ThVJOtmGM"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 276774,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "US5ED2303734"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/3VuitP6Z6XEnMIRu72f26s"
+          },
+          "href": "https://api.spotify.com/v1/tracks/3VuitP6Z6XEnMIRu72f26s",
+          "id": "3VuitP6Z6XEnMIRu72f26s",
+          "is_local": false,
+          "is_playable": true,
+          "name": "No Angels - TYRANTS Remix",
+          "popularity": 38,
+          "preview_url": "https://p.scdn.co/mp3-preview/17fee04bb2aa0959413eb3a95020c22db855d67e?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 5,
+          "type": "track",
+          "uri": "spotify:track:3VuitP6Z6XEnMIRu72f26s"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6ESjsIQSb9iKqCkDo3S2sc"
+            },
+            "href": "https://api.spotify.com/v1/albums/6ESjsIQSb9iKqCkDo3S2sc",
+            "id": "6ESjsIQSb9iKqCkDo3S2sc",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273c8cda1be549790f809b8e7e0",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02c8cda1be549790f809b8e7e0",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851c8cda1be549790f809b8e7e0",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Black Holes",
+            "release_date": "2018-10-26",
+            "release_date_precision": "day",
+            "total_tracks": 11,
+            "type": "album",
+            "uri": "spotify:album:6ESjsIQSb9iKqCkDo3S2sc"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 193053,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "USKO11800761"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/0f2QFb1ghqUzM5Cl3HTQcc"
+          },
+          "href": "https://api.spotify.com/v1/tracks/0f2QFb1ghqUzM5Cl3HTQcc",
+          "id": "0f2QFb1ghqUzM5Cl3HTQcc",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Be My Fire",
+          "popularity": 57,
+          "preview_url": "https://p.scdn.co/mp3-preview/efb8ece8cc4cea80e6f81d354b95b3422b7638ce?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 5,
+          "type": "track",
+          "uri": "spotify:track:0f2QFb1ghqUzM5Cl3HTQcc"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3UqBWziPrsp5pXDR2cJI2P"
+            },
+            "href": "https://api.spotify.com/v1/albums/3UqBWziPrsp5pXDR2cJI2P",
+            "id": "3UqBWziPrsp5pXDR2cJI2P",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b27346d2a4d667c2e75cfa716fc8",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e0246d2a4d667c2e75cfa716fc8",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d0000485146d2a4d667c2e75cfa716fc8",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster",
+            "release_date": "2022-11-04",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:3UqBWziPrsp5pXDR2cJI2P"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 186156,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472202101"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/4xhJtbV0LEPCHKcDfHnlP5"
+          },
+          "href": "https://api.spotify.com/v1/tracks/4xhJtbV0LEPCHKcDfHnlP5",
+          "id": "4xhJtbV0LEPCHKcDfHnlP5",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Don't Miss",
+          "popularity": 54,
+          "preview_url": "https://p.scdn.co/mp3-preview/72fa7fa64ab1a57f5c1930d774235217c39f9201?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 2,
+          "type": "track",
+          "uri": "spotify:track:4xhJtbV0LEPCHKcDfHnlP5"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6uI7YirquMLS8hkRFgJ16B"
+            },
+            "href": "https://api.spotify.com/v1/albums/6uI7YirquMLS8hkRFgJ16B",
+            "id": "6uI7YirquMLS8hkRFgJ16B",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273ab0021560ff11309c3aa603c",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02ab0021560ff11309c3aa603c",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851ab0021560ff11309c3aa603c",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Hidden Gems",
+            "release_date": "2021-03-19",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:6uI7YirquMLS8hkRFgJ16B"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 189013,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472002201"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/780XxeoUmhlhM70gca8KGz"
+          },
+          "href": "https://api.spotify.com/v1/tracks/780XxeoUmhlhM70gca8KGz",
+          "id": "780XxeoUmhlhM70gca8KGz",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Lights On",
+          "popularity": 51,
+          "preview_url": "https://p.scdn.co/mp3-preview/c35b440a5b431c1688b849e76ad4f3bac6c47f8e?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 1,
+          "type": "track",
+          "uri": "spotify:track:780XxeoUmhlhM70gca8KGz"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "single",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5eKLa1xyHLq8ERWmT1CRHj"
+                },
+                "href": "https://api.spotify.com/v1/artists/5eKLa1xyHLq8ERWmT1CRHj",
+                "id": "5eKLa1xyHLq8ERWmT1CRHj",
+                "name": "The Crystal Method",
+                "type": "artist",
+                "uri": "spotify:artist:5eKLa1xyHLq8ERWmT1CRHj"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/3zU9fuxpRmXdJk7nyTe8u9"
+                },
+                "href": "https://api.spotify.com/v1/artists/3zU9fuxpRmXdJk7nyTe8u9",
+                "id": "3zU9fuxpRmXdJk7nyTe8u9",
+                "name": "Future Funk Squad",
+                "type": "artist",
+                "uri": "spotify:artist:3zU9fuxpRmXdJk7nyTe8u9"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/4lddA6dzR8Z2nNvuKSH4Tn"
+            },
+            "href": "https://api.spotify.com/v1/albums/4lddA6dzR8Z2nNvuKSH4Tn",
+            "id": "4lddA6dzR8Z2nNvuKSH4Tn",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b2732ab049fa57b77484e672359d",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e022ab049fa57b77484e672359d",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d000048512ab049fa57b77484e672359d",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Stay With Me (The Crystal Method & Future Funk Squad Remix)",
+            "release_date": "2023-06-02",
+            "release_date_precision": "day",
+            "total_tracks": 2,
+            "type": "album",
+            "uri": "spotify:album:4lddA6dzR8Z2nNvuKSH4Tn"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5eKLa1xyHLq8ERWmT1CRHj"
+              },
+              "href": "https://api.spotify.com/v1/artists/5eKLa1xyHLq8ERWmT1CRHj",
+              "id": "5eKLa1xyHLq8ERWmT1CRHj",
+              "name": "The Crystal Method",
+              "type": "artist",
+              "uri": "spotify:artist:5eKLa1xyHLq8ERWmT1CRHj"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/3zU9fuxpRmXdJk7nyTe8u9"
+              },
+              "href": "https://api.spotify.com/v1/artists/3zU9fuxpRmXdJk7nyTe8u9",
+              "id": "3zU9fuxpRmXdJk7nyTe8u9",
+              "name": "Future Funk Squad",
+              "type": "artist",
+              "uri": "spotify:artist:3zU9fuxpRmXdJk7nyTe8u9"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 209142,
+          "episode": false,
+          "explicit": true,
+          "external_ids": {
+            "isrc": "US5ED2303544"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/2h0UeGagYp2HpsDafycFYy"
+          },
+          "href": "https://api.spotify.com/v1/tracks/2h0UeGagYp2HpsDafycFYy",
+          "id": "2h0UeGagYp2HpsDafycFYy",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Stay With Me (The Crystal Method & Future Funk Squad Remix)",
+          "popularity": 36,
+          "preview_url": "https://p.scdn.co/mp3-preview/84198fc4f377f26452b7a0d1855ea15e77878691?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 1,
+          "type": "track",
+          "uri": "spotify:track:2h0UeGagYp2HpsDafycFYy"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6ESjsIQSb9iKqCkDo3S2sc"
+            },
+            "href": "https://api.spotify.com/v1/albums/6ESjsIQSb9iKqCkDo3S2sc",
+            "id": "6ESjsIQSb9iKqCkDo3S2sc",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273c8cda1be549790f809b8e7e0",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02c8cda1be549790f809b8e7e0",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851c8cda1be549790f809b8e7e0",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Black Holes",
+            "release_date": "2018-10-26",
+            "release_date_precision": "day",
+            "total_tracks": 11,
+            "type": "album",
+            "uri": "spotify:album:6ESjsIQSb9iKqCkDo3S2sc"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 200800,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "TCABO1326815"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/6JFG2WwoaAkCgSTOtMGkLg"
+          },
+          "href": "https://api.spotify.com/v1/tracks/6JFG2WwoaAkCgSTOtMGkLg",
+          "id": "6JFG2WwoaAkCgSTOtMGkLg",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Rolling With the Punches",
+          "popularity": 56,
+          "preview_url": "https://p.scdn.co/mp3-preview/de1c73123e5a300e1fa1578be80d049035377d9d?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 7,
+          "type": "track",
+          "uri": "spotify:track:6JFG2WwoaAkCgSTOtMGkLg"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3UqBWziPrsp5pXDR2cJI2P"
+            },
+            "href": "https://api.spotify.com/v1/albums/3UqBWziPrsp5pXDR2cJI2P",
+            "id": "3UqBWziPrsp5pXDR2cJI2P",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b27346d2a4d667c2e75cfa716fc8",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e0246d2a4d667c2e75cfa716fc8",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d0000485146d2a4d667c2e75cfa716fc8",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster",
+            "release_date": "2022-11-04",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:3UqBWziPrsp5pXDR2cJI2P"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 172852,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472203404"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/5efaUiI0kT5VRVdpS9Vct1"
+          },
+          "href": "https://api.spotify.com/v1/tracks/5efaUiI0kT5VRVdpS9Vct1",
+          "id": "5efaUiI0kT5VRVdpS9Vct1",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Good Ideas",
+          "popularity": 47,
+          "preview_url": "https://p.scdn.co/mp3-preview/6930909f69ca8e3ca2a5379ea6cdcdd0e591b3c6?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 4,
+          "type": "track",
+          "uri": "spotify:track:5efaUiI0kT5VRVdpS9Vct1"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6uI7YirquMLS8hkRFgJ16B"
+            },
+            "href": "https://api.spotify.com/v1/albums/6uI7YirquMLS8hkRFgJ16B",
+            "id": "6uI7YirquMLS8hkRFgJ16B",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273ab0021560ff11309c3aa603c",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02ab0021560ff11309c3aa603c",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851ab0021560ff11309c3aa603c",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Hidden Gems",
+            "release_date": "2021-03-19",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:6uI7YirquMLS8hkRFgJ16B"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 251266,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472002202"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/1nO9qYFTq5ZkiiXnaXbBEH"
+          },
+          "href": "https://api.spotify.com/v1/tracks/1nO9qYFTq5ZkiiXnaXbBEH",
+          "id": "1nO9qYFTq5ZkiiXnaXbBEH",
+          "is_local": false,
+          "is_playable": true,
+          "name": "One By One",
+          "popularity": 51,
+          "preview_url": "https://p.scdn.co/mp3-preview/19747fffc849caa790e9bcd2eef64b902557997d?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 3,
+          "type": "track",
+          "uri": "spotify:track:1nO9qYFTq5ZkiiXnaXbBEH"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6ESjsIQSb9iKqCkDo3S2sc"
+            },
+            "href": "https://api.spotify.com/v1/albums/6ESjsIQSb9iKqCkDo3S2sc",
+            "id": "6ESjsIQSb9iKqCkDo3S2sc",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273c8cda1be549790f809b8e7e0",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02c8cda1be549790f809b8e7e0",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851c8cda1be549790f809b8e7e0",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Black Holes",
+            "release_date": "2018-10-26",
+            "release_date_precision": "day",
+            "total_tracks": 11,
+            "type": "album",
+            "uri": "spotify:album:6ESjsIQSb9iKqCkDo3S2sc"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 219586,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "USKO11800759"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/34uOD5RJT1kL2L3SCgNuRY"
+          },
+          "href": "https://api.spotify.com/v1/tracks/34uOD5RJT1kL2L3SCgNuRY",
+          "id": "34uOD5RJT1kL2L3SCgNuRY",
+          "is_local": false,
+          "is_playable": true,
+          "name": "The Drop",
+          "popularity": 46,
+          "preview_url": "https://p.scdn.co/mp3-preview/2f2f64798fc82ee7a9621c3772fd28275a8c54c2?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 2,
+          "type": "track",
+          "uri": "spotify:track:34uOD5RJT1kL2L3SCgNuRY"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3UqBWziPrsp5pXDR2cJI2P"
+            },
+            "href": "https://api.spotify.com/v1/albums/3UqBWziPrsp5pXDR2cJI2P",
+            "id": "3UqBWziPrsp5pXDR2cJI2P",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b27346d2a4d667c2e75cfa716fc8",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e0246d2a4d667c2e75cfa716fc8",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d0000485146d2a4d667c2e75cfa716fc8",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster",
+            "release_date": "2022-11-04",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:3UqBWziPrsp5pXDR2cJI2P"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 200622,
+          "episode": false,
+          "explicit": true,
+          "external_ids": {
+            "isrc": "CAK472203406"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/6alaXw9ipZ6ajVjXpQ3kDy"
+          },
+          "href": "https://api.spotify.com/v1/tracks/6alaXw9ipZ6ajVjXpQ3kDy",
+          "id": "6alaXw9ipZ6ajVjXpQ3kDy",
+          "is_local": false,
+          "is_playable": true,
+          "name": "What’s It Take To Be Happy?",
+          "popularity": 43,
+          "preview_url": "https://p.scdn.co/mp3-preview/9d2f2f662848598dc71db694be180a17faa29316?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 6,
+          "type": "track",
+          "uri": "spotify:track:6alaXw9ipZ6ajVjXpQ3kDy"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6uI7YirquMLS8hkRFgJ16B"
+            },
+            "href": "https://api.spotify.com/v1/albums/6uI7YirquMLS8hkRFgJ16B",
+            "id": "6uI7YirquMLS8hkRFgJ16B",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273ab0021560ff11309c3aa603c",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02ab0021560ff11309c3aa603c",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851ab0021560ff11309c3aa603c",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Hidden Gems",
+            "release_date": "2021-03-19",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:6uI7YirquMLS8hkRFgJ16B"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 217786,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472002203"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/6ybAXYfBjpsJL1ARBhtmO3"
+          },
+          "href": "https://api.spotify.com/v1/tracks/6ybAXYfBjpsJL1ARBhtmO3",
+          "id": "6ybAXYfBjpsJL1ARBhtmO3",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Let It Ride",
+          "popularity": 48,
+          "preview_url": "https://p.scdn.co/mp3-preview/605ad735cad9fa62a5c30be6cf4b05deb62dac55?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 6,
+          "type": "track",
+          "uri": "spotify:track:6ybAXYfBjpsJL1ARBhtmO3"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6ESjsIQSb9iKqCkDo3S2sc"
+            },
+            "href": "https://api.spotify.com/v1/albums/6ESjsIQSb9iKqCkDo3S2sc",
+            "id": "6ESjsIQSb9iKqCkDo3S2sc",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273c8cda1be549790f809b8e7e0",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02c8cda1be549790f809b8e7e0",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851c8cda1be549790f809b8e7e0",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Black Holes",
+            "release_date": "2018-10-26",
+            "release_date_precision": "day",
+            "total_tracks": 11,
+            "type": "album",
+            "uri": "spotify:album:6ESjsIQSb9iKqCkDo3S2sc"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 254306,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "USKO11800766"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/4ltLUTo812SsGdyFpixvML"
+          },
+          "href": "https://api.spotify.com/v1/tracks/4ltLUTo812SsGdyFpixvML",
+          "id": "4ltLUTo812SsGdyFpixvML",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Magic",
+          "popularity": 46,
+          "preview_url": "https://p.scdn.co/mp3-preview/56b47f164d5edcab20d3242039d944da5ce0fa20?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 11,
+          "type": "track",
+          "uri": "spotify:track:4ltLUTo812SsGdyFpixvML"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3UqBWziPrsp5pXDR2cJI2P"
+            },
+            "href": "https://api.spotify.com/v1/albums/3UqBWziPrsp5pXDR2cJI2P",
+            "id": "3UqBWziPrsp5pXDR2cJI2P",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b27346d2a4d667c2e75cfa716fc8",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e0246d2a4d667c2e75cfa716fc8",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d0000485146d2a4d667c2e75cfa716fc8",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster",
+            "release_date": "2022-11-04",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:3UqBWziPrsp5pXDR2cJI2P"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 173491,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472203403"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/0stbi5hmeyRBtcRksG4JdO"
+          },
+          "href": "https://api.spotify.com/v1/tracks/0stbi5hmeyRBtcRksG4JdO",
+          "id": "0stbi5hmeyRBtcRksG4JdO",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Cards Are Down",
+          "popularity": 42,
+          "preview_url": "https://p.scdn.co/mp3-preview/467f49c1f79aee54438add39c40c1700c347f025?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 3,
+          "type": "track",
+          "uri": "spotify:track:0stbi5hmeyRBtcRksG4JdO"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6uI7YirquMLS8hkRFgJ16B"
+            },
+            "href": "https://api.spotify.com/v1/albums/6uI7YirquMLS8hkRFgJ16B",
+            "id": "6uI7YirquMLS8hkRFgJ16B",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273ab0021560ff11309c3aa603c",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02ab0021560ff11309c3aa603c",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851ab0021560ff11309c3aa603c",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Hidden Gems",
+            "release_date": "2021-03-19",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:6uI7YirquMLS8hkRFgJ16B"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 243453,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472002205"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/57xWuijtGZYZTz2zJE7Ohg"
+          },
+          "href": "https://api.spotify.com/v1/tracks/57xWuijtGZYZTz2zJE7Ohg",
+          "id": "57xWuijtGZYZTz2zJE7Ohg",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Spirit",
+          "popularity": 45,
+          "preview_url": "https://p.scdn.co/mp3-preview/2d2264d8a240f9b896153c2129cb0f65cc575c1e?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 8,
+          "type": "track",
+          "uri": "spotify:track:57xWuijtGZYZTz2zJE7Ohg"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6ESjsIQSb9iKqCkDo3S2sc"
+            },
+            "href": "https://api.spotify.com/v1/albums/6ESjsIQSb9iKqCkDo3S2sc",
+            "id": "6ESjsIQSb9iKqCkDo3S2sc",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273c8cda1be549790f809b8e7e0",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02c8cda1be549790f809b8e7e0",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851c8cda1be549790f809b8e7e0",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Black Holes",
+            "release_date": "2018-10-26",
+            "release_date_precision": "day",
+            "total_tracks": 11,
+            "type": "album",
+            "uri": "spotify:album:6ESjsIQSb9iKqCkDo3S2sc"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 224333,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "USKO11800760"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/7uzaqEByOeuMGgbN6c8P6e"
+          },
+          "href": "https://api.spotify.com/v1/tracks/7uzaqEByOeuMGgbN6c8P6e",
+          "id": "7uzaqEByOeuMGgbN6c8P6e",
+          "is_local": false,
+          "is_playable": true,
+          "name": "The Hard Part",
+          "popularity": 42,
+          "preview_url": "https://p.scdn.co/mp3-preview/5c36cd5ce60d44caa28c9d5ebaaa6500b9972c1b?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 4,
+          "type": "track",
+          "uri": "spotify:track:7uzaqEByOeuMGgbN6c8P6e"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2023-11-08T13:04:48Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3UqBWziPrsp5pXDR2cJI2P"
+            },
+            "href": "https://api.spotify.com/v1/albums/3UqBWziPrsp5pXDR2cJI2P",
+            "id": "3UqBWziPrsp5pXDR2cJI2P",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b27346d2a4d667c2e75cfa716fc8",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e0246d2a4d667c2e75cfa716fc8",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d0000485146d2a4d667c2e75cfa716fc8",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Pretty Monster",
+            "release_date": "2022-11-04",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:3UqBWziPrsp5pXDR2cJI2P"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 192211,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472203407"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/4IUZViuv8cdwJPw1IdmpIG"
+          },
+          "href": "https://api.spotify.com/v1/tracks/4IUZViuv8cdwJPw1IdmpIG",
+          "id": "4IUZViuv8cdwJPw1IdmpIG",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Let Me Out",
+          "popularity": 42,
+          "preview_url": "https://p.scdn.co/mp3-preview/e221107b5627e25322e120ef989265130d04af99?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 7,
+          "type": "track",
+          "uri": "spotify:track:4IUZViuv8cdwJPw1IdmpIG"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "album": {
+            "album_type": "album",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+                },
+                "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+                "id": "5VPCIIfZPK8KPsgz4jmOEC",
+                "name": "The Blue Stones",
+                "type": "artist",
+                "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/6uI7YirquMLS8hkRFgJ16B"
+            },
+            "href": "https://api.spotify.com/v1/albums/6uI7YirquMLS8hkRFgJ16B",
+            "id": "6uI7YirquMLS8hkRFgJ16B",
+            "images": [
+              {
+                "height": 640,
+                "url": "https://i.scdn.co/image/ab67616d0000b273ab0021560ff11309c3aa603c",
+                "width": 640
+              },
+              {
+                "height": 300,
+                "url": "https://i.scdn.co/image/ab67616d00001e02ab0021560ff11309c3aa603c",
+                "width": 300
+              },
+              {
+                "height": 64,
+                "url": "https://i.scdn.co/image/ab67616d00004851ab0021560ff11309c3aa603c",
+                "width": 64
+              }
+            ],
+            "is_playable": true,
+            "name": "Hidden Gems",
+            "release_date": "2021-03-19",
+            "release_date_precision": "day",
+            "total_tracks": 10,
+            "type": "album",
+            "uri": "spotify:album:6uI7YirquMLS8hkRFgJ16B"
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/5VPCIIfZPK8KPsgz4jmOEC"
+              },
+              "href": "https://api.spotify.com/v1/artists/5VPCIIfZPK8KPsgz4jmOEC",
+              "id": "5VPCIIfZPK8KPsgz4jmOEC",
+              "name": "The Blue Stones",
+              "type": "artist",
+              "uri": "spotify:artist:5VPCIIfZPK8KPsgz4jmOEC"
+            }
+          ],
+          "disc_number": 1,
+          "duration_ms": 207333,
+          "episode": false,
+          "explicit": false,
+          "external_ids": {
+            "isrc": "CAK472002206"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/1ieiiOXXmsTTM9agYyIIbB"
+          },
+          "href": "https://api.spotify.com/v1/tracks/1ieiiOXXmsTTM9agYyIIbB",
+          "id": "1ieiiOXXmsTTM9agYyIIbB",
+          "is_local": false,
+          "is_playable": true,
+          "name": "Make This Easy",
+          "popularity": 44,
+          "preview_url": "https://p.scdn.co/mp3-preview/5fb155281304ee1ee7d366e7cf048b099b610e80?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "track": true,
+          "track_number": 9,
+          "type": "track",
+          "uri": "spotify:track:1ieiiOXXmsTTM9agYyIIbB"
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      }
+    ],
+    "limit": 100,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total": 20
+  },
+  "type": "playlist",
+  "uri": "spotify:playlist:37i9dQZF1DZ06evO3uQKXu"
+}

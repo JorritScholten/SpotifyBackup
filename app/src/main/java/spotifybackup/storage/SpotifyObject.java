@@ -2,7 +2,6 @@ package spotifybackup.storage;
 
 import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
-import lombok.NonNull;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 import spotifybackup.storage.exception.TransactionInactiveException;
 
@@ -50,12 +49,13 @@ public abstract sealed class SpotifyObject
      * @param markets Array of CountryCode objects.
      * @return Array of Strings containing ISO 3166-1 alpha-2 market codes.
      */
-    static String[] convertMarkets(@NonNull CountryCode[] markets) {
-        Set<String> stringifiedMarkets = new HashSet<>();
+    static String[] convertMarkets(CountryCode[] markets) {
+        if (markets == null) return new String[]{};
+        Set<String> stringifyMarkets = new HashSet<>();
         for (var market : markets) {
-            stringifiedMarkets.add(market.getAlpha2());
+            stringifyMarkets.add(market.getAlpha2());
         }
-        return stringifiedMarkets.toArray(String[]::new);
+        return stringifyMarkets.toArray(String[]::new);
     }
 
     public enum SubTypes {
