@@ -156,6 +156,17 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Find SpotifyUser whose account was used to generate the database, identified by countryCode and productType not
+     * being null.
+     * @return SpotifyUser if only one entry has a non-null countryCode and ProductType.
+     */
+    public Optional<SpotifyUser> getAccountHolder() {
+        try (var em = emf.createEntityManager()) {
+            return SpotifyUserRepository.getAccountHolder(em);
+        }
+    }
+
+    /**
      * Get count of type of SpotifyObject in the database.
      * @param type Entity type to perform count on.
      * @return count of SpotifyObject in the database.
