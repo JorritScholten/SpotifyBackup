@@ -1,6 +1,5 @@
 package spotifybackup.storage;
 
-import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
@@ -11,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SpotifyPlaylistRepositoryTest {
     static final String testDataDir = "src/test/java/spotifybackup/storage/spotify_api_get/";
@@ -20,11 +18,7 @@ class SpotifyPlaylistRepositoryTest {
 
     @BeforeAll
     static void setup() {
-        try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
-        } catch (ServiceException e) {
-            throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
-        }
+        spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
     }
 
     @Test

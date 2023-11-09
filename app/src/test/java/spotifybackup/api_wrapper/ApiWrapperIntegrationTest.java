@@ -1,7 +1,6 @@
 package spotifybackup.api_wrapper;
 
 import com.google.gson.JsonParser;
-import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
@@ -56,11 +55,7 @@ public class ApiWrapperIntegrationTest {
         // Arrange
         final String artistId = "5VPCIIfZPK8KPsgz4jmOEC", artistName = "The Blue Stones";
         SpotifyObjectRepository spotifyObjectRepository;
-        try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
-        } catch (ServiceException e) {
-            throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
-        }
+        spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
         final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST);
 
         // Act

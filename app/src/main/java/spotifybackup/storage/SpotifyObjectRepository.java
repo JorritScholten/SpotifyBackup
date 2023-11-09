@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
+import org.hibernate.service.spi.ServiceException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
 
@@ -30,7 +31,11 @@ public class SpotifyObjectRepository {
 
     private SpotifyObjectRepository(@NonNull String persistenceUnitName, @NonNull Properties dbAccess) {
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        emf = Persistence.createEntityManagerFactory(persistenceUnitName, dbAccess);
+        try {
+            emf = Persistence.createEntityManagerFactory(persistenceUnitName, dbAccess);
+        } catch (ServiceException e) {
+            throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
+        }
     }
 
     /**

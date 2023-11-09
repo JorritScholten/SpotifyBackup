@@ -1,6 +1,5 @@
 package spotifybackup.storage;
 
-import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
@@ -18,11 +17,7 @@ class SpotifyArtistRepositoryTest {
 
     @BeforeAll
     static void setup() {
-        try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
-        } catch (ServiceException e) {
-            throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
-        }
+        spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
     }
 
     @Test
@@ -89,7 +84,7 @@ class SpotifyArtistRepositoryTest {
     @Test
     void ensure_simplified_artist_can_be_filled_in_with_unsimplified() throws IOException {
         // Arrange
-        final String artistJson =  new String(Files.readAllBytes(Path.of(artistDir + "Texas.json")));
+        final String artistJson = new String(Files.readAllBytes(Path.of(artistDir + "Texas.json")));
         final var apiArtistSimple = new ArtistSimplified.JsonUtil().createModelObject(artistJson);
         final var apiArtist = new Artist.JsonUtil().createModelObject(artistJson);
         assertNotEquals(0, apiArtist.getGenres().length);

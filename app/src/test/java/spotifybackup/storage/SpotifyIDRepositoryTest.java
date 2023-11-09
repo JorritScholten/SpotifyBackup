@@ -1,6 +1,5 @@
 package spotifybackup.storage;
 
-import org.hibernate.service.spi.ServiceException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -11,11 +10,7 @@ class SpotifyIDRepositoryTest {
 
     @BeforeAll
     static void setup() {
-        try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
-        } catch (ServiceException e) {
-            throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
-        }
+        spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
     }
 
     @Test
