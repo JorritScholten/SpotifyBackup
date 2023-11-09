@@ -1,54 +1,66 @@
 package spotifybackup.app;
 
+import com.google.gson.JsonParser;
 import spotifybackup.cmd.CmdParser;
-import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
+import spotifybackup.cmd.argument.FlagArgument;
+import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 
-import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class App {
-    private static final Properties DB_ACCESS = new Properties();
+    static final String HOME_DIR = System.getProperty("user.home") + System.getProperty("file.separator");
+    static final DefaultFilePathArgument apiKeyFileArg = new DefaultFilePathArgument.Builder()
+            .name("api-key")
+            .shortName('a')
+            .isFile()
+            .description("Path of json file containing the Spotify API key.")
+            .defaultValue(new File(HOME_DIR + ".spotify_api_key.json"))
+            .build();
+    static final DefaultFilePathArgument dbFileArg = new DefaultFilePathArgument.Builder()
+            .name("database")
+            .shortName('d')
+            .isFile()
+            .description("Patch of H2 db file containing the data from the user.")
+            .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
+            .build();
+    static final FlagArgument getMeArg = new FlagArgument.Builder()
+            .name("getMe")
+            .description("Get users account info.")
+            .build();
+    static final CmdParser argParser;
 
     static {
-        DB_ACCESS.put("hibernate.hikari.dataSource.url", "jdbc:h2:~/test;DB_CLOSE_DELAY=-1");
-//        DB_ACCESS.put("hibernate.hikari.dataSource.user", "sa");
-//        DB_ACCESS.put("hibernate.hikari.dataSource.password", "");
+        argParser = new CmdParser.Builder()
+                .arguments(apiKeyFileArg, dbFileArg, getMeArg)
+                .description("Program to create offline backup of users Spotify account.")
+                .programName("SpotifyBackup.jar")
+                .addHelp()
+                .build();
+    }
+
+    private App() {
+        try (var apiKeyFile = new FileReader(apiKeyFileArg.getValue())) {
+            var apiKeyParser = JsonParser.parseReader(apiKeyFile);
+            System.out.println("API key: " + apiKeyParser.getAsJsonObject().get("clientId").getAsString());
+            System.out.println("getMe: " + getMeArg.getValue());
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Failed to find file containing Spotify API key.");
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to close FileReader of Spotify API key.");
+        }
     }
 
     public static void main(String[] args) {
-        System.out.println("starting main");
-//        addition(args);
-        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-    }
-
-    public static void addition(String[] args) {
-        var argParser = new CmdParser.Builder()
-                .argument(new MandatoryIntArgument.Builder()
-                        .name("value1")
-                        .description("First value.")
-                        .shortName('a')
-                        .build())
-                .argument(new MandatoryIntArgument.Builder()
-                        .name("value2")
-                        .description("Second value.")
-                        .shortName('b')
-                        .build())
-                .description("Program description")
-                .programName("Add.jar")
-                .epilogue("Help footer")
-                .addHelp()
-                .build();
         try {
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
                 System.out.println(argParser.getHelp());
                 System.exit(1);
             } else {
-                int value1 = (int) argParser.getValue("value1");
-                int value2 = (int) argParser.getValue("value2");
-                System.out.printf("%d + %d = %d\n", value1, value2, value1 + value2);
-                System.exit(0);
+                new App();
             }
         } catch (Exception e) {
             System.out.println("Error with input: " + e.getMessage());

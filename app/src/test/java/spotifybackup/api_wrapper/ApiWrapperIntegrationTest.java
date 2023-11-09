@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @EnabledIfEnvironmentVariable(named = "EnableIntegrationTests", matches = "true")
 public class ApiWrapperIntegrationTest {
     static final String SPOTIFY_API_KEY = System.getProperty("user.home") +
-            System.getProperty("file.separator") + ".java_spotify_backup.json";
+            System.getProperty("file.separator") + ".spotify_api_key.json";
     static ApiWrapper apiWrapper;
 
     @BeforeAll
