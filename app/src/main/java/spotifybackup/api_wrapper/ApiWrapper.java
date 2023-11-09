@@ -39,62 +39,58 @@ public class ApiWrapper {
     private final AbstractRequest<URI> authorizationCodeUriRequest;
     private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
 
-    public ApiWrapper(@NonNull SpotifyApi.Builder builder) {
+    /**
+     * @param builder A builder object containing a client id, redirect uri and optionally a client secret.
+     * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
+     * @throws IOException          when an issue occurs with creating the redirect catch server or there is a network
+     *                              issue (HTTP 3xx status code).
+     */
+    public ApiWrapper(@NonNull SpotifyApi.Builder builder) throws InterruptedException, IOException {
         spotifyApi = builder.build();
-        if (spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isBlank()) {
-            try {
+        try {
+            if (spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isBlank()) {
                 final String key = RandomStringUtils.randomAlphanumeric(128);
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
                 authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).build();
                 authorizationCodeRequest = code -> spotifyApi.authorizationCodePKCE(code, key).build();
                 authorizationRefreshRequest = () -> spotifyApi.authorizationCodePKCERefresh().build();
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException(e);
+            } else {
+                authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().state(state).build();
+                authorizationCodeRequest = code -> spotifyApi.authorizationCode(code).build();
+                authorizationRefreshRequest = () -> spotifyApi.authorizationCodeRefresh().build();
             }
-        } else {
-            authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().state(state).build();
-            authorizationCodeRequest = code -> spotifyApi.authorizationCode(code).build();
-            authorizationRefreshRequest = () -> spotifyApi.authorizationCodeRefresh().build();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalArgumentException("Select correct algorithm spelling: " + e);
         }
-        try { // ensure that the first networking operation performed is performTokenRequest()
-            waitingForAPI.acquire();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        waitingForAPI.acquire(); // ensure that the first networking operation performed is performTokenRequest()
+        performTokenRequest();
     }
 
     /**
      * host webserver to catch callback code from redirect url
+     * @throws IOException when an issue occurs with creating the redirect catch server.
      */
-    private HttpServer startCallbackServer() {
-        try {
-            var redirectUri = spotifyApi.getRedirectURI();
-            HttpServer server = HttpServer.create(new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()),
-                    0);
-            server.createContext(redirectUri.getPath(), callbackHandler);
-            server.setExecutor(null);
-            server.start();
-            return server;
-        } catch (IOException e) {
-            // issue with starting server
-            throw new RuntimeException(e);
-        }
+    private HttpServer startCallbackServer() throws IOException {
+        var redirectUri = spotifyApi.getRedirectURI();
+        HttpServer server = HttpServer.create(
+                new InetSocketAddress(redirectUri.getHost(), redirectUri.getPort()), 0);
+        server.createContext(redirectUri.getPath(), callbackHandler);
+        server.setExecutor(null);
+        server.start();
+        return server;
     }
 
     /**
      * Get access tokens for Spotify API, must be called first and only once.
+     * @throws IOException when an issue occurs with creating the redirect catch server or there is a network issue
+     *                     (HTTP 3xx status code).
      */
-    public void performTokenRequest() {
+    private void performTokenRequest() throws IOException {
         try {
             final URI uri = authorizationCodeUriRequest.execute();
             var server = startCallbackServer();
-            // execute above URL by opening browser window with it
-            if (!(Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE))) {
-                throw new RuntimeException("Desktop not supported, can't open URLs in web browser.");
-            } else {
-                Desktop.getDesktop().browse(uri);
-            }
+            Desktop.getDesktop().browse(uri); // execute above URL by opening browser window with it
             CompletableFuture.runAsync(() -> {
                 var code = callbackHandler.getCodeSync();
                 server.stop(0);
@@ -103,12 +99,10 @@ public class ApiWrapper {
         } catch (ParseException | NullPointerException | SpotifyWebApiException e) {
             // error with authorizationCodeUriRequest.execute(); or its return value
             throw new RuntimeException(e);
-        } catch (SecurityException e) {
+        } catch (SecurityException | UnsupportedOperationException e) {
             // caused by denial of automatic opening of uri in browser
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            // caused by network issues (HTTP 3xx status code)
-            throw new RuntimeException(e);
+            throw new UnsupportedOperationException("Desktop not supported, can't open URLs in web browser. "
+                    + e.getMessage());
         }
     }
 
@@ -156,31 +150,6 @@ public class ApiWrapper {
             throw new RuntimeException(e);
         } finally {
             waitingForAPI.release();
-        }
-    }
-
-    /**
-     * @param spotifyId A String containing a Spotify ID of an artist.
-     * @return name of artist.
-     * @throws IOException In case of networking issues (HTTP 3xx status code).
-     * @deprecated Use getArtist() instead and use .getName() on the return value.
-     */
-    @Deprecated(forRemoval = true)
-    public String getArtistName(@NonNull String spotifyId) throws IOException {
-        try {
-            waitingForAPI.acquire();
-            final Artist artist = spotifyApi.getArtist(spotifyId).build().execute();
-            waitingForAPI.release();
-            return artist.getName();
-        } catch (SpotifyWebApiException e) {
-            // spotify has returned an HTTP 4xx or 5xx status code
-            throw new RuntimeException(e);
-        } catch (ParseException e) {
-            // caused by malformed HTTP response
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
-            // caused by semaphore interruptions
-            throw new RuntimeException(e);
         }
     }
 

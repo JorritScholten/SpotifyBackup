@@ -23,18 +23,19 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnabledIfEnvironmentVariable(named = "EnableIntegrationTests", matches = "true")
 public class ApiWrapperIntegrationTest {
+    static final String SPOTIFY_API_KEY = System.getProperty("user.home") +
+            System.getProperty("file.separator") + ".java_spotify_backup.json";
     static ApiWrapper apiWrapper;
 
     @BeforeAll
-    public static void perform_authentication() throws URISyntaxException, IOException {
-        try (var file = new FileReader(System.getProperty("user.home") + System.getProperty("file.separator") + ".java_spotify_backup.json")) {
+    public static void perform_authentication() throws URISyntaxException, IOException, InterruptedException {
+        try (var file = new FileReader(SPOTIFY_API_KEY)) {
             var parser = JsonParser.parseReader(file);
             apiWrapper = new ApiWrapper(SpotifyApi.builder()
                     .setClientId(parser.getAsJsonObject().get("clientId").getAsString())
 //                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").getAsString())
                     .setRedirectUri(new URI(parser.getAsJsonObject().get("redirectUri").getAsString()))
             );
-            apiWrapper.performTokenRequest();
         }
     }
 
@@ -56,7 +57,7 @@ public class ApiWrapperIntegrationTest {
         final String artistId = "5VPCIIfZPK8KPsgz4jmOEC", artistName = "The Blue Stones";
         SpotifyObjectRepository spotifyObjectRepository;
         try {
-            spotifyObjectRepository = SpotifyObjectRepository.testFactory(true);
+            spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
