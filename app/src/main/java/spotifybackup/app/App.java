@@ -1,13 +1,10 @@
 package spotifybackup.app;
 
-import com.google.gson.JsonParser;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 
 public class App {
@@ -49,18 +46,6 @@ public class App {
         TERMINAL_WIDTH = width;
     }
 
-    private App() {
-        try (var apiKeyFile = new FileReader(apiKeyFileArg.getValue())) {
-            var apiKeyParser = JsonParser.parseReader(apiKeyFile);
-            System.out.println("API key: " + apiKeyParser.getAsJsonObject().get("clientId").getAsString());
-            System.out.println("getMe: " + getMeArg.getValue());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Failed to find file containing Spotify API key.");
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to close FileReader of Spotify API key.");
-        }
-    }
-
     public static void main(String[] args) {
         try {
             argParser.parseArguments(args);
@@ -68,7 +53,7 @@ public class App {
                 System.out.println(argParser.getHelp(TERMINAL_WIDTH));
                 System.exit(1);
             } else {
-                new App();
+                new CLI();
             }
         } catch (Exception e) {
             System.out.println("Error with input: " + e.getMessage());
