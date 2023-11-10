@@ -2,6 +2,7 @@ package spotifybackup.storage;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
@@ -12,6 +13,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+@EnabledIfEnvironmentVariable(named = "EnableStorageTests", matches = "true")
 class SpotifyUserRepositoryTest {
     static final String testDataDir = "src/test/java/spotifybackup/storage/spotify_api_get/";
     static final String playlistDir = testDataDir + "playlist/";

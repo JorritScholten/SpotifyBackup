@@ -37,7 +37,7 @@ public abstract class Argument {
         StringBuilder helpText = new StringBuilder("  ");
 
         // generate usage/name block
-        try(Formatter formatter = new Formatter(helpText)) {
+        try (Formatter formatter = new Formatter(helpText)) {
             if (isMandatory) {
                 if (hasShortName()) {
                     formatter.format("-%c%s, ", shortName, hasValue ? " " + getValueName() : "");
@@ -61,8 +61,12 @@ public abstract class Argument {
         // add argument description with word wrapping
         final int descriptionWidth = maxWidth - nameWidth;
         final String newLineStr = "\n" + " ".repeat(nameWidth);
-        helpText.append(WordUtils.wrap(description, descriptionWidth, newLineStr, false));
+        helpText.append(WordUtils.wrap(getDescription(), descriptionWidth, newLineStr, false));
         return helpText.toString();
+    }
+
+    protected String getDescription() {
+        return description;
     }
 
     /**

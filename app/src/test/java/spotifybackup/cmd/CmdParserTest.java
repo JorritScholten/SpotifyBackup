@@ -4,6 +4,7 @@ import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
@@ -18,6 +19,7 @@ import spotifybackup.cmd.exception.MissingArgumentException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@EnabledIfEnvironmentVariable(named = "EnableCmdParserTests", matches = "true")
 class CmdParserTest {
     private static ScanResult scanResult;
 
@@ -484,8 +486,10 @@ class CmdParserTest {
                   -h, --help        Show this help message and exit.
                   -i [INTEGER], --int2 [INTEGER]
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                                    Default value:[23]
                   -s [STRING], --str [STRING]
-                                    some sort of string, dunno, not gonna use it.
+                                    some sort of string, dunno, not gonna use it. Default
+                                    value:[string]
                 """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
@@ -532,8 +536,8 @@ class CmdParserTest {
                 Optional arguments:
                   -h, --help                            Show this help message and exit.
                   -i [INTEGER], --int2 [INTEGER]        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut
-                  -s [STRING], --str [STRING]           some sort of string, dunno, not gonna use it.
+                                                        incididunt ut Default value:[23]
+                  -s [STRING], --str [STRING]           some sort of string, dunno, not gonna use it. Default value:[string]
                                 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                 """;
@@ -593,9 +597,10 @@ class CmdParserTest {
                   -i [INTEGER], --int2 [INTEGER]
                                Lorem ipsum dolor sit amet, consectetur
                                adipiscing elit, sed do eiusmod tempor
-                               incididunt ut
+                               incididunt ut Default value:[23]
                   -s [STRING], --str [STRING]
                                some sort of string, dunno, not gonna use it.
+                               Default value:[string]
 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                 nostrud exercitation

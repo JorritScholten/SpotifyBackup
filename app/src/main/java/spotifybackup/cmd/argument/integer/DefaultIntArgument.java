@@ -20,6 +20,11 @@ public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
         return isPresent;
     }
 
+    @Override
+    protected String getDescription() {
+        return super.getDescription() + " Default value:[" + getValue() + "]";
+    }
+
     public static class Builder extends IntArgument.Builder<Builder> {
         private Integer defaultValue;
 

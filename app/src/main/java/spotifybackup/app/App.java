@@ -23,7 +23,7 @@ public class App {
             .name("database")
             .shortName('d')
             .isFile()
-            .description("Patch of H2 db file containing the data from the user.")
+            .description("Path of H2 db file containing the data from the user.")
             .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
             .build();
     static final FlagArgument getMeArg = new FlagArgument.Builder()

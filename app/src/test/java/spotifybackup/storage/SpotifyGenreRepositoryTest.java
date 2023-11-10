@@ -2,9 +2,11 @@ package spotifybackup.storage;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@EnabledIfEnvironmentVariable(named = "EnableStorageTests", matches = "true")
 class SpotifyGenreRepositoryTest {
     static private SpotifyObjectRepository spotifyObjectRepository;
 

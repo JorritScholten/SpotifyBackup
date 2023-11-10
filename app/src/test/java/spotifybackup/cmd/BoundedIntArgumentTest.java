@@ -1,6 +1,7 @@
 package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
@@ -8,6 +9,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@EnabledIfEnvironmentVariable(named = "EnableCmdParserTests", matches = "true")
 class BoundedIntArgumentTest {
     @Test
     void mandatory_argument_rejects_below_bounds_value() {

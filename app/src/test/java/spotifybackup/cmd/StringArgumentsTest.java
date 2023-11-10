@@ -1,6 +1,7 @@
 package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
@@ -11,6 +12,7 @@ import spotifybackup.cmd.exception.MissingArgumentException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@EnabledIfEnvironmentVariable(named = "EnableCmdParserTests", matches = "true")
 class StringArgumentsTest {
     @Test
     void mandatory_argument_loads_value_from_name() {

@@ -16,6 +16,11 @@ public class DefaultStringArgument extends StringArgument implements HasDefaultV
         return isPresent;
     }
 
+    @Override
+    protected String getDescription() {
+        return super.getDescription() + " Default value:[" + getValue() + "]";
+    }
+
     public static class Builder extends StringArgument.Builder<Builder> {
         private String defaultValue;
 
