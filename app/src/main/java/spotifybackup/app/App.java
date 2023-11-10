@@ -31,6 +31,7 @@ public class App {
             .description("Get users account info.")
             .build();
     static final CmdParser argParser;
+    static final int TERMINAL_WIDTH;
 
     static {
         argParser = new CmdParser.Builder()
@@ -39,6 +40,13 @@ public class App {
                 .programName("SpotifyBackup.jar")
                 .addHelp()
                 .build();
+        int width;
+        try (var term = org.jline.terminal.TerminalBuilder.terminal()) {
+            width = term.getWidth();
+        } catch (IOException e) {
+            width = 80;
+        }
+        TERMINAL_WIDTH = width;
     }
 
     private App() {
@@ -57,14 +65,14 @@ public class App {
         try {
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
-                System.out.println(argParser.getHelp());
+                System.out.println(argParser.getHelp(TERMINAL_WIDTH));
                 System.exit(1);
             } else {
                 new App();
             }
         } catch (Exception e) {
             System.out.println("Error with input: " + e.getMessage());
-            System.out.println(argParser.getHelp());
+            System.out.println(argParser.getHelp(TERMINAL_WIDTH));
             System.exit(-1);
         }
     }

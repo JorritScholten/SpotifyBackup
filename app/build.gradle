@@ -17,7 +17,8 @@ dependencies {
             'org.slf4j:slf4j-nop:2.0.9',
             'se.michaelthelin.spotify:spotify-web-api-java:8.2.0',
             'com.neovisionaries:nv-i18n:1.29',
-            'io.hypersistence:hypersistence-utils-hibernate-62:3.5.3'
+            'io.hypersistence:hypersistence-utils-hibernate-62:3.5.3',
+            'org.jline:jline:3.24.1'
     )
     annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
