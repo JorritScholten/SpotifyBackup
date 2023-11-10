@@ -51,14 +51,14 @@ public class App {
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
                 System.out.println(argParser.getHelp(TERMINAL_WIDTH));
-                System.exit(1);
+                System.exit(0);
             } else {
                 new CLI();
             }
         } catch (Exception e) {
             System.out.println("Error with input: " + e.getMessage());
             System.out.println(argParser.getHelp(TERMINAL_WIDTH));
-            System.exit(-1);
+            System.exit(1);
         }
     }
 }
