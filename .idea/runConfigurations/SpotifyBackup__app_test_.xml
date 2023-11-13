@@ -3,7 +3,9 @@
     <ExternalSystemSettings>
       <option name="env">
         <map>
+          <entry key="EnableCmdParserTests" value="false" />
           <entry key="EnableIntegrationTests" value="false" />
+          <entry key="EnableStorageTests" value="false" />
         </map>
       </option>
       <option name="executionName" />

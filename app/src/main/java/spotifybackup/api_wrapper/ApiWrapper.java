@@ -40,15 +40,20 @@ public class ApiWrapper {
     private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
 
     /**
-     * @param builder A builder object containing a client id, redirect uri and optionally a client secret.
+     * @param apiKey An ApiKey object containing a client id, redirect uri and optionally a client secret needed to
+     *               connect to the Spotify web API.
      * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
      * @throws IOException          when an issue occurs with creating the redirect catch server or there is a network
      *                              issue (HTTP 3xx status code).
      */
-    public ApiWrapper(@NonNull SpotifyApi.Builder builder) throws InterruptedException, IOException {
-        spotifyApi = builder.build();
+    public ApiWrapper(@NonNull ApiKey apiKey) throws InterruptedException, IOException {
+        var apiBuilder = SpotifyApi.builder();
+        apiBuilder.setClientId(apiKey.getClientId());
+        apiBuilder.setRedirectUri(apiKey.getRedirectUri());
+        if (apiKey.getClientSecret().isPresent()) apiBuilder.setClientSecret(apiKey.getClientSecret().get());
+        spotifyApi = apiBuilder.build();
         try {
-            if (spotifyApi.getClientSecret() == null || spotifyApi.getClientSecret().isBlank()) {
+            if (apiKey.getClientSecret().isEmpty()) {
                 final String key = RandomStringUtils.randomAlphanumeric(128);
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));

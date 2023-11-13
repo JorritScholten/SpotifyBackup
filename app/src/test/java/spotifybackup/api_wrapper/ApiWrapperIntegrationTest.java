@@ -1,20 +1,17 @@
 package spotifybackup.api_wrapper;
 
-import com.google.gson.JsonParser;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import spotifybackup.storage.SpotifyArtist;
 import spotifybackup.storage.SpotifyObject;
 import spotifybackup.storage.SpotifyObjectRepository;
 
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,20 +19,15 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnabledIfEnvironmentVariable(named = "EnableIntegrationTests", matches = "true")
 public class ApiWrapperIntegrationTest {
-    static final String SPOTIFY_API_KEY = System.getProperty("user.home") +
+    static final String SPOTIFY_API_KEY_PATH = System.getProperty("user.home") +
             System.getProperty("file.separator") + ".spotify_api_key.json";
     static ApiWrapper apiWrapper;
 
     @BeforeAll
     public static void perform_authentication() throws URISyntaxException, IOException, InterruptedException {
-        try (var file = new FileReader(SPOTIFY_API_KEY)) {
-            var parser = JsonParser.parseReader(file);
-            apiWrapper = new ApiWrapper(SpotifyApi.builder()
-                    .setClientId(parser.getAsJsonObject().get("clientId").getAsString())
-//                    .setClientSecret(parser.getAsJsonObject().get("clientSecret").getAsString())
-                    .setRedirectUri(new URI(parser.getAsJsonObject().get("redirectUri").getAsString()))
-            );
-        }
+        var keyFile = new File(SPOTIFY_API_KEY_PATH);
+        var key = new ApiKey(keyFile);
+        apiWrapper = new ApiWrapper(key);
     }
 
     @ParameterizedTest
