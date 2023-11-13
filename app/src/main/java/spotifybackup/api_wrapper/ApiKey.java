@@ -3,6 +3,7 @@ package spotifybackup.api_wrapper;
 import com.google.gson.JsonParser;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.ToString;
 
 import java.io.File;
 import java.io.FileReader;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+@ToString
 public class ApiKey {
     private static final String CLIENT_ID_NAME = "clientId";
     private static final String REDIRECT_URI_NAME = "redirectUri";
@@ -33,9 +35,9 @@ public class ApiKey {
                 if (!parser.has(CLIENT_ID_NAME)) throw new IllegalArgumentException(file + " missing clientId field.");
                 clientId = parser.get(CLIENT_ID_NAME).getAsString();
 
-                if (!parser.has(CLIENT_SECRET_NAME)) clientSecret = null;
-                else clientSecret = parser.get(CLIENT_SECRET_NAME).getAsString().isBlank() ? null :
-                        parser.get(CLIENT_SECRET_NAME).getAsString();
+                if (!parser.has(CLIENT_SECRET_NAME) || parser.get(CLIENT_SECRET_NAME).getAsString().isBlank())
+                    clientSecret = null;
+                else clientSecret = parser.get(CLIENT_SECRET_NAME).getAsString();
 
                 if (!parser.has(REDIRECT_URI_NAME))
                     throw new IllegalArgumentException(file + " missing redirectUri field.");

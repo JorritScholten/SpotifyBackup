@@ -39,13 +39,13 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     * Factory method to create SpotifyObjectRepository.
+     * Factory method to create SpotifyObjectRepository, creates new database file if one does not already exist.
      * @param dbPath File path of database.
      */
     public static SpotifyObjectRepository factory(@NonNull File dbPath) {
-        if (!(dbPath.isFile() && dbPath.exists() && dbPath.canRead() && dbPath.canWrite())) {
+        if (!dbPath.exists()) createNewDb(dbPath);
+        if (!dbPath.isFile())
             throw new IllegalArgumentException("Supplied filepath to database is unusable: " + dbPath);
-        }
         final Properties dbAccess = new Properties();
         dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(dbPath));
         return new SpotifyObjectRepository("SpotifyObjects", dbAccess);
@@ -60,6 +60,17 @@ public class SpotifyObjectRepository {
         dbAccess.put("hibernate.show_sql", showSql ? "true" : "false");
         dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(new File("build/spotifyObjectsTest")));
         return new SpotifyObjectRepository("SpotifyObjectsTest", dbAccess);
+    }
+
+    private static void createNewDb(File dbPath) {
+        final Properties dbAccess = new Properties();
+        dbAccess.put("hibernate.hbm2ddl.auto", "create");
+        dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(dbPath));
+        LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
+        try (var emf = Persistence.createEntityManagerFactory("SpotifyObjects", dbAccess)) {
+        } catch (ServiceException e) {
+            throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
+        }
     }
 
     private static String generateDataSourceUrl(File dbPath) {
