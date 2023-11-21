@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 
 import java.io.File;
@@ -17,14 +18,14 @@ import java.util.Arrays;
 
 @Getter
 public class Config {
-    private static final Property[] properties;
-    private static final Property<String> clientId = new Property<>("clientId", true);
-    private static final Property<URI> redirectUri = new Property<>("redirectURI", true);
-    private static final Property<String> clientSecret = new Property<>("clientSecret", false);
-    private static final Property<String> refreshToken = new Property<>("refreshToken", false);
+    private static final Property<?>[] properties;
+    private static final Property<String> clientId = new Property<>("clientId", true, String.class);
+    private static final Property<URI> redirectUri = new Property<>("redirectURI", true, URI.class);
+    private static final Property<String> clientSecret = new Property<>("clientSecret", false, String.class);
+    private static final Property<String> refreshToken = new Property<>("refreshToken", false, String.class);
 
     static {
-        properties = new Property[]{clientId, redirectUri, clientSecret, refreshToken};
+        properties = new Property<?>[]{clientId, redirectUri, clientSecret, refreshToken};
     }
 
     public Config(@NonNull File file) throws IOException {
@@ -37,12 +38,14 @@ public class Config {
                 for (var property : properties) {
                     if (property.isRequired) {
                         if (!parser.has(property.key))
-                            throw new ConfigFileException(file + " has missing " + property.key + " field.");
+                            throw new BlankConfigFieldException(file + " has missing " + property.key + " field.");
                         String value = parser.get(property.key).getAsString();
-                        if (property.value instanceof String) {
-                            property.setValue(value);
-                        } else if (property.value instanceof URI) {
-                            property.setValue(new URI(value));
+                        if (value.isBlank())
+                            throw new BlankConfigFieldException(property.key + " has blank field.");
+                        if (property.equalsValueType(String.class)) {
+                            ((Property<String>) property).setValue(value);
+                        } else if (property.equalsValueType(URI.class)) {
+                            ((Property<URI>) property).setValue(new URI(value));
                         } else {
                             throw new ConfigFileException("Unhandled value type of property field.");
                         }
@@ -76,10 +79,16 @@ public class Config {
         private final boolean isRequired;
         @Setter(AccessLevel.PRIVATE)
         private T value;
+        private final Class<T> valueType;
 
-        Property(@NonNull String key, boolean isRequired) {
+        Property(@NonNull String key, boolean isRequired, Class<T> valueType) {
             this.key = key;
             this.isRequired = isRequired;
+            this.valueType = valueType;
+        }
+
+        boolean equalsValueType(Class<?> type){
+            return valueType.equals(type);
         }
     }
 }
