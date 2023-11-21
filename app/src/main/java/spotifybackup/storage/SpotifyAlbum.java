@@ -23,14 +23,14 @@ public final class SpotifyAlbum extends SpotifyObject {
     @OneToMany(mappedBy = "album")
     private final Set<SpotifyTrack> tracks = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER,
+    @ManyToMany(fetch = FetchType.LAZY,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private final Set<SpotifyArtist> artists = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade =
+    @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyGenre> genres = new HashSet<>();
 
@@ -49,42 +49,37 @@ public final class SpotifyAlbum extends SpotifyObject {
 
     @Setter
     @Getter(AccessLevel.NONE)
-    @Column(length = 12, name = "ISRC")
+    @Column(length = 12)
     private String isrcID;
 
     @Setter
     @Getter(AccessLevel.NONE)
-    @Column(name = "UPC")
     private String upcID;
 
     @Setter
     @Getter(AccessLevel.NONE)
-    @Column(name = "EAN")
     private String eanID;
 
     @NonNull
     @Type(StringArrayType.class)
-    @Column(length = 2, columnDefinition = "varchar(2) ARRAY", name = "available_markets")
+    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "spotify_album_type")
     private AlbumType spotifyAlbumType;
 
     @NonNull
-    @Column(columnDefinition = "DATE", name = "release_date")
+    @Column(columnDefinition = "DATE")
     private LocalDate releaseDate;
 
     @NonNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "release_date_precision")
     private ReleaseDatePrecision releaseDatePrecision;
 
     @Setter
     @NonNull
-    @Column(name = "simplified")
     private Boolean isSimplified;
 
     public Optional<String> getIsrcID() {

@@ -37,7 +37,7 @@ public final class SpotifyPlaylistItem extends SpotifyObject {
     private SpotifyUser addedBy;
 
     @Getter(AccessLevel.NONE)
-    @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE", name = "date_added")
+    @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE")
     private ZonedDateTime dateAdded;
 
     public Optional<SpotifyUser> getAddedBy() {

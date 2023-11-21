@@ -17,7 +17,7 @@ import java.util.Set;
 @NamedQuery(name = "SpotifyUser.findAccountHolder", query = "select u from SpotifyUser u where u.countryCode is not null and u.productType is not null")
 @NoArgsConstructor
 public final class SpotifyUser extends SpotifyObject {
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 
     @OneToMany(mappedBy = "addedBy")
@@ -31,20 +31,18 @@ public final class SpotifyUser extends SpotifyObject {
     private long id;
 
     @NonNull
-    @Column(name = "spotify_user_id", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String spotifyUserID;
 
     @Getter(AccessLevel.NONE)
-    @Column(name = "display_name")
     private String displayName;
 
     @Getter(AccessLevel.NONE)
-    @Column(name = "country_code", columnDefinition = "varchar(2)")
+    @Column(columnDefinition = "varchar(2)")
     private String countryCode;
 
     @Getter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)
-    @Column(name = "product_type")
     private ProductType productType;
 
     public Optional<ProductType> getProductType() {

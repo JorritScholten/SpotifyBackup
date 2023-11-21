@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 public final class SpotifyTrack extends SpotifyObject {
-    @ManyToMany(fetch = FetchType.EAGER, cascade =
+    @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyArtist> artists = new HashSet<>();
 
@@ -39,15 +39,12 @@ public final class SpotifyTrack extends SpotifyObject {
     private SpotifyID spotifyID;
 
     @NonNull
-    @Column(name = "disc_number")
     private Integer discNumber;
 
     @NonNull
-    @Column(name = "track_number")
     private Integer trackNumber;
 
     @NonNull
-    @Column(name = "duration_ms")
     private Integer durationMs;
 
     @NonNull
@@ -55,17 +52,15 @@ public final class SpotifyTrack extends SpotifyObject {
 
     @Setter
     @Getter(AccessLevel.NONE)
-    @Column(length = 12, name = "ISRC")
+    @Column(length = 12)
     private String isrcID;
 
     @Setter
     @Getter(AccessLevel.NONE)
-    @Column(name = "UPC")
     private String upcID;
 
     @Setter
     @Getter(AccessLevel.NONE)
-    @Column(name = "EAN")
     private String eanID;
 
     @NonNull
@@ -74,13 +69,12 @@ public final class SpotifyTrack extends SpotifyObject {
 
     @NonNull
     @Type(StringArrayType.class)
-    @Column(length = 2, columnDefinition = "varchar(2) ARRAY", name = "available_markets")
+    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
     // Array of ISO 3166-1 alpha-2 codes
     private String[] availableMarkets;
 
     @Setter
     @NonNull
-    @Column(name = "simplified")
     private Boolean isSimplified;
 
     public Optional<String> getIsrcID() {

@@ -24,6 +24,7 @@
             <property name="hibernate.hikari.dataSource.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
             <property name="hibernate.hbm2ddl.auto" value="validate"/>
+            <property name="hibernate.physical_naming_strategy" value="io.hypersistence.utils.hibernate.naming.CamelCaseToSnakeCaseNamingStrategy"/>
             <property name="hibernate.show_sql" value="false"/>
         </properties>
     </persistence-unit>
@@ -48,6 +49,7 @@
             <property name="hibernate.hikari.dataSource.user" value="sa"/>
             <property name="hibernate.hikari.dataSource.password" value=""/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
+            <property name="hibernate.physical_naming_strategy" value="io.hypersistence.utils.hibernate.naming.CamelCaseToSnakeCaseNamingStrategy"/>
             <!--More info: https://stackoverflow.com/a/24417561 -->
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <property name="hibernate.format_sql" value="true"/>

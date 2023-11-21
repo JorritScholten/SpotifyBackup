@@ -14,19 +14,19 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 public final class SpotifyArtist extends SpotifyObject {
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 
     // more info: https://stackoverflow.com/a/59523218
-    @ManyToMany(fetch = FetchType.EAGER, cascade =
+    @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyGenre> genres = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "artists", cascade =
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "artists", cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyAlbum> albums = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER, mappedBy = "artists", cascade =
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "artists", cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyTrack> tracks = new HashSet<>();
 
@@ -45,7 +45,6 @@ public final class SpotifyArtist extends SpotifyObject {
 
     @Setter
     @NonNull
-    @Column(name = "simplified")
     private Boolean isSimplified;
 
     void addGenres(@NonNull Set<SpotifyGenre> newSpotifyGenres) {

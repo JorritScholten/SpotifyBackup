@@ -30,7 +30,7 @@ public final class SpotifyPlaylist extends SpotifyObject {
 
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private SpotifyUser owner;
 
     @NonNull
@@ -42,20 +42,16 @@ public final class SpotifyPlaylist extends SpotifyObject {
     private String description;
 
     @NonNull
-    @Column(name = "collaborative")
     private Boolean isCollaborative;
 
     @NonNull
-    @Column(name = "public")
     private Boolean isPublic;
 
     @NonNull
-    @Column(name = "snapshot_id")
     private String snapshotId;
 
     @Setter
     @NonNull
-    @Column(name = "simplified")
     private Boolean isSimplified;
 
     public Optional<String> getDescription() {
