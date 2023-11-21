@@ -96,9 +96,9 @@ class ConfigTest {
         new Config(file);
 
         // Assert
-        assertEquals(clientId, Config.clientId.getValue());
-        assertEquals(redirectURI, Config.redirectURI.getValue());
-        assertEquals(clientSecret, Config.clientSecret.getValue());
-        assertEquals(refreshToken, Config.refreshToken.getValue());
+        assertEquals(clientId, Config.clientId.get());
+        assertEquals(redirectURI, Config.redirectURI.get());
+        assertEquals(clientSecret, Config.clientSecret.get());
+        assertEquals(refreshToken, Config.refreshToken.get());
     }
 }
