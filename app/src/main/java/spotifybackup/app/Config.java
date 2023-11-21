@@ -36,31 +36,44 @@ public class Config {
         if (file.isDirectory())
             throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + file);
         if (file.exists()) {
-            if (!file.canRead()) throw new IllegalArgumentException("Can't read file at supplied filepath: " + file);
-            try (var reader = new FileReader(file)) {
-                var parser = JsonParser.parseReader(reader).getAsJsonObject();
-                for (var property : properties) {
-                    if (property instanceof RequiredProperty<?>) {
-                        if (!parser.has(property.key))
-                            throw new BlankConfigFieldException(file + " has missing " + property.key + " field.");
-                        String value = parser.get(property.key).getAsString();
-                        if (value.isBlank())
-                            throw new BlankConfigFieldException(property.key + " has blank field.");
-                        if (property.equalsValueType(String.class)) {
-                            ((Property<String>) property).setValue(value);
-                        } else if (property.equalsValueType(URI.class)) {
-                            ((Property<URI>) property).setValue(new URI(value));
-                        } else {
-                            throw new ConfigFileException("Unhandled value type of property field.");
-                        }
-                    }
-                }
-            } catch (URISyntaxException e) {
-                throw new ConfigFileException("Redirect URI has improper syntax.");
-            }
+            if (file.canRead()) readFile(file);
+            else throw new IllegalArgumentException("Can't read file at supplied filepath: " + file);
         } else {
             createNewFile(file);
             throw new ConfigFileException("Created empty config file, please fill in the fields: " + file);
+        }
+    }
+
+    private static void readFile(File file) throws IOException {
+        try (var reader = new FileReader(file)) {
+            var parser = JsonParser.parseReader(reader).getAsJsonObject();
+            for (var property : properties) {
+                if (property instanceof RequiredProperty<?>) {
+                    if (!parser.has(property.key))
+                        throw new BlankConfigFieldException(file + " has missing " + property.key + " field.");
+                    String value = parser.get(property.key).getAsString();
+                    if (value.isBlank())
+                        throw new BlankConfigFieldException(property.key + " has blank field.");
+                    setPropertyValue(property, value);
+                } else if (parser.has(property.key)) {
+                    String value = parser.get(property.key).getAsString();
+                    if (!value.isBlank()) setPropertyValue(property, value);
+                }
+            }
+        }
+    }
+
+    private static void setPropertyValue(Property<?> property, String value) {
+        try {
+            if (property.equalsValueType(String.class)) {
+                ((Property<String>) property).setValue(value);
+            } else if (property.equalsValueType(URI.class)) {
+                ((Property<URI>) property).setValue(new URI(value));
+            } else {
+                throw new ConfigFileException("Unhandled value type of property field.");
+            }
+        } catch (URISyntaxException e) {
+            throw new ConfigFileException("Redirect URI has improper syntax.");
         }
     }
 
@@ -86,12 +99,12 @@ public class Config {
         @Getter(AccessLevel.NONE)
         private T value;
 
-        Property(@NonNull String key, Class<T> valueType) {
+        private Property(@NonNull String key, Class<T> valueType) {
             this.key = key;
             this.valueType = valueType;
         }
 
-        boolean equalsValueType(Class<?> type) {
+        private boolean equalsValueType(Class<?> type) {
             return valueType.equals(type);
         }
 
@@ -99,7 +112,7 @@ public class Config {
     }
 
     public static class RequiredProperty<T> extends Property<T> {
-        RequiredProperty(@NonNull String key, Class<T> valueType) {
+        private RequiredProperty(@NonNull String key, Class<T> valueType) {
             super(key, valueType);
         }
 
@@ -109,7 +122,7 @@ public class Config {
     }
 
     public static class OptionalProperty<T> extends Property<T> {
-        OptionalProperty(@NonNull String key, Class<T> valueType) {
+        private OptionalProperty(@NonNull String key, Class<T> valueType) {
             super(key, valueType);
         }
 
