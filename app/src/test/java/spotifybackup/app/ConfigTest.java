@@ -8,6 +8,8 @@ import spotifybackup.app.exception.ConfigFileException;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -69,5 +71,34 @@ class ConfigTest {
 
         // Act & Assert
         assertThrows(BlankConfigFieldException.class, () -> new Config(file));
+    }
+
+    @Test
+    void ensure_all_fields_are_retrieved(@TempDir Path tempDir) throws IOException, URISyntaxException {
+        // Arrange
+        final String configFileName = "config.json";
+        final String configContents = """
+                {
+                    "clientId":"abcdefg",
+                    "redirectURI":"http://localhost:1234",
+                    "clientSecret":"123",
+                    "refreshToken":"1a2b3c"
+                }
+                """;
+        final String clientId = "abcdefg";
+        final URI redirectURI = new URI("http://localhost:1234");
+        final String clientSecret = "123";
+        final String refreshToken = "1a2b3c";
+        final File file = tempDir.resolve(configFileName).toFile();
+        Files.writeString(file.toPath(), configContents);
+
+        // Act
+        new Config(file);
+
+        // Assert
+        assertEquals(clientId, Config.clientId.getValue());
+        assertEquals(redirectURI, Config.redirectURI.getValue());
+        assertEquals(clientSecret, Config.clientSecret.getValue());
+        assertEquals(refreshToken, Config.refreshToken.getValue());
     }
 }

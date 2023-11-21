@@ -19,13 +19,13 @@ import java.util.Arrays;
 @Getter
 public class Config {
     private static final Property<?>[] properties;
-    private static final Property<String> clientId = new Property<>("clientId", true, String.class);
-    private static final Property<URI> redirectUri = new Property<>("redirectURI", true, URI.class);
-    private static final Property<String> clientSecret = new Property<>("clientSecret", false, String.class);
-    private static final Property<String> refreshToken = new Property<>("refreshToken", false, String.class);
+    public static final Property<String> clientId = new Property<>("clientId", true, String.class);
+    public static final Property<URI> redirectURI = new Property<>("redirectURI", true, URI.class);
+    public static final Property<String> clientSecret = new Property<>("clientSecret", false, String.class);
+    public static final Property<String> refreshToken = new Property<>("refreshToken", false, String.class);
 
     static {
-        properties = new Property<?>[]{clientId, redirectUri, clientSecret, refreshToken};
+        properties = new Property<?>[]{clientId, redirectURI, clientSecret, refreshToken};
     }
 
     public Config(@NonNull File file) throws IOException {
@@ -74,7 +74,7 @@ public class Config {
     }
 
     @Getter
-    private static class Property<T> {
+    public static class Property<T> {
         private final String key;
         private final boolean isRequired;
         @Setter(AccessLevel.PRIVATE)
