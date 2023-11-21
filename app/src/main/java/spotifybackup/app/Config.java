@@ -1,23 +1,85 @@
 package spotifybackup.app;
 
+import com.google.gson.JsonParser;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import spotifybackup.app.exception.ConfigFileException;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Arrays;
 
+@Getter
 public class Config {
     private static final Property[] properties;
-    private static Property<String> clientId = new Property<>("clientId", "");
-    private static Property<URI> redirectUri = new Property<>("clientId", null);
-    private static Property<String> clientSecret = new Property<>("clientSecret", "");
-    private static Property<String> refreshToken = new Property<>("refreshToken", "");
+    private static final Property<String> clientId = new Property<>("clientId", true);
+    private static final Property<URI> redirectUri = new Property<>("redirectURI", true);
+    private static final Property<String> clientSecret = new Property<>("clientSecret", false);
+    private static final Property<String> refreshToken = new Property<>("refreshToken", false);
 
     static {
-        properties = new Property[]{};
+        properties = new Property[]{clientId, redirectUri, clientSecret, refreshToken};
     }
 
-    public record Property<T>(String key, T value) {
-        public Property<T> updateValue(@NonNull T newValue){
-            return new Property<>(key, newValue);
+    public Config(@NonNull File file) throws IOException {
+        if (file.isDirectory())
+            throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + file);
+        if (file.exists()) {
+            if (!file.canRead()) throw new IllegalArgumentException("Can't read file at supplied filepath: " + file);
+            try (var reader = new FileReader(file)) {
+                var parser = JsonParser.parseReader(reader).getAsJsonObject();
+                for (var property : properties) {
+                    if (property.isRequired) {
+                        if (!parser.has(property.key))
+                            throw new ConfigFileException(file + " has missing " + property.key + " field.");
+                        String value = parser.get(property.key).getAsString();
+                        if (property.value instanceof String) {
+                            property.setValue(value);
+                        } else if (property.value instanceof URI) {
+                            property.setValue(new URI(value));
+                        } else {
+                            throw new ConfigFileException("Unhandled value type of property field.");
+                        }
+                    }
+                }
+            } catch (URISyntaxException e) {
+                throw new ConfigFileException("Redirect URI has improper syntax.");
+            }
+        } else {
+            createNewFile(file);
+            throw new ConfigFileException("Created empty config file, please fill in the fields: " + file);
+        }
+    }
+
+    private static void createNewFile(File file) throws IOException {
+        try (var writer = new FileWriter(file)) {
+            writer.write("{\n");
+            for (var iter = Arrays.stream(properties).filter(p -> p.isRequired).iterator(); iter.hasNext(); ) {
+                var property = iter.next();
+                writer.write("    \"" + property.key + "\":\"\"");
+                if (iter.hasNext()) writer.write(',');
+                writer.write('\n');
+            }
+            writer.write("}\n");
+        }
+    }
+
+    @Getter
+    private static class Property<T> {
+        private final String key;
+        private final boolean isRequired;
+        @Setter(AccessLevel.PRIVATE)
+        private T value;
+
+        Property(@NonNull String key, boolean isRequired) {
+            this.key = key;
+            this.isRequired = isRequired;
         }
     }
 }
