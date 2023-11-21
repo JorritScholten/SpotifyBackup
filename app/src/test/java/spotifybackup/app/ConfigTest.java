@@ -32,7 +32,7 @@ class ConfigTest {
                 """;
 
         // Act
-        assertThrows(ConfigFileException.class, () -> new Config(file));
+        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(file));
 
         // Assert
         newConfig = Files.readString(file.toPath());
@@ -53,7 +53,7 @@ class ConfigTest {
         Files.writeString(file.toPath(), configContents);
 
         // Act & Assert
-        assertThrows(BlankConfigFieldException.class, () -> new Config(file));
+        assertThrows(BlankConfigFieldException.class, () -> Config.loadFromFile(file));
     }
 
     @Test
@@ -70,7 +70,7 @@ class ConfigTest {
         Files.writeString(file.toPath(), configContents);
 
         // Act & Assert
-        assertThrows(BlankConfigFieldException.class, () -> new Config(file));
+        assertThrows(BlankConfigFieldException.class, () -> Config.loadFromFile(file));
     }
 
     @Test
@@ -93,12 +93,12 @@ class ConfigTest {
         Files.writeString(file.toPath(), configContents);
 
         // Act
-        new Config(file);
+        Config.loadFromFile(file);
 
         // Assert
         assertEquals(clientId, Config.clientId.get());
         assertEquals(redirectURI, Config.redirectURI.get());
-        assertEquals(clientSecret, Config.clientSecret.get());
-        assertEquals(refreshToken, Config.refreshToken.get());
+        assertEquals(clientSecret, Config.clientSecret.get().orElseThrow());
+        assertEquals(refreshToken, Config.refreshToken.get().orElseThrow());
     }
 }

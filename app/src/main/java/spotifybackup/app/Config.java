@@ -29,7 +29,10 @@ public class Config {
         properties = new Property<?>[]{clientId, redirectURI, clientSecret, refreshToken};
     }
 
-    public Config(@NonNull File file) throws IOException {
+    private Config() {
+    }
+
+    public static void loadFromFile(@NonNull File file) throws IOException {
         if (file.isDirectory())
             throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + file);
         if (file.exists()) {
