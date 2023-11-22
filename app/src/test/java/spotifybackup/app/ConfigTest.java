@@ -1,5 +1,6 @@
 package spotifybackup.app;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
@@ -17,11 +18,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @EnabledIfEnvironmentVariable(named = "EnableMiscTests", matches = "true")
 class ConfigTest {
+    File configFile;
+
+    @BeforeEach
+    void create_new_config_file(@TempDir Path tempDir) {
+        configFile = tempDir.resolve("config.json").toFile();
+        Config.class.getClassLoader().
+    }
+
     @Test
-    void ensure_new_empty_file_created_properly(@TempDir Path tempDir) throws IOException {
+    void ensure_new_empty_file_created_properly() throws IOException {
         // Arrange
-        final String configFileName = "config.json";
-        final File configFile = tempDir.resolve(configFileName).toFile();
         final String newConfig;
         final String blankConfig = """
                 {
@@ -41,16 +48,14 @@ class ConfigTest {
     }
 
     @Test
-    void ensure_blank_config_fields_are_rejected(@TempDir Path tempDir) throws IOException {
+    void ensure_blank_config_fields_are_rejected() throws IOException {
         // Arrange
-        final String configFileName = "config.json";
         final String configContents = """
                 {
                   "clientId": "",
                   "redirectURI": "http://localhost:1234"
                 }
                 """;
-        final File configFile = tempDir.resolve(configFileName).toFile();
         Files.writeString(configFile.toPath(), configContents);
 
         // Act & Assert
@@ -58,16 +63,14 @@ class ConfigTest {
     }
 
     @Test
-    void ensure_required_fields_are_present(@TempDir Path tempDir) throws IOException {
+    void ensure_required_fields_are_present() throws IOException {
         // Arrange
-        final String configFileName = "config.json";
         final String configContents = """
                 {
                   "redirectURI": "http://localhost:1234",
                   "clientSecret": "123"
                 }
                 """;
-        final File configFile = tempDir.resolve(configFileName).toFile();
         Files.writeString(configFile.toPath(), configContents);
 
         // Act & Assert
@@ -75,9 +78,8 @@ class ConfigTest {
     }
 
     @Test
-    void ensure_all_fields_are_retrieved(@TempDir Path tempDir) throws IOException, URISyntaxException {
+    void ensure_all_fields_are_retrieved() throws IOException, URISyntaxException {
         // Arrange
-        final String configFileName = "config.json";
         final String configContents = """
                 {
                   "clientId": "abcdefg",
@@ -90,7 +92,6 @@ class ConfigTest {
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
         final String refreshToken = "1a2b3c";
-        final File configFile = tempDir.resolve(configFileName).toFile();
         Files.writeString(configFile.toPath(), configContents);
 
         // Act
@@ -104,9 +105,8 @@ class ConfigTest {
     }
 
     @Test
-    void create_new_config_file_and_load_values_into_it(@TempDir Path tempDir) throws IOException, URISyntaxException {
+    void create_new_config_file_and_load_values_into_it() throws IOException, URISyntaxException {
         // Arrange
-        final File configFile = tempDir.resolve("config.json").toFile();
         assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
         final String clientId = "some-client-id";
         final URI redirectURI = new URI("http://localhost:5678");
