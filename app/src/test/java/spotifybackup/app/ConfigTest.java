@@ -25,8 +25,10 @@ class ConfigTest {
         final String newConfig;
         final String blankConfig = """
                 {
-                    "clientId":"",
-                    "redirectURI":""
+                  "clientId": "",
+                  "redirectURI": "",
+                  "clientSecret": "",
+                  "refreshToken": ""
                 }
                 """;
 
@@ -44,8 +46,8 @@ class ConfigTest {
         final String configFileName = "config.json";
         final String configContents = """
                 {
-                    "clientId":"",
-                    "redirectURI":"http://localhost:1234"
+                  "clientId": "",
+                  "redirectURI": "http://localhost:1234"
                 }
                 """;
         final File configFile = tempDir.resolve(configFileName).toFile();
@@ -61,8 +63,8 @@ class ConfigTest {
         final String configFileName = "config.json";
         final String configContents = """
                 {
-                    "redirectURI":"http://localhost:1234",
-                    "clientSecret":"123"
+                  "redirectURI": "http://localhost:1234",
+                  "clientSecret": "123"
                 }
                 """;
         final File configFile = tempDir.resolve(configFileName).toFile();
@@ -78,10 +80,10 @@ class ConfigTest {
         final String configFileName = "config.json";
         final String configContents = """
                 {
-                    "clientId":"abcdefg",
-                    "redirectURI":"http://localhost:1234",
-                    "clientSecret":"123",
-                    "refreshToken":"1a2b3c"
+                  "clientId": "abcdefg",
+                  "redirectURI": "http://localhost:1234",
+                  "clientSecret": "123",
+                  "refreshToken": "1a2b3c"
                 }
                 """;
         final String clientId = "abcdefg";
