@@ -32,15 +32,22 @@ public class Config {
     private Config() {
     }
 
-    public static void loadFromFile(@NonNull File file) throws IOException {
-        if (file.isDirectory())
-            throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + file);
-        if (file.exists()) {
-            if (file.canRead()) readFile(file);
-            else throw new IllegalArgumentException("Can't read file at supplied filepath: " + file);
+    /**
+     * Load config properties from a file, if a file exists and all required properties are present the file path is
+     * stored to allow for the saving of updated values.
+     * @param filePath Path to .json config file.
+     * @throws ConfigFileException Thrown when filePath doesn't point to an existing config file, a blank config file is
+     *                             created at filePath.
+     */
+    public static void loadFromFile(@NonNull File filePath) throws IOException, ConfigFileException {
+        if (filePath.isDirectory())
+            throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + filePath);
+        if (filePath.exists()) {
+            if (filePath.canRead()) readFile(filePath);
+            else throw new IllegalArgumentException("Can't read file at supplied filepath: " + filePath);
         } else {
-            createNewFile(file);
-            throw new ConfigFileException("Created empty config file, please fill in the fields: " + file);
+            createNewFile(filePath);
+            throw new ConfigFileException("Created empty config file, please fill in the fields at: " + filePath);
         }
     }
 
