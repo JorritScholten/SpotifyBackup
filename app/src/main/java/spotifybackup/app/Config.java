@@ -37,6 +37,18 @@ public class Config {
     }
 
     /**
+     * Set all Property values, configFile and serializedConfig to null.
+     * @apiNote Only to be used for testing purposes.
+     */
+    static void reloadFieldsForTesting() {
+        for (var property : properties) {
+            property.setValue(null);
+        }
+        configFile = null;
+        serializedConfig = null;
+    }
+
+    /**
      * Load config properties from a file, the file path is stored to allow for the saving of updated values.
      * @param filePath Path to .json config file.
      * @throws ConfigFileException Thrown when filePath doesn't point to an existing config file, a blank config file is
@@ -88,20 +100,16 @@ public class Config {
         }
     }
 
-    private static void createNewFile(File file) throws IOException {
-        try (var writer = new FileWriter(file)) {
-            serializedConfig = new JsonObject();
-            for (var property : properties) {
-                serializedConfig.add(property.key, new JsonPrimitive(""));
-            }
-            var gson = new GsonBuilder().setPrettyPrinting().create();
-            writer.write(gson.toJson(serializedConfig));
-            writer.write('\n');
-        }
+    private static void createNewFile(@NonNull File file) throws IOException {
         configFile = file;
+        serializedConfig = new JsonObject();
+        for (var property : properties) {
+            serializedConfig.add(property.key, new JsonPrimitive(""));
+        }
+        writeSerializedConfigToFile();
     }
 
-    private static void writeFile() throws IOException {
+    private static void writeSerializedConfigToFile() throws IOException {
         try (var writer = new FileWriter(configFile)) {
             var gson = new GsonBuilder().setPrettyPrinting().create();
             writer.write(gson.toJson(serializedConfig));
@@ -117,7 +125,7 @@ public class Config {
         @Getter(AccessLevel.NONE)
         private T value;
 
-        private Property(@NonNull String key, Class<T> valueType) {
+        private Property(@NonNull String key, @NonNull Class<T> valueType) {
             this.key = key;
             this.valueType = valueType;
         }
@@ -135,12 +143,12 @@ public class Config {
                 case URI uri -> uri.toString();
                 default -> throw new IllegalStateException("Unexpected valueType: " + valueType);
             }));
-            writeFile();
+            writeSerializedConfigToFile();
         }
     }
 
     public static final class RequiredProperty<T> extends Property<T> {
-        private RequiredProperty(@NonNull String key, Class<T> valueType) {
+        private RequiredProperty(@NonNull String key, @NonNull Class<T> valueType) {
             super(key, valueType);
         }
 
@@ -150,7 +158,7 @@ public class Config {
     }
 
     public static final class OptionalProperty<T> extends Property<T> {
-        private OptionalProperty(@NonNull String key, Class<T> valueType) {
+        private OptionalProperty(@NonNull String key, @NonNull Class<T> valueType) {
             super(key, valueType);
         }
 

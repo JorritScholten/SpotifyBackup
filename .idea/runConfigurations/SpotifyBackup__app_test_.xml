@@ -5,6 +5,7 @@
         <map>
           <entry key="EnableCmdParserTests" value="false" />
           <entry key="EnableIntegrationTests" value="false" />
+          <entry key="EnableMiscTests" value="false" />
           <entry key="EnableStorageTests" value="false" />
         </map>
       </option>
