@@ -6,28 +6,27 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import spotifybackup.app.Config;
 import spotifybackup.storage.SpotifyArtist;
 import spotifybackup.storage.SpotifyObject;
 import spotifybackup.storage.SpotifyObjectRepository;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @EnabledIfEnvironmentVariable(named = "EnableIntegrationTests", matches = "true")
 public class ApiWrapperIntegrationTest {
-    static final String SPOTIFY_API_KEY_PATH = System.getProperty("user.home") +
-            System.getProperty("file.separator") + ".spotify_api_key.json";
+    static final String CONFIG_FILE_PATH = System.getProperty("user.home") +
+            System.getProperty("file.separator") + ".spotify_backup_config.json";
     static ApiWrapper apiWrapper;
 
     @BeforeAll
-    public static void perform_authentication() throws URISyntaxException, IOException, InterruptedException {
-        var keyFile = new File(SPOTIFY_API_KEY_PATH);
-        var key = new ApiKey(keyFile);
-        apiWrapper = new ApiWrapper(key);
+    public static void perform_authentication() throws IOException, InterruptedException {
+        Config.loadFromFile(new File(CONFIG_FILE_PATH));
+        apiWrapper = new ApiWrapper();
     }
 
     @ParameterizedTest

@@ -9,12 +9,20 @@ import java.io.IOException;
 
 public class App {
     static final String HOME_DIR = System.getProperty("user.home") + System.getProperty("file.separator");
+    static final String USER_DIR = System.getProperty("user.dir") + System.getProperty("file.separator");
     static final DefaultFilePathArgument apiKeyFileArg = new DefaultFilePathArgument.Builder()
             .name("api-key")
             .shortName('a')
             .isFile()
             .description("Path of json file containing the Spotify API key.")
             .defaultValue(new File(HOME_DIR + ".spotify_api_key.json"))
+            .build();
+    static final DefaultFilePathArgument configFileArg = new DefaultFilePathArgument.Builder()
+            .name("config")
+            .shortName('c')
+            .isFile()
+            .description("Settings file containing the Spotify API key and persistent configuration properties.")
+            .defaultValue(new File(HOME_DIR + ".spotify_backup_config.json"))
             .build();
     static final DefaultFilePathArgument dbFileArg = new DefaultFilePathArgument.Builder()
             .name("database")
@@ -32,7 +40,7 @@ public class App {
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(apiKeyFileArg, dbFileArg, getMeArg)
+                .arguments(configFileArg, dbFileArg, getMeArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()

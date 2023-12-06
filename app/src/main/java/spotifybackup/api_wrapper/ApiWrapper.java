@@ -12,6 +12,7 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.requests.AbstractRequest;
+import spotifybackup.app.Config;
 
 import java.awt.*;
 import java.io.IOException;
@@ -40,20 +41,18 @@ public class ApiWrapper {
     private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
 
     /**
-     * @param apiKey An ApiKey object containing a client id, redirect uri and optionally a client secret needed to
-     *               connect to the Spotify web API.
      * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
      * @throws IOException          when an issue occurs with creating the redirect catch server or there is a network
      *                              issue (HTTP 3xx status code).
      */
-    public ApiWrapper(@NonNull ApiKey apiKey) throws InterruptedException, IOException {
+    public ApiWrapper() throws InterruptedException, IOException {
         var apiBuilder = SpotifyApi.builder();
-        apiBuilder.setClientId(apiKey.getClientId());
-        apiBuilder.setRedirectUri(apiKey.getRedirectUri());
-        if (apiKey.getClientSecret().isPresent()) apiBuilder.setClientSecret(apiKey.getClientSecret().get());
+        apiBuilder.setClientId(Config.clientId.get());
+        apiBuilder.setRedirectUri(Config.redirectURI.get());
+        if (Config.clientSecret.get().isPresent()) apiBuilder.setClientSecret(Config.clientSecret.get().get());
         spotifyApi = apiBuilder.build();
         try {
-            if (apiKey.getClientSecret().isEmpty()) {
+            if (Config.clientSecret.get().isEmpty()) {
                 final String key = RandomStringUtils.randomAlphanumeric(128);
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
