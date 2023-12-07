@@ -49,10 +49,10 @@ public class ApiWrapper {
         var apiBuilder = SpotifyApi.builder();
         apiBuilder.setClientId(Config.clientId.get());
         apiBuilder.setRedirectUri(Config.redirectURI.get());
-        if (Config.clientSecret.get().isPresent()) apiBuilder.setClientSecret(Config.clientSecret.get().get());
+        if (Config.clientSecret.isPresent()) apiBuilder.setClientSecret(Config.clientSecret.get());
         spotifyApi = apiBuilder.build();
         try {
-            if (Config.clientSecret.get().isEmpty()) {
+            if (Config.clientSecret.isEmpty()) {
                 final String key = RandomStringUtils.randomAlphanumeric(128);
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));

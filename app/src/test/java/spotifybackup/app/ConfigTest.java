@@ -100,8 +100,8 @@ class ConfigTest {
         // Assert
         assertEquals(clientId, Config.clientId.get());
         assertEquals(redirectURI, Config.redirectURI.get());
-        assertEquals(clientSecret, Config.clientSecret.get().orElseThrow());
-        assertEquals(refreshToken, Config.refreshToken.get().orElseThrow());
+        assertEquals(clientSecret, Config.clientSecret.get());
+        assertEquals(refreshToken, Config.refreshToken.get());
     }
 
     @Test

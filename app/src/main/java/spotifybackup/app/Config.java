@@ -17,7 +17,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Optional;
 
 @Getter
 public class Config {
@@ -153,6 +152,7 @@ public class Config {
         }
 
         public T get() {
+            if (super.value == null) throw new NullPointerException();
             return super.value;
         }
     }
@@ -162,8 +162,17 @@ public class Config {
             super(key, valueType);
         }
 
-        public Optional<T> get() {
-            return Optional.ofNullable(super.value);
+        public T get() {
+            if (super.value == null) throw new NullPointerException();
+            return super.value;
+        }
+
+        public boolean isPresent() {
+            return super.value != null;
+        }
+
+        public boolean isEmpty() {
+            return super.value == null;
         }
     }
 }
