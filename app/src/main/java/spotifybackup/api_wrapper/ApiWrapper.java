@@ -9,6 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.requests.AbstractRequest;
@@ -50,6 +51,7 @@ public class ApiWrapper {
         apiBuilder.setClientId(Config.clientId.get());
         apiBuilder.setRedirectUri(Config.redirectURI.get());
         if (Config.clientSecret.isPresent()) apiBuilder.setClientSecret(Config.clientSecret.get());
+        if (Config.refreshToken.isPresent()) apiBuilder.setRefreshToken(Config.refreshToken.get());
         spotifyApi = apiBuilder.build();
         try {
             if (Config.clientSecret.isEmpty()) {
@@ -68,7 +70,11 @@ public class ApiWrapper {
             throw new IllegalArgumentException("Select correct algorithm spelling: " + e);
         }
         waitingForAPI.acquire(); // ensure that the first networking operation performed is performTokenRequest()
-        performTokenRequest();
+        if (Config.refreshToken.isEmpty()) {
+            performTokenRequest();
+        } else {
+            performTokenRefresh();
+        }
     }
 
     /**
@@ -131,7 +137,9 @@ public class ApiWrapper {
     private void performTokenGet(String requestCode) {
         try {
             AuthorizationCodeCredentials authorizationCodeCredentials;
-            if (spotifyApi.getAccessToken() == null || spotifyApi.getAccessToken().isBlank()) {
+            if (spotifyApi.getAccessToken() == null && spotifyApi.getRefreshToken() != null) {
+                authorizationCodeCredentials = authorizationRefreshRequest.get().execute();
+            } else if (spotifyApi.getAccessToken() == null || spotifyApi.getAccessToken().isBlank()) {
                 authorizationCodeCredentials = authorizationCodeRequest.apply(requestCode).execute();
             } else {
                 waitingForAPI.acquire();
@@ -139,7 +147,13 @@ public class ApiWrapper {
             }
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
+            Config.refreshToken.set(authorizationCodeCredentials.getRefreshToken());
             scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
+        } catch (BadRequestException e) {
+            if (e.getMessage().equals("Invalid refresh token")) {
+                // TODO: delete current token and try again with an auth code request
+            }
+            throw new RuntimeException(e);
         } catch (SpotifyWebApiException e) {
             // spotify has returned an HTTP 4xx or 5xx status code
             throw new RuntimeException(e);
