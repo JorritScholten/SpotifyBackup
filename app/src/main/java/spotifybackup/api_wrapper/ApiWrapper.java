@@ -12,6 +12,7 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import spotifybackup.app.Config;
 
@@ -189,6 +190,25 @@ public class ApiWrapper {
             final Artist artist = spotifyApi.getArtist(spotifyId).build().execute();
             waitingForAPI.release();
             return Optional.of(artist);
+        } catch (SpotifyWebApiException | ParseException e) {
+            return Optional.empty();
+        } catch (InterruptedException e) {
+            // caused by semaphore interruptions
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Perform a fetch request to get the current users' id.
+     * @return users' id if request successful.
+     * @throws IOException In case of networking issues (HTTP 3xx status code).
+     */
+    public Optional<String> getUserID() throws IOException {
+        try {
+            waitingForAPI.acquire();
+            final User user = spotifyApi.getCurrentUsersProfile().build().execute();
+            waitingForAPI.release();
+            return user.getId().describeConstable();
         } catch (SpotifyWebApiException | ParseException e) {
             return Optional.empty();
         } catch (InterruptedException e) {

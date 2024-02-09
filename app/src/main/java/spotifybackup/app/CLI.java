@@ -13,5 +13,6 @@ public class CLI {
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         Config.loadFromFile(App.configFileArg.getValue());
         api = new ApiWrapper();
+        System.out.println("Logged in as: " + api.getUserID().orElseThrow());
     }
 }
