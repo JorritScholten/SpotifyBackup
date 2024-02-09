@@ -85,6 +85,7 @@ public class Config {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static void setPropertyValue(Property<?> property, String value) {
         try {
             if (property.equalsValueType(String.class)) {
