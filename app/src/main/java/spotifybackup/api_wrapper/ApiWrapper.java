@@ -149,11 +149,19 @@ public class ApiWrapper {
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             Config.refreshToken.set(authorizationCodeCredentials.getRefreshToken());
             scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
+            waitingForAPI.release();
         } catch (BadRequestException e) {
             if (e.getMessage().equals("Invalid refresh token")) {
-                // TODO: delete current token and try again with an auth code request
+                // delete current refresh token and try again with an auth code request
+                spotifyApi.setRefreshToken(null);
+                try {
+                    performTokenRequest();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            } else {
+                throw new RuntimeException(e);
             }
-            throw new RuntimeException(e);
         } catch (SpotifyWebApiException e) {
             // spotify has returned an HTTP 4xx or 5xx status code
             throw new RuntimeException(e);
@@ -166,8 +174,6 @@ public class ApiWrapper {
         } catch (InterruptedException e) {
             // caused by semaphore interruptions
             throw new RuntimeException(e);
-        } finally {
-            waitingForAPI.release();
         }
     }
 
