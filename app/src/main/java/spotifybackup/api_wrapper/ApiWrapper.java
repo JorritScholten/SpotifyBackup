@@ -13,6 +13,7 @@ import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import spotifybackup.app.Config;
 
@@ -192,10 +193,21 @@ public class ApiWrapper {
      * Perform a fetch request to get the current users' id.
      * @return users' id if request successful.
      * @throws IOException In case of networking issues (HTTP 3xx status code).
+     * @deprecated user getCurrentUser() instead.
      */
+    @Deprecated
     public Optional<String> getUserID() throws IOException {
         return Optional.ofNullable(getSpotifyObject(() -> spotifyApi.getCurrentUsersProfile().build())
                 .orElseThrow().getId());
+    }
+
+    /**
+     * Perform a fetch request to get the current user.
+     * @return user if request successful.
+     * @throws IOException In case of networking issues (HTTP 3xx status code).
+     */
+    public Optional<User> getCurrentUser() throws IOException {
+        return getSpotifyObject(() -> spotifyApi.getCurrentUsersProfile().build());
     }
 
     private <T extends AbstractModelObject> Optional<T> getSpotifyObject(Supplier<AbstractRequest<T>> f)

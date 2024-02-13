@@ -33,7 +33,8 @@ database and automated backups to an online repository.
         - [x] spotify image
         - [x] artists
         - [x] spotify ID
-        - [x] playlist information (we'll treat Liked Songs as a playlist)
+        - [x] playlist information 
+        - [ ] "Liked Songs"/"Saved Tracks" can't be treated as a playlist, needs separate storage
         - [x] tracks in a playlist
         - [x] users
         - [x] tracks
@@ -47,9 +48,11 @@ database and automated backups to an online repository.
         - [x] Create repository for SpotifyImage
         - [x] Create repository for SpotifyTrack
         - [x] Create repository for SpotifyUser
+          - [ ] handle updating SpotifyUser info when detailed info changes
+          - [ ] handle updating SpotifyUser info from simplified/public to detailed
         - [x] Create repository for SpotifyPlaylist
           - [x] Create repository for SpotifyPlaylistItem
-          - [ ] Handle storage of Users Liked/Saved Songs as a playlist
+        - [ ] Create repository for Users Liked/Saved Songs
 
 [//]: # (## Documentation)
 
