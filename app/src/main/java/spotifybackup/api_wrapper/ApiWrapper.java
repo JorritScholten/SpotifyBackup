@@ -10,9 +10,9 @@ import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
+import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import spotifybackup.app.Config;
 
@@ -185,17 +185,7 @@ public class ApiWrapper {
      * @throws IOException In case of networking issues (HTTP 3xx status code).
      */
     public Optional<Artist> getArtist(@NonNull String spotifyId) throws IOException {
-        try {
-            waitingForAPI.acquire();
-            final Artist artist = spotifyApi.getArtist(spotifyId).build().execute();
-            waitingForAPI.release();
-            return Optional.of(artist);
-        } catch (SpotifyWebApiException | ParseException e) {
-            return Optional.empty();
-        } catch (InterruptedException e) {
-            // caused by semaphore interruptions
-            throw new RuntimeException(e);
-        }
+        return getSpotifyObject(() -> spotifyApi.getArtist(spotifyId).build());
     }
 
     /**
@@ -204,11 +194,17 @@ public class ApiWrapper {
      * @throws IOException In case of networking issues (HTTP 3xx status code).
      */
     public Optional<String> getUserID() throws IOException {
+        return Optional.ofNullable(getSpotifyObject(() -> spotifyApi.getCurrentUsersProfile().build())
+                .orElseThrow().getId());
+    }
+
+    private <T extends AbstractModelObject> Optional<T> getSpotifyObject(Supplier<AbstractRequest<T>> f)
+            throws IOException {
         try {
             waitingForAPI.acquire();
-            final User user = spotifyApi.getCurrentUsersProfile().build().execute();
+            final T object = f.get().execute();
             waitingForAPI.release();
-            return user.getId().describeConstable();
+            return Optional.of(object);
         } catch (SpotifyWebApiException | ParseException e) {
             return Optional.empty();
         } catch (InterruptedException e) {
