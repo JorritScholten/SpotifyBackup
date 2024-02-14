@@ -29,7 +29,7 @@ public final class SpotifySavedTrack extends SpotifyObject {
     //TODO: need to add mappings on the other side
     @NonNull
     @ManyToOne
-    @JoinColumn(name = "user", nullable = false)
+    @JoinColumn(name = "owner", nullable = false)
     private SpotifyUser user;
 
     @NonNull
