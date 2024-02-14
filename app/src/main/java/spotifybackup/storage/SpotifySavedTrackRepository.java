@@ -30,7 +30,7 @@ class SpotifySavedTrackRepository {
 
     static SpotifySavedTrack persist(EntityManager em, @NonNull SavedTrack apiTrack, @NonNull SpotifyUser user) {
         ensureTransactionActive.accept(em);
-        var track = SpotifyTrackRepository.persist(em, apiTrack);
+        var track = SpotifyTrackRepository.persist(em, apiTrack.getTrack());
         var optionalSavedTrack = find(em, track, user);
         if (optionalSavedTrack.isPresent()) {
             return optionalSavedTrack.get();

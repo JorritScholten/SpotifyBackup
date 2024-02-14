@@ -20,13 +20,11 @@ public final class SpotifySavedTrack extends SpotifyObject {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    //TODO: need to add mappings on the other side
     @NonNull
     @ManyToOne
     @JoinColumn(name = "track_id", nullable = false)
     private SpotifyTrack track;
 
-    //TODO: need to add mappings on the other side
     @NonNull
     @ManyToOne
     @JoinColumn(name = "owner", nullable = false)

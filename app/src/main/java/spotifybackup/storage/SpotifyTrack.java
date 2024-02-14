@@ -24,6 +24,9 @@ public final class SpotifyTrack extends SpotifyObject {
     @OneToMany(mappedBy = "track")
     private final Set<SpotifyPlaylistItem> playlistItems = new HashSet<>();
 
+    @OneToMany(mappedBy = "track")
+    private final Set<SpotifySavedTrack> savedTracks = new HashSet<>();
+
     @NonNull
     @ManyToOne
     @JoinColumn(name = "album_id", nullable = false)

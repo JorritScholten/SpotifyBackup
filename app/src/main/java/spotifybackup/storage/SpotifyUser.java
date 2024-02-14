@@ -23,6 +23,9 @@ public final class SpotifyUser extends SpotifyObject {
     @OneToMany(mappedBy = "addedBy")
     private final Set<SpotifyPlaylistItem> addedPlaylistItems = new HashSet<>();
 
+    @OneToMany(mappedBy = "user")
+    private final Set<SpotifySavedTrack> savedTracks = new HashSet<>();
+
     @OneToMany(mappedBy = "owner")
     private final Set<SpotifyPlaylist> ownedPlaylists = new HashSet<>();
 
