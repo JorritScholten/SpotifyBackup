@@ -13,7 +13,7 @@ import java.nio.file.Path;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @EnabledIfEnvironmentVariable(named = "EnableStorageTests", matches = "true")
-class SpotifySavedTracksRepositoryTest {
+class SpotifySavedTrackRepositoryTest {
     static final String testDataDir = "src/test/java/spotifybackup/storage/spotify_api_get/";
     static final String userDir = testDataDir + "user/";
     static final String libraryDir = testDataDir + "library/";

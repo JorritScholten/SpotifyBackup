@@ -173,7 +173,7 @@ public class SpotifyObjectRepository {
 
     /**
      * Find SpotifyUser whose account was used to generate the database, identified by countryCode and productType not
-     * being null.
+     * being null. TODO: rework this to return List<> instead.
      * @return SpotifyUser if only one entry has a non-null countryCode and ProductType.
      */
     public Optional<SpotifyUser> getAccountHolder() {
@@ -200,6 +200,34 @@ public class SpotifyObjectRepository {
      */
     public long count(Class<? extends SpotifyObject> type) {
         return count(SpotifyObject.accessSubTypeByClass.apply(type));
+    }
+
+    /**
+     * Get count of a users' saved tracks in the database.
+     * @param user The Spotify User account to get the count of.
+     * @return count of Saved Tracks belonging to user in the database.
+     */
+    public long countSavedTracks(@NonNull SpotifyUser user){
+        try(var em = emf.createEntityManager()) {
+            var query = em.createNamedQuery("SpotifySavedTrack.countByUser");
+            query.setParameter("user", user);
+            return (Long) query.getSingleResult();
+        }
+    }
+
+    /**
+     *
+     * @param tracks
+     * @param user
+     * @return
+     */
+    public List<SpotifySavedTrack> persist(@NonNull SavedTrack[] tracks, @NonNull SpotifyUser user){
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            var persistedTracks = SpotifySavedTrackRepository.persist(em, tracks, user);
+            em.getTransaction().commit();
+            return persistedTracks;
+        }
     }
 
     /**
