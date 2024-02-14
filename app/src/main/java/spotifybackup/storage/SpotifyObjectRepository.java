@@ -207,8 +207,8 @@ public class SpotifyObjectRepository {
      * @param user The Spotify User account to get the count of.
      * @return count of Saved Tracks belonging to user in the database.
      */
-    public long countSavedTracks(@NonNull SpotifyUser user){
-        try(var em = emf.createEntityManager()) {
+    public long countSavedTracks(@NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
             var query = em.createNamedQuery("SpotifySavedTrack.countByUser");
             query.setParameter("user", user);
             return (Long) query.getSingleResult();
@@ -216,24 +216,11 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     *
-     * @param tracks
-     * @param user
-     * @return
-     */
-    public List<SpotifySavedTrack> persist(@NonNull SavedTrack[] tracks, @NonNull SpotifyUser user){
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            var persistedTracks = SpotifySavedTrackRepository.persist(em, tracks, user);
-            em.getTransaction().commit();
-            return persistedTracks;
-        }
-    }
-
-    /**
      * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
      * @param genreName name of genre as defined by Spotify.
      * @return SpotifyGenre if genreName is not blank.
+     * @implNote Can't use persistAbstractModel lambda here because genreName is not a type derived from
+     * AbstractModelObject.
      */
     public SpotifyGenre persist(@NonNull String genreName) {
         try (var em = emf.createEntityManager()) {
@@ -406,6 +393,24 @@ public class SpotifyObjectRepository {
             }
             em.getTransaction().commit();
             return spotifyArtistSet;
+        }
+    }
+
+    /**
+     *
+     * @param tracks
+     * @param user
+     * @return
+     */
+    public List<SpotifySavedTrack> persist(@NonNull SavedTrack[] tracks, @NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            List<SpotifySavedTrack> persistedTracks = new ArrayList<>();
+            for (var track : tracks) {
+                persistedTracks.add(SpotifySavedTrackRepository.persist(em, track, user));
+            }
+            em.getTransaction().commit();
+            return persistedTracks;
         }
     }
 
