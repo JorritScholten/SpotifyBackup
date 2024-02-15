@@ -3,6 +3,9 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import lombok.NonNull;
 import org.hibernate.service.spi.ServiceException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -224,8 +227,15 @@ public class SpotifyObjectRepository {
      */
     public Optional<SpotifySavedTrack> getNewestSavedTrack(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
-            var query = em.createNamedQuery("SpotifySavedTrack.findNewestByUser", SpotifySavedTrack.class);
-            query.setParameter("user", user);
+            var cb = em.getCriteriaBuilder();
+            var cr = cb.createQuery(SpotifySavedTrack.class);
+            var root = cr.from(SpotifySavedTrack.class);
+            cr.select(root)
+                    .where(cb.equal(root.get("user"), user))
+                    .orderBy(cb.desc(root.get("dateAdded")));
+            var query = em.createQuery(cr);
+//            var query = em.createNamedQuery("SpotifySavedTrack.findNewestByUser", SpotifySavedTrack.class);
+//            query.setParameter("user", user);
             return query.getResultList().stream().findFirst();
         }
     }
