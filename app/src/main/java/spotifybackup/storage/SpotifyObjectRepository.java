@@ -223,7 +223,11 @@ public class SpotifyObjectRepository {
      * database.
      */
     public Optional<SpotifySavedTrack> getNewestSavedTrack(@NonNull SpotifyUser user) {
-        return Optional.empty();
+        try (var em = emf.createEntityManager()) {
+            var query = em.createNamedQuery("SpotifySavedTrack.findNewestByUser", SpotifySavedTrack.class);
+            query.setParameter("user", user);
+            return query.getResultList().stream().findFirst();
+        }
     }
 
     /**
