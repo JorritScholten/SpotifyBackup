@@ -13,18 +13,18 @@ database and automated backups to an online repository.
 - [x] Implement a robust commandline interface in the style of the Python argparse package.
 - [ ] Make use of Spotify API wrapper. [Using this library](
   https://github.com/spotify-web-api-java/spotify-web-api-java/)
-  - [x] Make successful GET request to Spotify API
-    - [x] Host temporary REST service
-    - [x] Handle OAuth 2.0 redirects
-    - [x] Change authentication to use PKCE as well so that the client doesn't need an API secret
-    - [x] Remove Thread.sleep() call to make authorization request asynchronous
-    - [x] Handle token refresh when current token expires
-    - [ ] Handle the various API response error codes
-  - [x] Store artist GET request to db
-  - [ ] Write unit test using mocking (leaning towards EasyMock)
-  - [ ] Store track info to db
-  - [ ] Store playlist to db
-  - [ ] Store Liked Songs to db
+    - [x] Make successful GET request to Spotify API
+        - [x] Host temporary REST service
+        - [x] Handle OAuth 2.0 redirects
+        - [x] Change authentication to use PKCE as well so that the client doesn't need an API secret
+        - [x] Remove Thread.sleep() call to make authorization request asynchronous
+        - [x] Handle token refresh when current token expires
+        - [ ] Handle the various API response error codes
+    - [x] Store artist GET request to db
+    - [ ] Write unit test using mocking (leaning towards EasyMock)
+    - [ ] Store track info to db
+    - [ ] Store playlist to db
+    - [ ] Store Liked Songs to db
 - [x] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
     - [x] Implement complete storage class system to store all track information from Spotify about Playlists and Users
@@ -33,7 +33,7 @@ database and automated backups to an online repository.
         - [x] spotify image
         - [x] artists
         - [x] spotify ID
-        - [x] playlist information 
+        - [x] playlist information
         - [x] "Liked Songs"/"Saved Tracks"
         - [x] tracks in a playlist
         - [x] users
@@ -48,14 +48,26 @@ database and automated backups to an online repository.
         - [x] Create repository for SpotifyImage
         - [x] Create repository for SpotifyTrack
         - [x] Create repository for SpotifyUser
-          - [ ] handle updating SpotifyUser info when detailed info changes
-          - [ ] handle updating SpotifyUser info from simplified/public to detailed
+            - [ ] handle updating SpotifyUser info when detailed info changes
+            - [ ] handle updating SpotifyUser info from simplified/public to detailed
         - [x] Create repository for SpotifyPlaylist
-          - [x] Create repository for SpotifyPlaylistItem
+            - [x] Create repository for SpotifyPlaylistItem
         - [x] Create repository for Users Liked/Saved Songs
-          - [ ] handle tracks being removed
-          - [ ] create method to get list of track ids for a specific user
-          - [x] create method to get most recently added track, this is so that repeated runs won't need to get a user's entire library
+            - [ ] handle tracks being removed
+            - [ ] create method to get list of track ids for a specific user
+            - [x] create method to get most recently added track, this is so that repeated runs won't need to get a
+              user's entire library
+    - [ ] Convert all HQL queries to JPA CriteriaQuery's
+        - [ ] SpotifyObjectRepository
+        - [ ] SpotifyGenre
+        - [ ] SpotifyArtist
+        - [ ] SpotifyAlbum
+        - [ ] SpotifyImage
+        - [ ] SpotifyTrack
+        - [ ] SpotifyUser
+        - [ ] SpotifyPlaylist
+        - [ ] SpotifyPlaylistItem
+        - [ ] SpotifySavedTrack
 
 [//]: # (## Documentation)
 
