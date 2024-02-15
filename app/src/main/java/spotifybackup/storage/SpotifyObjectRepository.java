@@ -213,9 +213,8 @@ public class SpotifyObjectRepository {
      */
     public long countSavedTracks(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
-            var query = em.createNamedQuery("SpotifySavedTrack.countByUser");
-            query.setParameter("user", user);
-            return (Long) query.getSingleResult();
+            var query = SpotifySavedTrackRepository.countByUser(em, user);
+            return query.getSingleResult();
         }
     }
 
@@ -227,15 +226,7 @@ public class SpotifyObjectRepository {
      */
     public Optional<SpotifySavedTrack> getNewestSavedTrack(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
-            var cb = em.getCriteriaBuilder();
-            var cr = cb.createQuery(SpotifySavedTrack.class);
-            var root = cr.from(SpotifySavedTrack.class);
-            cr.select(root)
-                    .where(cb.equal(root.get("user"), user))
-                    .orderBy(cb.desc(root.get("dateAdded")));
-            var query = em.createQuery(cr);
-//            var query = em.createNamedQuery("SpotifySavedTrack.findNewestByUser", SpotifySavedTrack.class);
-//            query.setParameter("user", user);
+            var query = SpotifySavedTrackRepository.findNewestByUser(em, user);
             return query.getResultList().stream().findFirst();
         }
     }

@@ -11,12 +11,6 @@ import java.time.ZonedDateTime;
 @NoArgsConstructor
 @Entity(name = "SpotifySavedTrack")
 @NamedQuery(name = "SpotifySavedTrack.countBy", query = "select count(t) from SpotifySavedTrack t")
-@NamedQuery(name = "SpotifySavedTrack.countByUser",
-        query = "select count(t) from SpotifySavedTrack t where t.user = :user")
-@NamedQuery(name = "SpotifySavedTrack.findByUserAndTrack",
-        query = "select t from SpotifySavedTrack t where t.user = :user and t.track = :track")
-@NamedQuery(name = "SpotifySavedTrack.findNewestByUser",
-        query = "select t from SpotifySavedTrack t where t.user = :user order by t.dateAdded desc")
 public final class SpotifySavedTrack extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -2,7 +2,9 @@ package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
@@ -17,10 +19,33 @@ class SpotifySavedTrackRepository {
         throw new ConstructorUsageException();
     }
 
+    static TypedQuery<SpotifySavedTrack> findNewestByUser(EntityManager em, @NonNull SpotifyUser user) {
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
+        };
+        var root = query.from(SpotifySavedTrack.class);
+        return em.createQuery(query
+                .where(query.equal(root.get("user"), user))
+                .orderBy(query.desc(root.get("dateAdded")))
+        );
+    }
+
+    static TypedQuery<Long> countByUser(EntityManager em, @NonNull SpotifyUser user) {
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
+        };
+        var root = query.from(SpotifySavedTrack.class);
+        return em.createQuery(query
+                .where(query.equal(root.get("user"), user))
+                .createCountQuery()
+        );
+    }
+
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
-        var query = em.createNamedQuery("SpotifySavedTrack.findByUserAndTrack", SpotifySavedTrack.class);
-        query.setParameter("user", user);
-        query.setParameter("track", track);
+        var queryDef = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
+        };
+        var root = queryDef.from(SpotifySavedTrack.class);
+        queryDef.where(queryDef.equal(root.get("user"), user))
+                .where(queryDef.equal(root.get("track"), track));
+        var query = em.createQuery(queryDef);
         try {
             return Optional.of(query.getSingleResult());
         } catch (NoResultException e) {
