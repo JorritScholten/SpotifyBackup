@@ -20,7 +20,10 @@ dependencies {
             'com.neovisionaries:nv-i18n:1.29',
             'org.jline:jline:3.25.1'
     )
-    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor(
+            'org.projectlombok:lombok:1.18.30',
+            'org.hibernate.orm:hibernate-jpamodelgen:6.4.4.Final'
+    )
 }
 
 extraJavaModuleInfo {

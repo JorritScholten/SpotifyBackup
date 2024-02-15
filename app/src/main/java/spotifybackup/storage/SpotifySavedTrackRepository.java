@@ -24,8 +24,8 @@ class SpotifySavedTrackRepository {
         };
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
-                .where(query.equal(root.get("user"), user))
-                .orderBy(query.desc(root.get("dateAdded")))
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
+                .orderBy(query.desc(root.get(SpotifySavedTrack_.dateAdded)))
         );
     }
 
@@ -34,7 +34,7 @@ class SpotifySavedTrackRepository {
         };
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
-                .where(query.equal(root.get("user"), user))
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
                 .createCountQuery()
         );
     }
@@ -43,8 +43,8 @@ class SpotifySavedTrackRepository {
         var queryDef = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
         };
         var root = queryDef.from(SpotifySavedTrack.class);
-        queryDef.where(queryDef.equal(root.get("user"), user))
-                .where(queryDef.equal(root.get("track"), track));
+        queryDef.where(queryDef.equal(root.get(SpotifySavedTrack_.user), user))
+                .where(queryDef.equal(root.get(SpotifySavedTrack_.track), track));
         var query = em.createQuery(queryDef);
         try {
             return Optional.of(query.getSingleResult());
