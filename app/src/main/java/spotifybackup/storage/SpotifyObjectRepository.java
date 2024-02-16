@@ -228,12 +228,20 @@ public class SpotifyObjectRepository {
     public Optional<SpotifySavedTrack> getNewestSavedTrack(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedTrackRepository.findNewestByUser(em, user);
-            return query.getResultList().stream().findFirst();
+            return query.getResultStream().findFirst();
         }
     }
 
+    /**
+     * Get a users' saved songs as stored in the database.
+     * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
+     * @return List of a users' SpotifySavedTrack objects, may be empty.
+     */
     public List<SpotifySavedTrack> getSavedTracks(@NonNull SpotifyUser user){
-        return null;
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedTrackRepository.findByUser(em, user);
+            return query.getResultList();
+        }
     }
 
     public List<String> getSavedTrackIds(@NonNull SpotifyUser user){

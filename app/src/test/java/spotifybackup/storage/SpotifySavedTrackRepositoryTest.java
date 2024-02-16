@@ -95,14 +95,14 @@ class SpotifySavedTrackRepositoryTest {
         final SavedTrack[] apiSavedTracks = new SavedTrack.JsonUtil().createModelObjectArray(
                 new String(Files.readAllBytes(Path.of(libraryDir + "testaccount_saved_tracks.json"))), "items"
         );
-        final List<String> savedTrackIds = Arrays.stream(apiSavedTracks)
+        final List<String> apiSavedTrackIds = Arrays.stream(apiSavedTracks)
                 .map(savedTrack -> savedTrack.getTrack().getId()).toList();
 
         // Act
-        final var savedTracks = spotifyObjectRepository.getSavedTrackIds(user);
+        final var savedTrackIds = spotifyObjectRepository.getSavedTrackIds(user);
 
         // Assert
-        assertTrue(savedTracks.containsAll(savedTrackIds));
+        assertTrue(savedTrackIds.containsAll(apiSavedTrackIds));
     }
 
     @Test
