@@ -37,6 +37,14 @@ class SpotifySavedTrackRepository {
         );
     }
 
+    static TypedQuery<SpotifySavedTrack> findByUser(EntityManager em, @NonNull SpotifyUser user) {
+        return null;
+    }
+
+    static TypedQuery<String> findTrackIdsByUser(EntityManager em, @NonNull SpotifyUser user) {
+        return null;
+    }
+
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
         var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);

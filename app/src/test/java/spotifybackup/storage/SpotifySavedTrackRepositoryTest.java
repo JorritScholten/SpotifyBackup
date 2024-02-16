@@ -11,10 +11,7 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -90,9 +87,46 @@ class SpotifySavedTrackRepositoryTest {
         assertEquals(mostRecentlyAddedApi.getTrack().getId(), mostRecentlyAdded.getTrack().getSpotifyID().getId());
     }
 
+    @Test
+    @Order(4)
+    void retrieve_saved_track_ids() throws IOException {
+        // Arrange
+        final var user = getUserFromId.apply("testaccount");
+        final SavedTrack[] apiSavedTracks = new SavedTrack.JsonUtil().createModelObjectArray(
+                new String(Files.readAllBytes(Path.of(libraryDir + "testaccount_saved_tracks.json"))), "items"
+        );
+        final List<String> savedTrackIds = Arrays.stream(apiSavedTracks)
+                .map(savedTrack -> savedTrack.getTrack().getId()).toList();
+
+        // Act
+        final var savedTracks = spotifyObjectRepository.getSavedTrackIds(user);
+
+        // Assert
+        assertTrue(savedTracks.containsAll(savedTrackIds));
+    }
+
+    @Test
+    @Order(5)
+    void retrieve_saved_tracks() throws IOException {
+        // Arrange
+        final var user = getUserFromId.apply("testaccount");
+        final SavedTrack[] apiSavedTracks = new SavedTrack.JsonUtil().createModelObjectArray(
+                new String(Files.readAllBytes(Path.of(libraryDir + "testaccount_saved_tracks.json"))), "items"
+        );
+        final List<String> apiSavedTrackIds = Arrays.stream(apiSavedTracks)
+                .map(savedTrack -> savedTrack.getTrack().getId()).toList();
+
+        // Act
+        final var savedTracks = spotifyObjectRepository.getSavedTracks(user);
+
+        // Assert
+        final var savedTrackIds = savedTracks.stream().map(t -> t.getTrack().getSpotifyID().getId()).toList();
+        assertTrue(savedTrackIds.containsAll(apiSavedTrackIds));
+    }
+
     @ParameterizedTest
     @ValueSource(strings = {"testaccount", "testaccount2"})
-    @Order(4)
+    @Order(6)
     void ensure_most_recent_saved_track_can_be_retrieved(String userId) throws IOException {
         // Arrange
         final var user = getUserFromId.apply(userId);

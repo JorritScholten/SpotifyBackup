@@ -232,6 +232,14 @@ public class SpotifyObjectRepository {
         }
     }
 
+    public List<SpotifySavedTrack> getSavedTracks(@NonNull SpotifyUser user){
+        return null;
+    }
+
+    public List<String> getSavedTrackIds(@NonNull SpotifyUser user){
+        return null;
+    }
+
     /**
      * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
      * @param genreName name of genre as defined by Spotify.
