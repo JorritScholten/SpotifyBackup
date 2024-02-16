@@ -62,7 +62,7 @@ database and automated backups to an online repository.
         - [x] SpotifyGenre
         - [x] SpotifyArtist
         - [x] SpotifyAlbum
-        - [ ] SpotifyImage
+        - [x] SpotifyImage
         - [ ] SpotifyTrack
         - [ ] SpotifyUser
         - [ ] SpotifyPlaylist

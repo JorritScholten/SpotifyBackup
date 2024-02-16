@@ -9,14 +9,11 @@ import java.util.Optional;
 import java.util.Set;
 
 @Builder
-@Entity
 @NoArgsConstructor
 @Getter
 @AllArgsConstructor
 @ToString
-@NamedQuery(name = "SpotifyImage.findByUrl", query = "select i from SpotifyImage i where i.url = :url")
-@NamedQuery(name = "SpotifyImage.findByUrlWH",
-        query = "select i from SpotifyImage i where i.url = :url and i.width = :width and i.height = :height")
+@Entity
 public final class SpotifyImage extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
