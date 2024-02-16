@@ -3,10 +3,8 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
 import lombok.NonNull;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import org.hibernate.service.spi.ServiceException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
@@ -191,9 +189,12 @@ public class SpotifyObjectRepository {
      * @param type Entity type to perform count on.
      * @return count of SpotifyObject in the database.
      */
-    public long count(SpotifyObject.SubTypes type) {
+    public long count(final SpotifyObject.SubTypes type) {
         try (var em = emf.createEntityManager()) {
-            return (Long) em.createNamedQuery(type.name + ".countBy").getSingleResult();
+            var cb = em.getCriteriaBuilder();
+            var query = cb.createQuery(Long.class);
+            query.select(cb.count(query.from(type.type)));
+            return em.createQuery(query).getSingleResult();
         }
     }
 
