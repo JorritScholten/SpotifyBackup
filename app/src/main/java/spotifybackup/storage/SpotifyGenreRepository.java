@@ -3,6 +3,7 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.*;
@@ -51,12 +52,13 @@ class SpotifyGenreRepository {
      * @param genreName name of SpotifyGenre.
      * @return SpotifyGenre if genreName is not blank and in the table.
      */
-    static Optional<SpotifyGenre> find(EntityManager entityManager, @NonNull String genreName) {
+    static Optional<SpotifyGenre> find(EntityManager em, @NonNull String genreName) {
         genreName = genreName.toLowerCase(Locale.ENGLISH);
-        var query = entityManager.createNamedQuery("SpotifyGenre.findByName", SpotifyGenre.class);
-        query.setParameter("name", genreName);
+        var query = new CriteriaDefinition<>(em, SpotifyGenre.class) {};
+        var root = query.from(SpotifyGenre.class);
+        query.where(query.equal(root.get(SpotifyGenre_.name), genreName));
         try {
-            return Optional.of(query.getSingleResult());
+            return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }
@@ -66,9 +68,10 @@ class SpotifyGenreRepository {
      * Get list of all SpotifyGenre records in the database.
      * @return List of SpotifyGenre objects.
      */
-    static List<SpotifyGenre> findAll(EntityManager entityManager) {
-        var query = entityManager.createNamedQuery("SpotifyGenre.findAll", SpotifyGenre.class);
-        return query.getResultList();
+    static List<SpotifyGenre> findAll(EntityManager em) {
+        var query = new CriteriaDefinition<>(em, SpotifyGenre.class) {};
+        query.from(SpotifyGenre.class);
+        return em.createQuery(query).getResultList();
     }
 }
 

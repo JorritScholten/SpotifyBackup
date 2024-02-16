@@ -7,13 +7,11 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Set;
 
-@Entity(name = "SpotifyGenre")
 @NoArgsConstructor
 @Getter
 @RequiredArgsConstructor
 @ToString
-@NamedQuery(name = "SpotifyGenre.findByName", query = "select g from SpotifyGenre g where g.name = :name")
-@NamedQuery(name = "SpotifyGenre.findAll", query = "from SpotifyGenre")
+@Entity
 public final class SpotifyGenre extends SpotifyObject {
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres",
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
