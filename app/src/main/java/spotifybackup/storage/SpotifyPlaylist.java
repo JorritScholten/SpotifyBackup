@@ -11,9 +11,8 @@ import java.util.Set;
 @Getter
 @Builder
 @AllArgsConstructor
-@Entity(name = "SpotifyPlaylist")
-@NamedQuery(name = "SpotifyPlaylist.findBySpotifyID", query = "select p from SpotifyPlaylist p where p.spotifyID = :spotifyID")
 @NoArgsConstructor
+@Entity
 public final class SpotifyPlaylist extends SpotifyObject {
     @OneToMany(mappedBy = "playlist")
     private final Set<SpotifyPlaylistItem> tracks = new HashSet<>();
