@@ -174,13 +174,13 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     * Find SpotifyUser whose account was used to generate the database, identified by countryCode and productType not
-     * being null. TODO: rework this to return List<> instead.
-     * @return SpotifyUser if only one entry has a non-null countryCode and ProductType.
+     * Find SpotifyUser whose accounts were used to generate the database, identified by countryCode and productType not
+     * being null.
+     * @return List of SpotifyUser accounts used to generate the database.
      */
-    public Optional<SpotifyUser> getAccountHolder() {
+    public List<SpotifyUser> getAccountHolders() {
         try (var em = emf.createEntityManager()) {
-            return SpotifyUserRepository.getAccountHolder(em);
+            return SpotifyUserRepository.getAccountHolders(em);
         }
     }
 

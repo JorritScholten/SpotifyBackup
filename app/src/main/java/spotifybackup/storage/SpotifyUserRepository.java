@@ -3,10 +3,12 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
+import java.util.List;
 import java.util.Optional;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
@@ -18,18 +20,16 @@ class SpotifyUserRepository {
     }
 
     /**
-     * Find SpotifyUser whose account was used to generate the database, identified by countryCode and productType not
+     * Find SpotifyUser whose accounts were used to generate the database, identified by countryCode and productType not
      * being null.
-     * @return SpotifyUser if only one entry has a non-null countryCode and ProductType.
+     * @return List of SpotifyUser accounts used to generate the database.
      */
-    static Optional<SpotifyUser> getAccountHolder(EntityManager entityManager) {
-        var query = entityManager.createNamedQuery("SpotifyUser.findAccountHolder", SpotifyUser.class);
-        var users = query.getResultList();
-        return switch (users.size()) {
-            case 1 -> Optional.of(users.get(0));
-            case 0 -> Optional.empty();
-            default -> throw new RuntimeException("Multiple possible account holders in SpotifyUser table.");
-        };
+    static List<SpotifyUser> getAccountHolders(EntityManager em) {
+        var query = new CriteriaDefinition<>(em, SpotifyUser.class) {};
+        var root = query.from(SpotifyUser.class);
+        query.where(query.isNotNull(root.get(SpotifyUser_.countryCode)),
+                query.isNotNull(root.get(SpotifyUser_.productType)));
+        return em.createQuery(query).getResultList();
     }
 
     /**
@@ -46,12 +46,13 @@ class SpotifyUserRepository {
      * @param id String containing a Spotify User ID.
      * @return SpotifyUser if id matches the spotify_user_id field in the table and not blank.
      */
-    static Optional<SpotifyUser> find(EntityManager entityManager, @NonNull String id) {
+    static Optional<SpotifyUser> find(EntityManager em, @NonNull String id) {
         if (id.isBlank()) return Optional.empty();
-        var query = entityManager.createNamedQuery("SpotifyUser.findBySpotifyUserID", SpotifyUser.class);
-        query.setParameter("spotifyUserID", id);
+        var query = new CriteriaDefinition<>(em, SpotifyUser.class) {};
+        var root = query.from(SpotifyUser.class);
+        query.where(query.equal(root.get(SpotifyUser_.spotifyUserID), id));
         try {
-            return Optional.of(query.getSingleResult());
+            return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }

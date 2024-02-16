@@ -57,17 +57,7 @@ database and automated backups to an online repository.
             - [ ] create method to get list of track ids for a specific user
             - [x] create method to get most recently added track, this is so that repeated runs won't need to get a
               user's entire library
-    - [ ] Convert all HQL queries to JPA CriteriaQuery's
-        - [x] SpotifyObjectRepository
-        - [x] SpotifyGenre
-        - [x] SpotifyArtist
-        - [x] SpotifyAlbum
-        - [x] SpotifyImage
-        - [x] SpotifyTrack
-        - [ ] SpotifyUser
-        - [x] SpotifyPlaylist
-        - [x] SpotifyPlaylistItem
-        - [x] SpotifySavedTrack
+    - [x] Convert all HQL queries to JPA CriteriaQuery's
 
 [//]: # (## Documentation)
 

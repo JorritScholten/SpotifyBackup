@@ -11,10 +11,8 @@ import java.util.Set;
 @Getter
 @Builder
 @AllArgsConstructor
-@Entity(name = "SpotifyUser")
-@NamedQuery(name = "SpotifyUser.findBySpotifyUserID", query = "select u from SpotifyUser u where u.spotifyUserID = :spotifyUserID")
-@NamedQuery(name = "SpotifyUser.findAccountHolder", query = "select u from SpotifyUser u where u.countryCode is not null and u.productType is not null")
 @NoArgsConstructor
+@Entity
 public final class SpotifyUser extends SpotifyObject {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();

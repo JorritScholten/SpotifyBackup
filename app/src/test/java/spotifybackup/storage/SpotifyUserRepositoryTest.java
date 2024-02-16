@@ -10,8 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @EnabledIfEnvironmentVariable(named = "EnableStorageTests", matches = "true")
 class SpotifyUserRepositoryTest {
@@ -26,12 +25,30 @@ class SpotifyUserRepositoryTest {
     }
 
     @Test
+    void ensure_user_can_be_persisted() throws IOException {
+        // Arrange
+        final User apiUser = new User.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(userDir + "user2.json")))
+        );
+        assertTrue(spotifyObjectRepository.find(apiUser.getId()).isEmpty());
+
+        // Act
+        final var user = spotifyObjectRepository.persist(apiUser);
+
+        // Assert
+        assertTrue(spotifyObjectRepository.find(apiUser.getId()).isPresent());
+        assertEquals(user.getSpotifyUserID(), apiUser.getId());
+    }
+
+    @Test
     void find_account_holder_user_account() throws IOException {
         // Arrange
         // account holder
         final User apiUser = new User.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(userDir + "user.json")))
         );
+        assertFalse(spotifyObjectRepository.getAccountHolders()
+                .stream().anyMatch(u -> u.getSpotifyUserID().equals(apiUser.getId())));
         final var user = spotifyObjectRepository.persist(apiUser);
         // source of non account holder users
         final PlaylistSimplified[] playlists = {
@@ -45,11 +62,10 @@ class SpotifyUserRepositoryTest {
         spotifyObjectRepository.persist(playlists[1]);
 
         // Act
-        final var accountHolder = spotifyObjectRepository.getAccountHolder();
+        final var accountHolders = spotifyObjectRepository.getAccountHolders();
 
         // Assert
-        assertTrue(accountHolder.isPresent());
-        assertEquals(user.getId(), accountHolder.get().getId());
-        assertEquals(user.getSpotifyUserID(), accountHolder.get().getSpotifyUserID());
+        assertTrue(accountHolders.stream().anyMatch(u -> u.getSpotifyUserID().equals(user.getSpotifyUserID())));
+        assertTrue(accountHolders.stream().anyMatch(u -> u.getId() == user.getId()));
     }
 }
