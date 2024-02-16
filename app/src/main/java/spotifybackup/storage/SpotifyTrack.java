@@ -11,10 +11,9 @@ import java.util.Set;
 
 @Builder
 @AllArgsConstructor
-@Entity(name = "SpotifyTrack")
-@NamedQuery(name = "SpotifyTrack.findBySpotifyID", query = "select t from SpotifyTrack t where t.spotifyID = :spotifyID")
 @NoArgsConstructor
 @Getter
+@Entity
 public final class SpotifyTrack extends SpotifyObject {
     @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
