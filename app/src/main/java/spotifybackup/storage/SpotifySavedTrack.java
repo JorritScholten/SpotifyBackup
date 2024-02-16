@@ -9,7 +9,7 @@ import java.time.ZonedDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity(name = "SpotifySavedTrack")
+@Entity
 public final class SpotifySavedTrack extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
