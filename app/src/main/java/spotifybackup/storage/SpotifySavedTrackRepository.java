@@ -38,13 +38,12 @@ class SpotifySavedTrackRepository {
     }
 
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
-        var queryDef = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
-        var root = queryDef.from(SpotifySavedTrack.class);
-        queryDef.where(queryDef.equal(root.get(SpotifySavedTrack_.user), user))
-                .where(queryDef.equal(root.get(SpotifySavedTrack_.track), track));
-        var query = em.createQuery(queryDef);
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
+        var root = query.from(SpotifySavedTrack.class);
+        query.where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                query.equal(root.get(SpotifySavedTrack_.track), track));
         try {
-            return Optional.of(query.getSingleResult());
+            return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }

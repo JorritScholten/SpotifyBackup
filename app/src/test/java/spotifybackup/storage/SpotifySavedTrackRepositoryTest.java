@@ -2,6 +2,8 @@ package spotifybackup.storage;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.User;
@@ -13,6 +15,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,26 +27,36 @@ class SpotifySavedTrackRepositoryTest {
     static final String libraryDir = testDataDir + "library/";
     static final String trackDir = testDataDir + "track/";
     static private SpotifyObjectRepository spotifyObjectRepository;
-    static private SpotifyUser user;
+    static private final Function<String, SpotifyUser> getUserFromId =
+            id -> (SpotifyUser) spotifyObjectRepository.find(id).orElseThrow();
 
     @BeforeAll
     static void setup() throws IOException {
         spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
-        user = spotifyObjectRepository.persist(new User.JsonUtil().createModelObject(
+        spotifyObjectRepository.persist(new User.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(userDir + "user.json")))
+        ));
+        spotifyObjectRepository.persist(new User.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(userDir + "user2.json")))
         ));
     }
 
     @Test
     @Order(1)
     void ensure_user_with_no_saved_tracks_returns_empty() {
+        // Arrange
+        final var user = getUserFromId.apply("testaccount");
+
+        // Assert
         assertTrue(spotifyObjectRepository.getNewestSavedTrack(user).isEmpty());
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"testaccount", "testaccount2"})
     @Order(2)
-    void ensure_users_saved_tracks_can_be_persisted() throws IOException {
+    void ensure_users_saved_tracks_can_be_persisted(String userId) throws IOException {
         // Arrange
+        final var user = getUserFromId.apply(userId);
         final SavedTrack[] apiSavedTracks = new SavedTrack.JsonUtil().createModelObjectArray(
                 new String(Files.readAllBytes(Path.of(libraryDir + "testaccount_saved_tracks.json"))), "items"
         );
@@ -56,11 +69,13 @@ class SpotifySavedTrackRepositoryTest {
         assertEquals(apiSavedTracks.length, spotifyObjectRepository.countSavedTracks(user));
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"testaccount", "testaccount2"})
     @Order(3)
         // this test needs to be done after ensure_users_saved_tracks_can_be_persisted()
-    void ensure_most_recent_saved_track_already_stored_can_be_retrieved() throws IOException {
+    void ensure_most_recent_saved_track_already_stored_can_be_retrieved(String userId) throws IOException {
         // Arrange
+        final var user = getUserFromId.apply(userId);
         final SavedTrack[] apiSavedTracks = new SavedTrack.JsonUtil().createModelObjectArray(
                 new String(Files.readAllBytes(Path.of(libraryDir + "testaccount_saved_tracks.json"))), "items"
         );
@@ -75,10 +90,12 @@ class SpotifySavedTrackRepositoryTest {
         assertEquals(mostRecentlyAddedApi.getTrack().getId(), mostRecentlyAdded.getTrack().getSpotifyID().getId());
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {"testaccount", "testaccount2"})
     @Order(4)
-    void ensure_most_recent_saved_track_can_be_retrieved() throws IOException {
+    void ensure_most_recent_saved_track_can_be_retrieved(String userId) throws IOException {
         // Arrange
+        final var user = getUserFromId.apply(userId);
         final var previousMostRecentlyAdded = spotifyObjectRepository.getNewestSavedTrack(user).orElseThrow();
         final SavedTrack[] apiSavedTrack = {new SavedTrack.Builder()
                 .setAddedAt(Date.from(previousMostRecentlyAdded.getDateAdded().plusYears(1).toInstant()))
