@@ -20,8 +20,7 @@ class SpotifySavedTrackRepository {
     }
 
     static TypedQuery<SpotifySavedTrack> findNewestByUser(EntityManager em, @NonNull SpotifyUser user) {
-        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
-        };
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user))
@@ -30,8 +29,7 @@ class SpotifySavedTrackRepository {
     }
 
     static TypedQuery<Long> countByUser(EntityManager em, @NonNull SpotifyUser user) {
-        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
-        };
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user))
@@ -40,8 +38,7 @@ class SpotifySavedTrackRepository {
     }
 
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
-        var queryDef = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
-        };
+        var queryDef = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = queryDef.from(SpotifySavedTrack.class);
         queryDef.where(queryDef.equal(root.get(SpotifySavedTrack_.user), user))
                 .where(queryDef.equal(root.get(SpotifySavedTrack_.track), track));

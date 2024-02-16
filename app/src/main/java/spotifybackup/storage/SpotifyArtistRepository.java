@@ -3,6 +3,7 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import lombok.NonNull;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
@@ -41,12 +42,13 @@ class SpotifyArtistRepository {
      * @param id String containing a Spotify ID.
      * @return SpotifyArtist if id matches the spotify_id field in the table and not blank.
      */
-    static Optional<SpotifyArtist> find(EntityManager entityManager, @NonNull String id) {
-        if (id.isBlank() || entityManager.find(SpotifyID.class, id) == null) return Optional.empty();
-        var query = entityManager.createNamedQuery("SpotifyArtist.findBySpotifyID", SpotifyArtist.class);
-        query.setParameter("spotifyID", entityManager.find(SpotifyID.class, id));
+    static Optional<SpotifyArtist> find(EntityManager em, @NonNull String id) {
+        if (id.isBlank() || em.find(SpotifyID.class, id) == null) return Optional.empty();
+        var query = new CriteriaDefinition<>(em, SpotifyArtist.class) {};
+        var root = query.from(SpotifyArtist.class);
+        query.where(query.equal(root.get(SpotifyArtist_.SPOTIFY_ID).asString(), id));
         try {
-            return Optional.of(query.getSingleResult());
+            return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
             return Optional.empty();
         }

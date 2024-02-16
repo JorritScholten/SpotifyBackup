@@ -49,7 +49,7 @@ class SpotifyAlbumRepository {
      */
     static Optional<SpotifyAlbum> find(EntityManager em, @NonNull String id) {
         if (id.isBlank() || em.find(SpotifyID.class, id) == null) return Optional.empty();
-        var query = new CriteriaDefinition<>(em, SpotifyAlbum.class){};
+        var query = new CriteriaDefinition<>(em, SpotifyAlbum.class) {};
         var root = query.from(SpotifyAlbum.class);
         query.where(query.equal(root.get(SpotifyAlbum_.SPOTIFY_ID).asString(), id));
         try {

@@ -60,7 +60,7 @@ database and automated backups to an online repository.
     - [ ] Convert all HQL queries to JPA CriteriaQuery's
         - [x] SpotifyObjectRepository
         - [ ] SpotifyGenre
-        - [ ] SpotifyArtist
+        - [x] SpotifyArtist
         - [x] SpotifyAlbum
         - [ ] SpotifyImage
         - [ ] SpotifyTrack

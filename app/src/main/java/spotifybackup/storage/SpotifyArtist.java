@@ -8,10 +8,9 @@ import java.util.Set;
 
 @Builder
 @AllArgsConstructor
-@Entity(name = "SpotifyArtist")
-@NamedQuery(name = "SpotifyArtist.findBySpotifyID", query = "select a from SpotifyArtist a where a.spotifyID = :spotifyID")
 @NoArgsConstructor
 @Getter
+@Entity
 public final class SpotifyArtist extends SpotifyObject {
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
