@@ -12,7 +12,6 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @Entity(name = "SpotifyUser")
-@NamedQuery(name = "SpotifyUser.countBy", query = "select count(u) from SpotifyUser u")
 @NamedQuery(name = "SpotifyUser.findBySpotifyUserID", query = "select u from SpotifyUser u where u.spotifyUserID = :spotifyUserID")
 @NamedQuery(name = "SpotifyUser.findAccountHolder", query = "select u from SpotifyUser u where u.countryCode is not null and u.productType is not null")
 @NoArgsConstructor

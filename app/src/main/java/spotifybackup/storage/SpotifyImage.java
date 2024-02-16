@@ -14,7 +14,6 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @ToString
-@NamedQuery(name = "SpotifyImage.countBy", query = "select count(i) from SpotifyImage i")
 @NamedQuery(name = "SpotifyImage.findByUrl", query = "select i from SpotifyImage i where i.url = :url")
 @NamedQuery(name = "SpotifyImage.findByUrlWH",
         query = "select i from SpotifyImage i where i.url = :url and i.width = :width and i.height = :height")

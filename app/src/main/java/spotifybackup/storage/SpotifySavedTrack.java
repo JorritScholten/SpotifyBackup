@@ -10,7 +10,6 @@ import java.time.ZonedDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity(name = "SpotifySavedTrack")
-@NamedQuery(name = "SpotifySavedTrack.countBy", query = "select count(t) from SpotifySavedTrack t")
 public final class SpotifySavedTrack extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

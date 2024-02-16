@@ -10,7 +10,6 @@ import java.util.Optional;
 @Builder
 @AllArgsConstructor
 @Entity(name = "SpotifyPlaylistItem")
-@NamedQuery(name = "SpotifyPlaylistItem.countBy", query = "select count(i) from SpotifyPlaylistItem i")
 @NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistIDAndTrackID",
         query = "select i from SpotifyPlaylistItem i where i.playlist = :playlistID and i.track = :trackID")
 @NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistIDAndTrackIDAndUserID",

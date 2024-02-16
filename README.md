@@ -58,7 +58,7 @@ database and automated backups to an online repository.
             - [x] create method to get most recently added track, this is so that repeated runs won't need to get a
               user's entire library
     - [ ] Convert all HQL queries to JPA CriteriaQuery's
-        - [ ] SpotifyObjectRepository
+        - [x] SpotifyObjectRepository
         - [ ] SpotifyGenre
         - [ ] SpotifyArtist
         - [ ] SpotifyAlbum
