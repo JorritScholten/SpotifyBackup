@@ -9,12 +9,8 @@ import java.util.Optional;
 @Getter
 @Builder
 @AllArgsConstructor
-@Entity(name = "SpotifyPlaylistItem")
-@NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistIDAndTrackID",
-        query = "select i from SpotifyPlaylistItem i where i.playlist = :playlistID and i.track = :trackID")
-@NamedQuery(name = "SpotifyPlaylistItem.findByPlaylistIDAndTrackIDAndUserID",
-        query = "select i from SpotifyPlaylistItem i where i.playlist = :playlistID and i.track = :trackID and i.addedBy = :addedBy")
 @NoArgsConstructor
+@Entity
 public final class SpotifyPlaylistItem extends SpotifyObject {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

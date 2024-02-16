@@ -66,7 +66,7 @@ database and automated backups to an online repository.
         - [x] SpotifyTrack
         - [ ] SpotifyUser
         - [x] SpotifyPlaylist
-        - [ ] SpotifyPlaylistItem
+        - [x] SpotifyPlaylistItem
         - [ ] SpotifySavedTrack
 
 [//]: # (## Documentation)

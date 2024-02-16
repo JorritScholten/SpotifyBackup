@@ -2,6 +2,7 @@ package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.enums.ModelObjectType;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
 import se.michaelthelin.spotify.model_objects.specification.Track;
@@ -46,27 +47,27 @@ class SpotifyPlaylistItemRepository {
      * Find SpotifyPlaylistItems by matching SpotifyTrack and SpotifyPlaylist.
      * @return List of SpotifyPlaylistItems matching parameters.
      */
-    static List<SpotifyPlaylistItem> find(EntityManager entityManager, @NonNull SpotifyTrack track,
+    static List<SpotifyPlaylistItem> find(EntityManager em, @NonNull SpotifyTrack track,
                                           @NonNull SpotifyPlaylist playlist) {
-        var query = entityManager.createNamedQuery("SpotifyPlaylistItem.findByPlaylistIDAndTrackID",
-                SpotifyPlaylistItem.class);
-        query.setParameter("playlistID", playlist);
-        query.setParameter("trackID", track);
-        return query.getResultList();
+        var query = new CriteriaDefinition<>(em, SpotifyPlaylistItem.class) {};
+        var root = query.from(SpotifyPlaylistItem.class);
+        query.where(query.equal(root.get(SpotifyPlaylistItem_.playlist), playlist),
+                query.equal(root.get(SpotifyPlaylistItem_.track), track));
+        return em.createQuery(query).getResultList();
     }
 
     /**
      * Find SpotifyPlaylistItems by matching SpotifyTrack, SpotifyPlaylist and which SpotifyUser added the track.
      * @return List of SpotifyPlaylistItems matching parameters.
      */
-    static List<SpotifyPlaylistItem> find(EntityManager entityManager, @NonNull SpotifyTrack track,
+    static List<SpotifyPlaylistItem> find(EntityManager em, @NonNull SpotifyTrack track,
                                           @NonNull SpotifyPlaylist playlist, @NonNull SpotifyUser addedBy) {
-        var query = entityManager.createNamedQuery("SpotifyPlaylistItem.findByPlaylistIDAndTrackIDAndUserID",
-                SpotifyPlaylistItem.class);
-        query.setParameter("playlistID", playlist);
-        query.setParameter("trackID", track);
-        query.setParameter("addedBy", addedBy);
-        return query.getResultList();
+        var query = new CriteriaDefinition<>(em, SpotifyPlaylistItem.class) {};
+        var root = query.from(SpotifyPlaylistItem.class);
+        query.where(query.equal(root.get(SpotifyPlaylistItem_.playlist), playlist),
+                query.equal(root.get(SpotifyPlaylistItem_.track), track),
+                query.equal(root.get(SpotifyPlaylistItem_.addedBy), addedBy));
+        return em.createQuery(query).getResultList();
     }
 
     /**
