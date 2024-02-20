@@ -54,7 +54,7 @@ database and automated backups to an online repository.
             - [x] Create repository for SpotifyPlaylistItem
         - [x] Create repository for Users Liked/Saved Songs
             - [ ] handle tracks being removed
-            - [ ] create method to get list of track ids for a specific user
+            - [x] create method to get list of track ids for a specific user
             - [x] create method to get most recently added track, this is so that repeated runs won't need to get a
               user's entire library
     - [x] Convert all HQL queries to JPA CriteriaQuery's

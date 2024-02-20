@@ -62,7 +62,7 @@ class SpotifyTrackRepository {
         if (id.isBlank() || em.find(SpotifyID.class, id) == null) return Optional.empty();
         var query = new CriteriaDefinition<>(em, SpotifyTrack.class) {};
         var root = query.from(SpotifyTrack.class);
-        query.where(query.equal(root.get(SpotifyTrack_.SPOTIFY_ID).asString(), id));
+        query.where(query.equal(root.get(SpotifyTrack_.spotifyID).asString(), id));
         try {
             return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {

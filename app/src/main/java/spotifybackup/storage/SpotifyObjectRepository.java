@@ -4,6 +4,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
+import org.hibernate.Hibernate;
+import org.hibernate.SessionFactory;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import org.hibernate.service.spi.ServiceException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -15,6 +17,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.stream.Collectors;
 
 public class SpotifyObjectRepository {
     private static final String URL_DATASOURCE_NAME = "hibernate.hikari.dataSource.url";
@@ -235,17 +238,25 @@ public class SpotifyObjectRepository {
     /**
      * Get a users' saved songs as stored in the database.
      * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
-     * @return List of a users' SpotifySavedTrack objects, may be empty.
+     * @return Set of a users' SpotifySavedTrack objects, may be empty.
      */
-    public List<SpotifySavedTrack> getSavedTracks(@NonNull SpotifyUser user){
+    public Set<SpotifySavedTrack> getSavedTracks(@NonNull SpotifyUser user){
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedTrackRepository.findByUser(em, user);
-            return query.getResultList();
+            return new HashSet<>(query.getResultList());
         }
     }
 
-    public List<String> getSavedTrackIds(@NonNull SpotifyUser user){
-        return null;
+    /**
+     * Get Spotify IDs of a users' saved songs as stored in the database.
+     * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
+     * @return Set of Spotify IDs of a users' SpotifySavedTrack objects, may be empty.
+     */
+    public Set<String> getSavedTrackIds(@NonNull SpotifyUser user){
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedTrackRepository.findTrackIdsByUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
     }
 
     /**

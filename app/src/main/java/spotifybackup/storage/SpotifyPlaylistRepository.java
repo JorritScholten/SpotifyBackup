@@ -56,7 +56,7 @@ class SpotifyPlaylistRepository {
         if (id.isBlank() || em.find(SpotifyID.class, id) == null) return Optional.empty();
         var query = new CriteriaDefinition<>(em, SpotifyPlaylist.class) {};
         var root = query.from(SpotifyPlaylist.class);
-        query.where(query.equal(root.get(SpotifyPlaylist_.SPOTIFY_ID).asString(), id));
+        query.where(query.equal(root.get(SpotifyPlaylist_.spotifyID).asString(), id));
         try {
             return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {

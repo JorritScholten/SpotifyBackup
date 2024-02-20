@@ -8,9 +8,9 @@ import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
-import java.time.ZoneOffset;
 import java.util.Optional;
 
+import static java.time.ZoneOffset.UTC;
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 
 class SpotifySavedTrackRepository {
@@ -46,11 +46,17 @@ class SpotifySavedTrackRepository {
     }
 
     static TypedQuery<String> findTrackIdsByUser(EntityManager em, @NonNull SpotifyUser user) {
-        return null;
+        var query = new CriteriaDefinition<>(em, String.class) {};
+        var root = query.from(SpotifySavedTrack.class);
+        return em.createQuery(query
+                .select(root.get(SpotifySavedTrack_.track).get(SpotifyTrack_.spotifyID).asString())
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
+        );
     }
 
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
-        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
+        };
         var root = query.from(SpotifySavedTrack.class);
         query.where(query.equal(root.get(SpotifySavedTrack_.user), user),
                 query.equal(root.get(SpotifySavedTrack_.track), track));
@@ -71,7 +77,7 @@ class SpotifySavedTrackRepository {
             var newSpotifySavedTrack = SpotifySavedTrack.builder()
                     .track(track)
                     .user(user)
-                    .dateAdded(apiTrack.getAddedAt().toInstant().atZone(ZoneOffset.UTC))
+                    .dateAdded(apiTrack.getAddedAt().toInstant().atZone(UTC))
                     .build();
             em.persist(newSpotifySavedTrack);
             return newSpotifySavedTrack;

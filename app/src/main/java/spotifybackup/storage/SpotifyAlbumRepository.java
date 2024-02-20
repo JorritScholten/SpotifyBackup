@@ -51,7 +51,7 @@ class SpotifyAlbumRepository {
         if (id.isBlank() || em.find(SpotifyID.class, id) == null) return Optional.empty();
         var query = new CriteriaDefinition<>(em, SpotifyAlbum.class) {};
         var root = query.from(SpotifyAlbum.class);
-        query.where(query.equal(root.get(SpotifyAlbum_.SPOTIFY_ID).asString(), id));
+        query.where(query.equal(root.get(SpotifyAlbum_.spotifyID).asString(), id));
         try {
             return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
