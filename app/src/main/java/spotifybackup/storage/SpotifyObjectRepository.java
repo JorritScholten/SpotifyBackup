@@ -4,9 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
-import org.hibernate.Hibernate;
-import org.hibernate.SessionFactory;
-import org.hibernate.query.criteria.CriteriaDefinition;
 import org.hibernate.service.spi.ServiceException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
@@ -14,24 +11,12 @@ import se.michaelthelin.spotify.model_objects.specification.*;
 import java.io.File;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
-import java.util.stream.Collectors;
 
 public class SpotifyObjectRepository {
     private static final String URL_DATASOURCE_NAME = "hibernate.hikari.dataSource.url";
     private final EntityManagerFactory emf;
-    private final Function<AbstractModelObject, Function<EntityManagerFactory, Function<
-            BiFunction<EntityManager, AbstractModelObject, ? extends SpotifyObject>,
-            ? extends SpotifyObject>>> persistAbstractModel = apiObject -> factory -> persist -> {
-        try (var em = factory.createEntityManager()) {
-            em.getTransaction().begin();
-            var spotifyObject = persist.apply(em, apiObject);
-            em.getTransaction().commit();
-            return spotifyObject;
-        }
-    };
 
     private SpotifyObjectRepository(@NonNull String persistenceUnitName, @NonNull Properties dbAccess) {
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
@@ -89,6 +74,16 @@ public class SpotifyObjectRepository {
         }
         dataSourceUrl.append(";DB_CLOSE_DELAY=-1");
         return dataSourceUrl.toString();
+    }
+
+    private <T extends SpotifyObject, A extends AbstractModelObject> T
+    persistAbstractModel(A apiObject, BiFunction<EntityManager, A, T> persist) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            var spotifyObject = persist.apply(em, apiObject);
+            em.getTransaction().commit();
+            return spotifyObject;
+        }
     }
 
     /**
@@ -240,7 +235,7 @@ public class SpotifyObjectRepository {
      * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
      * @return Set of a users' SpotifySavedTrack objects, may be empty.
      */
-    public Set<SpotifySavedTrack> getSavedTracks(@NonNull SpotifyUser user){
+    public Set<SpotifySavedTrack> getSavedTracks(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedTrackRepository.findByUser(em, user);
             return new HashSet<>(query.getResultList());
@@ -252,7 +247,7 @@ public class SpotifyObjectRepository {
      * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
      * @return Set of Spotify IDs of a users' SpotifySavedTrack objects, may be empty.
      */
-    public Set<String> getSavedTrackIds(@NonNull SpotifyUser user){
+    public Set<String> getSavedTrackIds(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedTrackRepository.findTrackIdsByUser(em, user);
             return new HashSet<>(query.getResultList());
@@ -281,7 +276,7 @@ public class SpotifyObjectRepository {
      * @return SpotifyImage if already in the database or images' url is not too long or empty.
      */
     public SpotifyImage persist(@NonNull Image image) {
-        return (SpotifyImage) persistAbstractModel.apply(image).apply(emf).apply(SpotifyImageRepository::persist);
+        return persistAbstractModel(image, SpotifyImageRepository::persist);
     }
 
     /**
@@ -314,7 +309,7 @@ public class SpotifyObjectRepository {
      * has a new Spotify ID.
      */
     public SpotifyPlaylist persist(@NonNull Playlist apiPlaylist) {
-        return (SpotifyPlaylist) persistAbstractModel.apply(apiPlaylist).apply(emf).apply(SpotifyPlaylistRepository::persist);
+        return persistAbstractModel(apiPlaylist, SpotifyPlaylistRepository::persist);
     }
 
     /**
@@ -324,7 +319,7 @@ public class SpotifyObjectRepository {
      * has a new Spotify ID.
      */
     public SpotifyPlaylist persist(@NonNull PlaylistSimplified apiPlaylist) {
-        return (SpotifyPlaylist) persistAbstractModel.apply(apiPlaylist).apply(emf).apply(SpotifyPlaylistRepository::persist);
+        return persistAbstractModel(apiPlaylist, SpotifyPlaylistRepository::persist);
     }
 
     /**
@@ -334,7 +329,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyUser persist(@NonNull User apiUser) {
-        return (SpotifyUser) persistAbstractModel.apply(apiUser).apply(emf).apply(SpotifyUserRepository::persist);
+        return persistAbstractModel(apiUser, SpotifyUserRepository::persist);
     }
 
     /**
@@ -344,7 +339,7 @@ public class SpotifyObjectRepository {
      * new Spotify ID.
      */
     public SpotifyArtist persist(@NonNull Artist apiArtist) {
-        return (SpotifyArtist) persistAbstractModel.apply(apiArtist).apply(emf).apply(SpotifyArtistRepository::persist);
+        return persistAbstractModel(apiArtist, SpotifyArtistRepository::persist);
     }
 
     /**
@@ -354,7 +349,7 @@ public class SpotifyObjectRepository {
      * new Spotify ID.
      */
     public SpotifyArtist persist(@NonNull ArtistSimplified apiArtist) {
-        return (SpotifyArtist) persistAbstractModel.apply(apiArtist).apply(emf).apply(SpotifyArtistRepository::persist);
+        return persistAbstractModel(apiArtist, SpotifyArtistRepository::persist);
     }
 
     /**
@@ -364,7 +359,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyTrack persist(@NonNull Track apiTrack) {
-        return (SpotifyTrack) persistAbstractModel.apply(apiTrack).apply(emf).apply(SpotifyTrackRepository::persist);
+        return persistAbstractModel(apiTrack, SpotifyTrackRepository::persist);
     }
 
     /**
@@ -374,7 +369,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyAlbum persist(@NonNull Album apiAlbum) {
-        return (SpotifyAlbum) persistAbstractModel.apply(apiAlbum).apply(emf).apply(SpotifyAlbumRepository::persist);
+        return persistAbstractModel(apiAlbum, SpotifyAlbumRepository::persist);
     }
 
     /**
@@ -384,7 +379,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyAlbum persist(@NonNull AlbumSimplified apiAlbum) {
-        return (SpotifyAlbum) persistAbstractModel.apply(apiAlbum).apply(emf).apply(SpotifyAlbumRepository::persist);
+        return persistAbstractModel(apiAlbum, SpotifyAlbumRepository::persist);
     }
 
     /**
