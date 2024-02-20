@@ -1,7 +1,6 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -12,6 +11,7 @@ import spotifybackup.storage.exception.ConstructorUsageException;
 import java.util.Optional;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
+import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
 
 class SpotifyArtistRepository {
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
@@ -47,11 +47,7 @@ class SpotifyArtistRepository {
         var query = new CriteriaDefinition<>(em, SpotifyArtist.class) {};
         var root = query.from(SpotifyArtist.class);
         query.where(query.equal(root.get(SpotifyArtist_.spotifyID).asString(), id));
-        try {
-            return Optional.of(em.createQuery(query).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return getSingleResultOptionally(em, query);
     }
 
     /**

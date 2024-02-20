@@ -1,7 +1,6 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -14,6 +13,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
+import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
 
 class SpotifyPlaylistRepository {
     private static final Function<EntityManager, BiConsumer<Playlist, SpotifyPlaylist>> setNotSimpleFields =
@@ -57,11 +57,7 @@ class SpotifyPlaylistRepository {
         var query = new CriteriaDefinition<>(em, SpotifyPlaylist.class) {};
         var root = query.from(SpotifyPlaylist.class);
         query.where(query.equal(root.get(SpotifyPlaylist_.spotifyID).asString(), id));
-        try {
-            return Optional.of(em.createQuery(query).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return getSingleResultOptionally(em, query);
     }
 
     static SpotifyPlaylist persist(EntityManager entityManager, @NonNull AbstractModelObject apiPlaylist) {

@@ -1,7 +1,6 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
@@ -12,6 +11,7 @@ import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
+import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
 
 class SpotifySavedTrackRepository {
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
@@ -60,11 +60,7 @@ class SpotifySavedTrackRepository {
         var root = query.from(SpotifySavedTrack.class);
         query.where(query.equal(root.get(SpotifySavedTrack_.user), user),
                 query.equal(root.get(SpotifySavedTrack_.track), track));
-        try {
-            return Optional.of(em.createQuery(query).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return getSingleResultOptionally(em, query);
     }
 
     static SpotifySavedTrack persist(EntityManager em, @NonNull SavedTrack apiTrack, @NonNull SpotifyUser user) {

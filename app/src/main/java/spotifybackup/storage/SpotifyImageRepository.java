@@ -1,7 +1,6 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -14,6 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
+import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
 
 class SpotifyImageRepository {
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
@@ -46,11 +46,7 @@ class SpotifyImageRepository {
         query.where(query.equal(root.get(SpotifyImage_.url), image.getUrl()),
                 query.equal(root.get(SpotifyImage_.width), image.getWidth()),
                 query.equal(root.get(SpotifyImage_.height), image.getHeight()));
-        try {
-            return Optional.of(em.createQuery(query).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return getSingleResultOptionally(em, query);
     }
 
     /**
@@ -63,11 +59,7 @@ class SpotifyImageRepository {
         var query = new CriteriaDefinition<>(em, SpotifyImage.class) {};
         var root = query.from(SpotifyImage.class);
         query.where(query.equal(root.get(SpotifyImage_.url), url));
-        try {
-            return Optional.of(em.createQuery(query).getSingleResult());
-        } catch (NoResultException e) {
-            return Optional.empty();
-        }
+        return getSingleResultOptionally(em, query);
     }
 
     static SpotifyImage persist(EntityManager entityManager, @NonNull AbstractModelObject apiImage) {

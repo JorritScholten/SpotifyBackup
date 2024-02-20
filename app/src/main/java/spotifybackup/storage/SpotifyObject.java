@@ -2,15 +2,14 @@ package spotifybackup.storage;
 
 import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 import spotifybackup.storage.exception.TransactionInactiveException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -34,6 +33,14 @@ public abstract sealed class SpotifyObject
     static {
         for (var subType : SubTypes.values()) {
             mapSubtypeByClass.put(subType.type, subType);
+        }
+    }
+
+    static <T extends SpotifyObject> Optional<T> getSingleResultOptionally(EntityManager em, CriteriaDefinition<T> query){
+        try {
+            return Optional.of(em.createQuery(query).getSingleResult());
+        } catch (NoResultException e) {
+            return Optional.empty();
         }
     }
 
