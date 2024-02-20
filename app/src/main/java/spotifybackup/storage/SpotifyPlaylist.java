@@ -36,7 +36,6 @@ public final class SpotifyPlaylist extends SpotifyObject {
     private String name;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     private String description;
 
     @NonNull

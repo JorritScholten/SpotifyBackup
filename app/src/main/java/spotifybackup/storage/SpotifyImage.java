@@ -23,9 +23,8 @@ public final class SpotifyImage extends SpotifyObject {
     @Column(nullable = false, unique = true)
     private String url;
 
-    @Getter(AccessLevel.NONE)
     private Integer width;
-    @Getter(AccessLevel.NONE)
+
     private Integer height;
 
     /**

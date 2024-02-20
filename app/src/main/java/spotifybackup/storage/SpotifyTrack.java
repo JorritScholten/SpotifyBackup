@@ -19,9 +19,11 @@ public final class SpotifyTrack extends SpotifyObject {
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyArtist> artists = new HashSet<>();
 
+    @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "track")
     private final Set<SpotifyPlaylistItem> playlistItems = new HashSet<>();
 
+    @Getter(AccessLevel.NONE)
     @OneToMany(mappedBy = "track")
     private final Set<SpotifySavedTrack> savedTracks = new HashSet<>();
 
@@ -52,16 +54,13 @@ public final class SpotifyTrack extends SpotifyObject {
     private Boolean explicit;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     @Column(length = 12)
     private String isrcID;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     private String upcID;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     private String eanID;
 
     @NonNull

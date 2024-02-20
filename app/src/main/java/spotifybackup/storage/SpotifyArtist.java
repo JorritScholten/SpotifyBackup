@@ -20,10 +20,12 @@ public final class SpotifyArtist extends SpotifyObject {
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyGenre> genres = new HashSet<>();
 
+    @Getter(AccessLevel.NONE)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "artists", cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyAlbum> albums = new HashSet<>();
 
+    @Getter(AccessLevel.NONE)
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "artists", cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyTrack> tracks = new HashSet<>();

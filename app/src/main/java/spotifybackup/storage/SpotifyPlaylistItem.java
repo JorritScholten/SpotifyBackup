@@ -26,12 +26,10 @@ public final class SpotifyPlaylistItem extends SpotifyObject {
     @JoinColumn(name = "playlist_id", nullable = false)
     private SpotifyPlaylist playlist;
 
-    @Getter(AccessLevel.NONE)
     @ManyToOne
     @JoinColumn(name = "added_by_user_id")
     private SpotifyUser addedBy;
 
-    @Getter(AccessLevel.NONE)
     @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE")
     private ZonedDateTime dateAdded;
 

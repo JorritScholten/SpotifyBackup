@@ -46,16 +46,13 @@ public final class SpotifyAlbum extends SpotifyObject {
     private SpotifyID spotifyID;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     @Column(length = 12)
     private String isrcID;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     private String upcID;
 
     @Setter
-    @Getter(AccessLevel.NONE)
     private String eanID;
 
     @NonNull

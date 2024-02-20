@@ -14,16 +14,20 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 public final class SpotifyUser extends SpotifyObject {
+    @Getter(AccessLevel.NONE)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 
-    @OneToMany(mappedBy = "addedBy")
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "addedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyPlaylistItem> addedPlaylistItems = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifySavedTrack> savedTracks = new HashSet<>();
 
-    @OneToMany(mappedBy = "owner")
+    @Getter(AccessLevel.NONE)
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyPlaylist> ownedPlaylists = new HashSet<>();
 
     @Id
@@ -34,14 +38,11 @@ public final class SpotifyUser extends SpotifyObject {
     @Column(nullable = false, unique = true)
     private String spotifyUserID;
 
-    @Getter(AccessLevel.NONE)
     private String displayName;
 
-    @Getter(AccessLevel.NONE)
     @Column(columnDefinition = "varchar(2)")
     private String countryCode;
 
-    @Getter(AccessLevel.NONE)
     @Enumerated(EnumType.STRING)
     private ProductType productType;
 
