@@ -25,7 +25,7 @@ class SpotifySavedTrackRepository {
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user),
-                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
+                        query.isFalse(root.get(SpotifySavedTrack_.isRemoved)))
                 .orderBy(query.desc(root.get(SpotifySavedTrack_.dateAdded)))
         );
     }
@@ -35,7 +35,7 @@ class SpotifySavedTrackRepository {
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user),
-                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
+                        query.isFalse(root.get(SpotifySavedTrack_.isRemoved)))
                 .createCountQuery()
         );
     }
@@ -45,7 +45,7 @@ class SpotifySavedTrackRepository {
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user),
-                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
+                        query.isFalse(root.get(SpotifySavedTrack_.isRemoved)))
         );
     }
 
@@ -54,7 +54,7 @@ class SpotifySavedTrackRepository {
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user),
-                        query.isTrue(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
+                        query.isTrue(root.get(SpotifySavedTrack_.isRemoved)))
         );
     }
 
@@ -64,7 +64,7 @@ class SpotifySavedTrackRepository {
         return em.createQuery(query
                 .select(root.get(SpotifySavedTrack_.track).get(SpotifyTrack_.spotifyID).asString())
                 .where(query.equal(root.get(SpotifySavedTrack_.user), user),
-                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
+                        query.isFalse(root.get(SpotifySavedTrack_.isRemoved)))
         );
     }
 
@@ -72,7 +72,7 @@ class SpotifySavedTrackRepository {
         ensureTransactionActive.accept(em);
         var optionalSavedTrack = find(em, track, user);
         if (optionalSavedTrack.isPresent()) {
-            optionalSavedTrack.get().setRemovedFromLikedSongs(true);
+            optionalSavedTrack.get().setIsRemoved(true);
             optionalSavedTrack.get().setDateRemoved(ZonedDateTime.now(UTC));
             em.persist(optionalSavedTrack.get());
         }

@@ -169,4 +169,36 @@ class SpotifySavedTrackRepositoryTest {
                 .anyMatch(s -> s.equals(mostRecentTrackId))
         );
     }
+
+    @Test
+    @Order(8)
+    void ensure_removed_saved_track_can_be_added_again() throws IOException {
+        // Arrange
+        final var user = getUserFromId.apply("testaccount");
+        final var previousMostRecentlyAdded = spotifyObjectRepository.getNewestSavedTrack(user).orElseThrow();
+        final SavedTrack[] apiSavedTrack = {new SavedTrack.Builder()
+                .setAddedAt(Date.from(previousMostRecentlyAdded.getDateAdded().plusYears(1).toInstant()))
+                .setTrack(new Track.JsonUtil().createModelObject(
+                        new String(Files.readAllBytes(Path.of(trackDir + "King.json")))
+                )).build()};
+        final var oldSavedTrackCount = spotifyObjectRepository.countSavedTracks(user);
+        assertEquals(1, spotifyObjectRepository.getRemovedSavedTracks(user).size());
+        assertTrue(spotifyObjectRepository.getRemovedSavedTracks(user).stream()
+                        .map(t -> t.getTrack().getSpotifyID().getId())
+                        .anyMatch(s -> s.equals(apiSavedTrack[0].getTrack().getId())),
+                apiSavedTrack[0].getTrack().getName() + " should be in removed saved songs for user: "
+                        + user.getSpotifyUserID()
+        );
+
+        // Act
+        final var savedTracks = spotifyObjectRepository.persist(apiSavedTrack, user);
+        final var newMostRecentlyAdded = spotifyObjectRepository.getNewestSavedTrack(user).orElseThrow();
+
+        // Assert
+        assertEquals(oldSavedTrackCount + 1, spotifyObjectRepository.countSavedTracks(user));
+        assertEquals(0, spotifyObjectRepository.getRemovedSavedTracks(user).size());
+        assertFalse(newMostRecentlyAdded.getIsRemoved());
+        assertFalse(savedTracks.getFirst().getIsRemoved());
+        assertEquals(apiSavedTrack[0].getTrack().getId(), savedTracks.getFirst().getTrack().getSpotifyID().getId());
+    }
 }

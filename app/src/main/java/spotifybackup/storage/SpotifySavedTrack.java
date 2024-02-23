@@ -33,7 +33,7 @@ public final class SpotifySavedTrack extends SpotifyObject {
     @NonNull
     @Builder.Default
     @Setter(AccessLevel.PACKAGE)
-    private Boolean removedFromLikedSongs = false;
+    private Boolean isRemoved = false;
 
     @Setter(AccessLevel.PACKAGE)
     private ZonedDateTime dateRemoved;
