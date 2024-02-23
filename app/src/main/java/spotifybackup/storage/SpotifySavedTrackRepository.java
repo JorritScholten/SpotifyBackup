@@ -7,6 +7,7 @@ import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 
 import static java.time.ZoneOffset.UTC;
@@ -23,7 +24,8 @@ class SpotifySavedTrackRepository {
         var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
-                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
                 .orderBy(query.desc(root.get(SpotifySavedTrack_.dateAdded)))
         );
     }
@@ -32,7 +34,8 @@ class SpotifySavedTrackRepository {
         var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
-                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
                 .createCountQuery()
         );
     }
@@ -41,7 +44,17 @@ class SpotifySavedTrackRepository {
         var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
-                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
+        );
+    }
+
+    static TypedQuery<SpotifySavedTrack> findRemovedByUser(EntityManager em, @NonNull SpotifyUser user) {
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
+        var root = query.from(SpotifySavedTrack.class);
+        return em.createQuery(query
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                        query.isTrue(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
         );
     }
 
@@ -50,8 +63,20 @@ class SpotifySavedTrackRepository {
         var root = query.from(SpotifySavedTrack.class);
         return em.createQuery(query
                 .select(root.get(SpotifySavedTrack_.track).get(SpotifyTrack_.spotifyID).asString())
-                .where(query.equal(root.get(SpotifySavedTrack_.user), user))
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                        query.isFalse(root.get(SpotifySavedTrack_.removedFromLikedSongs)))
         );
+    }
+
+    static Optional<SpotifySavedTrack> removeTrackFromLikedSongs(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
+        ensureTransactionActive.accept(em);
+        var optionalSavedTrack = find(em, track, user);
+        if (optionalSavedTrack.isPresent()) {
+            optionalSavedTrack.get().setRemovedFromLikedSongs(true);
+            optionalSavedTrack.get().setDateRemoved(ZonedDateTime.now(UTC));
+            em.persist(optionalSavedTrack.get());
+        }
+        return optionalSavedTrack;
     }
 
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {

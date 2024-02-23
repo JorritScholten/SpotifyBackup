@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.ZonedDateTime;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -28,4 +29,16 @@ public final class SpotifySavedTrack extends SpotifyObject {
     @NonNull
     @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE", nullable = false)
     private ZonedDateTime dateAdded;
+
+    @NonNull
+    @Builder.Default
+    @Setter(AccessLevel.PACKAGE)
+    private Boolean removedFromLikedSongs = false;
+
+    @Setter(AccessLevel.PACKAGE)
+    private ZonedDateTime dateRemoved;
+
+    public Optional<ZonedDateTime> getDateRemoved() {
+        return Optional.ofNullable(dateRemoved);
+    }
 }

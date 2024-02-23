@@ -260,11 +260,27 @@ public class SpotifyObjectRepository {
      * @return Set of a users' SpotifySavedTrack objects, may be empty.
      */
     public Set<SpotifySavedTrack> getRemovedSavedTracks(@NonNull SpotifyUser user) {
-        return null;
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedTrackRepository.findRemovedByUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
     }
 
-    public void removeSavedTrack(@NonNull SpotifyUser user, @NonNull SpotifyTrack track) {
-        return;
+    /**
+     * Marks a track as removed from a users' saved songs if it is currently a user's saved song. It is not actually
+     * removed from the database, rather it is marked as removed (as well as when this is being done) and won't show up
+     * in the return from getSavedTracks() anymore.
+     * @param track The SpotifyTrack that has been removed from Liked Songs on Spotify.
+     * @param user The SpotifyUser account to remove track from.
+     * @return a SpotifySavedTrack with updated fields if track is one of the users' saved songs, else returns empty.
+     */
+    public Optional<SpotifySavedTrack> removeSavedTrack(@NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            var removedTrack = SpotifySavedTrackRepository.removeTrackFromLikedSongs(em, track, user);
+            em.getTransaction().commit();
+            return removedTrack;
+        }
     }
 
     /**

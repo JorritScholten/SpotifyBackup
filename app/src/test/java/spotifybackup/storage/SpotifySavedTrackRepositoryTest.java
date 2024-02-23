@@ -157,12 +157,13 @@ class SpotifySavedTrackRepositoryTest {
         final var mostRecentTrackId = mostRecentlyAdded.getTrack().getSpotifyID().getId();
 
         // Act
-        spotifyObjectRepository.removeSavedTrack(user, mostRecentlyAdded.getTrack());
+        final var removedTrack = spotifyObjectRepository.removeSavedTrack(mostRecentlyAdded.getTrack(), user).orElseThrow();
         final var removedTracks = spotifyObjectRepository.getRemovedSavedTracks(user);
 
         // Assert
         assertEquals(oldSavedTrackCount - 1, spotifyObjectRepository.countSavedTracks(user));
         assertFalse(spotifyObjectRepository.getSavedTrackIds(user).contains(mostRecentTrackId));
+        assertEquals(mostRecentTrackId, removedTrack.getTrack().getSpotifyID().getId());
         assertTrue(removedTracks.stream()
                 .map(t -> t.getTrack().getSpotifyID().getId())
                 .anyMatch(s -> s.equals(mostRecentTrackId))
