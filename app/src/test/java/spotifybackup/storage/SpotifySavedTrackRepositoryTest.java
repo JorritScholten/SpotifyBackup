@@ -146,4 +146,26 @@ class SpotifySavedTrackRepositoryTest {
                 newMostRecentlyAdded.getTrack().getSpotifyID());
         assertTrue(newMostRecentlyAdded.getDateAdded().isAfter(previousMostRecentlyAdded.getDateAdded()));
     }
+
+    @Test
+    @Order(7)
+    void ensure_saved_track_can_be_removed() throws IOException {
+        // Arrange
+        final var user = getUserFromId.apply("testaccount");
+        final var oldSavedTrackCount = spotifyObjectRepository.countSavedTracks(user);
+        final var mostRecentlyAdded = spotifyObjectRepository.getNewestSavedTrack(user).orElseThrow();
+        final var mostRecentTrackId = mostRecentlyAdded.getTrack().getSpotifyID().getId();
+
+        // Act
+        spotifyObjectRepository.removeSavedTrack(user, mostRecentlyAdded.getTrack());
+        final var removedTracks = spotifyObjectRepository.getRemovedSavedTracks(user);
+
+        // Assert
+        assertEquals(oldSavedTrackCount - 1, spotifyObjectRepository.countSavedTracks(user));
+        assertFalse(spotifyObjectRepository.getSavedTrackIds(user).contains(mostRecentTrackId));
+        assertTrue(removedTracks.stream()
+                .map(t -> t.getTrack().getSpotifyID().getId())
+                .anyMatch(s -> s.equals(mostRecentTrackId))
+        );
+    }
 }

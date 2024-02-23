@@ -255,6 +255,19 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Get a set of a users' formerly saved songs as stored in the database.
+     * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
+     * @return Set of a users' SpotifySavedTrack objects, may be empty.
+     */
+    public Set<SpotifySavedTrack> getRemovedSavedTracks(@NonNull SpotifyUser user) {
+        return null;
+    }
+
+    public void removeSavedTrack(@NonNull SpotifyUser user, @NonNull SpotifyTrack track) {
+        return;
+    }
+
+    /**
      * Get Spotify IDs of a users' saved songs as stored in the database.
      * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
      * @return Set of Spotify IDs of a users' SpotifySavedTrack objects, may be empty.
