@@ -176,8 +176,9 @@ class SpotifySavedTrackRepositoryTest {
         // Arrange
         final var user = getUserFromId.apply("testaccount");
         final var previousMostRecentlyAdded = spotifyObjectRepository.getNewestSavedTrack(user).orElseThrow();
+        final var originallyAdded = previousMostRecentlyAdded.getDateAdded().plusYears(1);
         final SavedTrack[] apiSavedTrack = {new SavedTrack.Builder()
-                .setAddedAt(Date.from(previousMostRecentlyAdded.getDateAdded().plusYears(1).toInstant()))
+                .setAddedAt(Date.from(originallyAdded.plusDays(2).toInstant()))
                 .setTrack(new Track.JsonUtil().createModelObject(
                         new String(Files.readAllBytes(Path.of(trackDir + "King.json")))
                 )).build()};
@@ -200,5 +201,6 @@ class SpotifySavedTrackRepositoryTest {
         assertFalse(newMostRecentlyAdded.getIsRemoved());
         assertFalse(savedTracks.getFirst().getIsRemoved());
         assertEquals(apiSavedTrack[0].getTrack().getId(), savedTracks.getFirst().getTrack().getSpotifyID().getId());
+        assertNotEquals(originallyAdded, newMostRecentlyAdded.getDateAdded());
     }
 }

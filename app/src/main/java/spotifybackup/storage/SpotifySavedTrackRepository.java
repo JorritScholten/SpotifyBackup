@@ -96,6 +96,7 @@ class SpotifySavedTrackRepository {
             if(optionalSavedTrack.get().getIsRemoved()){
                 optionalSavedTrack.get().setIsRemoved(false);
                 optionalSavedTrack.get().setDateRemoved(null);
+                optionalSavedTrack.get().setDateAdded(apiTrack.getAddedAt().toInstant().atZone(UTC));
                 em.persist(optionalSavedTrack.get());
             }
             return optionalSavedTrack.get();
