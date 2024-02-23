@@ -93,6 +93,11 @@ class SpotifySavedTrackRepository {
         var track = SpotifyTrackRepository.persist(em, apiTrack.getTrack());
         var optionalSavedTrack = find(em, track, user);
         if (optionalSavedTrack.isPresent()) {
+            if(optionalSavedTrack.get().getIsRemoved()){
+                optionalSavedTrack.get().setIsRemoved(false);
+                optionalSavedTrack.get().setDateRemoved(null);
+                em.persist(optionalSavedTrack.get());
+            }
             return optionalSavedTrack.get();
         } else {
             var newSpotifySavedTrack = SpotifySavedTrack.builder()
