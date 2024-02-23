@@ -1,5 +1,6 @@
 package spotifybackup.app;
 
+import org.jline.terminal.TerminalBuilder;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
@@ -10,13 +11,6 @@ import java.io.IOException;
 public class App {
     static final String HOME_DIR = System.getProperty("user.home") + System.getProperty("file.separator");
     static final String USER_DIR = System.getProperty("user.dir") + System.getProperty("file.separator");
-    static final DefaultFilePathArgument apiKeyFileArg = new DefaultFilePathArgument.Builder()
-            .name("api-key")
-            .shortName('a')
-            .isFile()
-            .description("Path of json file containing the Spotify API key.")
-            .defaultValue(new File(HOME_DIR + ".spotify_api_key.json"))
-            .build();
     static final DefaultFilePathArgument configFileArg = new DefaultFilePathArgument.Builder()
             .name("config")
             .shortName('c')
@@ -35,18 +29,23 @@ public class App {
             .name("getMe")
             .description("Get users account info.")
             .build();
+    static final FlagArgument verboseArg = new FlagArgument.Builder()
+            .name("verbose")
+            .shortName('v')
+            .description("Print full stacktrace.")
+            .build();
     static final CmdParser argParser;
     static final int TERMINAL_WIDTH;
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, getMeArg)
+                .arguments(configFileArg, dbFileArg, getMeArg, verboseArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
                 .build();
         int width;
-        try (var term = org.jline.terminal.TerminalBuilder.terminal()) {
+        try (var term = TerminalBuilder.terminal()) {
             width = term.getWidth();
         } catch (IOException e) {
             width = 80;
@@ -60,12 +59,14 @@ public class App {
             if (argParser.isPresent("help")) {
                 System.out.println(argParser.getHelp(TERMINAL_WIDTH));
             } else {
-                new CLI();
+                var cli = new CLI();
+                cli.save_liked_songs();
             }
             System.exit(0);
         } catch (Exception e) {
             System.out.println("Error with input: " + e.getMessage());
             System.out.println(argParser.getHelp(TERMINAL_WIDTH));
+            if (verboseArg.getValue()) e.printStackTrace();
             System.exit(1);
         }
     }

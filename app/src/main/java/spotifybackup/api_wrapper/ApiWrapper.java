@@ -8,11 +8,14 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.SpotifyApi;
+import se.michaelthelin.spotify.enums.AuthorizationScope;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import spotifybackup.app.Config;
@@ -42,6 +45,13 @@ public class ApiWrapper {
     private final Supplier<AbstractRequest<AuthorizationCodeCredentials>> authorizationRefreshRequest;
     private final AbstractRequest<URI> authorizationCodeUriRequest;
     private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
+    private final AuthorizationScope[] SCOPES = {
+            AuthorizationScope.USER_READ_PRIVATE,
+            AuthorizationScope.USER_LIBRARY_READ,
+            AuthorizationScope.USER_FOLLOW_READ,
+            AuthorizationScope.PLAYLIST_READ_PRIVATE,
+            AuthorizationScope.PLAYLIST_READ_COLLABORATIVE
+    };
 
     /**
      * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
@@ -60,11 +70,11 @@ public class ApiWrapper {
                 final String key = RandomStringUtils.randomAlphanumeric(128);
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
-                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).build();
+                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).scope(SCOPES).build();
                 authorizationCodeRequest = code -> spotifyApi.authorizationCodePKCE(code, key).build();
                 authorizationRefreshRequest = () -> spotifyApi.authorizationCodePKCERefresh().build();
             } else {
-                authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().state(state).build();
+                authorizationCodeUriRequest = spotifyApi.authorizationCodeUri().state(state).scope(SCOPES).build();
                 authorizationCodeRequest = code -> spotifyApi.authorizationCode(code).build();
                 authorizationRefreshRequest = () -> spotifyApi.authorizationCodeRefresh().build();
             }
@@ -190,24 +200,26 @@ public class ApiWrapper {
     }
 
     /**
-     * Perform a fetch request to get the current users' id.
-     * @return users' id if request successful.
-     * @throws IOException In case of networking issues (HTTP 3xx status code).
-     * @deprecated user getCurrentUser() instead.
-     */
-    @Deprecated
-    public Optional<String> getUserID() throws IOException {
-        return Optional.ofNullable(getSpotifyObject(() -> spotifyApi.getCurrentUsersProfile().build())
-                .orElseThrow().getId());
-    }
-
-    /**
      * Perform a fetch request to get the current user.
      * @return user if request successful.
      * @throws IOException In case of networking issues (HTTP 3xx status code).
      */
     public Optional<User> getCurrentUser() throws IOException {
         return getSpotifyObject(() -> spotifyApi.getCurrentUsersProfile().build());
+    }
+
+    public Paging<SavedTrack> getLikedSongs() throws IOException {
+        try {
+            waitingForAPI.acquire();
+            final var object = spotifyApi.getUsersSavedTracks().limit(20).build().execute();
+            waitingForAPI.release();
+            return object;
+        } catch (SpotifyWebApiException | ParseException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            // caused by semaphore interruptions
+            throw new RuntimeException(e);
+        }
     }
 
     private <T extends AbstractModelObject> Optional<T> getSpotifyObject(Supplier<AbstractRequest<T>> f)

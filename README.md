@@ -20,12 +20,13 @@ database and automated backups to an online repository.
         - [x] Remove Thread.sleep() call to make authorization request asynchronous
         - [x] Handle token refresh when current token expires
         - [ ] Handle the various API response error codes
+        - [ ] Handle OAuth redirect resulting in permission denied
     - [x] Store artist GET request to db
     - [ ] Write unit test using mocking (leaning towards EasyMock)
     - [x] Store track info to db
     - [ ] Store playlist to db
     - [ ] Store Liked Songs to db
-        - [ ] Store first 20 Liked songs to db from CLI
+        - [x] Store first 20 Liked songs to db from CLI
         - [ ] Store first all Liked songs to db from CLI
 - [x] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
