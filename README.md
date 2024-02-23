@@ -22,23 +22,15 @@ database and automated backups to an online repository.
         - [ ] Handle the various API response error codes
     - [x] Store artist GET request to db
     - [ ] Write unit test using mocking (leaning towards EasyMock)
-    - [ ] Store track info to db
+    - [x] Store track info to db
     - [ ] Store playlist to db
     - [ ] Store Liked Songs to db
+        - [ ] Store first 20 Liked songs to db from CLI
+        - [ ] Store first all Liked songs to db from CLI
 - [x] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
     - [x] Implement complete storage class system to store all track information from Spotify about Playlists and Users
       Liked/Saved Songs.
-        - [x] genres
-        - [x] spotify image
-        - [x] artists
-        - [x] spotify ID
-        - [x] playlist information
-        - [x] "Liked Songs"/"Saved Tracks"
-        - [x] tracks in a playlist
-        - [x] users
-        - [x] tracks
-        - [x] albums
     - [x] Implement system to automatically handle creation and validation of database
     - [x] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for SpotifyGenre
@@ -51,13 +43,8 @@ database and automated backups to an online repository.
             - [ ] handle updating SpotifyUser info when detailed info changes
             - [ ] handle updating SpotifyUser info from simplified/public to detailed
         - [x] Create repository for SpotifyPlaylist
-            - [x] Create repository for SpotifyPlaylistItem
+        - [x] Create repository for SpotifyPlaylistItem
         - [x] Create repository for Users Liked/Saved Songs
-            - [x] handle tracks being removed
-            - [x] handle removed track being re-added
-            - [x] create method to get list of track ids for a specific user
-            - [x] create method to get most recently added track, this is so that repeated runs won't need to get a
-              user's entire library
     - [x] Convert all HQL queries to JPA CriteriaQuery's
 
 [//]: # (## Documentation)
