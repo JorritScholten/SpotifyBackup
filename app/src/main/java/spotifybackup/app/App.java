@@ -55,6 +55,7 @@ public class App {
 
     public static void println(String message) {
         term.writer().println(message);
+        term.flush();
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -63,16 +64,15 @@ public class App {
             if (argParser.isPresent("help")) {
                 println(argParser.getHelp(term.getWidth()));
             } else {
-                var cli = new CLI();
-                cli.save_liked_songs();
+                new CLI();
             }
             System.exit(0);
         } catch (InterruptedException e) {
             throw e;
         } catch (Exception e) {
-            println("Error with input: " + e.getMessage());
-            println(argParser.getHelp(term.getWidth()));
-            if (verboseArg.getValue()) e.printStackTrace(term.writer());
+            println(e.getMessage());
+            if (verboseArg.isPresent()) e.printStackTrace(term.writer());
+            term.flush();
             System.exit(1);
         }
     }

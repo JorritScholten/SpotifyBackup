@@ -17,14 +17,22 @@ public class CLI {
         Config.loadFromFile(App.configFileArg.getValue());
         api = new ApiWrapper();
         final var currentUser = api.getCurrentUser().orElseThrow();
-        if (App.getMeArg.getValue()) {
+        if (App.getMeArg.isPresent()) {
             App.println("Logged in as: " + currentUser.getId());
             App.println("User is already stored: " + repo.exists(currentUser));
         }
         user = repo.persist(currentUser);
+        performActions();
     }
 
-    public void save_liked_songs() throws IOException {
+    /**
+     * Perform various actions based on program arguments.
+     */
+    private void performActions() throws IOException {
+        save20LikedSongs();
+    }
+
+    private void save20LikedSongs() throws IOException {
         App.println("Saving 20 Liked Songs");
         var apiSavedTracks = api.getLikedSongs();
         repo.persist(apiSavedTracks.getItems(), user);
