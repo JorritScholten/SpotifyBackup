@@ -1,5 +1,6 @@
 package spotifybackup.app;
 
+import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
@@ -7,10 +8,11 @@ import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 
 public class App {
-    static final String HOME_DIR = System.getProperty("user.home") + System.getProperty("file.separator");
-    static final String USER_DIR = System.getProperty("user.dir") + System.getProperty("file.separator");
+    static final String HOME_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator();
+    static final String USER_DIR = System.getProperty("user.dir") + FileSystems.getDefault().getSeparator();
     static final DefaultFilePathArgument configFileArg = new DefaultFilePathArgument.Builder()
             .name("config")
             .shortName('c')
@@ -35,7 +37,7 @@ public class App {
             .description("Print full stacktrace.")
             .build();
     static final CmdParser argParser;
-    static final int TERMINAL_WIDTH;
+    static final Terminal term;
 
     static {
         argParser = new CmdParser.Builder()
@@ -44,29 +46,33 @@ public class App {
                 .programName("SpotifyBackup.jar")
                 .addHelp()
                 .build();
-        int width;
-        try (var term = TerminalBuilder.terminal()) {
-            width = term.getWidth();
+        try {
+            term = TerminalBuilder.terminal();
         } catch (IOException e) {
-            width = 80;
+            throw new RuntimeException("Can't create terminal. " + e);
         }
-        TERMINAL_WIDTH = width;
     }
 
-    public static void main(String[] args) {
+    public static void println(String message) {
+        term.writer().println(message);
+    }
+
+    public static void main(String[] args) throws InterruptedException {
         try {
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
-                System.out.println(argParser.getHelp(TERMINAL_WIDTH));
+                println(argParser.getHelp(term.getWidth()));
             } else {
                 var cli = new CLI();
                 cli.save_liked_songs();
             }
             System.exit(0);
+        } catch (InterruptedException e) {
+            throw e;
         } catch (Exception e) {
-            System.out.println("Error with input: " + e.getMessage());
-            System.out.println(argParser.getHelp(TERMINAL_WIDTH));
-            if (verboseArg.getValue()) e.printStackTrace();
+            println("Error with input: " + e.getMessage());
+            println(argParser.getHelp(term.getWidth()));
+            if (verboseArg.getValue()) e.printStackTrace(term.writer());
             System.exit(1);
         }
     }
