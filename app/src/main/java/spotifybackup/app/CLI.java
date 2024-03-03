@@ -5,9 +5,13 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.SpotifyObjectRepository;
+import spotifybackup.storage.SpotifySavedTrack;
 import spotifybackup.storage.SpotifyUser;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CLI {
     private final ApiWrapper api;
@@ -32,24 +36,40 @@ public class CLI {
      * Perform various actions based on program arguments.
      */
     private void performActions() throws IOException, InterruptedException {
-        saveLikedSongs();
+        var newTrackList = saveLikedSongs();
+        markRemovedTracks(newTrackList);
         savePlaylists();
         saveDetailedInfo();
     }
 
-    private void saveLikedSongs() throws IOException, InterruptedException {
+    /** @return List of Liked Songs currently in the users' account. */
+    private List<SpotifySavedTrack> saveLikedSongs() throws IOException, InterruptedException {
         if (App.verboseArg.isPresent()) App.println("Saving all Liked Songs");
         final int limit = 50;
         int offset = 0;
         Paging<SavedTrack> apiSavedTracks;
+        List<SpotifySavedTrack> tracks = new ArrayList<>();
         if (App.verboseArg.isPresent()) App.print("Requesting data");
         do {
             if (App.verboseArg.isPresent()) App.print(".");
             apiSavedTracks = api.getLikedSongs(limit, offset);
-            repo.persist(apiSavedTracks.getItems(), user);
+            tracks.addAll(repo.persist(apiSavedTracks.getItems(), user));
             offset += limit;
         } while (apiSavedTracks.getNext() != null);
         if (App.verboseArg.isPresent()) App.println("");
+        return tracks;
+    }
+
+    private void markRemovedTracks(List<SpotifySavedTrack> newSavedTracks) {
+        var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
+        var oldSavedTracks = repo.getSavedTracks(user);
+        // filter using record ids instead of object compare (removeAll calling equalsTo) because SpotifySavedTrack has
+        // no equalsTo method that works on internal fields
+        var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
+        if (!removed.isEmpty()) {
+            for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
+            if (App.verboseArg.isPresent()) App.println("Removed " + removed.size() + " from Liked Songs");
+        }
     }
 
     private void savePlaylists() throws IOException, InterruptedException {
