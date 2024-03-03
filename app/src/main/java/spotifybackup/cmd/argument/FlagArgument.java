@@ -33,6 +33,14 @@ public class FlagArgument extends Argument {
         // The value of a flag is true if it is present, therefore setValue doesn't need to do anything.
     }
 
+    /**
+     * Returns true if flag is present in input.
+     * @return true if flag is present in input.
+     */
+    public boolean isPresent() {
+        return isPresent;
+    }
+
     public static class Builder extends Argument.Builder<Builder> {
         public Builder() {
             super(false, false);
