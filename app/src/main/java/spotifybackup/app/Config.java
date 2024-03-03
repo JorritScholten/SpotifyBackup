@@ -10,6 +10,7 @@ import lombok.NonNull;
 import lombok.Setter;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
+import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -32,7 +33,9 @@ public class Config {
         properties = new Property<?>[]{clientId, redirectURI, clientSecret, refreshToken};
     }
 
+    /** @apiNote Should not be used, exists to prevent implicit public constructor. */
     private Config() {
+        throw new ConstructorUsageException();
     }
 
     /**
@@ -59,6 +62,8 @@ public class Config {
         if (filePath.exists()) {
             if (filePath.canRead()) readFile(filePath);
             else throw new IllegalArgumentException("Can't read file at supplied filepath: " + filePath);
+            if (!filePath.canWrite())
+                throw new IllegalArgumentException("Can't write to config file at supplied filepath: " + filePath);
         } else {
             createNewFile(filePath);
             throw new ConfigFileException("Created empty config file, please fill in the fields at: " + filePath);
@@ -134,16 +139,23 @@ public class Config {
             return valueType.equals(type);
         }
 
-        abstract Object get();
+        public T get() {
+            if (value == null) throw new NullPointerException();
+            return value;
+        }
 
-        public void set(@NonNull T value) throws IOException {
+        public void set(@NonNull T value) {
             this.value = value;
             serializedConfig.add(key, new JsonPrimitive(switch (value) {
                 case String s -> s;
                 case URI uri -> uri.toString();
                 default -> throw new IllegalStateException("Unexpected valueType: " + valueType);
             }));
-            writeSerializedConfigToFile();
+            try {
+                writeSerializedConfigToFile();
+            } catch (IOException e) {
+                throw new RuntimeException("Couldn't write to config file at " + configFile.getAbsolutePath() + " " + e);
+            }
         }
     }
 
@@ -151,21 +163,11 @@ public class Config {
         private RequiredProperty(@NonNull String key, @NonNull Class<T> valueType) {
             super(key, valueType);
         }
-
-        public T get() {
-            if (super.value == null) throw new NullPointerException();
-            return super.value;
-        }
     }
 
     public static final class OptionalProperty<T> extends Property<T> {
         private OptionalProperty(@NonNull String key, @NonNull Class<T> valueType) {
             super(key, valueType);
-        }
-
-        public T get() {
-            if (super.value == null) throw new NullPointerException();
-            return super.value;
         }
 
         public boolean isPresent() {
