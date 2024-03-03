@@ -18,7 +18,7 @@ class SpotifyTrackRepository {
     private static final Function<EntityManager, BiConsumer<Track, SpotifyTrack>> setNotSimpleFields =
             entityManager -> (apiTrack, track) -> {
                 if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
-                    track.setIsrcID(apiTrack.getExternalIds().getExternalIds().get("isrc"));
+                    track.setIsrcID(apiTrack.getExternalIds().getExternalIds().get("isrc").replace("-",""));
                 }
                 if (apiTrack.getExternalIds().getExternalIds().containsKey("ean")) {
                     track.setEanID(apiTrack.getExternalIds().getExternalIds().get("ean"));

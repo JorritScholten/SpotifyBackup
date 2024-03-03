@@ -34,7 +34,7 @@ public class App {
     static final FlagArgument verboseArg = new FlagArgument.Builder()
             .name("verbose")
             .shortName('v')
-            .description("Print full stacktrace.")
+            .description("Print full stacktrace and verbose progress messages.")
             .build();
     static final CmdParser argParser;
     static final Terminal term;
@@ -55,6 +55,11 @@ public class App {
 
     public static void println(String message) {
         term.writer().println(message);
+        term.flush();
+    }
+
+    public static void print(String message){
+        term.writer().print(message);
         term.flush();
     }
 
