@@ -1,6 +1,7 @@
 package spotifybackup.app;
 
 import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.SpotifyObjectRepository;
@@ -31,16 +32,9 @@ public class CLI {
      * Perform various actions based on program arguments.
      */
     private void performActions() throws IOException, InterruptedException {
-//        save20LikedSongs();
         saveLikedSongs();
         savePlaylists();
         saveDetailedInfo();
-    }
-
-    private void save20LikedSongs() throws IOException, InterruptedException {
-        if (App.verboseArg.isPresent()) App.println("Saving 20 Liked Songs");
-        var apiSavedTracks = api.getLikedSongs(20, 0);
-        repo.persist(apiSavedTracks.getItems(), user);
     }
 
     private void saveLikedSongs() throws IOException, InterruptedException {
@@ -58,8 +52,19 @@ public class CLI {
         if (App.verboseArg.isPresent()) App.println("");
     }
 
-    private void savePlaylists() {
-        //TODO: persist all playlists and their contents
+    private void savePlaylists() throws IOException, InterruptedException {
+        if (App.verboseArg.isPresent()) App.println("Saving all playlists of current user");
+        final int limit = 50;
+        int offset = 0;
+        Paging<PlaylistSimplified> apiPlaylists;
+        if (App.verboseArg.isPresent()) App.print("Requesting data");
+        do {
+            if (App.verboseArg.isPresent()) App.print(".");
+            apiPlaylists = api.getCurrentUserPlaylists(limit, offset);
+            repo.persist(apiPlaylists.getItems());
+            offset += limit;
+        } while (apiPlaylists.getNext() != null);
+        if (App.verboseArg.isPresent()) App.println("");
     }
 
     private void saveDetailedInfo() {

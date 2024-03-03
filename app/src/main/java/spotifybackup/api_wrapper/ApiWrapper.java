@@ -13,12 +13,8 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
-import se.michaelthelin.spotify.model_objects.specification.Artist;
-import se.michaelthelin.spotify.model_objects.specification.Paging;
-import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
-import se.michaelthelin.spotify.model_objects.specification.User;
+import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.AbstractRequest;
-import se.michaelthelin.spotify.requests.data.library.GetUsersSavedTracksRequest;
 import spotifybackup.app.Config;
 
 import java.awt.*;
@@ -209,10 +205,21 @@ public class ApiWrapper {
         return getSpotifyObject(() -> spotifyApi.getCurrentUsersProfile().build());
     }
 
-    public Paging<SavedTrack> getLikedSongs(int limit, int offset) throws IOException, InterruptedException {
+    public Paging<SavedTrack> getLikedSongs(int limit, int offset)
+            throws IOException, InterruptedException {
+        return getPage(() -> spotifyApi.getUsersSavedTracks().limit(limit).offset(offset).build());
+    }
+
+    public Paging<PlaylistSimplified> getCurrentUserPlaylists(int limit, int offset)
+            throws IOException, InterruptedException {
+        return getPage(() -> spotifyApi.getListOfCurrentUsersPlaylists().limit(limit).offset(offset).build());
+    }
+
+    private <T extends AbstractModelObject> Paging<T> getPage(Supplier<AbstractRequest<Paging<T>>> f)
+            throws IOException, InterruptedException {
         try {
             waitingForAPI.acquire();
-            final var object = spotifyApi.getUsersSavedTracks().limit(limit).offset(offset).build().execute();
+            final var object = f.get().execute();
             waitingForAPI.release();
             return object;
         } catch (SpotifyWebApiException | ParseException e) {
@@ -221,7 +228,7 @@ public class ApiWrapper {
     }
 
     private <T extends AbstractModelObject> Optional<T> getSpotifyObject(Supplier<AbstractRequest<T>> f)
-            throws IOException,InterruptedException {
+            throws IOException, InterruptedException {
         try {
             waitingForAPI.acquire();
             final T object = f.get().execute();
