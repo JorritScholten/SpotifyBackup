@@ -67,9 +67,17 @@ public class App {
         term.flush();
     }
 
+    public static void verbosePrintln(String message) {
+        if (verboseArg.isPresent()) println(message);
+    }
+
     public static void print(String message) {
         term.writer().print(message);
         term.flush();
+    }
+
+    public static void verbosePrint(String message) {
+        if (verboseArg.isPresent()) print(message);
     }
 
     public static void main(String[] args) throws InterruptedException {

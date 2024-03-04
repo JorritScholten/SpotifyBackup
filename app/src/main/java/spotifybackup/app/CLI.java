@@ -18,6 +18,7 @@ public class CLI {
 
     CLI() throws IOException, InterruptedException {
         if (!App.dbFileArg.isPresent()) App.println("db file: " + App.dbFileArg.getValue());
+        if (!App.configFileArg.isPresent()) App.println("config file: " + App.configFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         Config.loadFromFile(App.configFileArg.getValue());
         performActions();
@@ -25,12 +26,18 @@ public class CLI {
 
     private void performActions() throws IOException, InterruptedException {
         if (App.addAccounts.isPresent()) addAccounts();
-        if(App.doBackup.isPresent()) for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
+        if (App.doBackup.isPresent()) for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
     }
 
     private void addAccounts() throws IOException, InterruptedException {
+        App.verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
         for (int i = 0; i < App.addAccounts.getValue(); i++) {
-            new ApiWrapper(Config.refreshTokens.size());
+            var api = new ApiWrapper(Config.refreshTokens.size());
+            var currentUser = api.getCurrentUser().orElseThrow();
+            var user = repo.persist(currentUser);
+            App.println("Added account: " + user.getId());
+            if (App.verboseArg.isPresent() && !user.getSpotifyUserID().equals(user.getDisplayName().orElse("")))
+                user.getDisplayName().ifPresent(name -> App.println(user.getId() + " has display name: " + name));
         }
     }
 
@@ -41,7 +48,7 @@ public class CLI {
         private Backup(final int accountNumber) throws InterruptedException, IOException {
             api = new ApiWrapper(accountNumber);
             final var currentUser = api.getCurrentUser().orElseThrow();
-            if (App.verboseArg.isPresent()) App.println("Logged in as: " + currentUser.getId());
+            App.verbosePrintln("Logged in as: " + currentUser.getId());
             user = repo.persist(currentUser);
             performBackup();
         }
@@ -56,19 +63,19 @@ public class CLI {
 
         /** @return List of Liked Songs currently in the users' account. */
         private List<SpotifySavedTrack> saveLikedSongs() throws IOException, InterruptedException {
-            if (App.verboseArg.isPresent()) App.println("Saving all Liked Songs");
+            App.verbosePrintln("Saving all Liked Songs");
             final int limit = 50;
             int offset = 0;
             Paging<SavedTrack> apiSavedTracks;
             List<SpotifySavedTrack> tracks = new ArrayList<>();
-            if (App.verboseArg.isPresent()) App.print("Requesting data");
+            App.verbosePrint("Requesting data");
             do {
-                if (App.verboseArg.isPresent()) App.print(".");
+                App.verbosePrint(".");
                 apiSavedTracks = api.getLikedSongs(limit, offset);
                 tracks.addAll(repo.persist(apiSavedTracks.getItems(), user));
                 offset += limit;
             } while (apiSavedTracks.getNext() != null);
-            if (App.verboseArg.isPresent()) App.println("");
+            App.verbosePrintln("");
             return tracks;
         }
 
@@ -80,23 +87,23 @@ public class CLI {
             var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
-                if (App.verboseArg.isPresent()) App.println("Removed " + removed.size() + " from Liked Songs");
+                App.verbosePrintln("Removed " + removed.size() + " from Liked Songs");
             }
         }
 
         private void savePlaylists() throws IOException, InterruptedException {
-            if (App.verboseArg.isPresent()) App.println("Saving all playlists of current user");
+            App.verbosePrintln("Saving all playlists of current user");
             final int limit = 50;
             int offset = 0;
             Paging<PlaylistSimplified> apiPlaylists;
-            if (App.verboseArg.isPresent()) App.print("Requesting data");
+            App.verbosePrint("Requesting data");
             do {
-                if (App.verboseArg.isPresent()) App.print(".");
+                App.verbosePrint(".");
                 apiPlaylists = api.getCurrentUserPlaylists(limit, offset);
                 repo.persist(apiPlaylists.getItems());
                 offset += limit;
             } while (apiPlaylists.getNext() != null);
-            if (App.verboseArg.isPresent()) App.println("");
+            App.verbosePrintln("");
         }
 
         private void saveDetailedInfo() {
