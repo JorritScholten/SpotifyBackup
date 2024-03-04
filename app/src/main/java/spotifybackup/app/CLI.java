@@ -26,7 +26,10 @@ public class CLI {
 
     private void performActions() throws IOException, InterruptedException {
         if (App.addAccounts.isPresent()) addAccounts();
-        if (App.doBackup.isPresent()) for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
+        if (App.doBackup.isPresent()) {
+            if (Config.refreshTokens.isPresent()) for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
+            else new Backup(0);
+        }
     }
 
     private void addAccounts() throws IOException, InterruptedException {
