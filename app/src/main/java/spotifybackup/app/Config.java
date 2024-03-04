@@ -1,9 +1,6 @@
 package spotifybackup.app;
 
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,6 +15,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 public class Config {
@@ -25,6 +24,7 @@ public class Config {
     public static final RequiredProperty<URI> redirectURI = new RequiredProperty<>("redirectURI", URI.class);
     public static final OptionalProperty<String> clientSecret = new OptionalProperty<>("clientSecret", String.class);
     public static final OptionalProperty<String> refreshToken = new OptionalProperty<>("refreshToken", String.class);
+    public static final PropertyList refreshTokens = new PropertyList("refreshTokens");
     private static final Property<?>[] properties;
     private static File configFile;
     private static JsonObject serializedConfig;
@@ -46,6 +46,7 @@ public class Config {
         for (var property : properties) {
             property.setValue(null);
         }
+        refreshTokens.setValues(null);
         configFile = null;
         serializedConfig = null;
     }
@@ -86,6 +87,9 @@ public class Config {
                     if (!value.isBlank()) setPropertyValue(property, value);
                 }
             }
+            if (!serializedConfig.has(refreshTokens.key))
+                throw new BlankConfigFieldException(file + " has missing " + refreshTokens.key + " field.");
+            else refreshTokens.setValues(serializedConfig.get(refreshTokens.key).getAsJsonArray());
             configFile = file;
         }
     }
@@ -111,6 +115,7 @@ public class Config {
         for (var property : properties) {
             serializedConfig.add(property.key, new JsonPrimitive(""));
         }
+        serializedConfig.add(refreshTokens.key, new JsonArray());
         writeSerializedConfigToFile();
     }
 
@@ -120,6 +125,52 @@ public class Config {
             writer.write(gson.toJson(serializedConfig));
             writer.write('\n');
         }
+    }
+
+    public static final class PropertyList {
+        @Getter
+        private final String key;
+        private List<String> values;
+
+        public PropertyList(@NonNull String key) {
+            this.key = key;
+            this.values = new ArrayList<>();
+        }
+
+        public String get(int i) {
+            return values.get(i);
+        }
+
+        private void setValues(JsonArray array) {
+            if (array == null) values = null;
+            else {
+                values = new ArrayList<>();
+                array.forEach(e -> values.add(e.getAsString()));
+            }
+        }
+
+        public void set(@NonNull List<String> values) {
+            this.values = values;
+            var jsonArray = new JsonArray();
+            for (var value : values) jsonArray.add(value);
+            serializedConfig.add(key, jsonArray);
+            try {
+                writeSerializedConfigToFile();
+            } catch (IOException e) {
+                throw new RuntimeException("Couldn't write to config file at " + configFile.getAbsolutePath() + " " + e);
+            }
+        }
+
+        public void add(@NonNull String newValue) {
+            values.add(newValue);
+            set(values);
+        }
+
+        public boolean isPresent() {return values != null && !values.isEmpty();}
+
+        public boolean isEmpty() {return values == null || values.isEmpty();}
+
+        public int size() {return values.size();}
     }
 
     @Getter
