@@ -20,7 +20,18 @@ public class CLI {
         if (!App.dbFileArg.isPresent()) App.println("db file: " + App.dbFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         Config.loadFromFile(App.configFileArg.getValue());
-        new Backup(0);
+        performActions();
+    }
+
+    private void performActions() throws IOException, InterruptedException {
+        if (App.addAccounts.isPresent()) addAccounts();
+        for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
+    }
+
+    private void addAccounts() throws IOException, InterruptedException {
+        for (int i = 0; i < App.addAccounts.getValue(); i++) {
+            new ApiWrapper(Config.refreshTokens.size());
+        }
     }
 
     private class Backup {

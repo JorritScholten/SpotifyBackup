@@ -35,8 +35,8 @@ public class App {
             .build();
     static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
             .name("addAccounts")
-            .defaultValue(0)
-            .minimum(0)
+            .defaultValue(1)
+            .minimum(1)
             .shortName('a')
             .description("Number of accounts to add.")
             .build();
