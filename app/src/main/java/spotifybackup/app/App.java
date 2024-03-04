@@ -33,6 +33,11 @@ public class App {
             .shortName('v')
             .description("Print full stacktrace and verbose progress messages.")
             .build();
+    static final FlagArgument doBackup = new FlagArgument.Builder()
+            .name("doBackup")
+            .shortName('b')
+            .description("Perform backups for all accounts. Added for development, to be replaced with option to explicitly disable backup.")
+            .build();
     static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
             .name("addAccounts")
             .defaultValue(1)
@@ -45,7 +50,7 @@ public class App {
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, verboseArg, addAccounts)
+                .arguments(configFileArg, dbFileArg, doBackup, addAccounts, verboseArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
