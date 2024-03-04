@@ -81,7 +81,7 @@ public class ApiWrapper {
             throw new IllegalArgumentException("Select correct algorithm spelling: " + e);
         }
         waitingForAPI.acquire(); // ensure that the first networking operation performed is performTokenRequest()
-        if (Config.refreshTokens.get(accountNumber).isEmpty()) {
+        if (Config.refreshTokens.get(accountNumber).isEmpty() || Config.refreshTokens.get(accountNumber).orElseThrow().isBlank()) {
             performTokenRequest();
         } else {
             performTokenRefresh();
@@ -237,7 +237,7 @@ public class ApiWrapper {
             waitingForAPI.release();
             return Optional.of(object);
         } catch (SpotifyWebApiException | ParseException e) {
-            return Optional.empty();
+            throw new RuntimeException(e);
         }
     }
 
