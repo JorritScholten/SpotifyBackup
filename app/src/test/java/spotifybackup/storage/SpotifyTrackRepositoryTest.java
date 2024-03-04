@@ -46,6 +46,21 @@ class SpotifyTrackRepositoryTest {
         assertEquals(apiTrack.getAlbum().getId(), persistedTrack.getAlbum().getSpotifyID().getId());
     }
 
+    @Test
+    void ensure_track_market_availability_is_persisted_correctly() throws IOException {
+        // Arrange
+        final Track apiTrack = new Track.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(trackDir + "Bio-Engineering.json")))
+        );
+        final var originalCodes = SpotifyObject.convertMarkets(apiTrack.getAvailableMarkets());
+        var persistedTrack = spotifyObjectRepository.persist(apiTrack);
+
+        // Act
+        final var storedCodes = ((SpotifyTrack) spotifyObjectRepository.find(persistedTrack.getSpotifyID()).orElseThrow()).getAvailableMarkets();
+
+        // Assert
+        assertEquals(originalCodes, storedCodes);
+    }
 
     @Test
     void ensure_multiple_tracks_can_be_persisted() throws IOException {

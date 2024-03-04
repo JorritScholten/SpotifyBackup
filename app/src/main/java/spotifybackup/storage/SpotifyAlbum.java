@@ -1,9 +1,13 @@
 package spotifybackup.storage;
 
-import io.hypersistence.utils.hibernate.type.array.StringArrayType;
+import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
+import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
+import org.hibernate.type.descriptor.jdbc.BinaryJdbcType;
 import se.michaelthelin.spotify.enums.AlbumType;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 
@@ -56,10 +60,9 @@ public final class SpotifyAlbum extends SpotifyObject {
     private String eanID;
 
     @NonNull
-    @Type(StringArrayType.class)
-    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
-    // Array of ISO 3166-1 alpha-2 codes
-    private String[] availableMarkets;
+    @Column(columnDefinition = "VARBINARY")
+    @Convert(converter = AvailableMarketsConverter.class)
+    private AvailableMarkets availableMarkets;
 
     @NonNull
     @Enumerated(EnumType.STRING)

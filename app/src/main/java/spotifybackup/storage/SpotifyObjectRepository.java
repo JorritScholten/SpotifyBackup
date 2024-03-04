@@ -165,6 +165,16 @@ public class SpotifyObjectRepository {
 
     /**
      * Find SpotifyTrack, SpotifyAlbum, SpotifyArtist, or SpotifyUser by Spotify ID (or Spotify User ID) string value.
+     * @param spotifyID SpotifyID (or Spotify User ID).
+     * @return SpotifyTrack, SpotifyAlbum, SpotifyArtist, or SpotifyUser if id matches the spotify_id field in the table
+     * and not blank.
+     */
+    public Optional<? extends SpotifyObject> find(@NonNull SpotifyID spotifyID) {
+        return find(spotifyID.getId());
+    }
+
+    /**
+     * Find SpotifyTrack, SpotifyAlbum, SpotifyArtist, or SpotifyUser by Spotify ID (or Spotify User ID) string value.
      * @param spotifyID String containing a Spotify ID (or Spotify User ID).
      * @return SpotifyTrack, SpotifyAlbum, SpotifyArtist, or SpotifyUser if id matches the spotify_id field in the table
      * and not blank.

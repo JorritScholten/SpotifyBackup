@@ -9,7 +9,10 @@ import spotifybackup.storage.exception.TransactionInactiveException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -36,7 +39,7 @@ public abstract sealed class SpotifyObject
         }
     }
 
-    static <T extends SpotifyObject> Optional<T> getSingleResultOptionally(EntityManager em, CriteriaDefinition<T> query){
+    static <T extends SpotifyObject> Optional<T> getSingleResultOptionally(EntityManager em, CriteriaDefinition<T> query) {
         try {
             return Optional.of(em.createQuery(query).getSingleResult());
         } catch (NoResultException e) {
@@ -52,17 +55,9 @@ public abstract sealed class SpotifyObject
         }, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
-    /**
-     * @param markets Array of CountryCode objects.
-     * @return Array of Strings containing ISO 3166-1 alpha-2 market codes.
-     */
-    static String[] convertMarkets(CountryCode[] markets) {
-        if (markets == null) return new String[]{};
-        Set<String> stringifyMarkets = new HashSet<>();
-        for (var market : markets) {
-            stringifyMarkets.add(market.getAlpha2());
-        }
-        return stringifyMarkets.toArray(String[]::new);
+    static AvailableMarkets convertMarkets(CountryCode[] markets) {
+        if (markets == null) return new AvailableMarkets();
+        return new AvailableMarkets(Arrays.stream(markets).toList());
     }
 
     public enum SubTypes {

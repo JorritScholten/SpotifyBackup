@@ -1,10 +1,21 @@
 package spotifybackup.storage;
 
-import io.hypersistence.utils.hibernate.type.array.StringArrayType;
+import com.neovisionaries.i18n.CountryCode;
+import io.hypersistence.utils.hibernate.type.array.LongArrayType;
+import io.hypersistence.utils.hibernate.type.array.internal.LongArrayTypeDescriptor;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CollectionType;
+import org.hibernate.annotations.JavaType;
+import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
+import org.hibernate.type.SqlTypes;
+import org.hibernate.type.descriptor.java.BasicJavaType;
+import org.hibernate.type.descriptor.java.LongPrimitiveArrayJavaType;
+import org.hibernate.type.descriptor.java.ObjectJavaType;
+import org.hibernate.type.descriptor.jdbc.*;
 
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -68,10 +79,9 @@ public final class SpotifyTrack extends SpotifyObject {
     private String name;
 
     @NonNull
-    @Type(StringArrayType.class)
-    @Column(length = 2, columnDefinition = "varchar(2) ARRAY")
-    // Array of ISO 3166-1 alpha-2 codes
-    private String[] availableMarkets;
+    @Column(columnDefinition = "VARBINARY")
+    @Convert(converter = AvailableMarketsConverter.class)
+    private AvailableMarkets availableMarkets;
 
     @Setter
     @NonNull
