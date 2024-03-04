@@ -13,6 +13,7 @@ import spotifybackup.storage.SpotifyObjectRepository;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -20,13 +21,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @EnabledIfEnvironmentVariable(named = "EnableIntegrationTests", matches = "true")
 public class ApiWrapperIntegrationTest {
     static final String CONFIG_FILE_PATH = System.getProperty("user.home") +
-            System.getProperty("file.separator") + ".spotify_backup_config.json";
+            FileSystems.getDefault().getSeparator() + ".spotify_backup_config.json";
     static ApiWrapper apiWrapper;
 
     @BeforeAll
     public static void perform_authentication() throws IOException, InterruptedException {
         Config.loadFromFile(new File(CONFIG_FILE_PATH));
-        apiWrapper = new ApiWrapper();
+        apiWrapper = new ApiWrapper(0);
     }
 
     @ParameterizedTest

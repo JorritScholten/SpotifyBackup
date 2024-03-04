@@ -33,6 +33,13 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class ApiWrapper {
+    private static final AuthorizationScope[] SCOPES = {
+            AuthorizationScope.USER_READ_PRIVATE,
+            AuthorizationScope.USER_LIBRARY_READ,
+            AuthorizationScope.USER_FOLLOW_READ,
+            AuthorizationScope.PLAYLIST_READ_PRIVATE,
+            AuthorizationScope.PLAYLIST_READ_COLLABORATIVE
+    };
     private final SpotifyApi spotifyApi;
     private final Semaphore waitingForAPI = new Semaphore(1);
     private final String state = UUID.randomUUID().toString();
@@ -42,25 +49,20 @@ public class ApiWrapper {
     private final Supplier<AbstractRequest<AuthorizationCodeCredentials>> authorizationRefreshRequest;
     private final AbstractRequest<URI> authorizationCodeUriRequest;
     private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
-    private final AuthorizationScope[] SCOPES = {
-            AuthorizationScope.USER_READ_PRIVATE,
-            AuthorizationScope.USER_LIBRARY_READ,
-            AuthorizationScope.USER_FOLLOW_READ,
-            AuthorizationScope.PLAYLIST_READ_PRIVATE,
-            AuthorizationScope.PLAYLIST_READ_COLLABORATIVE
-    };
+    private final int accountNumber;
 
     /**
      * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
      * @throws IOException          when an issue occurs with creating the redirect catch server or there is a network
      *                              issue (HTTP 3xx status code).
      */
-    public ApiWrapper() throws InterruptedException, IOException {
+    public ApiWrapper(final int accountNumber) throws InterruptedException, IOException {
+        this.accountNumber = accountNumber;
         var apiBuilder = SpotifyApi.builder();
         apiBuilder.setClientId(Config.clientId.get());
         apiBuilder.setRedirectUri(Config.redirectURI.get());
         if (Config.clientSecret.isPresent()) apiBuilder.setClientSecret(Config.clientSecret.get());
-        if (Config.refreshToken.isPresent()) apiBuilder.setRefreshToken(Config.refreshToken.get());
+        Config.refreshTokens.get(accountNumber).ifPresent(apiBuilder::setRefreshToken);
         spotifyApi = apiBuilder.build();
         try {
             if (Config.clientSecret.isEmpty()) {
@@ -79,7 +81,7 @@ public class ApiWrapper {
             throw new IllegalArgumentException("Select correct algorithm spelling: " + e);
         }
         waitingForAPI.acquire(); // ensure that the first networking operation performed is performTokenRequest()
-        if (Config.refreshToken.isEmpty()) {
+        if (Config.refreshTokens.get(accountNumber).isEmpty()) {
             performTokenRequest();
         } else {
             performTokenRefresh();
@@ -156,7 +158,7 @@ public class ApiWrapper {
             }
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            Config.refreshToken.set(authorizationCodeCredentials.getRefreshToken());
+            Config.refreshTokens.set(accountNumber, authorizationCodeCredentials.getRefreshToken());
             scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
             waitingForAPI.release();
         } catch (BadRequestException e) {

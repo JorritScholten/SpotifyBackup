@@ -20,15 +20,15 @@ public class CLI {
         if (!App.dbFileArg.isPresent()) App.println("db file: " + App.dbFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         Config.loadFromFile(App.configFileArg.getValue());
-        new Backup();
+        new Backup(0);
     }
 
     private class Backup {
         final ApiWrapper api;
         final SpotifyUser user;
 
-        private Backup() throws InterruptedException, IOException {
-            api = new ApiWrapper();
+        private Backup(final int accountNumber) throws InterruptedException, IOException {
+            api = new ApiWrapper(accountNumber);
             final var currentUser = api.getCurrentUser().orElseThrow();
             if (App.verboseArg.isPresent()) App.println("Logged in as: " + currentUser.getId());
             user = repo.persist(currentUser);
