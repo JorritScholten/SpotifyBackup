@@ -15,8 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Getter
 public class Config {
@@ -130,29 +129,43 @@ public class Config {
     public static final class PropertyList {
         @Getter
         private final String key;
-        private List<String> values;
+        private SortedMap<Integer, String> values;
 
         public PropertyList(@NonNull String key) {
             this.key = key;
-            this.values = new ArrayList<>();
+            this.values = new TreeMap<>();
         }
 
-        public String get(int i) {
-            return values.get(i);
+        public Optional<String> get(int i) {
+            try {
+                return Optional.of(values.get(i));
+            } catch (NullPointerException e) {
+                return Optional.empty();
+            }
         }
 
         private void setValues(JsonArray array) {
             if (array == null) values = null;
             else {
-                values = new ArrayList<>();
-                array.forEach(e -> values.add(e.getAsString()));
+                values = new TreeMap<>();
+                int i = 0;
+                for (var element : array.asList()) values.put(i++, element.getAsString());
             }
         }
 
-        public void set(@NonNull List<String> values) {
+        void set(@NonNull List<String> values) {
+            SortedMap<Integer, String> map = new TreeMap<>();
+            int i = 0;
+            for (var value : values) map.put(i++, value);
+            set(map);
+        }
+
+        void set(@NonNull SortedMap<Integer, String> values) {
             this.values = values;
             var jsonArray = new JsonArray();
-            for (var value : values) jsonArray.add(value);
+            for (int i = 0; i <= values.lastKey(); i++) {
+                jsonArray.add(values.getOrDefault(i, ""));
+            }
             serializedConfig.add(key, jsonArray);
             try {
                 writeSerializedConfigToFile();
@@ -161,8 +174,16 @@ public class Config {
             }
         }
 
+        public void set(int i, @NonNull String value) {
+            values.getOrDefault(i, value);
+        }
+
         public void add(@NonNull String newValue) {
-            values.add(newValue);
+            try {
+                values.put(values.lastKey() + 1, newValue);
+            } catch (NoSuchElementException e) {
+                values.put(0, newValue);
+            }
             set(values);
         }
 

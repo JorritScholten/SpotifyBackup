@@ -109,8 +109,8 @@ class ConfigTest {
         assertEquals(redirectURI, Config.redirectURI.get());
         assertEquals(clientSecret, Config.clientSecret.get());
         assertEquals(refreshToken, Config.refreshToken.get());
-        assertEquals(refreshTokens.get(0), Config.refreshTokens.get(0));
-        assertEquals(refreshTokens.get(1), Config.refreshTokens.get(1));
+        assertEquals(refreshTokens.get(0), Config.refreshTokens.get(0).orElseThrow());
+        assertEquals(refreshTokens.get(1), Config.refreshTokens.get(1).orElseThrow());
         assertEquals(refreshTokens.size(), Config.refreshTokens.size());
     }
 
@@ -165,8 +165,8 @@ class ConfigTest {
         assertDoesNotThrow(() -> Config.loadFromFile(configFile));
         assertEquals(clientId, Config.clientId.get());
         assertEquals(redirectURI, Config.redirectURI.get());
-        assertEquals(refreshTokens.get(0), Config.refreshTokens.get(0));
-        assertEquals(refreshTokens.get(1), Config.refreshTokens.get(1));
+        assertEquals(refreshTokens.get(0), Config.refreshTokens.get(0).orElseThrow());
+        assertEquals(refreshTokens.get(1), Config.refreshTokens.get(1).orElseThrow());
         assertEquals(refreshTokens.size(), Config.refreshTokens.size());
     }
 }
