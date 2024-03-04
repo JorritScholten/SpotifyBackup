@@ -27,10 +27,6 @@ public class App {
             .description("Path of H2 db file containing the data from the user.")
             .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
             .build();
-    static final FlagArgument getMeArg = new FlagArgument.Builder()
-            .name("getMe")
-            .description("Get users account info.")
-            .build();
     static final FlagArgument verboseArg = new FlagArgument.Builder()
             .name("verbose")
             .shortName('v')
@@ -41,7 +37,7 @@ public class App {
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, getMeArg, verboseArg)
+                .arguments(configFileArg, dbFileArg, verboseArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
@@ -58,7 +54,7 @@ public class App {
         term.flush();
     }
 
-    public static void print(String message){
+    public static void print(String message) {
         term.writer().print(message);
         term.flush();
     }

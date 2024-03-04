@@ -14,36 +14,34 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class CLI {
-    private final ApiWrapper api;
     private final SpotifyObjectRepository repo;
-    private final SpotifyUser user;
 
     CLI() throws IOException, InterruptedException {
         if (!App.dbFileArg.isPresent()) App.println("db file: " + App.dbFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         Config.loadFromFile(App.configFileArg.getValue());
-        api = new ApiWrapper();
-        final var currentUser = api.getCurrentUser().orElseThrow();
-        if (App.getMeArg.isPresent()) {
-            App.println("Logged in as: " + currentUser.getId());
-            App.println("User is already stored: " + repo.exists(currentUser));
-        }
-        user = repo.persist(currentUser);
-        performActions();
+        initApi();
     }
 
-    /**
-     * Perform various actions based on program arguments.
-     */
-    private void performActions() throws IOException, InterruptedException {
-        var newTrackList = saveLikedSongs();
-        markRemovedTracks(newTrackList);
-        savePlaylists();
-        saveDetailedInfo();
+    /** Initialize ApiWrapper for account */
+    private void initApi() throws InterruptedException, IOException {
+        final ApiWrapper api = new ApiWrapper();
+        final var currentUser = api.getCurrentUser().orElseThrow();
+        if (App.verboseArg.isPresent())  App.println("Logged in as: " + currentUser.getId());
+        final SpotifyUser user = repo.persist(currentUser);
+        performBackup(new ApiParameters(api, user));
+    }
+
+    /** Perform various backup actions. */
+    private void performBackup(final ApiParameters parameters) throws IOException, InterruptedException {
+        var newTrackList = saveLikedSongs(parameters);
+        markRemovedTracks(newTrackList, parameters);
+        savePlaylists(parameters);
+        saveDetailedInfo(parameters);
     }
 
     /** @return List of Liked Songs currently in the users' account. */
-    private List<SpotifySavedTrack> saveLikedSongs() throws IOException, InterruptedException {
+    private List<SpotifySavedTrack> saveLikedSongs(final ApiParameters p) throws IOException, InterruptedException {
         if (App.verboseArg.isPresent()) App.println("Saving all Liked Songs");
         final int limit = 50;
         int offset = 0;
@@ -52,27 +50,27 @@ public class CLI {
         if (App.verboseArg.isPresent()) App.print("Requesting data");
         do {
             if (App.verboseArg.isPresent()) App.print(".");
-            apiSavedTracks = api.getLikedSongs(limit, offset);
-            tracks.addAll(repo.persist(apiSavedTracks.getItems(), user));
+            apiSavedTracks = p.api.getLikedSongs(limit, offset);
+            tracks.addAll(repo.persist(apiSavedTracks.getItems(), p.user));
             offset += limit;
         } while (apiSavedTracks.getNext() != null);
         if (App.verboseArg.isPresent()) App.println("");
         return tracks;
     }
 
-    private void markRemovedTracks(List<SpotifySavedTrack> newSavedTracks) {
+    private void markRemovedTracks(List<SpotifySavedTrack> newSavedTracks, final ApiParameters p) {
         var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
-        var oldSavedTracks = repo.getSavedTracks(user);
+        var oldSavedTracks = repo.getSavedTracks(p.user);
         // filter using record ids instead of object compare (removeAll calling equalsTo) because SpotifySavedTrack has
         // no equalsTo method that works on internal fields
         var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
         if (!removed.isEmpty()) {
-            for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
+            for (var track : removed) repo.removeSavedTrack(track.getTrack(), p.user);
             if (App.verboseArg.isPresent()) App.println("Removed " + removed.size() + " from Liked Songs");
         }
     }
 
-    private void savePlaylists() throws IOException, InterruptedException {
+    private void savePlaylists(final ApiParameters p) throws IOException, InterruptedException {
         if (App.verboseArg.isPresent()) App.println("Saving all playlists of current user");
         final int limit = 50;
         int offset = 0;
@@ -80,14 +78,16 @@ public class CLI {
         if (App.verboseArg.isPresent()) App.print("Requesting data");
         do {
             if (App.verboseArg.isPresent()) App.print(".");
-            apiPlaylists = api.getCurrentUserPlaylists(limit, offset);
+            apiPlaylists = p.api.getCurrentUserPlaylists(limit, offset);
             repo.persist(apiPlaylists.getItems());
             offset += limit;
         } while (apiPlaylists.getNext() != null);
         if (App.verboseArg.isPresent()) App.println("");
     }
 
-    private void saveDetailedInfo() {
+    private void saveDetailedInfo(final ApiParameters p) {
         //TODO: iterate over all simplified SpotifyObjects, request detailed information and persist it
     }
+
+    private record ApiParameters(ApiWrapper api, SpotifyUser user) {}
 }
