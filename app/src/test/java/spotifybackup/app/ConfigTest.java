@@ -164,4 +164,46 @@ class ConfigTest {
         assertEquals(refreshTokens.get(1), Config.refreshTokens.get(1).orElseThrow());
         assertEquals(refreshTokens.size(), Config.refreshTokens.size());
     }
+
+    @Test
+    void ensure_added_refresh_token_is_saved() throws IOException, URISyntaxException {
+        // Arrange
+        final String initialConfigContents = """
+                {
+                  "clientId": "abcdefg",
+                  "redirectURI": "http://localhost:1234",
+                  "clientSecret": "123",
+                  "refreshTokens": [
+                    "q1w2e3r4t5",
+                    "y6u7i8o9p0"
+                  ]
+                }
+                """;
+        final String finalConfigContents = """
+                {
+                  "clientId": "abcdefg",
+                  "redirectURI": "http://localhost:1234",
+                  "clientSecret": "123",
+                  "refreshTokens": [
+                    "q1w2e3r4t5",
+                    "y6u7i8o9p0",
+                    "1a2b3c",
+                    "4a2b$c"
+                  ]
+                }
+                """;
+        final String newToken1 = "1a2b3c";
+        final String newToken2 = "4a2b$c";
+        final List<String> refreshTokens = List.of("q1w2e3r4t5", "y6u7i8o9p0", newToken1, newToken2);
+        Files.writeString(configFile.toPath(), initialConfigContents);
+        Config.loadFromFile(configFile);
+
+        // Act
+        Config.refreshTokens.add(newToken1);
+        Config.refreshTokens.set(refreshTokens.size() - 1, newToken2);
+
+        // Assert
+        final String newConfig = Files.readString(configFile.toPath());
+        assertEquals(finalConfigContents, newConfig);
+    }
 }

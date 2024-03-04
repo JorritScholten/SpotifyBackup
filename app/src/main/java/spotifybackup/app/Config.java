@@ -174,7 +174,8 @@ public class Config {
         }
 
         public void set(int i, @NonNull String value) {
-            values.getOrDefault(i, value);
+            values.put(i, value);
+            set(values);
         }
 
         public void add(@NonNull String newValue) {
