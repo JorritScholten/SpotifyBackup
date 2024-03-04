@@ -5,6 +5,7 @@ import org.jline.terminal.TerminalBuilder;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
+import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,12 +33,19 @@ public class App {
             .shortName('v')
             .description("Print full stacktrace and verbose progress messages.")
             .build();
+    static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
+            .name("addAccounts")
+            .defaultValue(0)
+            .minimum(0)
+            .shortName('a')
+            .description("Number of accounts to add.")
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, verboseArg)
+                .arguments(configFileArg, dbFileArg, verboseArg, addAccounts)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
