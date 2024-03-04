@@ -36,7 +36,6 @@ class ConfigTest {
                   "clientId": "",
                   "redirectURI": "",
                   "clientSecret": "",
-                  "refreshToken": "",
                   "refreshTokens": []
                 }
                 """;
@@ -87,7 +86,6 @@ class ConfigTest {
                   "clientId": "abcdefg",
                   "redirectURI": "http://localhost:1234",
                   "clientSecret": "123",
-                  "refreshToken": "1a2b3c",
                   "refreshTokens": [
                     "q1w2e3r4t5",
                     "y6u7i8o9p0"
@@ -108,7 +106,6 @@ class ConfigTest {
         assertEquals(clientId, Config.clientId.get());
         assertEquals(redirectURI, Config.redirectURI.get());
         assertEquals(clientSecret, Config.clientSecret.get());
-        assertEquals(refreshToken, Config.refreshToken.get());
         assertEquals(refreshTokens.get(0), Config.refreshTokens.get(0).orElseThrow());
         assertEquals(refreshTokens.get(1), Config.refreshTokens.get(1).orElseThrow());
         assertEquals(refreshTokens.size(), Config.refreshTokens.size());
@@ -123,7 +120,6 @@ class ConfigTest {
                   "clientId": "abcdefg",
                   "redirectURI": "http://localhost:1234",
                   "clientSecret": "123",
-                  "refreshToken": "1a2b3c",
                   "refreshTokens": [
                     "q1w2e3r4t5",
                     "y6u7i8o9p0"
@@ -140,7 +136,6 @@ class ConfigTest {
         Config.clientId.set(clientId);
         Config.redirectURI.set(redirectURI);
         Config.clientSecret.set(clientSecret);
-        Config.refreshToken.set(refreshToken);
         Config.refreshTokens.set(refreshTokens);
 
         // Assert

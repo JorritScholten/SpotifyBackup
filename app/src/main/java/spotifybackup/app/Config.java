@@ -22,14 +22,13 @@ public class Config {
     public static final RequiredProperty<String> clientId = new RequiredProperty<>("clientId", String.class);
     public static final RequiredProperty<URI> redirectURI = new RequiredProperty<>("redirectURI", URI.class);
     public static final OptionalProperty<String> clientSecret = new OptionalProperty<>("clientSecret", String.class);
-    public static final OptionalProperty<String> refreshToken = new OptionalProperty<>("refreshToken", String.class);
     public static final PropertyList refreshTokens = new PropertyList("refreshTokens");
     private static final Property<?>[] properties;
     private static File configFile;
     private static JsonObject serializedConfig;
 
     static {
-        properties = new Property<?>[]{clientId, redirectURI, clientSecret, refreshToken};
+        properties = new Property<?>[]{clientId, redirectURI, clientSecret};
     }
 
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
