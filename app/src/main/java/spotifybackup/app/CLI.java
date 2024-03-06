@@ -4,10 +4,7 @@ import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.api_wrapper.ApiWrapper;
-import spotifybackup.storage.SpotifyObjectRepository;
-import spotifybackup.storage.SpotifyPlaylist;
-import spotifybackup.storage.SpotifySavedTrack;
-import spotifybackup.storage.SpotifyUser;
+import spotifybackup.storage.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,14 +58,16 @@ public class CLI {
         private void performBackup() throws IOException, InterruptedException {
             var newTrackList = saveLikedSongs();
             markRemovedTracks(newTrackList);
-            var newPlaylists = savePlaylists();
-            markRemovedPlaylists(newPlaylists);
-            // handle followed artists
-            // handle liked albums
+            var newPlaylists = saveFollowedPlaylists();
+            markUnfollowedPlaylists(newPlaylists);
+            var newFollowedArtists = saveFollowedArtists();
+            markUnfollowedArtists(newFollowedArtists);
+            var newLikedAlbums = saveLikedAlbums();
+            markUnlikedAlbums(newLikedAlbums);
             saveDetailedInfo();
         }
 
-        /** @return List of Liked Songs currently in the users' account. */
+        /** @return List of Liked Songs currently in the users' account as returned from the API. */
         private List<SpotifySavedTrack> saveLikedSongs() throws IOException, InterruptedException {
             App.verbosePrint("  Saving all Liked Songs");
             final int limit = 50;
@@ -86,19 +85,8 @@ public class CLI {
             return tracks;
         }
 
-        private void markRemovedTracks(final List<SpotifySavedTrack> newSavedTracks) {
-            var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
-            var oldSavedTracks = repo.getSavedTracks(user);
-            // filter using record ids instead of object compare (removeAll calling equalsTo) because SpotifySavedTrack has
-            // no equalsTo method that works on internal fields
-            var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
-            if (!removed.isEmpty()) {
-                for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
-                App.verbosePrintln("  Removed " + removed.size() + " track(s) from Liked Songs");
-            }
-        }
-
-        private List<SpotifyPlaylist> savePlaylists() throws IOException, InterruptedException {
+        /** @return List of playlists currently followed by user as returned from the API. */
+        private List<SpotifyPlaylist> saveFollowedPlaylists() throws IOException, InterruptedException {
             App.verbosePrint("  Saving all playlists");
             final int limit = 50;
             int offset = 0;
@@ -116,14 +104,44 @@ public class CLI {
             return playlists;
         }
 
-        private void markRemovedPlaylists(final List<SpotifyPlaylist> newPlaylists) {
+        /** @return List of artists currently followed by user as returned from the API. */
+        private List<SpotifyArtist> saveFollowedArtists() {
+            throw new UnsupportedOperationException("to be implemented");
+        }
+
+        /** @return List of albums currently liked by user as returned from the API. */
+        private List<SpotifyAlbum> saveLikedAlbums() {
+            throw new UnsupportedOperationException("to be implemented");
+        }
+
+        private void markRemovedTracks(final List<SpotifySavedTrack> newSavedTracks) {
+            var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
+            var oldSavedTracks = repo.getSavedTracks(user);
+            // filter using record ids instead of object compare (removeAll calling equalsTo) because SpotifySavedTrack has
+            // no equalsTo method that works on internal fields
+            var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
+            if (!removed.isEmpty()) {
+                for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
+                App.verbosePrintln("  Removed " + removed.size() + " track(s) from Liked Songs");
+            }
+        }
+
+        private void markUnfollowedPlaylists(final List<SpotifyPlaylist> newPlaylists) {
             var newPlaylistIds = newPlaylists.stream().map(SpotifyPlaylist::getId).collect(Collectors.toSet());
             var oldPlaylists = repo.getFollowedPlaylists(user);
             var removed = oldPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
-                 repo.unfollowPlaylists(removed, user);
+                repo.unfollowPlaylists(removed, user);
                 App.verbosePrintln("  Unfollowed " + removed.size() + " playlist(s)");
             }
+        }
+
+        private void markUnfollowedArtists(final List<SpotifyArtist> newFollowedArtists) {
+            throw new UnsupportedOperationException("to be implemented");
+        }
+
+        private void markUnlikedAlbums(final List<SpotifyAlbum> newLikedAlbums) {
+            throw new UnsupportedOperationException("to be implemented");
         }
 
         private void saveDetailedInfo() {
