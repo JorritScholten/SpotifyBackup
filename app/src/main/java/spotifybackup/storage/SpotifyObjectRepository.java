@@ -309,6 +309,10 @@ public class SpotifyObjectRepository {
         throw new UnsupportedOperationException("To be implemented");
     }
 
+    public void followPlaylists(@NonNull List<SpotifyPlaylist> playlists, @NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
     public void unfollowPlaylist(@NonNull SpotifyPlaylist playlist, @NonNull SpotifyUser user) {
         throw new UnsupportedOperationException("To be implemented");
     }

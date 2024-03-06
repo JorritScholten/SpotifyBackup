@@ -111,6 +111,7 @@ public class CLI {
                 playlists.addAll(repo.persist(apiPlaylists.getItems()));
                 offset += limit;
             } while (apiPlaylists.getNext() != null);
+            repo.followPlaylists(playlists, user);
             App.verbosePrintln("");
             return playlists;
         }

@@ -9,6 +9,7 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,10 +19,20 @@ class SpotifyUserRepositoryTest {
     static final String playlistDir = testDataDir + "playlist/";
     static final String userDir = testDataDir + "user/";
     static private SpotifyObjectRepository spotifyObjectRepository;
+    static private List<SpotifyPlaylist> playlists;
 
     @BeforeAll
-    static void setup() {
+    static void setup() throws IOException {
         spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
+        final PlaylistSimplified[] apiPlaylists = {
+                new PlaylistSimplified.JsonUtil().createModelObject(
+                        new String(Files.readAllBytes(Path.of(playlistDir + "Spotify_Web_API_Testing_playlist.json")))),
+                new PlaylistSimplified.JsonUtil().createModelObject(
+                        new String(Files.readAllBytes(Path.of(playlistDir + "The_Blue_Stones.json")))
+                )
+        };
+        playlists = List.of(spotifyObjectRepository.persist(apiPlaylists[0]),
+                spotifyObjectRepository.persist(apiPlaylists[1]));
     }
 
     @Test
@@ -47,19 +58,7 @@ class SpotifyUserRepositoryTest {
         final User apiUser = new User.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(userDir + "user.json")))
         );
-        assertFalse(spotifyObjectRepository.getAccountHolders()
-                .stream().anyMatch(u -> u.getSpotifyUserID().equals(apiUser.getId())));
         final var user = spotifyObjectRepository.persist(apiUser);
-        // source of non account holder users
-        final PlaylistSimplified[] playlists = {
-                new PlaylistSimplified.JsonUtil().createModelObject(
-                        new String(Files.readAllBytes(Path.of(playlistDir + "Spotify_Web_API_Testing_playlist.json")))),
-                new PlaylistSimplified.JsonUtil().createModelObject(
-                        new String(Files.readAllBytes(Path.of(playlistDir + "The_Blue_Stones.json")))
-                )
-        };
-        spotifyObjectRepository.persist(playlists[0]);
-        spotifyObjectRepository.persist(playlists[1]);
 
         // Act
         final var accountHolders = spotifyObjectRepository.getAccountHolders();
@@ -67,5 +66,55 @@ class SpotifyUserRepositoryTest {
         // Assert
         assertTrue(accountHolders.stream().anyMatch(u -> u.getSpotifyUserID().equals(user.getSpotifyUserID())));
         assertTrue(accountHolders.stream().anyMatch(u -> u.getId() == user.getId()));
+    }
+
+    @Test
+    void ensure_playlists_can_be_followed() throws IOException {
+        // Arrange
+        final User apiUser = new User.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(userDir + "user.json")))
+        );
+        final var user = spotifyObjectRepository.persist(apiUser);
+        assertTrue(spotifyObjectRepository.getFollowedPlaylists(user).isEmpty());
+
+        // Act
+        spotifyObjectRepository.followPlaylists(playlists, user);
+        final var followedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
+
+        // Assert
+        assertTrue(playlists.containsAll(followedPlaylists) && playlists.size() == followedPlaylists.size());
+    }
+
+    @Test
+    void ensure_playlists_can_be_unfollowed() throws IOException {
+        // Arrange
+        final User apiUser = new User.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(userDir + "user2.json")))
+        );
+        final var user = spotifyObjectRepository.persist(apiUser);
+        spotifyObjectRepository.followPlaylists(playlists, user);
+        final var oldFollowedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
+        assertTrue(playlists.containsAll(oldFollowedPlaylists) && playlists.size() == oldFollowedPlaylists.size());
+
+        // Act
+        spotifyObjectRepository.unfollowPlaylist(playlists.getFirst(), user);
+
+        // Assert
+        final var newFollowedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
+        assertFalse(newFollowedPlaylists.contains(playlists.getFirst()));
+    }
+
+    @Test
+    void ensure_playlist_owner_can_be_retrieved() {
+        // Arrange
+        final SpotifyUser user = (SpotifyUser) spotifyObjectRepository.find("spotify").orElseThrow();
+
+        // Act
+        final var ownedPlaylists = spotifyObjectRepository.getOwnedPlaylists(user);
+
+        // Assert
+        assertEquals(1, ownedPlaylists.size());
+        assertEquals(ownedPlaylists.getFirst(), playlists.get(1));
+        assertEquals(ownedPlaylists.getFirst().getOwner(), user);
     }
 }
