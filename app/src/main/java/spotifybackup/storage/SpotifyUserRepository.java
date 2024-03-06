@@ -7,6 +7,7 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
@@ -54,6 +55,13 @@ class SpotifyUserRepository {
         ensureTransactionActive.accept(em);
         var attachedUser = find(em, user.getSpotifyUserID()).orElseThrow();
         return attachedUser.getFollowedPlaylists();
+    }
+
+    static Set<SpotifyPlaylist> getOwnedPlaylists(EntityManager em, @NonNull SpotifyUser user) {
+        var query = new CriteriaDefinition<>(em, SpotifyPlaylist.class) {};
+        var root = query.from(SpotifyPlaylist.class);
+        query.where(query.equal(root.get(SpotifyPlaylist_.owner), user));
+        return em.createQuery(query).getResultStream().collect(Collectors.toSet());
     }
 
     /**

@@ -126,6 +126,6 @@ class SpotifyUserRepositoryTest {
         assertEquals(1, ownedPlaylists.size());
         final var ownedPlaylistIds = ownedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
         assertEquals(playlists.get(1).getSpotifyID(), ownedPlaylistIds.getFirst());
-        assertTrue(ownedPlaylists.stream().allMatch(p -> p.getOwner().equals(user)));
+        assertTrue(ownedPlaylists.stream().allMatch(p -> p.getOwner().getSpotifyUserID().equals(user.getSpotifyUserID())));
     }
 }

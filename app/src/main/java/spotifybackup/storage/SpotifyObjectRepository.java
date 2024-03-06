@@ -333,7 +333,9 @@ public class SpotifyObjectRepository {
 
     /** Get playlists owned by a user. */
     public Set<SpotifyPlaylist> getOwnedPlaylists(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("To be implemented");
+        try (var em = emf.createEntityManager()) {
+            return SpotifyUserRepository.getOwnedPlaylists(em, user);
+        }
     }
 
     /**
