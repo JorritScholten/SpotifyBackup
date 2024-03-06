@@ -31,11 +31,11 @@ public final class SpotifyTrack extends SpotifyObject {
     private final Set<SpotifyArtist> artists = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "track")
+    @OneToMany(mappedBy = SpotifyPlaylistItem_.TRACK)
     private final Set<SpotifyPlaylistItem> playlistItems = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "track")
+    @OneToMany(mappedBy = SpotifySavedTrack_.TRACK)
     private final Set<SpotifySavedTrack> savedTracks = new HashSet<>();
 
     @NonNull
@@ -49,7 +49,7 @@ public final class SpotifyTrack extends SpotifyObject {
 
     @NonNull
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "spotify_id", referencedColumnName = SpotifyID_.ID, nullable = false)
     private SpotifyID spotifyID;
 
     @NonNull

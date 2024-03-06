@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 public final class SpotifyPlaylist extends SpotifyObject {
-    @OneToMany(mappedBy = "playlist")
+    @OneToMany(mappedBy = SpotifyPlaylistItem_.PLAYLIST)
     private final Set<SpotifyPlaylistItem> tracks = new HashSet<>();
 
     @Id
@@ -23,7 +23,7 @@ public final class SpotifyPlaylist extends SpotifyObject {
 
     @NonNull
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "spotify_id", referencedColumnName = SpotifyID_.ID, nullable = false)
     private SpotifyID spotifyID;
 
     @NonNull

@@ -19,15 +19,15 @@ public final class SpotifyUser extends SpotifyObject {
     private final Set<SpotifyImage> images = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "addedBy", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = SpotifyPlaylistItem_.ADDED_BY, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyPlaylistItem> addedPlaylistItems = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = SpotifySavedTrack_.USER, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifySavedTrack> savedTracks = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = SpotifyPlaylist_.OWNER, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyPlaylist> ownedPlaylists = new HashSet<>();
 
     @Id

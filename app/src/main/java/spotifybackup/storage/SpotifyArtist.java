@@ -21,12 +21,12 @@ public final class SpotifyArtist extends SpotifyObject {
     private final Set<SpotifyGenre> genres = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "artists", cascade =
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyAlbum_.ARTISTS, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyAlbum> albums = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "artists", cascade =
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyTrack_.ARTISTS, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyTrack> tracks = new HashSet<>();
 
@@ -40,7 +40,7 @@ public final class SpotifyArtist extends SpotifyObject {
 
     @NonNull
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "spotify_id", referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "spotify_id", referencedColumnName = SpotifyID_.ID, nullable = false)
     private SpotifyID spotifyID;
 
     @Setter

@@ -14,12 +14,12 @@ import java.util.Set;
 @Entity
 public final class SpotifyGenre extends SpotifyObject {
     @Getter(AccessLevel.NONE)
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres",
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyArtist_.GENRES,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private final Set<SpotifyArtist> artists = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "genres",
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyAlbum_.GENRES,
             cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private final Set<SpotifyAlbum> albums = new HashSet<>();
 
