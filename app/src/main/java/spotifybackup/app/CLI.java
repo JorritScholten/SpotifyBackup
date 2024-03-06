@@ -5,6 +5,7 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.SpotifyObjectRepository;
+import spotifybackup.storage.SpotifyPlaylist;
 import spotifybackup.storage.SpotifySavedTrack;
 import spotifybackup.storage.SpotifyUser;
 
@@ -60,7 +61,10 @@ public class CLI {
         private void performBackup() throws IOException, InterruptedException {
             var newTrackList = saveLikedSongs();
             markRemovedTracks(newTrackList);
-            savePlaylists();
+            var newPlaylists = savePlaylists();
+            markRemovedPlaylists(newPlaylists);
+            // handle followed artists
+            // handle liked albums
             saveDetailedInfo();
         }
 
@@ -82,7 +86,7 @@ public class CLI {
             return tracks;
         }
 
-        private void markRemovedTracks(List<SpotifySavedTrack> newSavedTracks) {
+        private void markRemovedTracks(final List<SpotifySavedTrack> newSavedTracks) {
             var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
             var oldSavedTracks = repo.getSavedTracks(user);
             // filter using record ids instead of object compare (removeAll calling equalsTo) because SpotifySavedTrack has
@@ -90,27 +94,40 @@ public class CLI {
             var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
-                App.verbosePrintln("  Removed " + removed.size() + " from Liked Songs");
+                App.verbosePrintln("  Removed " + removed.size() + " track(s) from Liked Songs");
             }
         }
 
-        private void savePlaylists() throws IOException, InterruptedException {
+        private List<SpotifyPlaylist> savePlaylists() throws IOException, InterruptedException {
             App.verbosePrint("  Saving all playlists");
             final int limit = 50;
             int offset = 0;
             Paging<PlaylistSimplified> apiPlaylists;
+            List<SpotifyPlaylist> playlists = new ArrayList<>();
             App.verbosePrint(", requesting data");
             do {
                 App.verbosePrint(".");
                 apiPlaylists = api.getCurrentUserPlaylists(limit, offset);
-                repo.persist(apiPlaylists.getItems());
+                playlists.addAll(repo.persist(apiPlaylists.getItems()));
                 offset += limit;
             } while (apiPlaylists.getNext() != null);
             App.verbosePrintln("");
+            return playlists;
+        }
+
+        private void markRemovedPlaylists(final List<SpotifyPlaylist> newPlaylists) {
+            var newPlaylistIds = newPlaylists.stream().map(SpotifyPlaylist::getId).collect(Collectors.toSet());
+            var oldPlaylists = repo.getFollowedPlaylists(user);
+            var removed = oldPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
+            if (!removed.isEmpty()) {
+                for (var playlist : removed) repo.unfollowPlaylist(playlist, user);
+                App.verbosePrintln("  Unfollowed " + removed.size() + " playlist(s)");
+            }
         }
 
         private void saveDetailedInfo() {
-            //TODO: iterate over all simplified SpotifyObjects, request detailed information and persist it
+            throw new UnsupportedOperationException("TODO: iterate over all simplified SpotifyObjects, " +
+                    "request detailed information and persist it");
         }
     }
 }

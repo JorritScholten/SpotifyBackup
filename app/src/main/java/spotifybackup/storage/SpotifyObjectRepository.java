@@ -281,7 +281,7 @@ public class SpotifyObjectRepository {
      * removed from the database, rather it is marked as removed (as well as when this is being done) and won't show up
      * in the return from getSavedTracks() anymore.
      * @param track The SpotifyTrack that has been removed from Liked Songs on Spotify.
-     * @param user The SpotifyUser account to remove track from.
+     * @param user  The SpotifyUser account to remove track from.
      * @return a SpotifySavedTrack with updated fields if track is one of the users' saved songs, else returns empty.
      */
     public Optional<SpotifySavedTrack> removeSavedTrack(@NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
@@ -303,6 +303,18 @@ public class SpotifyObjectRepository {
             var query = SpotifySavedTrackRepository.findTrackIdsByUser(em, user);
             return new HashSet<>(query.getResultList());
         }
+    }
+
+    public List<SpotifyPlaylist> getFollowedPlaylists(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
+    public void unfollowPlaylist(@NonNull SpotifyPlaylist playlist, @NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("To be implemented");
+    }
+
+    public List<SpotifyPlaylist> getOwnedPlaylists(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("To be implemented");
     }
 
     /**
