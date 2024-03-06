@@ -73,4 +73,9 @@ public final class SpotifyPlaylist extends SpotifyObject {
     public void addFollower(@NonNull SpotifyUser spotifyUser) {
         followers.add(spotifyUser);
     }
+
+    /** Non-owning side. */
+    public void removeFollower(@NonNull SpotifyUser user) {
+        followers.remove(user);
+    }
 }

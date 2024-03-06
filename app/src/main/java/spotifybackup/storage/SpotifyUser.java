@@ -75,4 +75,13 @@ public final class SpotifyUser extends SpotifyObject {
     void addFollowedPlaylists(@NonNull Set<SpotifyPlaylist> newPlaylists) {
         newPlaylists.forEach(this::addFollowedPlaylist);
     }
+
+    public void removeFollowedPlaylist(@NonNull SpotifyPlaylist playlist) {
+        followedPlaylists.remove(playlist);
+        playlist.removeFollower(this);
+    }
+
+    public void removeFollowedPlaylists(@NonNull Set<SpotifyPlaylist> playlists) {
+        playlists.forEach(this::removeFollowedPlaylist);
+    }
 }

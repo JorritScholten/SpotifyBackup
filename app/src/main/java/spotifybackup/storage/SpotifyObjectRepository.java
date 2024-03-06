@@ -305,12 +305,15 @@ public class SpotifyObjectRepository {
         }
     }
 
-    public List<SpotifyPlaylist> getFollowedPlaylists(@NonNull SpotifyUser user) {
+    /** Get set of playlists a user is following. */
+    public Set<SpotifyPlaylist> getFollowedPlaylists(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
             return SpotifyUserRepository.getFollowedPlaylists(em, user);
         }
     }
 
+    /** Add playlists a user is following. */
     public void followPlaylists(@NonNull List<SpotifyPlaylist> playlists, @NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
@@ -319,11 +322,17 @@ public class SpotifyObjectRepository {
         }
     }
 
-    public void unfollowPlaylist(@NonNull SpotifyPlaylist playlist, @NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("To be implemented");
+    /** Remove playlists a user is following. */
+    public void unfollowPlaylists(@NonNull List<SpotifyPlaylist> playlists, @NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            SpotifyUserRepository.unFollowPlaylists(em, playlists, user);
+            em.getTransaction().commit();
+        }
     }
 
-    public List<SpotifyPlaylist> getOwnedPlaylists(@NonNull SpotifyUser user) {
+    /** Get playlists owned by a user. */
+    public Set<SpotifyPlaylist> getOwnedPlaylists(@NonNull SpotifyUser user) {
         throw new UnsupportedOperationException("To be implemented");
     }
 

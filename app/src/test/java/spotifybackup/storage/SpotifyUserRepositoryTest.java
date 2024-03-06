@@ -105,11 +105,13 @@ class SpotifyUserRepositoryTest {
         assertTrue(playlistIds.containsAll(oldFollowedPlaylistIds));
 
         // Act
-        spotifyObjectRepository.unfollowPlaylist(playlists.getFirst(), user);
+        spotifyObjectRepository.unfollowPlaylists(List.of(playlists.getFirst()), user);
 
         // Assert
         final var newFollowedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
-        assertFalse(newFollowedPlaylists.contains(playlists.getFirst()));
+        assertEquals(oldFollowedPlaylists.size() - 1, newFollowedPlaylists.size());
+        final var newFollowedPlaylistIds = newFollowedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
+        assertFalse(newFollowedPlaylistIds.contains(playlists.getFirst().getSpotifyID()));
     }
 
     @Test
@@ -122,7 +124,8 @@ class SpotifyUserRepositoryTest {
 
         // Assert
         assertEquals(1, ownedPlaylists.size());
-        assertEquals(ownedPlaylists.getFirst(), playlists.get(1));
-        assertEquals(ownedPlaylists.getFirst().getOwner(), user);
+        final var ownedPlaylistIds = ownedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
+        assertEquals(playlists.get(1).getSpotifyID(), ownedPlaylistIds.getFirst());
+        assertTrue(ownedPlaylists.stream().allMatch(p -> p.getOwner().equals(user)));
     }
 }

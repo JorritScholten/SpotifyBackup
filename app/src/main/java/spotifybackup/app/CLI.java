@@ -121,7 +121,7 @@ public class CLI {
             var oldPlaylists = repo.getFollowedPlaylists(user);
             var removed = oldPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
-                for (var playlist : removed) repo.unfollowPlaylist(playlist, user);
+                 repo.unfollowPlaylists(removed, user);
                 App.verbosePrintln("  Unfollowed " + removed.size() + " playlist(s)");
             }
         }

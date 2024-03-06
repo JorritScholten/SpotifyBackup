@@ -6,10 +6,7 @@ import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static spotifybackup.storage.SpotifyObject.ensureTransactionActive;
 import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
@@ -33,7 +30,7 @@ class SpotifyUserRepository {
         return em.createQuery(query).getResultList();
     }
 
-    public static void followPlaylists(EntityManager em, List<SpotifyPlaylist> playlists, SpotifyUser user) {
+    static void followPlaylists(EntityManager em, List<SpotifyPlaylist> playlists, SpotifyUser user) {
         ensureTransactionActive.accept(em);
         SpotifyUser attachedUser = find(em, user.getSpotifyUserID()).orElseThrow();
         List<SpotifyPlaylist> attachedPlaylists = new ArrayList<>();
@@ -43,9 +40,20 @@ class SpotifyUserRepository {
         em.persist(attachedUser);
     }
 
-    static List<SpotifyPlaylist> getFollowedPlaylists(EntityManager em, @NonNull SpotifyUser user) {
-        var attachedUser = em.find(SpotifyUser.class, user.getId());
-        return attachedUser.getFollowedPlaylists().stream().toList();
+    static void unFollowPlaylists(EntityManager em, List<SpotifyPlaylist> playlists, SpotifyUser user) {
+        ensureTransactionActive.accept(em);
+        SpotifyUser attachedUser = find(em, user.getSpotifyUserID()).orElseThrow();
+        List<SpotifyPlaylist> attachedPlaylists = new ArrayList<>();
+        for (var playlist : playlists)
+            attachedPlaylists.add(SpotifyPlaylistRepository.find(em, playlist.getSpotifyID()).orElseThrow());
+        attachedUser.removeFollowedPlaylists(new HashSet<>(attachedPlaylists));
+        em.persist(attachedUser);
+    }
+
+    static Set<SpotifyPlaylist> getFollowedPlaylists(EntityManager em, @NonNull SpotifyUser user) {
+        ensureTransactionActive.accept(em);
+        var attachedUser = find(em, user.getSpotifyUserID()).orElseThrow();
+        return attachedUser.getFollowedPlaylists();
     }
 
     /**
