@@ -70,7 +70,7 @@ public final class SpotifyPlaylist extends SpotifyObject {
     }
 
     /** Non-owning side. */
-    void addFollowers(@NonNull List<SpotifyUser> newFollowers) {
-        followers.addAll(newFollowers);
+    public void addFollower(@NonNull SpotifyUser spotifyUser) {
+        followers.add(spotifyUser);
     }
 }

@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 public final class SpotifyUser extends SpotifyObject {
-    @Getter(AccessLevel.NONE)
+    @Getter(AccessLevel.PACKAGE)
     @ManyToMany(fetch = FetchType.LAZY, cascade =
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyPlaylist> followedPlaylists = new HashSet<>();
@@ -67,7 +67,12 @@ public final class SpotifyUser extends SpotifyObject {
         images.addAll(newSpotifyImages);
     }
 
+    void addFollowedPlaylist(@NonNull SpotifyPlaylist newPlaylist) {
+        followedPlaylists.add(newPlaylist);
+        newPlaylist.addFollower(this);
+    }
+
     void addFollowedPlaylists(@NonNull Set<SpotifyPlaylist> newPlaylists) {
-        followedPlaylists.addAll(newPlaylists);
+        newPlaylists.forEach(this::addFollowedPlaylist);
     }
 }

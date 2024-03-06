@@ -306,11 +306,17 @@ public class SpotifyObjectRepository {
     }
 
     public List<SpotifyPlaylist> getFollowedPlaylists(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("To be implemented");
+        try (var em = emf.createEntityManager()) {
+            return SpotifyUserRepository.getFollowedPlaylists(em, user);
+        }
     }
 
     public void followPlaylists(@NonNull List<SpotifyPlaylist> playlists, @NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("To be implemented");
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            SpotifyUserRepository.followPlaylists(em, playlists, user);
+            em.getTransaction().commit();
+        }
     }
 
     public void unfollowPlaylist(@NonNull SpotifyPlaylist playlist, @NonNull SpotifyUser user) {

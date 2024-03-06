@@ -46,6 +46,14 @@ class SpotifyPlaylistRepository {
         return find(entityManager, apiPlaylist.getId());
     }
 
+    /**
+     * Find SpotifyPlaylist by Spotify ID value.
+     * @param id SpotifyID of playlist.
+     * @return SpotifyPlaylist if id matches the spotify_id field in the table and not blank.
+     */
+    static Optional<SpotifyPlaylist> find(EntityManager em, @NonNull SpotifyID id) {
+        return find(em, id.getId());
+    }
 
     /**
      * Find SpotifyPlaylist by Spotify ID string value.

@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +22,7 @@ class SpotifyUserRepositoryTest {
     static final String userDir = testDataDir + "user/";
     static private SpotifyObjectRepository spotifyObjectRepository;
     static private List<SpotifyPlaylist> playlists;
+    static private Set<SpotifyID> playlistIds;
 
     @BeforeAll
     static void setup() throws IOException {
@@ -33,6 +36,7 @@ class SpotifyUserRepositoryTest {
         };
         playlists = List.of(spotifyObjectRepository.persist(apiPlaylists[0]),
                 spotifyObjectRepository.persist(apiPlaylists[1]));
+        playlistIds = playlists.stream().map(SpotifyPlaylist::getSpotifyID).collect(Collectors.toSet());
     }
 
     @Test
@@ -82,7 +86,9 @@ class SpotifyUserRepositoryTest {
         final var followedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
 
         // Assert
-        assertTrue(playlists.containsAll(followedPlaylists) && playlists.size() == followedPlaylists.size());
+        assertEquals(playlists.size(), followedPlaylists.size());
+        final var followedPlaylistIds = followedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
+        assertTrue(playlistIds.containsAll(followedPlaylistIds));
     }
 
     @Test
@@ -94,7 +100,9 @@ class SpotifyUserRepositoryTest {
         final var user = spotifyObjectRepository.persist(apiUser);
         spotifyObjectRepository.followPlaylists(playlists, user);
         final var oldFollowedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
-        assertTrue(playlists.containsAll(oldFollowedPlaylists) && playlists.size() == oldFollowedPlaylists.size());
+        assertEquals(playlists.size(), oldFollowedPlaylists.size());
+        final var oldFollowedPlaylistIds = oldFollowedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
+        assertTrue(playlistIds.containsAll(oldFollowedPlaylistIds));
 
         // Act
         spotifyObjectRepository.unfollowPlaylist(playlists.getFirst(), user);
