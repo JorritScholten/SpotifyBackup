@@ -80,8 +80,7 @@ class SpotifySavedTrackRepository {
     }
 
     static Optional<SpotifySavedTrack> find(EntityManager em, @NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
-        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {
-        };
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
         query.where(query.equal(root.get(SpotifySavedTrack_.user), user),
                 query.equal(root.get(SpotifySavedTrack_.track), track));
@@ -93,7 +92,7 @@ class SpotifySavedTrackRepository {
         var track = SpotifyTrackRepository.persist(em, apiTrack.getTrack());
         var optionalSavedTrack = find(em, track, user);
         if (optionalSavedTrack.isPresent()) {
-            if(optionalSavedTrack.get().getIsRemoved()){
+            if (optionalSavedTrack.get().getIsRemoved()) {
                 optionalSavedTrack.get().setIsRemoved(false);
                 optionalSavedTrack.get().setDateRemoved(null);
                 optionalSavedTrack.get().setDateAdded(apiTrack.getAddedAt().toInstant().atZone(UTC));

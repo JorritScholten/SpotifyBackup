@@ -110,7 +110,7 @@ public class CLI {
         }
 
         /** @return List of albums currently liked by user as returned from the API. */
-        private List<SpotifyAlbum> saveLikedAlbums() {
+        private List<SpotifySavedAlbum> saveLikedAlbums() {
             throw new UnsupportedOperationException("to be implemented");
         }
 
@@ -140,7 +140,7 @@ public class CLI {
             throw new UnsupportedOperationException("to be implemented");
         }
 
-        private void markUnlikedAlbums(final List<SpotifyAlbum> newLikedAlbums) {
+        private void markUnlikedAlbums(final List<SpotifySavedAlbum> newLikedAlbums) {
             throw new UnsupportedOperationException("to be implemented");
         }
 

@@ -9,6 +9,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.hc.core5.http.ParseException;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.enums.AuthorizationScope;
+import se.michaelthelin.spotify.enums.ModelObjectType;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -215,6 +216,29 @@ public class ApiWrapper {
     public Paging<PlaylistSimplified> getCurrentUserPlaylists(int limit, int offset)
             throws IOException, InterruptedException {
         return getPage(() -> spotifyApi.getListOfCurrentUsersPlaylists().limit(limit).offset(offset).build());
+    }
+
+    public PagingCursorbased<Artist> getCurrentUserFollowedArtists(int limit, String after)
+            throws IOException, InterruptedException {
+        return getPagingCursor(() -> spotifyApi.getUsersFollowedArtists(ModelObjectType.ARTIST)
+                .limit(limit).after(after).build());
+    }
+
+    public Paging<SavedAlbum> getCurrentUserSavedAlbums(int limit, int offset)
+            throws IOException, InterruptedException {
+        return getPage(() -> spotifyApi.getCurrentUsersSavedAlbums().limit(limit).offset(offset).build());
+    }
+
+    private <T extends AbstractModelObject> PagingCursorbased<T> getPagingCursor(Supplier<AbstractRequest<PagingCursorbased<T>>> f)
+            throws IOException, InterruptedException {
+        try {
+            waitingForAPI.acquire();
+            final var object = f.get().execute();
+            waitingForAPI.release();
+            return object;
+        } catch (SpotifyWebApiException | ParseException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private <T extends AbstractModelObject> Paging<T> getPage(Supplier<AbstractRequest<Paging<T>>> f)
