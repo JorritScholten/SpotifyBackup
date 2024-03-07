@@ -19,6 +19,11 @@ public final class SpotifyUser extends SpotifyObject {
             {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
     private final Set<SpotifyPlaylist> followedPlaylists = new HashSet<>();
 
+    @Getter(AccessLevel.PACKAGE)
+    @ManyToMany(fetch = FetchType.LAZY, cascade =
+            {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    private final Set<SpotifyArtist> followedArtists = new HashSet<>();
+
     @Getter(AccessLevel.NONE)
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
@@ -83,5 +88,23 @@ public final class SpotifyUser extends SpotifyObject {
 
     public void removeFollowedPlaylists(@NonNull Set<SpotifyPlaylist> playlists) {
         playlists.forEach(this::removeFollowedPlaylist);
+    }
+
+    void addFollowedArtist(@NonNull SpotifyArtist newArtist) {
+        followedArtists.add(newArtist);
+        newArtist.addFollower(this);
+    }
+
+    void addFollowedArtists(@NonNull Set<SpotifyArtist> newArtists) {
+        newArtists.forEach(this::addFollowedArtist);
+    }
+
+    public void removeFollowedArtist(@NonNull SpotifyArtist artist) {
+        followedArtists.remove(artist);
+        artist.removeFollower(this);
+    }
+
+    public void removeFollowedArtists(@NonNull Set<SpotifyArtist> artists) {
+        artists.forEach(this::removeFollowedArtist);
     }
 }

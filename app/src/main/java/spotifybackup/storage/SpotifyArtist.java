@@ -12,6 +12,10 @@ import java.util.Set;
 @Getter
 @Entity
 public final class SpotifyArtist extends SpotifyObject {
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyUser_.FOLLOWED_ARTISTS, cascade =
+            {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.DETACH, CascadeType.REFRESH})
+    private final Set<SpotifyUser> followers = new HashSet<>();
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private final Set<SpotifyImage> images = new HashSet<>();
 
@@ -71,5 +75,15 @@ public final class SpotifyArtist extends SpotifyObject {
     /** Non-owning side. */
     void addAlbum(@NonNull SpotifyAlbum newSpotifyAlbum) {
         albums.add(newSpotifyAlbum);
+    }
+
+    /** Non-owning side. */
+    public void addFollower(@NonNull SpotifyUser user) {
+        followers.add(user);
+    }
+
+    /** Non-owning side. */
+    public void removeFollower(@NonNull SpotifyUser user) {
+        followers.remove(user);
     }
 }
