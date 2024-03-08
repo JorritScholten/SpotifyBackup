@@ -268,7 +268,10 @@ public class SpotifyObjectRepository {
      * database.
      */
     public Optional<SpotifySavedAlbum> getNewestSavedAlbum(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedAlbumRepository.findNewestByUser(em, user);
+            return query.getResultStream().findFirst();
+        }
     }
 
     /**
