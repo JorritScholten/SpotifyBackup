@@ -134,7 +134,7 @@ class SpotifySavedAlbumRepositoryTest {
         final SavedAlbum[] apiSavedAlbum = {new SavedAlbum.Builder()
                 .setAddedAt(Date.from(previousMostRecentlyAdded.getDateAdded().plusYears(1).toInstant()))
                 .setAlbum(new Album.JsonUtil().createModelObject(
-                        new String(Files.readAllBytes(Path.of(albumDir + ".json")))
+                        new String(Files.readAllBytes(Path.of(albumDir + "The_Heist.json")))
                 )).build()};
         spotifyObjectRepository.persist(apiSavedAlbum, user);
 
@@ -180,7 +180,7 @@ class SpotifySavedAlbumRepositoryTest {
         final SavedAlbum[] apiSavedAlbum = {new SavedAlbum.Builder()
                 .setAddedAt(Date.from(originallyAdded.plusDays(2).toInstant()))
                 .setAlbum(new Album.JsonUtil().createModelObject(
-                        new String(Files.readAllBytes(Path.of(albumDir + ".json")))
+                        new String(Files.readAllBytes(Path.of(albumDir + "The_Heist.json")))
                 )).build()};
         final var oldSavedAlbumCount = spotifyObjectRepository.countSavedAlbums(user);
         assertEquals(1, spotifyObjectRepository.getRemovedSavedAlbums(user).size());
