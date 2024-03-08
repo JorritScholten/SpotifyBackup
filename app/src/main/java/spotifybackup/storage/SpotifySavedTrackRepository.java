@@ -93,6 +93,7 @@ class SpotifySavedTrackRepository {
         var optionalSavedTrack = find(em, track, user);
         if (optionalSavedTrack.isPresent()) {
             if (optionalSavedTrack.get().getIsRemoved()) {
+                // this only occurs if a track is re-added to liked songs
                 optionalSavedTrack.get().setIsRemoved(false);
                 optionalSavedTrack.get().setDateRemoved(null);
                 optionalSavedTrack.get().setDateAdded(apiTrack.getAddedAt().toInstant().atZone(UTC));
