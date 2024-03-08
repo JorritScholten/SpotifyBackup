@@ -245,7 +245,10 @@ public class SpotifyObjectRepository {
      * @return count of SavedAlbums belonging to user in the database.
      */
     public long countSavedAlbums(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedAlbumRepository.countByUser(em, user);
+            return query.getSingleResult();
+        }
     }
 
     /**
@@ -589,7 +592,15 @@ public class SpotifyObjectRepository {
      * @return List of SpotifySavedAlbum objects.
      */
     public List<SpotifySavedAlbum> persist(@NonNull SavedAlbum[] albums, @NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            List<SpotifySavedAlbum> persistedAlbums = new ArrayList<>();
+            for (var album : albums) {
+                persistedAlbums.add(SpotifySavedAlbumRepository.persist(em, album, user));
+            }
+            em.getTransaction().commit();
+            return persistedAlbums;
+        }
     }
 
     /**
