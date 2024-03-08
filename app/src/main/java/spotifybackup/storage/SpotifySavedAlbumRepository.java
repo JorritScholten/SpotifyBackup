@@ -68,7 +68,7 @@ class SpotifySavedAlbumRepository {
         );
     }
 
-    static Optional<SpotifySavedAlbum> removeAlbumFromLikedSongs(EntityManager em, @NonNull SpotifyAlbum album, @NonNull SpotifyUser user) {
+    static Optional<SpotifySavedAlbum> removeAlbumFromSavedAlbums(EntityManager em, @NonNull SpotifyAlbum album, @NonNull SpotifyUser user) {
         ensureTransactionActive.accept(em);
         var spotifySavedAlbum = find(em, album, user);
         if (spotifySavedAlbum.isPresent()) {

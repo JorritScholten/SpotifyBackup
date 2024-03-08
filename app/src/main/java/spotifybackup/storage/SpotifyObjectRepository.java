@@ -319,7 +319,10 @@ public class SpotifyObjectRepository {
      * @return Set of a users' SpotifySavedAlbum objects, may be empty.
      */
     public Set<SpotifySavedAlbum> getRemovedSavedAlbums(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedAlbumRepository.findRemovedByUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
     }
 
     /**
@@ -348,7 +351,12 @@ public class SpotifyObjectRepository {
      * @return a SpotifySavedAlbum with updated fields if album is one of the users' saved albums, else returns empty.
      */
     public Optional<SpotifySavedAlbum> removeSavedAlbum(@NonNull SpotifyAlbum album, @NonNull SpotifyUser user){
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            var removedAlbum = SpotifySavedAlbumRepository.removeAlbumFromSavedAlbums(em, album, user);
+            em.getTransaction().commit();
+            return removedAlbum;
+        }
     }
 
     /**
