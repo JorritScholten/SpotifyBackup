@@ -115,8 +115,8 @@ public class SpotifyObjectRepository {
                 case SpotifyUser u -> em.find(u.getClass(), u.getId());
                 case SpotifyPlaylistItem i -> em.find(i.getClass(), i.getId());
                 case SpotifyPlaylist p -> em.find(p.getClass(), p.getId());
-                default -> throw new IllegalStateException("Unsupported SpotifyObject queried, add implementation for: "
-                        + spotifyObject.getClass());
+                case SpotifySavedTrack t -> em.find(t.getClass(), t.getId());
+                case SpotifySavedAlbum a -> em.find(a.getClass(), a.getId());
             } != null;
         }
     }
