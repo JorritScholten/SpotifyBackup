@@ -230,7 +230,7 @@ public class SpotifyObjectRepository {
     /**
      * Get count of a users' saved tracks in the database.
      * @param user The Spotify User account to get the count of.
-     * @return count of Saved Tracks belonging to user in the database.
+     * @return count of SavedTracks belonging to user in the database.
      */
     public long countSavedTracks(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
@@ -240,7 +240,16 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     * Get most recently added SpotifySavedTrack in the database.
+     * Get count of a users' saved albums in the database.
+     * @param user The Spotify User account to get the count of.
+     * @return count of SavedAlbums belonging to user in the database.
+     */
+    public long countSavedAlbums(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /**
+     * Get most recently added saved track in the database.
      * @param user The SpotifyUser account to get SpotifySavedTrack from.
      * @return Optional containing most recently added SpotifySavedTrack if user has SpotifySavedTrack object(s) in the
      * database.
@@ -250,6 +259,16 @@ public class SpotifyObjectRepository {
             var query = SpotifySavedTrackRepository.findNewestByUser(em, user);
             return query.getResultStream().findFirst();
         }
+    }
+
+    /**
+     * Get most recently added saved album in the database.
+     * @param user The SpotifyUser account to get SpotifySavedAlbum from.
+     * @return Optional containing most recently added SpotifySavedAlbum if user has SpotifySavedAlbum object(s) in the
+     * database.
+     */
+    public Optional<SpotifySavedAlbum> getNewestSavedAlbum(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("to be implemented");
     }
 
     /**
@@ -265,6 +284,15 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Get a users' saved albums as stored in the database.
+     * @param user The SpotifyUser account to get SpotifySavedAlbum objects from.
+     * @return Set of a users' SpotifySavedAlbum objects, may be empty.
+     */
+    public Set<SpotifySavedAlbum> getSavedAlbums(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /**
      * Get a set of a users' formerly saved songs as stored in the database.
      * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
      * @return Set of a users' SpotifySavedTrack objects, may be empty.
@@ -277,11 +305,20 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Get a set of a users' formerly saved albums as stored in the database.
+     * @param user The SpotifyUser account to get SpotifySavedAlbum objects from.
+     * @return Set of a users' SpotifySavedAlbum objects, may be empty.
+     */
+    public Set<SpotifySavedAlbum> getRemovedSavedAlbums(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /**
      * Marks a track as removed from a users' saved songs if it is currently a user's saved song. It is not actually
      * removed from the database, rather it is marked as removed (as well as when this is being done) and won't show up
      * in the return from getSavedTracks() anymore.
      * @param track The SpotifyTrack that has been removed from Liked Songs on Spotify.
-     * @param user  The SpotifyUser account to remove track from.
+     * @param user  The SpotifyUser account to remove track for.
      * @return a SpotifySavedTrack with updated fields if track is one of the users' saved songs, else returns empty.
      */
     public Optional<SpotifySavedTrack> removeSavedTrack(@NonNull SpotifyTrack track, @NonNull SpotifyUser user) {
@@ -294,6 +331,18 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Marks an album as removed from a users' saved albums if it is currently a user's saved album. It is not actually
+     * removed from the database, rather it is marked as removed (as well as when this is being done) and won't show up
+     * in the return from getSavedAlbums() anymore.
+     * @param album The SpotifyAlbum that has been removed from Liked Albums on Spotify.
+     * @param user  The SpotifyUser account to remove album for.
+     * @return a SpotifySavedAlbum with updated fields if album is one of the users' saved albums, else returns empty.
+     */
+    public Optional<SpotifySavedAlbum> removeSavedAlbum(@NonNull SpotifyAlbum album, @NonNull SpotifyUser user){
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /**
      * Get Spotify IDs of a users' saved songs as stored in the database.
      * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
      * @return Set of Spotify IDs of a users' SpotifySavedTrack objects, may be empty.
@@ -303,6 +352,15 @@ public class SpotifyObjectRepository {
             var query = SpotifySavedTrackRepository.findTrackIdsByUser(em, user);
             return new HashSet<>(query.getResultList());
         }
+    }
+
+    /**
+     * Get Spotify IDs of a users' saved albums as stored in the database.
+     * @param user The SpotifyUser account to get SpotifySavedAlbum objects from.
+     * @return Set of Spotify IDs of a users' SpotifySavedAlbum objects, may be empty.
+     */
+    public Set<String> getSavedAlbumIds(@NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("to be implemented");
     }
 
     /** Get set of playlists a user is following. */
@@ -519,6 +577,16 @@ public class SpotifyObjectRepository {
             em.getTransaction().commit();
             return persistedTracks;
         }
+    }
+
+    /**
+     * Persists array of liked albums from the output of the spotify-web-api.
+     * @param albums An array of SavedAlbum objects generated by the spotify-web-api.
+     * @param user   User account to which the SavedAlbums belong.
+     * @return List of SpotifySavedAlbum objects.
+     */
+    public List<SpotifySavedAlbum> persist(@NonNull SavedAlbum[] albums, @NonNull SpotifyUser user) {
+        throw new UnsupportedOperationException("to be implemented");
     }
 
     /**
