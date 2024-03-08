@@ -366,7 +366,10 @@ public class SpotifyObjectRepository {
      * @return Set of Spotify IDs of a users' SpotifySavedAlbum objects, may be empty.
      */
     public Set<String> getSavedAlbumIds(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedAlbumRepository.findAlbumIdsByUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
     }
 
     /** Get set of playlists a user is following. */
