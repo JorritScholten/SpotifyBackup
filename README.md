@@ -24,10 +24,10 @@ database and automated backups to an online repository.
     - [x] Store artist GET request to db
     - [ ] Write unit test using mocking (leaning towards EasyMock)
     - [x] Store track info to db
-    - [ ] Store playlist to db
-    - [ ] Store Liked Songs to db
-        - [x] Store first 20 Liked songs to db from CLI
-        - [ ] Store first all Liked songs to db from CLI
+    - [x] Store playlist to db
+    - [x] Store Liked Songs to db
+    - [x] Store Liked Albums to db
+    - [ ] Store followed artists to db
 - [x] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
     - [x] Implement complete storage class system to store all track information from Spotify about Playlists and Users

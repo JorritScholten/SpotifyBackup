@@ -1,13 +1,7 @@
 package spotifybackup.storage;
 
-import io.hypersistence.utils.hibernate.type.array.LongArrayType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.Type;
-import org.hibernate.type.descriptor.jdbc.ArrayJdbcType;
-import org.hibernate.type.descriptor.jdbc.BigIntJdbcType;
-import org.hibernate.type.descriptor.jdbc.BinaryJdbcType;
 import se.michaelthelin.spotify.enums.AlbumType;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 

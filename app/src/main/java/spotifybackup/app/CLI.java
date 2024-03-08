@@ -2,6 +2,7 @@ package spotifybackup.app;
 
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
+import se.michaelthelin.spotify.model_objects.specification.SavedAlbum;
 import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.*;
@@ -110,8 +111,21 @@ public class CLI {
         }
 
         /** @return List of albums currently liked by user as returned from the API. */
-        private List<SpotifySavedAlbum> saveLikedAlbums() {
-            throw new UnsupportedOperationException("to be implemented");
+        private List<SpotifySavedAlbum> saveLikedAlbums() throws IOException, InterruptedException {
+            App.verbosePrint("  Saving all liked albums");
+            final int limit = 50;
+            int offset = 0;
+            Paging<SavedAlbum> apiSavedAlbums;
+            List<SpotifySavedAlbum> savedAlbums = new ArrayList<>();
+            App.verbosePrint(", requesting data");
+            do {
+                App.verbosePrint(".");
+                apiSavedAlbums = api.getCurrentUserSavedAlbums(limit, offset);
+                savedAlbums.addAll(repo.persist(apiSavedAlbums.getItems(), user));
+                offset += limit;
+            } while (apiSavedAlbums.getNext() != null);
+            App.verbosePrintln("");
+            return savedAlbums;
         }
 
         private void markRemovedTracks(final List<SpotifySavedTrack> newSavedTracks) {
@@ -141,7 +155,13 @@ public class CLI {
         }
 
         private void markUnlikedAlbums(final List<SpotifySavedAlbum> newLikedAlbums) {
-            throw new UnsupportedOperationException("to be implemented");
+            var newSavedAlbumIds = newLikedAlbums.stream().map(SpotifySavedAlbum::getId).collect(Collectors.toSet());
+            var oldSavedAlbums = repo.getSavedAlbums(user);
+            var removed = oldSavedAlbums.stream().filter(p -> !newSavedAlbumIds.contains(p.getId())).toList();
+            if (!removed.isEmpty()) {
+                for (var album : removed) repo.removeSavedAlbum(album.getAlbum(), user);
+                App.verbosePrintln("  Removed " + removed.size() + " album(s) from Saved Albums");
+            }
         }
 
         private void saveDetailedInfo() {
