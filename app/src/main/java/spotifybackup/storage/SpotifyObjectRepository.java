@@ -295,7 +295,10 @@ public class SpotifyObjectRepository {
      * @return Set of a users' SpotifySavedAlbum objects, may be empty.
      */
     public Set<SpotifySavedAlbum> getSavedAlbums(@NonNull SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedAlbumRepository.findByUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
     }
 
     /**
