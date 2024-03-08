@@ -18,6 +18,7 @@
         <class>spotifybackup.storage.SpotifyPlaylist</class>
         <class>spotifybackup.storage.SpotifyPlaylistItem</class>
         <class>spotifybackup.storage.SpotifySavedTrack</class>
+        <class>spotifybackup.storage.SpotifySavedAlbum</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.hikari.dataSourceClassName" value="org.h2.jdbcx.JdbcDataSource"/>
@@ -44,6 +45,7 @@
         <class>spotifybackup.storage.SpotifyPlaylist</class>
         <class>spotifybackup.storage.SpotifyPlaylistItem</class>
         <class>spotifybackup.storage.SpotifySavedTrack</class>
+        <class>spotifybackup.storage.SpotifySavedAlbum</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <properties>
             <property name="hibernate.hikari.dataSourceClassName" value="org.h2.jdbcx.JdbcDataSource"/>
