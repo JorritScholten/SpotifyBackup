@@ -350,7 +350,7 @@ public class SpotifyObjectRepository {
      * @param user  The SpotifyUser account to remove album for.
      * @return a SpotifySavedAlbum with updated fields if album is one of the users' saved albums, else returns empty.
      */
-    public Optional<SpotifySavedAlbum> removeSavedAlbum(@NonNull SpotifyAlbum album, @NonNull SpotifyUser user){
+    public Optional<SpotifySavedAlbum> removeSavedAlbum(@NonNull SpotifyAlbum album, @NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             var removedAlbum = SpotifySavedAlbumRepository.removeAlbumFromSavedAlbums(em, album, user);
@@ -404,7 +404,33 @@ public class SpotifyObjectRepository {
     public void unfollowPlaylists(@NonNull List<SpotifyPlaylist> playlists, @NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            SpotifyUserRepository.unFollowPlaylists(em, playlists, user);
+            SpotifyUserRepository.unfollowPlaylists(em, playlists, user);
+            em.getTransaction().commit();
+        }
+    }
+
+    /** Get set of artists a user is following. */
+    public Set<SpotifyArtist> getFollowedArtists(@NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            return SpotifyUserRepository.getFollowedArtists(em, user);
+        }
+    }
+
+    /** Add artists a user is following. */
+    public void followArtists(@NonNull List<SpotifyArtist> artists, @NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            SpotifyUserRepository.followArtists(em, artists, user);
+            em.getTransaction().commit();
+        }
+    }
+
+    /** Remove artists a user is following. */
+    public void unfollowArtists(@NonNull List<SpotifyArtist> artists, @NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            SpotifyUserRepository.unfollowArtists(em, artists, user);
             em.getTransaction().commit();
         }
     }
