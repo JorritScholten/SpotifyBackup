@@ -96,4 +96,28 @@ class SpotifyAlbumRepositoryTest {
         assertNotEquals(0, album.getTracks().size());
         assertEquals(apiAlbum.getTracks().getTotal(), album.getTracks().size());
     }
+
+    @Test
+    void ensure_simplified_album_can_be_retrieved() throws IOException {
+        // Arrange
+        final String albumJson = new String(Files.readAllBytes(Path.of(albumDir + "The_Trick_To_Life.json")));
+        final AlbumSimplified apiAlbumSimple = new AlbumSimplified.JsonUtil().createModelObject(albumJson);
+        final Album apiAlbum = new Album.JsonUtil().createModelObject(albumJson);
+        assertFalse(spotifyObjectRepository.exists(apiAlbumSimple));
+        final var albumSimple = spotifyObjectRepository.persist(apiAlbumSimple);
+        assertTrue(albumSimple.getIsSimplified());
+
+        // Act
+        final var oldSimpleAlbumIds = spotifyObjectRepository.getSimplifiedAlbumsSpotifyIDs();
+
+        // Assert
+        assertTrue(oldSimpleAlbumIds.contains(apiAlbumSimple.getId()));
+
+        // Act 2
+        spotifyObjectRepository.persist(apiAlbum);
+        final var newSimpleAlbumIds = spotifyObjectRepository.getSimplifiedAlbumsSpotifyIDs();
+
+        // Assert 2
+        assertFalse(newSimpleAlbumIds.contains(apiAlbumSimple.getId()));
+    }
 }

@@ -267,6 +267,26 @@ public class SpotifyObjectRepository {
         return count(SpotifyObject.accessSubTypeByClass.apply(type));
     }
 
+    /** @return List of SpotifyIDs' of all SpotifyAlbums marked simplified in the database. */
+    public List<String> getSimplifiedAlbumsSpotifyIDs() {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /** @return List of SpotifyIDs' of all SpotifyArtists marked simplified in the database. */
+    public List<String> getSimplifiedArtistsSpotifyIDs() {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /** @return List of SpotifyIDs' of all SpotifyPlaylists marked simplified in the database. */
+    public List<String> getSimplifiedPlaylistsSpotifyIDs() {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /** @return List of SpotifyIDs' of all SpotifyTracks marked simplified in the database. */
+    public List<String> getSimplifiedTracksSpotifyIDs() {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
     /**
      * Get count of a users' saved tracks in the database.
      * @param user The Spotify User account to get the count of.

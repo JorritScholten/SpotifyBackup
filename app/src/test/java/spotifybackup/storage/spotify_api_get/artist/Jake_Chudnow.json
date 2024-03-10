@@ -1,0 +1,33 @@
+{
+  "external_urls": {
+    "spotify": "https://open.spotify.com/artist/0IhZsSjGTFJBXIM5unqzdV"
+  },
+  "followers": {
+    "href": null,
+    "total": 22594
+  },
+  "genres": [],
+  "href": "https://api.spotify.com/v1/artists/0IhZsSjGTFJBXIM5unqzdV?locale=en-GB%2Cen%3Bq%3D0.5",
+  "id": "0IhZsSjGTFJBXIM5unqzdV",
+  "images": [
+    {
+      "url": "https://i.scdn.co/image/ab6761610000e5eb88fc3b16b9de5168f183d634",
+      "height": 640,
+      "width": 640
+    },
+    {
+      "url": "https://i.scdn.co/image/ab6761610000517488fc3b16b9de5168f183d634",
+      "height": 320,
+      "width": 320
+    },
+    {
+      "url": "https://i.scdn.co/image/ab6761610000f17888fc3b16b9de5168f183d634",
+      "height": 160,
+      "width": 160
+    }
+  ],
+  "name": "Jake Chudnow",
+  "popularity": 24,
+  "type": "artist",
+  "uri": "spotify:artist:0IhZsSjGTFJBXIM5unqzdV"
+}

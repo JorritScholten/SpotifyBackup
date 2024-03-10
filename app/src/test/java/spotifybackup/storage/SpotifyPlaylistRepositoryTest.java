@@ -65,4 +65,28 @@ class SpotifyPlaylistRepositoryTest {
         assertNotEquals(0, playlist.getTracks().size());
         assertEquals(apiPlaylist.getTracks().getTotal(), playlist.getTracks().size());
     }
+
+    @Test
+    void ensure_simplified_playlist_can_be_retrieved() throws IOException {
+        // Arrange
+        final String playlistJson = new String(Files.readAllBytes(Path.of(playlistDir + "This_Is_Yatao.json")));
+        final PlaylistSimplified apiPlaylistSimple = new PlaylistSimplified.JsonUtil().createModelObject(playlistJson);
+        final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(playlistJson);
+        assertFalse(spotifyObjectRepository.exists(apiPlaylistSimple));
+        final var playlistSimple = spotifyObjectRepository.persist(apiPlaylistSimple);
+        assertTrue(playlistSimple.getIsSimplified());
+
+        // Act
+        final var oldSimplePlaylistIds = spotifyObjectRepository.getSimplifiedPlaylistsSpotifyIDs();
+
+        // Assert
+        assertTrue(oldSimplePlaylistIds.contains(apiPlaylistSimple.getId()));
+
+        // Act 2
+        spotifyObjectRepository.persist(apiPlaylist);
+        final var newSimplePlaylistIds = spotifyObjectRepository.getSimplifiedAlbumsSpotifyIDs();
+
+        // Assert 2
+        assertFalse(newSimplePlaylistIds.contains(apiPlaylistSimple.getId()));
+    }
 }

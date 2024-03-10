@@ -1,0 +1,1166 @@
+{
+  "collaborative": false,
+  "description": "This is Yatao. The essential tracks, all in one playlist.",
+  "external_urls": {
+    "spotify": "https://open.spotify.com/playlist/37i9dQZF1DZ06evO2HB4Qh"
+  },
+  "followers": {
+    "href": null,
+    "total": 3083
+  },
+  "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DZ06evO2HB4Qh?locale=en-GB%2Cen%3Bq%3D0.5",
+  "id": "37i9dQZF1DZ06evO2HB4Qh",
+  "images": [
+    {
+      "height": null,
+      "url": "https://thisis-images.spotifycdn.com/37i9dQZF1DZ06evO2HB4Qh-default.jpg",
+      "width": null
+    }
+  ],
+  "name": "This Is Yatao",
+  "owner": {
+    "display_name": "Spotify",
+    "external_urls": {
+      "spotify": "https://open.spotify.com/user/spotify"
+    },
+    "href": "https://api.spotify.com/v1/users/spotify",
+    "id": "spotify",
+    "type": "user",
+    "uri": "spotify:user:spotify"
+  },
+  "primary_color": null,
+  "public": true,
+  "snapshot_id": "invalid_id_value",
+  "tracks": {
+    "href": "https://api.spotify.com/v1/playlists/37i9dQZF1DZ06evO2HB4Qh/tracks?offset=0&limit=100&locale=en-GB%2Cen%3Bq%3D0.5",
+    "items": [
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/e95c96a89c97c385c8f93fc3f765325ecd5688ee?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "album",
+            "href": "https://api.spotify.com/v1/albums/5EekI9jcgWfjPITMAHWEnh",
+            "id": "5EekI9jcgWfjPITMAHWEnh",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273eb15e256f30ec3c43f5a441b",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02eb15e256f30ec3c43f5a441b",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851eb15e256f30ec3c43f5a441b",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "Osmosis",
+            "release_date": "2022-04-01",
+            "release_date_precision": "day",
+            "uri": "spotify:album:5EekI9jcgWfjPITMAHWEnh",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/1GykWQWG7xcdwxdLiX40jL"
+                },
+                "href": "https://api.spotify.com/v1/artists/1GykWQWG7xcdwxdLiX40jL",
+                "id": "1GykWQWG7xcdwxdLiX40jL",
+                "name": "Alexander Mercks",
+                "type": "artist",
+                "uri": "spotify:artist:1GykWQWG7xcdwxdLiX40jL"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/5EekI9jcgWfjPITMAHWEnh"
+            },
+            "total_tracks": 9
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/1GykWQWG7xcdwxdLiX40jL"
+              },
+              "href": "https://api.spotify.com/v1/artists/1GykWQWG7xcdwxdLiX40jL",
+              "id": "1GykWQWG7xcdwxdLiX40jL",
+              "name": "Alexander Mercks",
+              "type": "artist",
+              "uri": "spotify:artist:1GykWQWG7xcdwxdLiX40jL"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 1,
+          "duration_ms": 243326,
+          "external_ids": {
+            "isrc": "QZES62203613"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/0MlYCFWI0oduT11W6O8ptJ"
+          },
+          "href": "https://api.spotify.com/v1/tracks/0MlYCFWI0oduT11W6O8ptJ",
+          "id": "0MlYCFWI0oduT11W6O8ptJ",
+          "name": "Follow The Sun - Osmosis Version",
+          "popularity": 50,
+          "uri": "spotify:track:0MlYCFWI0oduT11W6O8ptJ",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/1ee9d9ff14e44498f708727f15bf54018d137d54?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "single",
+            "href": "https://api.spotify.com/v1/albums/3jpONAMVwLuzRR2A4DOK75",
+            "id": "3jpONAMVwLuzRR2A4DOK75",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b2735db08b3727d1357238728527",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e025db08b3727d1357238728527",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d000048515db08b3727d1357238728527",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "The Journey",
+            "release_date": "2021-10-15",
+            "release_date_precision": "day",
+            "uri": "spotify:album:3jpONAMVwLuzRR2A4DOK75",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+                },
+                "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+                "id": "6gmfGQKmOr9z7GTYK7ecEj",
+                "name": "Malte Marten",
+                "type": "artist",
+                "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3jpONAMVwLuzRR2A4DOK75"
+            },
+            "total_tracks": 3
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+              "id": "6gmfGQKmOr9z7GTYK7ecEj",
+              "name": "Malte Marten",
+              "type": "artist",
+              "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 3,
+          "duration_ms": 516991,
+          "external_ids": {
+            "isrc": "QZNWQ2151683"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/6Hxgat5RmLkRvctiIFDr0G"
+          },
+          "href": "https://api.spotify.com/v1/tracks/6Hxgat5RmLkRvctiIFDr0G",
+          "id": "6Hxgat5RmLkRvctiIFDr0G",
+          "name": "C# Pygmy",
+          "popularity": 53,
+          "uri": "spotify:track:6Hxgat5RmLkRvctiIFDr0G",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/ac9471c09aaa1d194bbfa04400776a8534717978?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "album",
+            "href": "https://api.spotify.com/v1/albums/53gklLfv6h4emjesI2i9A9",
+            "id": "53gklLfv6h4emjesI2i9A9",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273813449d29797c4aa2a8b3e89",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02813449d29797c4aa2a8b3e89",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851813449d29797c4aa2a8b3e89",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "Meditation Compilation #2",
+            "release_date": "2023-04-21",
+            "release_date_precision": "day",
+            "uri": "spotify:album:53gklLfv6h4emjesI2i9A9",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+                },
+                "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+                "id": "6gmfGQKmOr9z7GTYK7ecEj",
+                "name": "Malte Marten",
+                "type": "artist",
+                "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/53gklLfv6h4emjesI2i9A9"
+            },
+            "total_tracks": 8
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+              "id": "6gmfGQKmOr9z7GTYK7ecEj",
+              "name": "Malte Marten",
+              "type": "artist",
+              "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 6,
+          "duration_ms": 225322,
+          "external_ids": {
+            "isrc": "QZHN52363026"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/53lRnK8JG8egVhanQhuyDh"
+          },
+          "href": "https://api.spotify.com/v1/tracks/53lRnK8JG8egVhanQhuyDh",
+          "id": "53lRnK8JG8egVhanQhuyDh",
+          "name": "Growing Together",
+          "popularity": 46,
+          "uri": "spotify:track:53lRnK8JG8egVhanQhuyDh",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/894d5af8a48a1604ba9e7d2e879743c02a811ffc?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "single",
+            "href": "https://api.spotify.com/v1/albums/2T7omHzOW5FHwHUjYluKZO",
+            "id": "2T7omHzOW5FHwHUjYluKZO",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273eb4ae2f3c472f86c94616917",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02eb4ae2f3c472f86c94616917",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851eb4ae2f3c472f86c94616917",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "Mountains so high",
+            "release_date": "2022-01-28",
+            "release_date_precision": "day",
+            "uri": "spotify:album:2T7omHzOW5FHwHUjYluKZO",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+                },
+                "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+                "id": "6gmfGQKmOr9z7GTYK7ecEj",
+                "name": "Malte Marten",
+                "type": "artist",
+                "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/2T7omHzOW5FHwHUjYluKZO"
+            },
+            "total_tracks": 1
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+              "id": "6gmfGQKmOr9z7GTYK7ecEj",
+              "name": "Malte Marten",
+              "type": "artist",
+              "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 1,
+          "duration_ms": 249116,
+          "external_ids": {
+            "isrc": "QZFZ32210076"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/0ZlwkUI6huJmofJG0qNr9n"
+          },
+          "href": "https://api.spotify.com/v1/tracks/0ZlwkUI6huJmofJG0qNr9n",
+          "id": "0ZlwkUI6huJmofJG0qNr9n",
+          "name": "Mountains so high",
+          "popularity": 43,
+          "uri": "spotify:track:0ZlwkUI6huJmofJG0qNr9n",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/f15bee13eaac91335ab2d3409b44f6b7d348757f?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "album",
+            "href": "https://api.spotify.com/v1/albums/5EekI9jcgWfjPITMAHWEnh",
+            "id": "5EekI9jcgWfjPITMAHWEnh",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273eb15e256f30ec3c43f5a441b",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02eb15e256f30ec3c43f5a441b",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851eb15e256f30ec3c43f5a441b",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "Osmosis",
+            "release_date": "2022-04-01",
+            "release_date_precision": "day",
+            "uri": "spotify:album:5EekI9jcgWfjPITMAHWEnh",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/1GykWQWG7xcdwxdLiX40jL"
+                },
+                "href": "https://api.spotify.com/v1/artists/1GykWQWG7xcdwxdLiX40jL",
+                "id": "1GykWQWG7xcdwxdLiX40jL",
+                "name": "Alexander Mercks",
+                "type": "artist",
+                "uri": "spotify:artist:1GykWQWG7xcdwxdLiX40jL"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/5EekI9jcgWfjPITMAHWEnh"
+            },
+            "total_tracks": 9
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/1GykWQWG7xcdwxdLiX40jL"
+              },
+              "href": "https://api.spotify.com/v1/artists/1GykWQWG7xcdwxdLiX40jL",
+              "id": "1GykWQWG7xcdwxdLiX40jL",
+              "name": "Alexander Mercks",
+              "type": "artist",
+              "uri": "spotify:artist:1GykWQWG7xcdwxdLiX40jL"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 9,
+          "duration_ms": 189178,
+          "external_ids": {
+            "isrc": "QZDA42298135"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/09r7Htl50QsNtQmPI9xgEP"
+          },
+          "href": "https://api.spotify.com/v1/tracks/09r7Htl50QsNtQmPI9xgEP",
+          "id": "09r7Htl50QsNtQmPI9xgEP",
+          "name": "Follow The Moon",
+          "popularity": 44,
+          "uri": "spotify:track:09r7Htl50QsNtQmPI9xgEP",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/526bf8d31394dadbb512f10e65feaa8ebf5dc727?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "single",
+            "href": "https://api.spotify.com/v1/albums/3jpONAMVwLuzRR2A4DOK75",
+            "id": "3jpONAMVwLuzRR2A4DOK75",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b2735db08b3727d1357238728527",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e025db08b3727d1357238728527",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d000048515db08b3727d1357238728527",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "The Journey",
+            "release_date": "2021-10-15",
+            "release_date_precision": "day",
+            "uri": "spotify:album:3jpONAMVwLuzRR2A4DOK75",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+                },
+                "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+                "id": "6gmfGQKmOr9z7GTYK7ecEj",
+                "name": "Malte Marten",
+                "type": "artist",
+                "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/3jpONAMVwLuzRR2A4DOK75"
+            },
+            "total_tracks": 3
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+              "id": "6gmfGQKmOr9z7GTYK7ecEj",
+              "name": "Malte Marten",
+              "type": "artist",
+              "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 2,
+          "duration_ms": 328308,
+          "external_ids": {
+            "isrc": "QZNWQ2151682"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/0ppLOssRHODtzfCC6MjC9b"
+          },
+          "href": "https://api.spotify.com/v1/tracks/0ppLOssRHODtzfCC6MjC9b",
+          "id": "0ppLOssRHODtzfCC6MjC9b",
+          "name": "G Minor",
+          "popularity": 45,
+          "uri": "spotify:track:0ppLOssRHODtzfCC6MjC9b",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/14612e49a6b15edce37c3dd06bc5542de1848097?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "single",
+            "href": "https://api.spotify.com/v1/albums/0XMDefArpBWGJ2CCVbqECi",
+            "id": "0XMDefArpBWGJ2CCVbqECi",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273fca6735f47ad4ad5803be102",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02fca6735f47ad4ad5803be102",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851fca6735f47ad4ad5803be102",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "When the wind talks",
+            "release_date": "2021-02-05",
+            "release_date_precision": "day",
+            "uri": "spotify:album:0XMDefArpBWGJ2CCVbqECi",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+                },
+                "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+                "id": "6gmfGQKmOr9z7GTYK7ecEj",
+                "name": "Malte Marten",
+                "type": "artist",
+                "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/0XMDefArpBWGJ2CCVbqECi"
+            },
+            "total_tracks": 1
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+              "id": "6gmfGQKmOr9z7GTYK7ecEj",
+              "name": "Malte Marten",
+              "type": "artist",
+              "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 1,
+          "duration_ms": 443500,
+          "external_ids": {
+            "isrc": "QZFZ32119235"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/14YsdlZC7UMkPUhRoAXI9D"
+          },
+          "href": "https://api.spotify.com/v1/tracks/14YsdlZC7UMkPUhRoAXI9D",
+          "id": "14YsdlZC7UMkPUhRoAXI9D",
+          "name": "When the wind talks",
+          "popularity": 52,
+          "uri": "spotify:track:14YsdlZC7UMkPUhRoAXI9D",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/0f64a2a7890dc126268692c0859de324dea38c05?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "single",
+            "href": "https://api.spotify.com/v1/albums/1trhsHyc6e8mgJrczNcpv0",
+            "id": "1trhsHyc6e8mgJrczNcpv0",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273088e1db2f54eebc3c3ec8b1d",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02088e1db2f54eebc3c3ec8b1d",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851088e1db2f54eebc3c3ec8b1d",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "Four Hands",
+            "release_date": "2022-06-10",
+            "release_date_precision": "day",
+            "uri": "spotify:album:1trhsHyc6e8mgJrczNcpv0",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/3bDE5iUjo1oj7G6aNEKNs4"
+                },
+                "href": "https://api.spotify.com/v1/artists/3bDE5iUjo1oj7G6aNEKNs4",
+                "id": "3bDE5iUjo1oj7G6aNEKNs4",
+                "name": "Malte Marten Konstantin Rössler",
+                "type": "artist",
+                "uri": "spotify:artist:3bDE5iUjo1oj7G6aNEKNs4"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+                },
+                "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+                "id": "6gmfGQKmOr9z7GTYK7ecEj",
+                "name": "Malte Marten",
+                "type": "artist",
+                "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4qedSQHMODqYZOTF10C8le"
+                },
+                "href": "https://api.spotify.com/v1/artists/4qedSQHMODqYZOTF10C8le",
+                "id": "4qedSQHMODqYZOTF10C8le",
+                "name": "Konstantin Rössler",
+                "type": "artist",
+                "uri": "spotify:artist:4qedSQHMODqYZOTF10C8le"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/1trhsHyc6e8mgJrczNcpv0"
+            },
+            "total_tracks": 1
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/3bDE5iUjo1oj7G6aNEKNs4"
+              },
+              "href": "https://api.spotify.com/v1/artists/3bDE5iUjo1oj7G6aNEKNs4",
+              "id": "3bDE5iUjo1oj7G6aNEKNs4",
+              "name": "Malte Marten Konstantin Rössler",
+              "type": "artist",
+              "uri": "spotify:artist:3bDE5iUjo1oj7G6aNEKNs4"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/6gmfGQKmOr9z7GTYK7ecEj"
+              },
+              "href": "https://api.spotify.com/v1/artists/6gmfGQKmOr9z7GTYK7ecEj",
+              "id": "6gmfGQKmOr9z7GTYK7ecEj",
+              "name": "Malte Marten",
+              "type": "artist",
+              "uri": "spotify:artist:6gmfGQKmOr9z7GTYK7ecEj"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4qedSQHMODqYZOTF10C8le"
+              },
+              "href": "https://api.spotify.com/v1/artists/4qedSQHMODqYZOTF10C8le",
+              "id": "4qedSQHMODqYZOTF10C8le",
+              "name": "Konstantin Rössler",
+              "type": "artist",
+              "uri": "spotify:artist:4qedSQHMODqYZOTF10C8le"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 1,
+          "duration_ms": 737183,
+          "external_ids": {
+            "isrc": "QZK6Q2263656"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/73VykcsEsmYRR5Dt05fOOe"
+          },
+          "href": "https://api.spotify.com/v1/tracks/73VykcsEsmYRR5Dt05fOOe",
+          "id": "73VykcsEsmYRR5Dt05fOOe",
+          "name": "Four Hands",
+          "popularity": 45,
+          "uri": "spotify:track:73VykcsEsmYRR5Dt05fOOe",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      },
+      {
+        "added_at": "2024-03-10T12:40:52Z",
+        "added_by": {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/user/"
+          },
+          "href": "https://api.spotify.com/v1/users/",
+          "id": "",
+          "type": "user",
+          "uri": "spotify:user:"
+        },
+        "is_local": false,
+        "primary_color": null,
+        "track": {
+          "preview_url": "https://p.scdn.co/mp3-preview/90691f62765c4f1516b07e3bdeeccebb17e1cf29?cid=cc9a3c5ed3954a348dab315f959acdcc",
+          "available_markets": [
+            "US"
+          ],
+          "explicit": false,
+          "type": "track",
+          "episode": false,
+          "track": true,
+          "album": {
+            "available_markets": [
+              "US"
+            ],
+            "type": "album",
+            "album_type": "album",
+            "href": "https://api.spotify.com/v1/albums/5EekI9jcgWfjPITMAHWEnh",
+            "id": "5EekI9jcgWfjPITMAHWEnh",
+            "images": [
+              {
+                "url": "https://i.scdn.co/image/ab67616d0000b273eb15e256f30ec3c43f5a441b",
+                "width": 640,
+                "height": 640
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00001e02eb15e256f30ec3c43f5a441b",
+                "width": 300,
+                "height": 300
+              },
+              {
+                "url": "https://i.scdn.co/image/ab67616d00004851eb15e256f30ec3c43f5a441b",
+                "width": 64,
+                "height": 64
+              }
+            ],
+            "name": "Osmosis",
+            "release_date": "2022-04-01",
+            "release_date_precision": "day",
+            "uri": "spotify:album:5EekI9jcgWfjPITMAHWEnh",
+            "artists": [
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+                },
+                "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+                "id": "4BYqP4YTwWGpi4q94QkW2x",
+                "name": "Yatao",
+                "type": "artist",
+                "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+              },
+              {
+                "external_urls": {
+                  "spotify": "https://open.spotify.com/artist/1GykWQWG7xcdwxdLiX40jL"
+                },
+                "href": "https://api.spotify.com/v1/artists/1GykWQWG7xcdwxdLiX40jL",
+                "id": "1GykWQWG7xcdwxdLiX40jL",
+                "name": "Alexander Mercks",
+                "type": "artist",
+                "uri": "spotify:artist:1GykWQWG7xcdwxdLiX40jL"
+              }
+            ],
+            "external_urls": {
+              "spotify": "https://open.spotify.com/album/5EekI9jcgWfjPITMAHWEnh"
+            },
+            "total_tracks": 9
+          },
+          "artists": [
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/4BYqP4YTwWGpi4q94QkW2x"
+              },
+              "href": "https://api.spotify.com/v1/artists/4BYqP4YTwWGpi4q94QkW2x",
+              "id": "4BYqP4YTwWGpi4q94QkW2x",
+              "name": "Yatao",
+              "type": "artist",
+              "uri": "spotify:artist:4BYqP4YTwWGpi4q94QkW2x"
+            },
+            {
+              "external_urls": {
+                "spotify": "https://open.spotify.com/artist/1GykWQWG7xcdwxdLiX40jL"
+              },
+              "href": "https://api.spotify.com/v1/artists/1GykWQWG7xcdwxdLiX40jL",
+              "id": "1GykWQWG7xcdwxdLiX40jL",
+              "name": "Alexander Mercks",
+              "type": "artist",
+              "uri": "spotify:artist:1GykWQWG7xcdwxdLiX40jL"
+            }
+          ],
+          "disc_number": 1,
+          "track_number": 6,
+          "duration_ms": 285210,
+          "external_ids": {
+            "isrc": "QZES62203616"
+          },
+          "external_urls": {
+            "spotify": "https://open.spotify.com/track/3ZASLhKNNYTAo2O3Pz0lDz"
+          },
+          "href": "https://api.spotify.com/v1/tracks/3ZASLhKNNYTAo2O3Pz0lDz",
+          "id": "3ZASLhKNNYTAo2O3Pz0lDz",
+          "name": "Pluto was here",
+          "popularity": 41,
+          "uri": "spotify:track:3ZASLhKNNYTAo2O3Pz0lDz",
+          "is_local": false
+        },
+        "video_thumbnail": {
+          "url": null
+        }
+      }
+    ],
+    "limit": 100,
+    "next": null,
+    "offset": 0,
+    "previous": null,
+    "total": 9
+  },
+  "type": "playlist",
+  "uri": "spotify:playlist:37i9dQZF1DZ06evO2HB4Qh"
+}

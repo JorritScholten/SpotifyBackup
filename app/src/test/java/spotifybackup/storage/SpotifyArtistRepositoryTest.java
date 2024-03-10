@@ -105,4 +105,28 @@ class SpotifyArtistRepositoryTest {
         assertNotEquals(0, artist.getGenres().size());
         assertEquals(apiArtist.getGenres().length, artist.getGenres().size());
     }
+
+    @Test
+    void ensure_simplified_artist_can_be_retrieved() throws IOException {
+        // Arrange
+        final String artistJson = new String(Files.readAllBytes(Path.of(artistDir + "Jake_Chudnow.json")));
+        final var apiArtistSimple = new ArtistSimplified.JsonUtil().createModelObject(artistJson);
+        final var apiArtist = new Artist.JsonUtil().createModelObject(artistJson);
+        assertFalse(spotifyObjectRepository.exists(apiArtistSimple));
+        final var artistSimple = spotifyObjectRepository.persist(apiArtistSimple);
+        assertTrue(artistSimple.getIsSimplified());
+
+        // Act
+        final var oldSimpleArtistIds = spotifyObjectRepository.getSimplifiedArtistsSpotifyIDs();
+
+        // Assert
+        assertTrue(oldSimpleArtistIds.contains(apiArtistSimple.getId()));
+
+        // Act 2
+        spotifyObjectRepository.persist(apiArtist);
+        final var newSimpleArtistIds = spotifyObjectRepository.getSimplifiedArtistsSpotifyIDs();
+
+        // Assert 2
+        assertFalse(newSimpleArtistIds.contains(apiArtistSimple.getId()));
+    }
 }

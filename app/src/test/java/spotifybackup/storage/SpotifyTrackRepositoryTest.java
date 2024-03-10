@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.Track;
+import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -122,5 +123,36 @@ class SpotifyTrackRepositoryTest {
         assertFalse(track.getIsSimplified());
         assertTrue(track.getIsrcID().isPresent());
         assertFalse(track.getIsrcID().orElseThrow().isBlank());
+    }
+
+    @Test
+    void ensure_simplified_track_can_be_retrieved() throws IOException {
+        // Arrange
+        final Album apiAlbum = new Album.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(albumDir + "The_Trick_To_Life.json")))
+        );
+        assertFalse(spotifyObjectRepository.exists(apiAlbum));
+        final Track apiTrack = new Track.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(trackDir + "Worried_About_Ray.json")))
+        );
+        final TrackSimplified apiTrackSimple = apiAlbum.getTracks().getItems()[0];
+        assertEquals(apiTrackSimple.getId(), apiTrack.getId(), "Should be the same Track.");
+        spotifyObjectRepository.persist(apiAlbum);
+        assertTrue(spotifyObjectRepository.exists(apiAlbum));
+        final SpotifyTrack trackSimple = (SpotifyTrack) spotifyObjectRepository.find(apiTrackSimple.getId()).orElseThrow();
+        assertTrue(trackSimple.getIsSimplified());
+
+        // Act
+        final var oldSimpleTrackIds = spotifyObjectRepository.getSimplifiedTracksSpotifyIDs();
+
+        // Assert
+        assertTrue(oldSimpleTrackIds.contains(apiTrackSimple.getId()));
+
+        // Act 2
+        spotifyObjectRepository.persist(apiTrack);
+        final var newSimpleTrackIds = spotifyObjectRepository.getSimplifiedTracksSpotifyIDs();
+
+        // Assert 2
+        assertFalse(newSimpleTrackIds.contains(apiTrackSimple.getId()));
     }
 }
