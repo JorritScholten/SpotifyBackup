@@ -79,8 +79,7 @@ public final class SpotifyTrack extends SpotifyObject {
     private String name;
 
     @NonNull
-    @Column(columnDefinition = "VARBINARY")
-    @Convert(converter = AvailableMarketsConverter.class)
+    @Type(AvailableMarketsType.class)
     private AvailableMarkets availableMarkets;
 
     @Setter
