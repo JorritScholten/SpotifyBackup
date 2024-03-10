@@ -199,6 +199,7 @@ public class SpotifyObjectRepository {
                 case Image apiImage -> SpotifyImageRepository.find(em, apiImage).isPresent();
                 case User apiUser -> SpotifyUserRepository.find(em, apiUser).isPresent();
                 case Playlist apiPlaylist -> SpotifyPlaylistRepository.find(em, apiPlaylist).isPresent();
+                case PlaylistSimplified apiPlaylist -> SpotifyPlaylistRepository.find(em, apiPlaylist).isPresent();
                 default ->
                         throw new IllegalStateException("Object type not yet handled by implementation: " + apiObject);
             };
@@ -285,7 +286,9 @@ public class SpotifyObjectRepository {
 
     /** @return List of SpotifyIDs' of all SpotifyPlaylists marked simplified in the database. */
     public List<String> getSimplifiedPlaylistsSpotifyIDs() {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            return SpotifyPlaylistRepository.findAllSpotifyIdsOfSimplified(em);
+        }
     }
 
     /** @return List of SpotifyIDs' of all SpotifyTracks marked simplified in the database. */

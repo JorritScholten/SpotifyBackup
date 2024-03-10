@@ -53,7 +53,7 @@ database and automated backups to an online repository.
             - [ ] handle updating SpotifyUser info when detailed info changes
             - [ ] handle updating SpotifyUser info from simplified/public to detailed
         - [x] Create repository for SpotifyPlaylist
-            - [ ] Create method to get all simplified records
+            - [x] Create method to get all simplified records
         - [x] Create repository for SpotifyPlaylistItem
         - [x] Create repository for Users Liked/Saved Songs
     - [x] Convert all HQL queries to JPA CriteriaQuery's
