@@ -3,7 +3,6 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
-import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
@@ -35,6 +34,15 @@ class SpotifyArtistRepository {
      */
     static Optional<SpotifyArtist> find(EntityManager entityManager, @NonNull Artist apiArtist) {
         return find(entityManager, apiArtist.getId());
+    }
+
+    /**
+     * Find SpotifyArtist by spotifyID value.
+     * @param id SpotifyID of artist.
+     * @return SpotifyArtist if id matches the spotify_id field in the table and not blank.
+     */
+    static Optional<SpotifyArtist> find(EntityManager entityManager, @NonNull SpotifyID id) {
+        return find(entityManager, id.getId());
     }
 
     /**

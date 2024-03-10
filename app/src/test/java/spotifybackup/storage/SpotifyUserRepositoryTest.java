@@ -3,6 +3,7 @@ package spotifybackup.storage;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
@@ -20,9 +21,12 @@ class SpotifyUserRepositoryTest {
     static final String testDataDir = "src/test/java/spotifybackup/storage/spotify_api_get/";
     static final String playlistDir = testDataDir + "playlist/";
     static final String userDir = testDataDir + "user/";
+    static final String artistDir = testDataDir + "artist/";
     static private SpotifyObjectRepository spotifyObjectRepository;
     static private List<SpotifyPlaylist> playlists;
     static private Set<SpotifyID> playlistIds;
+    static private List<SpotifyArtist> artists;
+    static private Set<SpotifyID> artistIds;
 
     @BeforeAll
     static void setup() throws IOException {
@@ -37,6 +41,15 @@ class SpotifyUserRepositoryTest {
         playlists = List.of(spotifyObjectRepository.persist(apiPlaylists[0]),
                 spotifyObjectRepository.persist(apiPlaylists[1]));
         playlistIds = playlists.stream().map(SpotifyPlaylist::getSpotifyID).collect(Collectors.toSet());
+        final Artist[] apiArtists = {new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(artistDir + "Macklemore_&_Ryan_Lewis.json")))
+        ), new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(artistDir + "Macklemore.json")))
+        ), new Artist.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(artistDir + "Ryan_Lewis.json")))
+        )};
+        artists = spotifyObjectRepository.persist(apiArtists);
+        artistIds = artists.stream().map(SpotifyArtist::getSpotifyID).collect(Collectors.toSet());
     }
 
     @Test
@@ -127,5 +140,23 @@ class SpotifyUserRepositoryTest {
         final var ownedPlaylistIds = ownedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
         assertEquals(playlists.get(1).getSpotifyID(), ownedPlaylistIds.getFirst());
         assertTrue(ownedPlaylists.stream().allMatch(p -> p.getOwner().getSpotifyUserID().equals(user.getSpotifyUserID())));
+    }
+
+    @Test
+    void ensure_artists_can_be_followed() throws IOException {
+        // Arrange
+        final User apiUser = new User.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(userDir + "user.json")))
+        );
+        final var user = spotifyObjectRepository.persist(apiUser);
+
+        // Act
+        spotifyObjectRepository.followArtists(artists, user);
+        final var followedArtists = spotifyObjectRepository.getFollowedArtists(user);
+
+        // Assert
+        assertEquals(artists.size(), followedArtists.size());
+        final var followedArtistIds = followedArtists.stream().map(SpotifyArtist::getSpotifyID).toList();
+        assertTrue(followedArtistIds.containsAll(artistIds));
     }
 }

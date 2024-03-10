@@ -58,7 +58,13 @@ class SpotifyUserRepository {
     }
 
     static void followArtists(EntityManager em, List<SpotifyArtist> artists, SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        ensureTransactionActive.accept(em);
+        SpotifyUser attachedUser = find(em, user.getSpotifyUserID()).orElseThrow();
+        List<SpotifyArtist> attachedArtists = new ArrayList<>();
+        for (var artist : artists)
+            attachedArtists.add(SpotifyArtistRepository.find(em, artist.getSpotifyID()).orElseThrow());
+        attachedUser.addFollowedArtists(new HashSet<>(attachedArtists));
+        em.persist(attachedUser);
     }
 
     static void unfollowArtists(EntityManager em, List<SpotifyArtist> artists, SpotifyUser user) {
@@ -66,7 +72,9 @@ class SpotifyUserRepository {
     }
 
     static Set<SpotifyArtist> getFollowedArtists(EntityManager em, SpotifyUser user) {
-        throw new UnsupportedOperationException("to be implemented");
+        ensureTransactionActive.accept(em);
+        var attachedUser = find(em, user.getSpotifyUserID()).orElseThrow();
+        return attachedUser.getFollowedArtists();
     }
 
     static Set<SpotifyPlaylist> getOwnedPlaylists(EntityManager em, @NonNull SpotifyUser user) {
