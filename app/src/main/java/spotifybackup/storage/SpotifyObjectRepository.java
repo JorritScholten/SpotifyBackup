@@ -293,7 +293,9 @@ public class SpotifyObjectRepository {
 
     /** @return List of SpotifyIDs' of all SpotifyTracks marked simplified in the database. */
     public List<String> getSimplifiedTracksSpotifyIDs() {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            return SpotifyTrackRepository.findAllSpotifyIdsOfSimplified(em);
+        }
     }
 
     /**

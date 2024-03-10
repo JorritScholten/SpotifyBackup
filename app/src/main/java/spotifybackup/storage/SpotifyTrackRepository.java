@@ -7,6 +7,7 @@ import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -30,6 +31,14 @@ class SpotifyTrackRepository {
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
     private SpotifyTrackRepository() {
         throw new ConstructorUsageException();
+    }
+
+    static List<String> findAllSpotifyIdsOfSimplified(EntityManager em) {
+        var query = new CriteriaDefinition<>(em, String.class) {};
+        var root = query.from(SpotifyTrack.class);
+        query.select(root.get(SpotifyTrack_.spotifyID).asString())
+                .where(query.isTrue(root.get(SpotifyTrack_.isSimplified)));
+        return em.createQuery(query).getResultList();
     }
 
     /**
