@@ -9,7 +9,6 @@ import spotifybackup.storage.exception.TransactionInactiveException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -55,8 +54,7 @@ public abstract sealed class SpotifyObject
     }
 
     static AvailableMarkets convertMarkets(CountryCode[] markets) {
-        if (markets == null) return new AvailableMarkets();
-        return new AvailableMarkets(Arrays.stream(markets).toList());
+        return new AvailableMarkets(markets);
     }
 
     public enum SubTypes {

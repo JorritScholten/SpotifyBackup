@@ -3,19 +3,23 @@ package spotifybackup.storage;
 import com.neovisionaries.i18n.CountryCode;
 import lombok.Getter;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 public class AvailableMarkets {
-    List<CountryCode> codes = new ArrayList<>();
+    final HashSet<CountryCode> codes = new HashSet<>();
 
     public AvailableMarkets() {}
 
-    public AvailableMarkets(List<CountryCode> codes) {
-        this.codes = codes;
+    public AvailableMarkets(Set<CountryCode> codes) {
+        if (codes != null) this.codes.addAll(Set.copyOf(codes));
+    }
+
+    public AvailableMarkets(CountryCode[] codes) {
+        if (codes != null) this.codes.addAll(Set.copyOf(Arrays.stream(codes).toList()));
     }
 
     @Override
@@ -24,7 +28,7 @@ public class AvailableMarkets {
         if (o == null || getClass() != o.getClass()) return false;
         AvailableMarkets that = (AvailableMarkets) o;
         if (Objects.equals(codes, that.codes)) return true;
-        return codes.size() == that.codes.size() && new HashSet<>(codes).containsAll(that.codes);
+        return codes.size() == that.codes.size() && codes.containsAll(that.codes);
     }
 
     @Override

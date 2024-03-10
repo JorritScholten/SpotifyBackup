@@ -9,9 +9,7 @@ import org.hibernate.usertype.UserType;
 
 import java.io.Serializable;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class AvailableMarketsType implements UserType<AvailableMarkets> {
     private static final List<CountryCode> COUNTRY_CODES = List.of(CountryCode.values());
@@ -46,7 +44,7 @@ public class AvailableMarketsType implements UserType<AvailableMarkets> {
     public AvailableMarkets nullSafeGet(ResultSet rs, int index, SharedSessionContractImplementor ssci, Object o)
             throws SQLException {
         if(rs.getBytes(index) == null) return new AvailableMarkets();
-        List<CountryCode> out = new ArrayList<>();
+        Set<CountryCode> out = new HashSet<>();
         final byte[] in = rs.getBytes(index);
         int i = 0;
         for (var code : COUNTRY_CODES) {
@@ -81,9 +79,7 @@ public class AvailableMarketsType implements UserType<AvailableMarkets> {
 
     @Override
     public AvailableMarkets deepCopy(AvailableMarkets availableMarkets) {
-        var copy = new AvailableMarkets();
-        copy.codes = List.copyOf(availableMarkets.codes);
-        return copy;
+        return new AvailableMarkets(availableMarkets.codes);
     }
 
     @Override
