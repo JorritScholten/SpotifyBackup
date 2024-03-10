@@ -44,7 +44,7 @@ database and automated backups to an online repository.
         - [x] Create repository for SpotifyArtist
             - [x] Create method to get all simplified records
         - [x] Create repository for SpotifyAlbum
-            - [ ] Create method to get all simplified records
+            - [x] Create method to get all simplified records
         - [x] Create repository for SpotifyID
         - [x] Create repository for SpotifyImage
         - [x] Create repository for SpotifyTrack

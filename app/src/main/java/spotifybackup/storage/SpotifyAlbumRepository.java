@@ -7,6 +7,7 @@ import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -38,6 +39,14 @@ class SpotifyAlbumRepository {
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
     private SpotifyAlbumRepository() {
         throw new ConstructorUsageException();
+    }
+
+    static List<String> findAllSpotifyIdsOfSimplified(EntityManager em) {
+        var query = new CriteriaDefinition<>(em, String.class) {};
+        var root = query.from(SpotifyAlbum.class);
+        query.select(root.get(SpotifyAlbum_.spotifyID).asString())
+                .where(query.isTrue(root.get(SpotifyAlbum_.isSimplified)));
+        return em.createQuery(query).getResultList();
     }
 
     /**
