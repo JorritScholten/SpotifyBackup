@@ -58,7 +58,7 @@ class SpotifyUserRepositoryTest {
         final User apiUser = new User.JsonUtil().createModelObject(
                 new String(Files.readAllBytes(Path.of(userDir + "user2.json")))
         );
-        assertTrue(spotifyObjectRepository.find(apiUser.getId()).isEmpty());
+        assertFalse(spotifyObjectRepository.exists(apiUser.getId(), SpotifyUser.class));
 
         // Act
         final var user = spotifyObjectRepository.persist(apiUser);
@@ -125,6 +125,7 @@ class SpotifyUserRepositoryTest {
         assertEquals(oldFollowedPlaylists.size() - 1, newFollowedPlaylists.size());
         final var newFollowedPlaylistIds = newFollowedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
         assertFalse(newFollowedPlaylistIds.contains(playlists.getFirst().getSpotifyID()));
+        assertTrue(oldFollowedPlaylistIds.contains(playlists.getFirst().getSpotifyID()));
     }
 
     @Test
@@ -149,6 +150,7 @@ class SpotifyUserRepositoryTest {
                 new String(Files.readAllBytes(Path.of(userDir + "user.json")))
         );
         final var user = spotifyObjectRepository.persist(apiUser);
+        assertEquals(0, spotifyObjectRepository.getFollowedArtists(user).size());
 
         // Act
         spotifyObjectRepository.followArtists(artists, user);
@@ -158,5 +160,29 @@ class SpotifyUserRepositoryTest {
         assertEquals(artists.size(), followedArtists.size());
         final var followedArtistIds = followedArtists.stream().map(SpotifyArtist::getSpotifyID).toList();
         assertTrue(followedArtistIds.containsAll(artistIds));
+    }
+
+    @Test
+    void ensure_artists_can_be_unfollowed() throws IOException {
+        // Arrange
+        final User apiUser = new User.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(userDir + "user3.json")))
+        );
+        final var user = spotifyObjectRepository.persist(apiUser);
+        spotifyObjectRepository.followArtists(artists, user);
+        final var oldFollowedArtists = spotifyObjectRepository.getFollowedArtists(user);
+        assertEquals(artists.size(), oldFollowedArtists.size());
+        final var oldFollowedArtistIds = oldFollowedArtists.stream().map(SpotifyArtist::getSpotifyID).toList();
+        assertTrue(oldFollowedArtistIds.containsAll(artistIds));
+
+        // Act
+        spotifyObjectRepository.unfollowArtists(List.of(artists.getFirst()), user);
+
+        // Assert
+        final var newFollowedArtists = spotifyObjectRepository.getFollowedArtists(user);
+        assertEquals(oldFollowedArtists.size() - 1, newFollowedArtists.size());
+        final var newFollowedArtistIds = newFollowedArtists.stream().map(SpotifyArtist::getSpotifyID).toList();
+        assertFalse(newFollowedArtistIds.contains(artists.getFirst().getSpotifyID()));
+        assertTrue(oldFollowedArtistIds.contains(artists.getFirst().getSpotifyID()));
     }
 }

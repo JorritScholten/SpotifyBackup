@@ -1,0 +1,23 @@
+{
+  "country": "US",
+  "display_name": "Dummy test account3",
+  "email": "test3@account.com",
+  "explicit_content": {
+    "filter_enabled": false,
+    "filter_locked": false
+  },
+  "external_urls": {
+    "spotify": "https://open.spotify.com/user/testaccount3"
+  },
+  "followers": {
+    "href": null,
+    "total": 0
+  },
+  "href": "https://api.spotify.com/v1/users/testaccount3",
+  "id": "testaccount3",
+  "images": [
+  ],
+  "product": "free",
+  "type": "user",
+  "uri": "spotify:user:testaccount3"
+}
