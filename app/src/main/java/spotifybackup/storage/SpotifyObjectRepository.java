@@ -731,4 +731,8 @@ public class SpotifyObjectRepository {
     public List<SpotifyPlaylist> persist(@NonNull PlaylistSimplified[] apiPlaylists) {
         return persistAbstractModels(apiPlaylists, new ArrayList<>(), SpotifyPlaylistRepository::persist);
     }
+
+    public List<SpotifyAlbum> persist(@NonNull Album[] apiAlbums) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
 }

@@ -231,6 +231,17 @@ public class ApiWrapper {
         return getPage(() -> spotifyApi.getCurrentUsersSavedAlbums().limit(limit).offset(offset).build());
     }
 
+    public Album[] getSeveralAlbums(String ids) throws IOException, InterruptedException {
+        try {
+            waitingForAPI.acquire();
+            final var object = spotifyApi.getSeveralAlbums(ids).build().execute();
+            waitingForAPI.release();
+            return object;
+        } catch (SpotifyWebApiException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private <T extends AbstractModelObject> PagingCursorbased<T> getPagingCursor(Supplier<AbstractRequest<PagingCursorbased<T>>> f)
             throws IOException, InterruptedException {
         try {

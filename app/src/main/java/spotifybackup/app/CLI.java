@@ -147,7 +147,7 @@ public class CLI {
             var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
-                App.verbosePrintln("  Removed " + removed.size() + " track(s) from Liked Songs");
+                App.verbosePrintln("    Removed " + removed.size() + " track(s) from Liked Songs");
             }
         }
 
@@ -157,7 +157,7 @@ public class CLI {
             var removed = oldPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowPlaylists(removed, user);
-                App.verbosePrintln("  Unfollowed " + removed.size() + " playlist(s)");
+                App.verbosePrintln("    Unfollowed " + removed.size() + " playlist(s)");
             }
         }
 
@@ -167,7 +167,7 @@ public class CLI {
             var removed = oldArtists.stream().filter(a -> !newArtisIds.contains(a.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowArtists(removed, user);
-                App.verbosePrintln("  Unfollowed " + removed.size() + " artists(s)");
+                App.verbosePrintln("    Unfollowed " + removed.size() + " artists(s)");
             }
         }
 
@@ -177,11 +177,38 @@ public class CLI {
             var removed = oldSavedAlbums.stream().filter(p -> !newSavedAlbumIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var album : removed) repo.removeSavedAlbum(album.getAlbum(), user);
-                App.verbosePrintln("  Removed " + removed.size() + " album(s) from Saved Albums");
+                App.verbosePrintln("    Removed " + removed.size() + " album(s) from Saved Albums");
             }
         }
 
-        private void saveDetailedInfo() {
+        private List<String> combineIds(final List<String> seperateIds, final int limit) {
+            List<String> combined = new ArrayList<>();
+            for (int i = 0; i <= seperateIds.size() / limit; i++) {
+                combined.add(String.join(",",
+                        seperateIds.subList(i * limit, Math.min(i * limit + limit, seperateIds.size()))));
+            }
+            return combined;
+        }
+
+        private void saveDetailedInfo() throws IOException, InterruptedException {
+            App.verbosePrintln("  Requesting detailed information for simplified objects");
+
+            // simple playlists
+
+            // changed playlists
+
+            final var simpleAlbumIds = repo.getSimplifiedAlbumsSpotifyIDs();
+            App.verbosePrint("    Requesting data for " + simpleAlbumIds.size() + " album(s)");
+            for (var ids : combineIds(simpleAlbumIds, 20)) {
+                App.verbosePrint(".");
+                repo.persist(api.getSeveralAlbums(ids));
+            }
+            App.verbosePrintln("");
+
+            // artists
+
+            // tracks
+
             throw new UnsupportedOperationException("TODO: iterate over all simplified SpotifyObjects, " +
                     "request detailed information and persist it");
         }
