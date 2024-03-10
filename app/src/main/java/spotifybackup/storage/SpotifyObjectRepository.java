@@ -1,5 +1,6 @@
 package spotifybackup.storage;
 
+import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -25,6 +26,7 @@ public class SpotifyObjectRepository {
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }
+        checkAvailableMarketsBitset();
     }
 
     /**
@@ -32,9 +34,9 @@ public class SpotifyObjectRepository {
      * @param dbPath File path of database.
      */
     public static SpotifyObjectRepository factory(@NonNull File dbPath) {
-        if (!dbPath.exists()) createNewDb(dbPath);
         if (!dbPath.isFile())
             throw new IllegalArgumentException("Supplied filepath to database is unusable: " + dbPath);
+        if (!dbPath.exists()) createNewDb(dbPath);
         final Properties dbAccess = new Properties();
         dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(dbPath));
         return new SpotifyObjectRepository("SpotifyObjects", dbAccess);
@@ -74,6 +76,44 @@ public class SpotifyObjectRepository {
         }
         dataSourceUrl.append(";DB_CLOSE_DELAY=-1");
         return dataSourceUrl.toString();
+    }
+
+    private void checkAvailableMarketsBitset() {
+        try (var em = emf.createEntityManager()) {
+            var cb = em.getCriteriaBuilder();
+            var query = cb.createQuery(Long.class);
+            query.select(cb.count(query.from(AvailableMarketsBitset.class)));
+            final long count = em.createQuery(query).getSingleResult();
+            em.getTransaction().begin();
+            for (var code : CountryCode.values()) {
+                if (code.equals(CountryCode.UNDEFINED)) continue;
+                if (count == 0) {
+                    em.persist(AvailableMarketsBitset.builder()
+                            .bitset(new AvailableMarkets(new CountryCode[]{code}))
+                            .alpha2(code.getAlpha2())
+                            .alpha3(code.getAlpha3())
+                            .numeric(code.getNumeric() != -1 ? code.getNumeric() : null)
+                            .country(code.getName())
+                            .ordinal(code.ordinal())
+                            .build());
+                } else {
+                    final AvailableMarketsBitset bitset = em.find(AvailableMarketsBitset.class, code.ordinal());
+                    if (!(bitset.getBitset().equals(new AvailableMarkets(new CountryCode[]{code}))) &&
+                            bitset.getAlpha2().equals(code.getAlpha2()) &&
+                            (bitset.getAlpha3() == null || bitset.getAlpha3().equals(code.getAlpha3())) &&
+                            (bitset.getNumeric() == null || bitset.getNumeric() == code.getNumeric()) &&
+                            bitset.getCountry().equals(code.getName())
+                    ) {
+                        throw new RuntimeException("CountryCode does not match persisted AvailableMarketsBitset " +
+                                "value, @id: " + code.ordinal());
+                    }
+                }
+            }
+            em.getTransaction().commit();
+            if (em.createQuery(query).getSingleResult() != (CountryCode.values().length - 1)) {
+                throw new RuntimeException("Size mismatch between CountryCode and AvailableMarketsBitset.");
+            }
+        }
     }
 
     private <T extends SpotifyObject, A extends AbstractModelObject> T
