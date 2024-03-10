@@ -50,6 +50,31 @@ class SpotifyAlbumRepositoryTest {
     }
 
     @Test
+    void ensure_singles_album_can_be_persisted() throws IOException {
+        // Arrange
+        final Album apiAlbum = new Album.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(albumDir + "Embers_Rise.json")))
+        );
+        assertFalse(spotifyObjectRepository.exists(apiAlbum),
+                "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
+        assertTrue(apiAlbum.getArtists().length > 0, "Album should have 1 or more artists.");
+
+        // Act
+        var persistedAlbum = spotifyObjectRepository.persist(apiAlbum);
+
+        // Assert
+        assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
+                "Can't find Album by Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
+        assertTrue(apiAlbum.getArtists().length > 0);
+        assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
+        assertTrue(apiAlbum.getImages().length > 0);
+        assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
+        assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
+    }
+
+    @Test
     void ensure_simplified_album_can_be_filled_in_with_unsimplified() throws IOException {
         // Arrange
         final String albumJson = new String(Files.readAllBytes(Path.of(albumDir + "Ecliptica_(International_Version).json")));

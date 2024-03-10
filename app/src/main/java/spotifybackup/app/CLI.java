@@ -1,9 +1,6 @@
 package spotifybackup.app;
 
-import se.michaelthelin.spotify.model_objects.specification.Paging;
-import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
-import se.michaelthelin.spotify.model_objects.specification.SavedAlbum;
-import se.michaelthelin.spotify.model_objects.specification.SavedTrack;
+import se.michaelthelin.spotify.model_objects.specification.*;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.*;
 
@@ -106,8 +103,22 @@ public class CLI {
         }
 
         /** @return List of artists currently followed by user as returned from the API. */
-        private List<SpotifyArtist> saveFollowedArtists() {
-            throw new UnsupportedOperationException("to be implemented");
+        private List<SpotifyArtist> saveFollowedArtists() throws IOException, InterruptedException {
+            App.verbosePrint("  Saving followed artists");
+            final int limit = 50;
+            String after = null;
+            PagingCursorbased<Artist> apiArtists;
+            List<SpotifyArtist> artists = new ArrayList<>();
+            App.verbosePrint(", requesting data");
+            do {
+                App.verbosePrint(".");
+                apiArtists = api.getCurrentUserFollowedArtists(limit, after);
+                artists.addAll(repo.persist(apiArtists.getItems()));
+                after = apiArtists.getCursors()[0].getAfter();
+            } while (apiArtists.getNext() != null);
+            repo.followArtists(artists, user);
+            App.verbosePrintln("");
+            return artists;
         }
 
         /** @return List of albums currently liked by user as returned from the API. */
@@ -151,7 +162,13 @@ public class CLI {
         }
 
         private void markUnfollowedArtists(final List<SpotifyArtist> newFollowedArtists) {
-            throw new UnsupportedOperationException("to be implemented");
+            var newArtisIds = newFollowedArtists.stream().map(SpotifyArtist::getId).collect(Collectors.toSet());
+            var oldArtists = repo.getFollowedArtists(user);
+            var removed = oldArtists.stream().filter(a -> !newArtisIds.contains(a.getId())).toList();
+            if (!removed.isEmpty()) {
+                repo.unfollowArtists(removed, user);
+                App.verbosePrintln("  Unfollowed " + removed.size() + " artists(s)");
+            }
         }
 
         private void markUnlikedAlbums(final List<SpotifySavedAlbum> newLikedAlbums) {

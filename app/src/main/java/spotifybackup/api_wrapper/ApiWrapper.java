@@ -220,7 +220,9 @@ public class ApiWrapper {
 
     public PagingCursorbased<Artist> getCurrentUserFollowedArtists(int limit, String after)
             throws IOException, InterruptedException {
-        return getPagingCursor(() -> spotifyApi.getUsersFollowedArtists(ModelObjectType.ARTIST)
+        if (after == null) return getPagingCursor(() -> spotifyApi.getUsersFollowedArtists(ModelObjectType.ARTIST)
+                .limit(limit).build());
+        else return getPagingCursor(() -> spotifyApi.getUsersFollowedArtists(ModelObjectType.ARTIST)
                 .limit(limit).after(after).build());
     }
 

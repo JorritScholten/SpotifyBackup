@@ -129,6 +129,7 @@ class SpotifyAlbumRepository {
                     .releaseDatePrecision(apiAlbum.getReleaseDatePrecision())
                     .availableMarkets(convertMarkets(apiAlbum.getAvailableMarkets()))
                     .build();
+            entityManager.persist(newAlbum);
             setNotSimpleFields.apply(entityManager).accept(apiAlbum, newAlbum);
             entityManager.persist(newAlbum);
             return newAlbum;
