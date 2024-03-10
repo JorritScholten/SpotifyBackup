@@ -3,7 +3,6 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
-import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;

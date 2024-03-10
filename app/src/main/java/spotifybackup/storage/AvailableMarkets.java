@@ -35,4 +35,8 @@ public class AvailableMarkets {
     public int hashCode() {
         return Objects.hash(codes);
     }
+
+    void addCodes(CountryCode[] extraMarkets) {
+        if (extraMarkets != null) this.codes.addAll(Set.copyOf(Arrays.stream(extraMarkets).toList()));
+    }
 }

@@ -3,7 +3,6 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
-import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Track;
 import se.michaelthelin.spotify.model_objects.specification.TrackSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
@@ -18,7 +17,7 @@ class SpotifyTrackRepository {
     private static final Function<EntityManager, BiConsumer<Track, SpotifyTrack>> setNotSimpleFields =
             entityManager -> (apiTrack, track) -> {
                 if (apiTrack.getExternalIds().getExternalIds().containsKey("isrc")) {
-                    track.setIsrcID(apiTrack.getExternalIds().getExternalIds().get("isrc").replace("-",""));
+                    track.setIsrcID(apiTrack.getExternalIds().getExternalIds().get("isrc").replace("-", ""));
                 }
                 if (apiTrack.getExternalIds().getExternalIds().containsKey("ean")) {
                     track.setEanID(apiTrack.getExternalIds().getExternalIds().get("ean"));
@@ -111,6 +110,9 @@ class SpotifyTrackRepository {
                 final var simpleTrack = optionalTrack.get();
                 simpleTrack.setIsSimplified(false);
                 setNotSimpleFields.apply(entityManager).accept(apiTrack, simpleTrack);
+                if (simpleTrack.getAvailableMarkets().getCodes().isEmpty()) {
+                    simpleTrack.getAvailableMarkets().addCodes(apiTrack.getAvailableMarkets());
+                }
                 entityManager.persist(simpleTrack);
                 return simpleTrack;
             }

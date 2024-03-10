@@ -3,7 +3,6 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
-import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import spotifybackup.storage.exception.ConstructorUsageException;
@@ -116,6 +115,9 @@ class SpotifyAlbumRepository {
                 final var simpleAlbum = optionalAlbum.get();
                 simpleAlbum.setIsSimplified(false);
                 setNotSimpleFields.apply(entityManager).accept(apiAlbum, simpleAlbum);
+                if (simpleAlbum.getAvailableMarkets().getCodes().isEmpty()) {
+                    simpleAlbum.getAvailableMarkets().addCodes(apiAlbum.getAvailableMarkets());
+                }
                 entityManager.persist(simpleAlbum);
                 return simpleAlbum;
             }
