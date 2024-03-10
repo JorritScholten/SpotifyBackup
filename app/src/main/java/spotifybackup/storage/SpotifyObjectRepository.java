@@ -194,6 +194,7 @@ public class SpotifyObjectRepository {
                 case Track apiTrack -> SpotifyTrackRepository.find(em, apiTrack.getId()).isPresent();
                 case Album apiAlbum -> SpotifyAlbumRepository.find(em, apiAlbum.getId()).isPresent();
                 case Artist apiArtist -> SpotifyArtistRepository.find(em, apiArtist).isPresent();
+                case ArtistSimplified apiArtist -> SpotifyArtistRepository.find(em, apiArtist).isPresent();
                 case Image apiImage -> SpotifyImageRepository.find(em, apiImage).isPresent();
                 case User apiUser -> SpotifyUserRepository.find(em, apiUser).isPresent();
                 case Playlist apiPlaylist -> SpotifyPlaylistRepository.find(em, apiPlaylist).isPresent();
@@ -274,7 +275,9 @@ public class SpotifyObjectRepository {
 
     /** @return List of SpotifyIDs' of all SpotifyArtists marked simplified in the database. */
     public List<String> getSimplifiedArtistsSpotifyIDs() {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            return SpotifyArtistRepository.findAllSpotifyIdsOfSimplified(em);
+        }
     }
 
     /** @return List of SpotifyIDs' of all SpotifyPlaylists marked simplified in the database. */

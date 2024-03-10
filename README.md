@@ -42,7 +42,7 @@ database and automated backups to an online repository.
     - [x] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for SpotifyGenre
         - [x] Create repository for SpotifyArtist
-            - [ ] Create method to get all simplified records
+            - [x] Create method to get all simplified records
         - [x] Create repository for SpotifyAlbum
             - [ ] Create method to get all simplified records
         - [x] Create repository for SpotifyID
