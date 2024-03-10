@@ -24,10 +24,16 @@ database and automated backups to an online repository.
     - [x] Store artist GET request to db
     - [ ] Write unit test using mocking (leaning towards EasyMock)
     - [x] Store track info to db
-    - [x] Store playlist to db
+    - [ ] Store playlist to db
+        - [ ] handle updating playlist contents using snapshot_id
     - [x] Store Liked Songs to db
     - [x] Store Liked Albums to db
-    - [ ] Store followed artists to db
+    - [x] Store followed artists to db
+    - [ ] Request detailed information for various SpotifyObjects
+        - [ ] SpotifyAlbum
+        - [ ] SpotifyArtist
+        - [ ] SpotifyPlaylist
+        - [ ] SpotifyTrack
 - [x] Design a sensible SQL database that minimises data duplication.
     - [x] Implement working Hibernate connection to embedded database.
     - [x] Implement complete storage class system to store all track information from Spotify about Playlists and Users
@@ -36,14 +42,18 @@ database and automated backups to an online repository.
     - [x] Implement necessary DAO methods to enable fluent storing and use of data provided by Spotify API
         - [x] Create repository for SpotifyGenre
         - [x] Create repository for SpotifyArtist
+            - [ ] Create method to get all simplified records
         - [x] Create repository for SpotifyAlbum
+            - [ ] Create method to get all simplified records
         - [x] Create repository for SpotifyID
         - [x] Create repository for SpotifyImage
         - [x] Create repository for SpotifyTrack
+            - [ ] Create method to get all simplified records
         - [x] Create repository for SpotifyUser
             - [ ] handle updating SpotifyUser info when detailed info changes
             - [ ] handle updating SpotifyUser info from simplified/public to detailed
         - [x] Create repository for SpotifyPlaylist
+            - [ ] Create method to get all simplified records
         - [x] Create repository for SpotifyPlaylistItem
         - [x] Create repository for Users Liked/Saved Songs
     - [x] Convert all HQL queries to JPA CriteriaQuery's
