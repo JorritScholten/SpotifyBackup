@@ -34,9 +34,9 @@ public class SpotifyObjectRepository {
      * @param dbPath File path of database.
      */
     public static SpotifyObjectRepository factory(@NonNull File dbPath) {
+        if (!dbPath.exists()) createNewDb(dbPath);
         if (!dbPath.isFile())
             throw new IllegalArgumentException("Supplied filepath to database is unusable: " + dbPath);
-        if (!dbPath.exists()) createNewDb(dbPath);
         final Properties dbAccess = new Properties();
         dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(dbPath));
         return new SpotifyObjectRepository("SpotifyObjects", dbAccess);
