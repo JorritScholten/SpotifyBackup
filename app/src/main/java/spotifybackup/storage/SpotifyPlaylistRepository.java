@@ -36,7 +36,7 @@ class SpotifyPlaylistRepository {
         return em.createQuery(query).getResultList();
     }
 
-    public static List<SpotifyPlaylist> findAll(EntityManager em) {
+    static List<SpotifyPlaylist> findAll(EntityManager em) {
         var query = new CriteriaDefinition<>(em, SpotifyPlaylist.class) {};
         query.from(SpotifyPlaylist.class);
         return em.createQuery(query).getResultList();
@@ -142,6 +142,22 @@ class SpotifyPlaylistRepository {
             setNotSimpleFields.apply(entityManager).accept(apiPlaylist, newPlaylist);
             entityManager.persist(newPlaylist);
             return newPlaylist;
+        }
+    }
+
+    static Optional<SpotifyPlaylist> update(EntityManager em, Playlist apiPlaylist) {
+        ensureTransactionActive.accept(em);
+        var optionalPlaylist = find(em, apiPlaylist);
+        if(optionalPlaylist.isEmpty()) return optionalPlaylist;
+        else {
+            var playlist = optionalPlaylist.get();
+            playlist.setName(apiPlaylist.getName());
+            playlist.setDescription(apiPlaylist.getDescription());
+            playlist.setIsCollaborative(apiPlaylist.getIsCollaborative());
+            playlist.setIsPublic(apiPlaylist.getIsPublicAccess());
+            playlist.setSnapshotId(apiPlaylist.getSnapshotId());
+            em.persist(playlist);
+            return Optional.of(playlist);
         }
     }
 }

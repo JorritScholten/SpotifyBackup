@@ -35,23 +35,27 @@ public final class SpotifyPlaylist extends SpotifyObject {
     @JoinColumn(name = "owner_id", nullable = false)
     private SpotifyUser owner;
 
+    @Setter(AccessLevel.PACKAGE)
     @NonNull
     @Column(nullable = false)
     private String name;
 
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     private String description;
 
+    @Setter(AccessLevel.PACKAGE)
     @NonNull
     private Boolean isCollaborative;
 
+    @Setter(AccessLevel.PACKAGE)
     @NonNull
     private Boolean isPublic;
 
+    @Setter(AccessLevel.PACKAGE)
     @NonNull
     private String snapshotId;
 
-    @Setter
+    @Setter(AccessLevel.PACKAGE)
     @NonNull
     private Boolean isSimplified;
 

@@ -22,7 +22,7 @@ class SpotifyPlaylistItemRepository {
         throw new ConstructorUsageException();
     }
 
-    public static List<SpotifyPlaylistItem> findByPlaylist(EntityManager em, SpotifyPlaylist playlist) {
+    static List<SpotifyPlaylistItem> findByPlaylist(EntityManager em, SpotifyPlaylist playlist) {
         var query = new CriteriaDefinition<>(em, SpotifyPlaylistItem.class) {};
         var root = query.from(SpotifyPlaylistItem.class);
         query.where(query.equal(root.get(SpotifyPlaylistItem_.playlist), playlist));
@@ -110,7 +110,7 @@ class SpotifyPlaylistItemRepository {
         }
     }
 
-    public static void deleteByPlaylist(EntityManager em, SpotifyPlaylist playlist) {
+    static void deleteByPlaylist(EntityManager em, SpotifyPlaylist playlist) {
         ensureTransactionActive.accept(em);
         var cb = em.getCriteriaBuilder();
         var delete = cb.createCriteriaDelete(SpotifyPlaylistItem.class);

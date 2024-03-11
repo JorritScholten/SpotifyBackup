@@ -789,6 +789,11 @@ public class SpotifyObjectRepository {
      * @apiNote Method doesn't update SpotifyPlaylistItems associated with the playlist.
      */
     public Optional<SpotifyPlaylist> update(@NonNull Playlist apiPlaylist) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            var updatedPlaylist = SpotifyPlaylistRepository.update(em, apiPlaylist);
+            em.getTransaction().commit();
+            return updatedPlaylist;
+        }
     }
 }
