@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class CLI {
@@ -218,55 +219,30 @@ public class CLI {
             return apiTracks;
         }
 
-        private void saveDetailedSimplifiedPlaylistInfo(final SpotifyPlaylist playlist)
-                throws IOException, InterruptedException {
-            var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
-            if (apiPlaylist.isEmpty())
-                App.println(6, "Couldn't request detailed information for playlist " +
-                        playlist.getName());
-            else {
-                var apiTracks = getPlaylistTracks(playlist);
-                if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
-                    App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " +
-                            playlist.getName());
-                    repo.persist(apiTracks, playlist);
-                    repo.persist(apiPlaylist.get());
-                } else {
-                    App.println(6, "Size mismatch between requested track amount and the " +
-                            "amount that there should be for playlist " + playlist.getName());
-                }
-            }
-        }
-
-        private void saveDetailedUnSimplifiedPlaylistInfo(final SpotifyPlaylist playlist)
-                throws IOException, InterruptedException {
-            var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
-            if (apiPlaylist.isEmpty())
-                App.println(6, "Couldn't request detailed information for playlist " +
-                        playlist.getName());
-            else {
-                // get playlist tracks if snapshot_id differs
-                if (!apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
-                    var apiTracks = getPlaylistTracks(playlist);
-                    if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
-                        repo.deletePlaylistTracks(playlist);
-                        repo.persist(apiTracks, playlist);
-                        repo.update(apiPlaylist.get());
-                    } else {
-                        App.println(6, "Size mismatch between requested track amount and the " +
-                                "amount that there should be for playlist " + playlist.getName());
-                    }
-                }
-            }
-        }
-
         private void saveDetailedPlaylistInfo() throws IOException, InterruptedException {
             final var playlists = repo.findAllPlaylists();
             App.verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
                     " new playlist(s)");
             for (var playlist : playlists) {
-                if (playlist.getIsSimplified()) saveDetailedSimplifiedPlaylistInfo(playlist);
-                else saveDetailedUnSimplifiedPlaylistInfo(playlist);
+                Optional<Playlist> apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
+                if (apiPlaylist.isEmpty())
+                    App.println(6, "Couldn't request detailed information for playlist " +
+                            playlist.getName());
+                else if (playlist.getIsSimplified() ||
+                        !apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
+                    var apiTracks = getPlaylistTracks(playlist);
+                    if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
+                        App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " +
+                                playlist.getName());
+                        repo.deletePlaylistTracks(playlist);
+                        repo.persist(apiTracks, playlist);
+                        if (playlist.getIsSimplified()) repo.persist(apiPlaylist.get());
+                        else repo.update(apiPlaylist.get());
+                    } else {
+                        App.println(6, "Size mismatch between requested track amount and the " +
+                                "amount that there should be for playlist " + playlist.getName());
+                    }
+                }
             }
         }
 
