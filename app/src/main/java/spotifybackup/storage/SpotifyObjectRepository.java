@@ -772,16 +772,21 @@ public class SpotifyObjectRepository {
         return persistAbstractModelsWithIdentifier(apiTracks, new ArrayList<>(), playlist, SpotifyPlaylistItemRepository::persist);
     }
 
-    /** Deletes all tracks belonging to specified playlist in the database. */
+    /** Deletes all PlaylistItems belonging to specified playlist in the database. */
     public void deletePlaylistItems(@NonNull SpotifyPlaylist playlist) {
-        throw new UnsupportedOperationException("to be implemented");
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            SpotifyPlaylistItemRepository.deleteByPlaylist(em, playlist);
+            em.getTransaction().commit();
+        }
     }
 
     /**
      * Update SpotifyPlaylist in the database with Playlist object from spotify-web-api if it already exists in the
-     * database.
+     * database, doesn't update SpotifyPlaylistItems associated with the playlist.
      * @param apiPlaylist Playlist to update, should already be stored in the database.
      * @return SpotifyPlaylist if apiPlaylist already existed in the database.
+     * @apiNote Method doesn't update SpotifyPlaylistItems associated with the playlist.
      */
     public Optional<SpotifyPlaylist> update(@NonNull Playlist apiPlaylist) {
         throw new UnsupportedOperationException("to be implemented");

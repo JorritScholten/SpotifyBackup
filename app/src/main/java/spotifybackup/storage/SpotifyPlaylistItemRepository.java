@@ -1,6 +1,7 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.criteria.CriteriaDelete;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.enums.ModelObjectType;
@@ -107,5 +108,14 @@ class SpotifyPlaylistItemRepository {
             entityManager.persist(newItem);
             return newItem;
         }
+    }
+
+    public static void deleteByPlaylist(EntityManager em, SpotifyPlaylist playlist) {
+        ensureTransactionActive.accept(em);
+        var cb = em.getCriteriaBuilder();
+        var delete = cb.createCriteriaDelete(SpotifyPlaylistItem.class);
+        var root = delete.from(SpotifyPlaylistItem.class);
+        delete.where(cb.equal(root.get(SpotifyPlaylistItem_.playlist), playlist));
+        em.createQuery(delete).executeUpdate();
     }
 }

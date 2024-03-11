@@ -164,6 +164,7 @@ class SpotifyPlaylistRepositoryTest {
         assertFalse(spotifyObjectRepository.exists(apiPlaylist));
         final var playlist = spotifyObjectRepository.persist(apiPlaylist);
         final var originalTracks = spotifyObjectRepository.getPlaylistItems(playlist);
+        assertFalse(originalTracks.isEmpty());
         assertEquals(apiPlaylist.getTracks().getTotal(), originalTracks.size());
 
         // Act
