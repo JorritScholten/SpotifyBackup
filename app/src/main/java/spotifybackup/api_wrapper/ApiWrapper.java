@@ -17,6 +17,7 @@ import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCrede
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import spotifybackup.app.Config;
+import spotifybackup.storage.SpotifyID;
 
 import java.awt.*;
 import java.io.IOException;
@@ -240,6 +241,19 @@ public class ApiWrapper {
         } catch (SpotifyWebApiException | ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public Paging<PlaylistTrack> getPlaylistTracks(int limit, int offset, SpotifyID id)
+            throws IOException, InterruptedException {
+        return getPage(() -> spotifyApi.getPlaylistsItems(id.getId()).limit(limit).offset(offset)
+                .additionalTypes(ModelObjectType.TRACK.type).build());
+    }
+
+    public Optional<Playlist> getPlaylistWithoutTracks(@NonNull SpotifyID id)
+            throws IOException, InterruptedException {
+        return getSpotifyObject(() -> spotifyApi.getPlaylist(id.getId()).fields(
+                "collaborative,description,id,owner,public,snapshot_id,type,followers"
+        ).build());
     }
 
     private <T extends AbstractModelObject> PagingCursorbased<T> getPagingCursor(Supplier<AbstractRequest<PagingCursorbased<T>>> f)

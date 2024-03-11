@@ -742,4 +742,26 @@ public class SpotifyObjectRepository {
     public List<SpotifyAlbum> persist(@NonNull Album[] apiAlbums) {
         throw new UnsupportedOperationException("to be implemented");
     }
+
+    /**
+     * Attempts to persist an array of PlaylistTrack objects for a specified playlist from the output of the
+     * spotify-web-api.
+     * @return List of SpotifyPlaylistItem objects.
+     */
+    public List<SpotifyPlaylistItem> persist(@NonNull PlaylistTrack[] apiTracks, @NonNull SpotifyPlaylist playlist) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            List<SpotifyPlaylistItem> persistedItems = new ArrayList<>();
+            for (var apiTrack : apiTracks) {
+                persistedItems.add(SpotifyPlaylistItemRepository.persist(em, apiTrack, playlist));
+            }
+            em.getTransaction().commit();
+            return persistedItems;
+        }
+    }
+
+    /** Deletes all tracks belonging to specified playlist in the database. */
+    public void deletePlaylistTracks(@NonNull SpotifyPlaylist playlist) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
 }

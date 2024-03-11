@@ -181,21 +181,54 @@ public class CLI {
             }
         }
 
-        private List<String> combineIds(final List<String> seperateIds, final int limit) {
+        private List<String> combineIds(final List<String> separateIds, final int limit) {
             List<String> combined = new ArrayList<>();
-            for (int i = 0; i <= seperateIds.size() / limit; i++) {
+            for (int i = 0; i <= separateIds.size() / limit; i++) {
                 combined.add(String.join(",",
-                        seperateIds.subList(i * limit, Math.min(i * limit + limit, seperateIds.size()))));
+                        separateIds.subList(i * limit, Math.min(i * limit + limit, separateIds.size()))));
             }
             return combined;
+        }
+
+        private void savePlaylistTracks(final SpotifyPlaylist playlist) throws IOException, InterruptedException {
+            App.verbosePrint("      Saving tracks for " + playlist.getName());
+            final int limit = 50;
+            int offset = 0;
+            Paging<PlaylistTrack> apiPlaylistTrack;
+            App.verbosePrint(", requesting data");
+            do {
+                App.verbosePrint(".");
+                apiPlaylistTrack = api.getPlaylistTracks(limit, offset, playlist.getSpotifyID());
+                repo.persist(apiPlaylistTrack.getItems(), playlist);
+                offset += limit;
+            } while (apiPlaylistTrack.getNext() != null);
+            App.verbosePrintln("");
         }
 
         private void saveDetailedInfo() throws IOException, InterruptedException {
             App.verbosePrintln("  Requesting detailed information for simplified objects");
 
-            // simple playlists
-
-            // changed playlists
+            final var playlists = repo.findAllPlaylists();
+            App.verbosePrintln("    " + playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
+                    " new playlist(s)");
+            for (var playlist : playlists) {
+                if (playlist.getIsSimplified()) {
+                    savePlaylistTracks(playlist);
+                    api.getPlaylistWithoutTracks(playlist.getSpotifyID()).ifPresentOrElse(repo::persist, () ->
+                            App.println("      Couldn't request detailed information for playlist " + playlist.getName()));
+                } else {
+                    var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
+                    if (apiPlaylist.isEmpty())
+                        App.println("      Couldn't request detailed information for playlist " + playlist.getName());
+                    else {
+                        // get playlist tracks if snapshot_id differs
+                        if (!apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
+                            repo.deletePlaylistTracks(playlist);
+                            savePlaylistTracks(playlist);
+                        }
+                    }
+                }
+            }
 
             final var simpleAlbumIds = repo.getSimplifiedAlbumsSpotifyIDs();
             App.verbosePrint("    Requesting data for " + simpleAlbumIds.size() + " album(s)");
