@@ -545,8 +545,10 @@ public class SpotifyObjectRepository {
      * Get a list of all SpotifyPlaylistItems belonging to the specified playlist as stored in the database.
      * @return List of SpotifyPlaylistItem objects.
      */
-    public List<SpotifyPlaylistItem> getPlaylistTracks(@NonNull SpotifyPlaylist playlist) {
-        throw new UnsupportedOperationException("to be implemented");
+    public List<SpotifyPlaylistItem> getPlaylistItems(@NonNull SpotifyPlaylist playlist) {
+        try (var em = emf.createEntityManager()) {
+            return SpotifyPlaylistItemRepository.findByPlaylist(em, playlist);
+        }
     }
 
     /**

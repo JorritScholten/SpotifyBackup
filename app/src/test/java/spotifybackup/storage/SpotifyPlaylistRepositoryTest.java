@@ -133,7 +133,7 @@ class SpotifyPlaylistRepositoryTest {
                 loadFromPath("Spotify_Web_API_Testing_playlist.json"));
         assertFalse(spotifyObjectRepository.exists(apiPlaylist));
         final var playlist = spotifyObjectRepository.persist(apiPlaylist);
-        final var originalTracks = spotifyObjectRepository.getPlaylistTracks(playlist);
+        final var originalTracks = spotifyObjectRepository.getPlaylistItems(playlist);
         assertEquals(apiPlaylist.getTracks().getTotal(), originalTracks.size());
         final Paging<PlaylistTrack> apiExtraTracks = new PlaylistTrack.JsonUtil().createModelObjectPaging(
                 loadFromPath("The_Blue_Stones.json"), "tracks");
@@ -142,7 +142,7 @@ class SpotifyPlaylistRepositoryTest {
 
         // Act
         final List<SpotifyPlaylistItem> extraTracks = spotifyObjectRepository.persist(apiExtraTracksList, playlist);
-        final List<SpotifyPlaylistItem> allTracks = spotifyObjectRepository.getPlaylistTracks(playlist);
+        final List<SpotifyPlaylistItem> allTracks = spotifyObjectRepository.getPlaylistItems(playlist);
 
         // Assert
         assertEquals(apiExtraTracksList.size(), extraTracks.size());
