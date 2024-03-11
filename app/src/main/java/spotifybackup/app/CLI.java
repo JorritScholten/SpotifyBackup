@@ -200,12 +200,6 @@ public class CLI {
             saveDetailedTrackInfo();
         }
 
-        private void savePlaylistTracks(final SpotifyPlaylist playlist) throws IOException, InterruptedException {
-            var apiTracks = getPlaylistTracks(playlist);
-            App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " + playlist.getName());
-            repo.persist(apiTracks, playlist);
-        }
-
         private List<PlaylistTrack> getPlaylistTracks(final SpotifyPlaylist playlist)
                 throws IOException, InterruptedException {
             App.verbosePrint(6, "Requesting tracks for " + playlist.getName());
@@ -224,16 +218,27 @@ public class CLI {
             return apiTracks;
         }
 
-        private void saveDetailedSimplifiedPlaylistInfo(SpotifyPlaylist playlist)
+        private void saveDetailedSimplifiedPlaylistInfo(final SpotifyPlaylist playlist)
                 throws IOException, InterruptedException {
-            savePlaylistTracks(playlist);
-            // TODO: add size based safety check for this too
-            api.getPlaylistWithoutTracks(playlist.getSpotifyID()).ifPresentOrElse(repo::persist, () ->
-                    App.println(6, "Couldn't request detailed information for playlist " +
-                            playlist.getName()));
+            var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
+            if (apiPlaylist.isEmpty())
+                App.println(6, "Couldn't request detailed information for playlist " +
+                        playlist.getName());
+            else {
+                var apiTracks = getPlaylistTracks(playlist);
+                if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
+                    App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " +
+                            playlist.getName());
+                    repo.persist(apiTracks, playlist);
+                    repo.persist(apiPlaylist.get());
+                } else {
+                    App.println(6, "Size mismatch between requested track amount and the " +
+                            "amount that there should be for playlist " + playlist.getName());
+                }
+            }
         }
 
-        private void saveDetailedUnSimplifiedPlaylistInfo(SpotifyPlaylist playlist)
+        private void saveDetailedUnSimplifiedPlaylistInfo(final SpotifyPlaylist playlist)
                 throws IOException, InterruptedException {
             var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
             if (apiPlaylist.isEmpty())
@@ -244,8 +249,8 @@ public class CLI {
                 if (!apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
                     var apiTracks = getPlaylistTracks(playlist);
                     if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
-                        repo.persist(apiTracks, playlist);
                         repo.deletePlaylistTracks(playlist);
+                        repo.persist(apiTracks, playlist);
                         repo.update(apiPlaylist.get());
                     } else {
                         App.println(6, "Size mismatch between requested track amount and the " +
