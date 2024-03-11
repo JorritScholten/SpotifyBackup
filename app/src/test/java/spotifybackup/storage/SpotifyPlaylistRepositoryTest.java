@@ -1,6 +1,6 @@
 package spotifybackup.storage;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
@@ -9,6 +9,7 @@ import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,10 +17,14 @@ import static org.junit.jupiter.api.Assertions.*;
 class SpotifyPlaylistRepositoryTest {
     static final String testDataDir = "src/test/java/spotifybackup/storage/spotify_api_get/";
     static final String playlistDir = testDataDir + "playlist/";
-    static private SpotifyObjectRepository spotifyObjectRepository;
+    private SpotifyObjectRepository spotifyObjectRepository;
 
-    @BeforeAll
-    static void setup() {
+    static String loadFromPath(String fileName) throws IOException {
+        return new String(Files.readAllBytes(Path.of(playlistDir + fileName)));
+    }
+
+    @BeforeEach
+    void setup() {
         spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
     }
 
@@ -27,7 +32,7 @@ class SpotifyPlaylistRepositoryTest {
     void ensure_playlist_can_be_persisted() throws IOException {
         // Arrange
         final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(playlistDir + "Spotify_Web_API_Testing_playlist.json")))
+                loadFromPath("Spotify_Web_API_Testing_playlist.json")
         );
         assertFalse(spotifyObjectRepository.exists(apiPlaylist),
                 "Playlist with Spotify ID " + apiPlaylist.getId() + " shouldn't already exist.");
@@ -46,7 +51,7 @@ class SpotifyPlaylistRepositoryTest {
     @Test
     void ensure_simplified_playlist_can_be_filled_in_with_unsimplified() throws IOException {
         // Arrange
-        final String playlistJson = new String(Files.readAllBytes(Path.of(playlistDir + "The_Blue_Stones.json")));
+        final String playlistJson = loadFromPath("The_Blue_Stones.json");
         final PlaylistSimplified apiPlaylistSimple = new PlaylistSimplified.JsonUtil().createModelObject(playlistJson);
         final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(playlistJson);
         final var playlistSimple = spotifyObjectRepository.persist(apiPlaylistSimple);
@@ -69,7 +74,7 @@ class SpotifyPlaylistRepositoryTest {
     @Test
     void ensure_simplified_playlist_can_be_retrieved() throws IOException {
         // Arrange
-        final String playlistJson = new String(Files.readAllBytes(Path.of(playlistDir + "This_Is_Yatao.json")));
+        final String playlistJson = loadFromPath("This_Is_Yatao.json");
         final PlaylistSimplified apiPlaylistSimple = new PlaylistSimplified.JsonUtil().createModelObject(playlistJson);
         final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(playlistJson);
         assertFalse(spotifyObjectRepository.exists(apiPlaylistSimple));
@@ -88,5 +93,33 @@ class SpotifyPlaylistRepositoryTest {
 
         // Assert 2
         assertFalse(newSimplePlaylistIds.contains(apiPlaylistSimple.getId()));
+    }
+
+    @Test
+    void ensure_all_playlists_can_be_retrieved() throws IOException {
+        // Arrange
+        final PlaylistSimplified apiPlaylist1 = new PlaylistSimplified.JsonUtil().createModelObject(
+                loadFromPath("This_Is_Yatao.json"));
+        assertFalse(spotifyObjectRepository.exists(apiPlaylist1));
+        spotifyObjectRepository.persist(apiPlaylist1);
+        final Playlist apiPlaylist2 = new Playlist.JsonUtil().createModelObject(
+                loadFromPath("The_Blue_Stones.json"));
+        assertFalse(spotifyObjectRepository.exists(apiPlaylist2));
+        spotifyObjectRepository.persist(apiPlaylist2);
+        final Playlist apiPlaylist3 = new Playlist.JsonUtil().createModelObject(
+                loadFromPath("Spotify_Web_API_Testing_playlist.json"));
+        assertFalse(spotifyObjectRepository.exists(apiPlaylist3));
+        spotifyObjectRepository.persist(apiPlaylist3);
+
+
+        // Act
+        final List<SpotifyPlaylist> playlists = spotifyObjectRepository.findAllPlaylists();
+
+        // Assert
+        assertEquals(3, playlists.size());
+        for (var playlist : playlists) {
+            if (playlist.getSpotifyID().getId().equals(apiPlaylist1.getId())) assertTrue(playlist.getIsSimplified());
+            else assertFalse(playlist.getIsSimplified());
+        }
     }
 }

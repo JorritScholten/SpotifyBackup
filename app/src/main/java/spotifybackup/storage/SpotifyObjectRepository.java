@@ -735,4 +735,9 @@ public class SpotifyObjectRepository {
     public List<SpotifyAlbum> persist(@NonNull Album[] apiAlbums) {
         throw new UnsupportedOperationException("to be implemented");
     }
+
+    /** Retrieve all SpotifyPlaylist objects from the database. */
+    public List<SpotifyPlaylist> findAllPlaylists() {
+        throw new UnsupportedOperationException("to be implemented");
+    }
 }
