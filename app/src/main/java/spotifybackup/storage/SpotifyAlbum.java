@@ -28,7 +28,7 @@ public final class SpotifyAlbum extends SpotifyObject {
     @OneToMany(mappedBy = SpotifyTrack_.ALBUM)
     private final Set<SpotifyTrack> tracks = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     private final Set<SpotifyImage> images = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY,

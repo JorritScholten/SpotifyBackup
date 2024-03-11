@@ -15,6 +15,15 @@ import java.util.Set;
 @ToString
 @Entity
 public final class SpotifyImage extends SpotifyObject {
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyArtist_.IMAGES)
+    private final Set<SpotifyArtist> artists = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyAlbum_.IMAGES)
+    private final Set<SpotifyAlbum> albums = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = SpotifyUser_.IMAGES)
+    private final Set<SpotifyUser> users = new HashSet<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;

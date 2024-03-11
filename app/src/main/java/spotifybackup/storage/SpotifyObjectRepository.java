@@ -59,8 +59,9 @@ public class SpotifyObjectRepository {
         dbAccess.put("hibernate.hbm2ddl.auto", "create");
         dbAccess.put(URL_DATASOURCE_NAME, generateDataSourceUrl(dbPath));
         LogManager.getLogManager().getLogger("").setLevel(Level.WARNING);
-        try (var emf = Persistence.createEntityManagerFactory("SpotifyObjects", dbAccess)) {
-            // TODO: create test that checks if this actually works
+        try (var emf = Persistence.createEntityManagerFactory("SpotifyObjects", dbAccess);
+             var em = emf.createEntityManager()) {
+                em.getTransaction().begin();
         } catch (ServiceException e) {
             throw new RuntimeException("Can't create db access service, is db version out of date?\n" + e.getMessage());
         }

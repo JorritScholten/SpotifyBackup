@@ -25,7 +25,7 @@ public final class SpotifyUser extends SpotifyObject {
     private final Set<SpotifyArtist> followedArtists = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY)
     private final Set<SpotifyImage> images = new HashSet<>();
 
     @Getter(AccessLevel.NONE)
