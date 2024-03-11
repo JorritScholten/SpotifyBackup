@@ -62,6 +62,7 @@ public class AvailableMarketsType implements UserType<AvailableMarkets> {
     public void nullSafeSet(PreparedStatement ps, AvailableMarkets am, int index, SharedSessionContractImplementor ssci)
             throws SQLException {
         if (Objects.isNull(am)) ps.setNull(index, Types.VARBINARY);
+        else if (am.codes.isEmpty()) ps.setNull(index, Types.VARBINARY);
         else {
             byte[] out = new byte[SQL_ROW_LENGTH];
             int i = 0;

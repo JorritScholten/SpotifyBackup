@@ -55,12 +55,31 @@ class SpotifyTrackRepositoryTest {
         );
         final var originalCodes = SpotifyObject.convertMarkets(apiTrack.getAvailableMarkets());
         var persistedTrack = spotifyObjectRepository.persist(apiTrack);
+        assertNotEquals(0, persistedTrack.getAvailableMarkets().getCodes().size());
 
         // Act
         final var storedCodes = ((SpotifyTrack) spotifyObjectRepository.find(persistedTrack.getSpotifyID()).orElseThrow()).getAvailableMarkets();
 
         // Assert
         assertEquals(originalCodes, storedCodes);
+    }
+
+    @Test
+    void ensure_track_with_no_market_availability_is_persisted_correctly() throws IOException {
+        // Arrange
+        final Track apiTrack = new Track.JsonUtil().createModelObject(
+                new String(Files.readAllBytes(Path.of(trackDir + "No_Markets.json")))
+        );
+        final var originalCodes = SpotifyObject.convertMarkets(apiTrack.getAvailableMarkets());
+        var persistedTrack = spotifyObjectRepository.persist(apiTrack);
+        assertEquals(0, persistedTrack.getAvailableMarkets().getCodes().size());
+
+        // Act
+        final var storedCodes = ((SpotifyTrack) spotifyObjectRepository.find(persistedTrack.getSpotifyID()).orElseThrow()).getAvailableMarkets();
+
+        // Assert
+        assertEquals(originalCodes, storedCodes);
+        assertEquals(0, storedCodes.getCodes().size());
     }
 
     @Test
