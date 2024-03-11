@@ -5,6 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import lombok.NonNull;
+import org.apache.commons.lang3.function.TriFunction;
 import org.hibernate.service.spi.ServiceException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
@@ -130,9 +131,29 @@ public class SpotifyObjectRepository {
     persistAbstractModels(A[] apiObjects, C collection, BiFunction<EntityManager, A, T> persist) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
-            for (var apiObject : apiObjects) {
-                collection.add(persist.apply(em, apiObject));
-            }
+            for (var apiObject : apiObjects) collection.add(persist.apply(em, apiObject));
+            em.getTransaction().commit();
+            return collection;
+        }
+    }
+
+    private <T extends SpotifyObject, C extends Collection<T>, I extends SpotifyObject, A extends AbstractModelObject> C
+    persistAbstractModelsWithIdentifier(A[] apiObjects, C collection, I identifier,
+                                        TriFunction<EntityManager, A, I, T> persist) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            for (var apiObject : apiObjects) collection.add(persist.apply(em, apiObject, identifier));
+            em.getTransaction().commit();
+            return collection;
+        }
+    }
+
+    private <T extends SpotifyObject, C extends Collection<T>, I extends SpotifyObject, A extends AbstractModelObject> C
+    persistAbstractModelsWithIdentifier(List<A> apiObjects, C collection, I identifier,
+                                        TriFunction<EntityManager, A, I, T> persist) {
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            for (var apiObject : apiObjects) collection.add(persist.apply(em, apiObject, identifier));
             em.getTransaction().commit();
             return collection;
         }
@@ -692,15 +713,7 @@ public class SpotifyObjectRepository {
      * @return List of SpotifySavedTrack objects.
      */
     public List<SpotifySavedTrack> persist(@NonNull SavedTrack[] tracks, @NonNull SpotifyUser user) {
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            List<SpotifySavedTrack> persistedTracks = new ArrayList<>();
-            for (var track : tracks) {
-                persistedTracks.add(SpotifySavedTrackRepository.persist(em, track, user));
-            }
-            em.getTransaction().commit();
-            return persistedTracks;
-        }
+        return persistAbstractModelsWithIdentifier(tracks, new ArrayList<>(), user, SpotifySavedTrackRepository::persist);
     }
 
     /**
@@ -710,15 +723,7 @@ public class SpotifyObjectRepository {
      * @return List of SpotifySavedAlbum objects.
      */
     public List<SpotifySavedAlbum> persist(@NonNull SavedAlbum[] albums, @NonNull SpotifyUser user) {
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            List<SpotifySavedAlbum> persistedAlbums = new ArrayList<>();
-            for (var album : albums) {
-                persistedAlbums.add(SpotifySavedAlbumRepository.persist(em, album, user));
-            }
-            em.getTransaction().commit();
-            return persistedAlbums;
-        }
+        return persistAbstractModelsWithIdentifier(albums, new ArrayList<>(), user, SpotifySavedAlbumRepository::persist);
     }
 
     /**
@@ -749,15 +754,8 @@ public class SpotifyObjectRepository {
      * @return List of SpotifyPlaylistItem objects.
      */
     public List<SpotifyPlaylistItem> persist(@NonNull List<PlaylistTrack> apiTracks, @NonNull SpotifyPlaylist playlist) {
-        try (var em = emf.createEntityManager()) {
-            em.getTransaction().begin();
-            List<SpotifyPlaylistItem> persistedItems = new ArrayList<>();
-            for (var apiTrack : apiTracks) {
-                persistedItems.add(SpotifyPlaylistItemRepository.persist(em, apiTrack, playlist));
-            }
-            em.getTransaction().commit();
-            return persistedItems;
-        }
+        throw new UnsupportedOperationException("create unit test for this method");
+//        return persistAbstractModelsWithIdentifier(apiTracks, new ArrayList<>(), playlist, SpotifyPlaylistItemRepository::persist);
     }
 
     /** Deletes all tracks belonging to specified playlist in the database. */
