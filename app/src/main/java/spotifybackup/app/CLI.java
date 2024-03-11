@@ -5,6 +5,7 @@ import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.*;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -68,7 +69,7 @@ public class CLI {
 
         /** @return List of Liked Songs currently in the users' account as returned from the API. */
         private List<SpotifySavedTrack> saveLikedSongs() throws IOException, InterruptedException {
-            App.verbosePrint("  Saving all Liked Songs");
+            App.verbosePrint(2, "Saving all Liked Songs");
             final int limit = 50;
             int offset = 0;
             Paging<SavedTrack> apiSavedTracks;
@@ -86,7 +87,7 @@ public class CLI {
 
         /** @return List of playlists currently followed by user as returned from the API. */
         private List<SpotifyPlaylist> saveFollowedPlaylists() throws IOException, InterruptedException {
-            App.verbosePrint("  Saving all playlists");
+            App.verbosePrint(2, "Saving all playlists");
             final int limit = 50;
             int offset = 0;
             Paging<PlaylistSimplified> apiPlaylists;
@@ -105,7 +106,7 @@ public class CLI {
 
         /** @return List of artists currently followed by user as returned from the API. */
         private List<SpotifyArtist> saveFollowedArtists() throws IOException, InterruptedException {
-            App.verbosePrint("  Saving followed artists");
+            App.verbosePrint(2, "Saving followed artists");
             final int limit = 50;
             String after = null;
             PagingCursorbased<Artist> apiArtists;
@@ -124,7 +125,7 @@ public class CLI {
 
         /** @return List of albums currently liked by user as returned from the API. */
         private List<SpotifySavedAlbum> saveLikedAlbums() throws IOException, InterruptedException {
-            App.verbosePrint("  Saving all liked albums");
+            App.verbosePrint(2, "Saving all liked albums");
             final int limit = 50;
             int offset = 0;
             Paging<SavedAlbum> apiSavedAlbums;
@@ -191,15 +192,23 @@ public class CLI {
             return combined;
         }
 
+        private void saveDetailedInfo() throws IOException, InterruptedException {
+            App.verbosePrintln(2, "Requesting detailed information for simplified objects");
+            saveDetailedPlaylistInfo();
+            saveDetailedAlbumInfo();
+            saveDetailedArtistInfo();
+            saveDetailedTrackInfo();
+        }
+
         private void savePlaylistTracks(final SpotifyPlaylist playlist) throws IOException, InterruptedException {
             var apiTracks = getPlaylistTracks(playlist);
-            App.verbosePrintln("      Saving " + apiTracks.size() + "track(s) for " + playlist.getName());
+            App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " + playlist.getName());
             repo.persist(apiTracks, playlist);
         }
 
         private List<PlaylistTrack> getPlaylistTracks(final SpotifyPlaylist playlist)
                 throws IOException, InterruptedException {
-            App.verbosePrint("      Requesting tracks for " + playlist.getName());
+            App.verbosePrint(6, "Requesting tracks for " + playlist.getName());
             final int limit = 50;
             int offset = 0;
             Paging<PlaylistTrack> apiPlaylistTrack;
@@ -215,54 +224,63 @@ public class CLI {
             return apiTracks;
         }
 
-        private void saveDetailedInfo() throws IOException, InterruptedException {
-            App.verbosePrintln("  Requesting detailed information for simplified objects");
+        private void saveDetailedSimplifiedPlaylistInfo(SpotifyPlaylist playlist)
+                throws IOException, InterruptedException {
+            savePlaylistTracks(playlist);
+            // TODO: add size based safety check for this too
+            api.getPlaylistWithoutTracks(playlist.getSpotifyID()).ifPresentOrElse(repo::persist, () ->
+                    App.println(6, "Couldn't request detailed information for playlist " +
+                            playlist.getName()));
+        }
 
-            final var playlists = repo.findAllPlaylists();
-            App.verbosePrintln("    " + playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
-                    " new playlist(s)");
-            for (var playlist : playlists) {
-                if (playlist.getIsSimplified()) {
-                    savePlaylistTracks(playlist);
-                    // TODO: add size bases safety check for this too
-                    api.getPlaylistWithoutTracks(playlist.getSpotifyID()).ifPresentOrElse(repo::persist, () ->
-                            App.println("      Couldn't request detailed information for playlist " +
-                                    playlist.getName()));
-                } else {
-                    var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
-                    if (apiPlaylist.isEmpty())
-                        App.println("      Couldn't request detailed information for playlist " + playlist.getName());
-                    else {
-                        // get playlist tracks if snapshot_id differs
-                        if (!apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
-                            var apiTracks = getPlaylistTracks(playlist);
-                            if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
-                                repo.persist(apiTracks, playlist);
-                                repo.deletePlaylistTracks(playlist);
-                                repo.update(apiPlaylist.get());
-                            } else {
-                                App.println("      Size mismatch between requested track amount and the amount that" +
-                                        "there should be for playlist " + playlist.getName());
-                            }
-                        }
+        private void saveDetailedUnSimplifiedPlaylistInfo(SpotifyPlaylist playlist)
+                throws IOException, InterruptedException {
+            var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
+            if (apiPlaylist.isEmpty())
+                App.println(6, "Couldn't request detailed information for playlist " +
+                        playlist.getName());
+            else {
+                // get playlist tracks if snapshot_id differs
+                if (!apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
+                    var apiTracks = getPlaylistTracks(playlist);
+                    if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
+                        repo.persist(apiTracks, playlist);
+                        repo.deletePlaylistTracks(playlist);
+                        repo.update(apiPlaylist.get());
+                    } else {
+                        App.println(6, "Size mismatch between requested track amount and the " +
+                                "amount that there should be for playlist " + playlist.getName());
                     }
                 }
             }
+        }
 
+        private void saveDetailedPlaylistInfo() throws IOException, InterruptedException {
+            final var playlists = repo.findAllPlaylists();
+            App.verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
+                    " new playlist(s)");
+            for (var playlist : playlists) {
+                if (playlist.getIsSimplified()) saveDetailedSimplifiedPlaylistInfo(playlist);
+                else saveDetailedUnSimplifiedPlaylistInfo(playlist);
+            }
+        }
+
+        private void saveDetailedAlbumInfo() throws IOException, InterruptedException {
             final var simpleAlbumIds = repo.getSimplifiedAlbumsSpotifyIDs();
-            App.verbosePrint("    Requesting data for " + simpleAlbumIds.size() + " album(s)");
+            App.verbosePrint(4, "Requesting data for " + simpleAlbumIds.size() + " album(s)");
             for (var ids : combineIds(simpleAlbumIds, 20)) {
                 App.verbosePrint(".");
                 repo.persist(api.getSeveralAlbums(ids));
             }
             App.verbosePrintln("");
+        }
 
-            // artists
+        private void saveDetailedArtistInfo() throws IOException, InterruptedException {
+            throw new UnsupportedEncodingException("to be implemented");
+        }
 
-            // tracks
-
-            throw new UnsupportedOperationException("TODO: iterate over all simplified SpotifyObjects, " +
-                    "request detailed information and persist it");
+        private void saveDetailedTrackInfo() throws IOException, InterruptedException {
+            throw new UnsupportedEncodingException("to be implemented");
         }
     }
 }

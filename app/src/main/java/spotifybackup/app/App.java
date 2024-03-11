@@ -67,8 +67,18 @@ public class App {
         term.flush();
     }
 
+    /** @param spaces Amount of spaces to prepend to message. */
+    public static void println(int spaces, String message) {
+        println(" ".repeat(spaces) + message);
+    }
+
     public static void verbosePrintln(String message) {
         if (verboseArg.isPresent()) println(message);
+    }
+
+    /** @param spaces Amount of spaces to prepend to message. */
+    public static void verbosePrintln(int spaces, String message) {
+        if (verboseArg.isPresent()) println(spaces, message);
     }
 
     public static void print(String message) {
@@ -76,8 +86,18 @@ public class App {
         term.flush();
     }
 
+    /** @param spaces Amount of spaces to prepend to message. */
+    public static void print(int spaces, String message) {
+        print(" ".repeat(spaces) + message);
+    }
+
     public static void verbosePrint(String message) {
         if (verboseArg.isPresent()) print(message);
+    }
+
+    /** @param spaces Amount of spaces to prepend to message. */
+    public static void verbosePrint(int spaces, String message) {
+        if (verboseArg.isPresent()) print(spaces, message);
     }
 
     public static void main(String[] args) throws InterruptedException {
