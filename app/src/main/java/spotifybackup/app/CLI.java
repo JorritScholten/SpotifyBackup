@@ -234,7 +234,7 @@ public class CLI {
                     if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
                         App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " +
                                 playlist.getName());
-                        repo.deletePlaylistTracks(playlist);
+                        repo.deletePlaylistItems(playlist);
                         repo.persist(apiTracks, playlist);
                         if (playlist.getIsSimplified()) repo.persist(apiPlaylist.get());
                         else repo.update(apiPlaylist.get());

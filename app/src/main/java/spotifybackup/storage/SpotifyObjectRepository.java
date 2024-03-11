@@ -773,7 +773,7 @@ public class SpotifyObjectRepository {
     }
 
     /** Deletes all tracks belonging to specified playlist in the database. */
-    public void deletePlaylistTracks(@NonNull SpotifyPlaylist playlist) {
+    public void deletePlaylistItems(@NonNull SpotifyPlaylist playlist) {
         throw new UnsupportedOperationException("to be implemented");
     }
 

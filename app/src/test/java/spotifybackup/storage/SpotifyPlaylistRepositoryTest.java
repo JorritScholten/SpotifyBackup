@@ -155,4 +155,22 @@ class SpotifyPlaylistRepositoryTest {
         assertTrue(allTrackIds.containsAll(extraTrackIds));
         assertTrue(allTrackIds.containsAll(originalTrackIds));
     }
+
+    @Test
+    void ensure_playlist_items_can_be_deleted() throws IOException {
+        // Arrange
+        final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(
+                loadFromPath("Spotify_Web_API_Testing_playlist.json"));
+        assertFalse(spotifyObjectRepository.exists(apiPlaylist));
+        final var playlist = spotifyObjectRepository.persist(apiPlaylist);
+        final var originalTracks = spotifyObjectRepository.getPlaylistItems(playlist);
+        assertEquals(apiPlaylist.getTracks().getTotal(), originalTracks.size());
+
+
+        // Act
+        spotifyObjectRepository.deletePlaylistItems(playlist);
+
+        // Assert
+        assertTrue(spotifyObjectRepository.getPlaylistItems(playlist).isEmpty());
+    }
 }
