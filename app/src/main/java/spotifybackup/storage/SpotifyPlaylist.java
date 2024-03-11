@@ -37,10 +37,11 @@ public final class SpotifyPlaylist extends SpotifyObject {
 
     @Setter(AccessLevel.PACKAGE)
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR")
     private String name;
 
     @Setter(AccessLevel.PACKAGE)
+    @Column(columnDefinition = "VARCHAR")
     private String description;
 
     @Setter(AccessLevel.PACKAGE)
@@ -53,6 +54,7 @@ public final class SpotifyPlaylist extends SpotifyObject {
 
     @Setter(AccessLevel.PACKAGE)
     @NonNull
+    @Column(columnDefinition = "VARCHAR")
     private String snapshotId;
 
     @Setter(AccessLevel.PACKAGE)

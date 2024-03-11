@@ -45,12 +45,13 @@ public final class SpotifyUser extends SpotifyObject {
     private long id;
 
     @NonNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR")
     private String spotifyUserID;
 
+    @Column(columnDefinition = "VARCHAR")
     private String displayName;
 
-    @Column(columnDefinition = "varchar(2)")
+    @Column(columnDefinition = "VARCHAR(2)")
     private String countryCode;
 
     @Enumerated(EnumType.STRING)

@@ -18,8 +18,10 @@ import static spotifybackup.storage.SpotifyObject.getSingleResultOptionally;
 class SpotifyPlaylistRepository {
     private static final Function<EntityManager, BiConsumer<Playlist, SpotifyPlaylist>> setNotSimpleFields =
             entityManager -> (apiPlaylist, playlist) -> {
-                for (var item : apiPlaylist.getTracks().getItems()) {
-                    playlist.addPlaylistItem(SpotifyPlaylistItemRepository.persist(entityManager, item, playlist));
+                if (apiPlaylist.getTracks().getItems() != null) {
+                    for (var item : apiPlaylist.getTracks().getItems()) {
+                        playlist.addPlaylistItem(SpotifyPlaylistItemRepository.persist(entityManager, item, playlist));
+                    }
                 }
             };
 
@@ -148,7 +150,7 @@ class SpotifyPlaylistRepository {
     static Optional<SpotifyPlaylist> update(EntityManager em, Playlist apiPlaylist) {
         ensureTransactionActive.accept(em);
         var optionalPlaylist = find(em, apiPlaylist);
-        if(optionalPlaylist.isEmpty()) return optionalPlaylist;
+        if (optionalPlaylist.isEmpty()) return optionalPlaylist;
         else {
             var playlist = optionalPlaylist.get();
             playlist.setName(apiPlaylist.getName());

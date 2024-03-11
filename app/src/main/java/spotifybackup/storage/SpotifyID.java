@@ -1,5 +1,6 @@
 package spotifybackup.storage;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.util.Objects;
 @NoArgsConstructor
 public final class SpotifyID extends SpotifyObject {
     @Id
+    @Column(columnDefinition = "VARCHAR")
     private String id;
 
     @Override

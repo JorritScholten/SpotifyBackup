@@ -20,7 +20,7 @@ public final class SpotifyImage extends SpotifyObject {
     private long id;
 
     @NonNull
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR")
     private String url;
 
     private Integer width;

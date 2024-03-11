@@ -43,7 +43,8 @@ class SpotifyPlaylistItemRepository {
         if (optionalTrack.isEmpty()) {
             return Collections.emptyList();
         } else {
-            if (apiPlaylistItem.getAddedBy() == null)
+            if (apiPlaylistItem.getAddedBy() == null || apiPlaylistItem.getAddedBy().getId().isBlank() ||
+                    apiPlaylistItem.getAddedBy().getId() == null)
                 return find(entityManager, optionalTrack.get(), playlist);
             else
                 return find(entityManager, optionalTrack.get(), playlist,

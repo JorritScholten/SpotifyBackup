@@ -44,7 +44,7 @@ public final class SpotifyAlbum extends SpotifyObject {
     private long id;
 
     @NonNull
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "VARCHAR")
     private String name;
 
     @NonNull

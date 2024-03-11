@@ -27,7 +27,7 @@ public final class SpotifyGenre extends SpotifyObject {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, columnDefinition = "VARCHAR")
     @NonNull
     private String name;
 

@@ -243,6 +243,28 @@ public class ApiWrapper {
         }
     }
 
+    public Artist[] getSeveralArtists(String ids) throws IOException, InterruptedException {
+        try {
+            waitingForAPI.acquire();
+            final var object = spotifyApi.getSeveralArtists(ids).build().execute();
+            waitingForAPI.release();
+            return object;
+        } catch (SpotifyWebApiException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Track[] getSeveralTracks(String ids) throws IOException, InterruptedException {
+        try {
+            waitingForAPI.acquire();
+            final var object = spotifyApi.getSeveralTracks(ids).build().execute();
+            waitingForAPI.release();
+            return object;
+        } catch (SpotifyWebApiException | ParseException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Paging<PlaylistTrack> getPlaylistTracks(int limit, int offset, SpotifyID id)
             throws IOException, InterruptedException {
         return getPage(() -> spotifyApi.getPlaylistsItems(id.getId()).limit(limit).offset(offset)

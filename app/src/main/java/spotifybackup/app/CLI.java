@@ -5,7 +5,6 @@ import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -221,6 +220,7 @@ public class CLI {
 
         private void saveDetailedPlaylistInfo() throws IOException, InterruptedException {
             final var playlists = repo.findAllPlaylists();
+            if (playlists.isEmpty()) return;
             App.verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
                     " new playlist(s)");
             for (var playlist : playlists) {
@@ -232,7 +232,7 @@ public class CLI {
                         !apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
                     var apiTracks = getPlaylistTracks(playlist);
                     if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
-                        App.verbosePrintln(6, "Saving " + apiTracks.size() + "track(s) for " +
+                        App.verbosePrintln(6, "Saving " + apiTracks.size() + " track(s) for " +
                                 playlist.getName());
                         repo.deletePlaylistItems(playlist);
                         repo.persist(apiTracks, playlist);
@@ -248,6 +248,7 @@ public class CLI {
 
         private void saveDetailedAlbumInfo() throws IOException, InterruptedException {
             final var simpleAlbumIds = repo.getSimplifiedAlbumsSpotifyIDs();
+            if (simpleAlbumIds.isEmpty()) return;
             App.verbosePrint(4, "Requesting data for " + simpleAlbumIds.size() + " album(s)");
             for (var ids : combineIds(simpleAlbumIds, 20)) {
                 App.verbosePrint(".");
@@ -257,11 +258,25 @@ public class CLI {
         }
 
         private void saveDetailedArtistInfo() throws IOException, InterruptedException {
-            throw new UnsupportedEncodingException("to be implemented");
+            final var simpleArtistIds = repo.getSimplifiedArtistsSpotifyIDs();
+            if (simpleArtistIds.isEmpty()) return;
+            App.verbosePrint(4, "Requesting data for " + simpleArtistIds.size() + " artist(s)");
+            for (var ids : combineIds(simpleArtistIds, 50)) {
+                App.verbosePrint(".");
+                repo.persist(api.getSeveralArtists(ids));
+            }
+            App.verbosePrintln("");
         }
 
         private void saveDetailedTrackInfo() throws IOException, InterruptedException {
-            throw new UnsupportedEncodingException("to be implemented");
+            final var simpleTrackIds = repo.getSimplifiedTracksSpotifyIDs();
+            if (simpleTrackIds.isEmpty()) return;
+            App.verbosePrint(4, "Requesting data for " + simpleTrackIds.size() + " track(s)");
+            for (var ids : combineIds(simpleTrackIds, 50)) {
+                App.verbosePrint(".");
+                repo.persist(api.getSeveralTracks(ids));
+            }
+            App.verbosePrintln("");
         }
     }
 }
