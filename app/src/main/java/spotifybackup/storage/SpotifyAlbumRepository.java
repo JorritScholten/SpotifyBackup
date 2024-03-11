@@ -9,36 +9,35 @@ import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 import static spotifybackup.storage.SpotifyObject.*;
 
 class SpotifyAlbumRepository {
-    private static final Function<EntityManager, BiConsumer<Album, SpotifyAlbum>> setNotSimpleFields =
-            entityManager -> (apiAlbum, album) -> {
-                if (apiAlbum.getExternalIds().getExternalIds().containsKey("isrc")) {
-                    album.setIsrcID(apiAlbum.getExternalIds().getExternalIds().get("isrc"));
-                }
-                if (apiAlbum.getExternalIds().getExternalIds().containsKey("ean")) {
-                    album.setEanID(apiAlbum.getExternalIds().getExternalIds().get("ean"));
-                }
-                if (apiAlbum.getExternalIds().getExternalIds().containsKey("upc")) {
-                    album.setUpcID(apiAlbum.getExternalIds().getExternalIds().get("upc"));
-                }
-                for (var simplifiedApiArtist : apiAlbum.getArtists()) {
-                    album.addArtist(SpotifyArtistRepository.persist(entityManager, simplifiedApiArtist));
-                }
-                for (var simplifiedApiTrack : apiAlbum.getTracks().getItems()) {
-                    album.addTrack(SpotifyTrackRepository.persist(entityManager, simplifiedApiTrack, album));
-                }
-                album.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiAlbum.getImages()));
-                album.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiAlbum.getGenres()));
-            };
-
     /** @apiNote Should not be used, exists to prevent implicit public constructor. */
     private SpotifyAlbumRepository() {
         throw new ConstructorUsageException();
+    }
+
+    private static void setNotSimpleFields(EntityManager em, boolean storeTracks, Album apiAlbum, SpotifyAlbum album) {
+        if (apiAlbum.getExternalIds().getExternalIds().containsKey("isrc")) {
+            album.setIsrcID(apiAlbum.getExternalIds().getExternalIds().get("isrc"));
+        }
+        if (apiAlbum.getExternalIds().getExternalIds().containsKey("ean")) {
+            album.setEanID(apiAlbum.getExternalIds().getExternalIds().get("ean"));
+        }
+        if (apiAlbum.getExternalIds().getExternalIds().containsKey("upc")) {
+            album.setUpcID(apiAlbum.getExternalIds().getExternalIds().get("upc"));
+        }
+        for (var simplifiedApiArtist : apiAlbum.getArtists()) {
+            album.addArtist(SpotifyArtistRepository.persist(em, simplifiedApiArtist));
+        }
+        if (storeTracks) {
+            for (var simplifiedApiTrack : apiAlbum.getTracks().getItems()) {
+                album.addTrack(SpotifyTrackRepository.persist(em, simplifiedApiTrack, album));
+            }
+        }
+        album.addImages(SpotifyImageRepository.imageSetFactory(em, apiAlbum.getImages()));
+        album.addGenres(SpotifyGenreRepository.genreSetFactory(em, apiAlbum.getGenres()));
     }
 
     static List<String> findAllSpotifyIdsOfSimplified(EntityManager em) {
@@ -116,6 +115,14 @@ class SpotifyAlbumRepository {
      * Spotify ID.
      */
     static SpotifyAlbum persist(EntityManager entityManager, @NonNull Album apiAlbum) {
+        return persist(entityManager, apiAlbum, true);
+    }
+
+    static SpotifyAlbum persistWithoutTracks(EntityManager entityManager, @NonNull Album apiAlbum) {
+        return persist(entityManager, apiAlbum, false);
+    }
+
+    private static SpotifyAlbum persist(EntityManager entityManager, @NonNull Album apiAlbum, boolean storeTracks) {
         ensureTransactionActive.accept(entityManager);
         var optionalAlbum = find(entityManager, apiAlbum);
         if (optionalAlbum.isPresent()) {
@@ -123,7 +130,7 @@ class SpotifyAlbumRepository {
             else {
                 final var simpleAlbum = optionalAlbum.get();
                 simpleAlbum.setIsSimplified(false);
-                setNotSimpleFields.apply(entityManager).accept(apiAlbum, simpleAlbum);
+                setNotSimpleFields(entityManager, storeTracks, apiAlbum, simpleAlbum);
                 if (simpleAlbum.getAvailableMarkets().getCodes().isEmpty()) {
                     simpleAlbum.getAvailableMarkets().addCodes(apiAlbum.getAvailableMarkets());
                 }
@@ -141,7 +148,7 @@ class SpotifyAlbumRepository {
                     .availableMarkets(convertMarkets(apiAlbum.getAvailableMarkets()))
                     .build();
             entityManager.persist(newAlbum);
-            setNotSimpleFields.apply(entityManager).accept(apiAlbum, newAlbum);
+            setNotSimpleFields(entityManager, storeTracks, apiAlbum, newAlbum);
             entityManager.persist(newAlbum);
             return newAlbum;
         }

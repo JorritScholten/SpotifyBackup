@@ -150,6 +150,7 @@ class SpotifyAlbumRepositoryTest {
             assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
             assertTrue(apiAlbum.getImages().length > 0);
             assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
+            assertFalse(persistedAlbum.getTracks().isEmpty());
             assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
         }
     }
@@ -168,7 +169,7 @@ class SpotifyAlbumRepositoryTest {
         assertEquals(0, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
 
         // Act
-        var persistedAlbums = spotifyObjectRepository.persistShallow(apiAlbums);
+        var persistedAlbums = spotifyObjectRepository.persistWithoutTracks(apiAlbums);
 
         // Assert
         assertEquals(apiAlbums.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ALBUM));
