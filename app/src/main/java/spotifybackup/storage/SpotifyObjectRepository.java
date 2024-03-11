@@ -760,7 +760,7 @@ public class SpotifyObjectRepository {
      * @return List of SpotifyAlbum objects.
      */
     public List<SpotifyAlbum> persist(@NonNull Album[] apiAlbums) {
-        throw new UnsupportedOperationException("to be implemented");
+        return persistAbstractModels(apiAlbums, new ArrayList<>(), SpotifyAlbumRepository::persist);
     }
 
     /**
