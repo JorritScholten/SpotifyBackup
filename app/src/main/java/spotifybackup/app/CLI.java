@@ -6,6 +6,7 @@ import spotifybackup.storage.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -191,18 +192,27 @@ public class CLI {
         }
 
         private void savePlaylistTracks(final SpotifyPlaylist playlist) throws IOException, InterruptedException {
-            App.verbosePrint("      Saving tracks for " + playlist.getName());
+            var apiTracks = getPlaylistTracks(playlist);
+            App.verbosePrintln("      Saving " + apiTracks.size() + "track(s) for " + playlist.getName());
+            repo.persist(apiTracks, playlist);
+        }
+
+        private List<PlaylistTrack> getPlaylistTracks(final SpotifyPlaylist playlist)
+                throws IOException, InterruptedException {
+            App.verbosePrint("      Requesting tracks for " + playlist.getName());
             final int limit = 50;
             int offset = 0;
             Paging<PlaylistTrack> apiPlaylistTrack;
+            List<PlaylistTrack> apiTracks = new ArrayList<>();
             App.verbosePrint(", requesting data");
             do {
                 App.verbosePrint(".");
                 apiPlaylistTrack = api.getPlaylistTracks(limit, offset, playlist.getSpotifyID());
-                repo.persist(apiPlaylistTrack.getItems(), playlist);
+                apiTracks.addAll(Arrays.stream(apiPlaylistTrack.getItems()).toList());
                 offset += limit;
             } while (apiPlaylistTrack.getNext() != null);
             App.verbosePrintln("");
+            return apiTracks;
         }
 
         private void saveDetailedInfo() throws IOException, InterruptedException {
@@ -214,8 +224,10 @@ public class CLI {
             for (var playlist : playlists) {
                 if (playlist.getIsSimplified()) {
                     savePlaylistTracks(playlist);
+                    // TODO: add size bases safety check for this too
                     api.getPlaylistWithoutTracks(playlist.getSpotifyID()).ifPresentOrElse(repo::persist, () ->
-                            App.println("      Couldn't request detailed information for playlist " + playlist.getName()));
+                            App.println("      Couldn't request detailed information for playlist " +
+                                    playlist.getName()));
                 } else {
                     var apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
                     if (apiPlaylist.isEmpty())
@@ -223,8 +235,15 @@ public class CLI {
                     else {
                         // get playlist tracks if snapshot_id differs
                         if (!apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
-                            repo.deletePlaylistTracks(playlist);
-                            savePlaylistTracks(playlist);
+                            var apiTracks = getPlaylistTracks(playlist);
+                            if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
+                                repo.persist(apiTracks, playlist);
+                                repo.deletePlaylistTracks(playlist);
+                                repo.update(apiPlaylist.get());
+                            } else {
+                                App.println("      Size mismatch between requested track amount and the amount that" +
+                                        "there should be for playlist " + playlist.getName());
+                            }
                         }
                     }
                 }

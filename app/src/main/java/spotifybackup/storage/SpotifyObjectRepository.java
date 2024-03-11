@@ -748,7 +748,7 @@ public class SpotifyObjectRepository {
      * spotify-web-api.
      * @return List of SpotifyPlaylistItem objects.
      */
-    public List<SpotifyPlaylistItem> persist(@NonNull PlaylistTrack[] apiTracks, @NonNull SpotifyPlaylist playlist) {
+    public List<SpotifyPlaylistItem> persist(@NonNull List<PlaylistTrack> apiTracks, @NonNull SpotifyPlaylist playlist) {
         try (var em = emf.createEntityManager()) {
             em.getTransaction().begin();
             List<SpotifyPlaylistItem> persistedItems = new ArrayList<>();
@@ -762,6 +762,16 @@ public class SpotifyObjectRepository {
 
     /** Deletes all tracks belonging to specified playlist in the database. */
     public void deletePlaylistTracks(@NonNull SpotifyPlaylist playlist) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /**
+     * Update SpotifyPlaylist in the database with Playlist object from spotify-web-api if it already exists in the
+     * database.
+     * @param apiPlaylist Playlist to update, should already be stored in the database.
+     * @return SpotifyPlaylist if apiPlaylist already existed in the database.
+     */
+    public Optional<SpotifyPlaylist> update(@NonNull Playlist apiPlaylist) {
         throw new UnsupportedOperationException("to be implemented");
     }
 }

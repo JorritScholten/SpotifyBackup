@@ -252,7 +252,7 @@ public class ApiWrapper {
     public Optional<Playlist> getPlaylistWithoutTracks(@NonNull SpotifyID id)
             throws IOException, InterruptedException {
         return getSpotifyObject(() -> spotifyApi.getPlaylist(id.getId()).fields(
-                "collaborative,description,id,owner,public,snapshot_id,type,followers"
+                "collaborative,description,id,owner,public,snapshot_id,type,followers,tracks(total)"
         ).build());
     }
 
