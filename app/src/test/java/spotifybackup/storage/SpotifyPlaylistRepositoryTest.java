@@ -3,12 +3,15 @@ package spotifybackup.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.Playlist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -121,5 +124,35 @@ class SpotifyPlaylistRepositoryTest {
             if (playlist.getSpotifyID().getId().equals(apiPlaylist1.getId())) assertTrue(playlist.getIsSimplified());
             else assertFalse(playlist.getIsSimplified());
         }
+    }
+
+    @Test
+    void ensure_items_can_be_added_to_playlist_independently() throws IOException {
+        // Arrange
+        final Playlist apiPlaylist = new Playlist.JsonUtil().createModelObject(
+                loadFromPath("Spotify_Web_API_Testing_playlist.json"));
+        assertFalse(spotifyObjectRepository.exists(apiPlaylist));
+        final var playlist = spotifyObjectRepository.persist(apiPlaylist);
+        final var originalTracks = spotifyObjectRepository.getPlaylistTracks(playlist);
+        assertEquals(apiPlaylist.getTracks().getTotal(), originalTracks.size());
+        final Paging<PlaylistTrack> apiExtraTracks = new PlaylistTrack.JsonUtil().createModelObjectPaging(
+                loadFromPath("The_Blue_Stones.json"), "tracks");
+        final var apiExtraTracksList = Arrays.stream(apiExtraTracks.getItems()).toList();
+
+
+        // Act
+        final List<SpotifyPlaylistItem> extraTracks = spotifyObjectRepository.persist(apiExtraTracksList, playlist);
+        final List<SpotifyPlaylistItem> allTracks = spotifyObjectRepository.getPlaylistTracks(playlist);
+
+        // Assert
+        assertEquals(apiExtraTracksList.size(), extraTracks.size());
+        assertEquals(originalTracks.size() + extraTracks.size(), allTracks.size());
+        final var extraTrackIds = apiExtraTracksList.stream()
+                .map(pt -> ((SpotifyTrack) spotifyObjectRepository.find(pt.getTrack().getId()).orElseThrow()).getId())
+                .toList();
+        final var originalTrackIds = originalTracks.stream().map(t -> t.getTrack().getId()).toList();
+        final var allTrackIds = allTracks.stream().map(t -> t.getTrack().getId()).toList();
+        assertTrue(allTrackIds.containsAll(extraTrackIds));
+        assertTrue(allTrackIds.containsAll(originalTrackIds));
     }
 }

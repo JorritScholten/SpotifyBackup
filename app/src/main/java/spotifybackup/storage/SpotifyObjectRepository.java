@@ -542,6 +542,14 @@ public class SpotifyObjectRepository {
     }
 
     /**
+     * Get a list of all SpotifyPlaylistItems belonging to the specified playlist as stored in the database.
+     * @return List of SpotifyPlaylistItem objects.
+     */
+    public List<SpotifyPlaylistItem> getPlaylistTracks(@NonNull SpotifyPlaylist playlist) {
+        throw new UnsupportedOperationException("to be implemented");
+    }
+
+    /**
      * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
      * @param genreName name of genre as defined by Spotify.
      * @return SpotifyGenre if genreName is not blank.
@@ -754,8 +762,7 @@ public class SpotifyObjectRepository {
      * @return List of SpotifyPlaylistItem objects.
      */
     public List<SpotifyPlaylistItem> persist(@NonNull List<PlaylistTrack> apiTracks, @NonNull SpotifyPlaylist playlist) {
-        throw new UnsupportedOperationException("create unit test for this method");
-//        return persistAbstractModelsWithIdentifier(apiTracks, new ArrayList<>(), playlist, SpotifyPlaylistItemRepository::persist);
+        return persistAbstractModelsWithIdentifier(apiTracks, new ArrayList<>(), playlist, SpotifyPlaylistItemRepository::persist);
     }
 
     /** Deletes all tracks belonging to specified playlist in the database. */
