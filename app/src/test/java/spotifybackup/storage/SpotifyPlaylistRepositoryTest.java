@@ -166,11 +166,31 @@ class SpotifyPlaylistRepositoryTest {
         final var originalTracks = spotifyObjectRepository.getPlaylistItems(playlist);
         assertEquals(apiPlaylist.getTracks().getTotal(), originalTracks.size());
 
-
         // Act
         spotifyObjectRepository.deletePlaylistItems(playlist);
 
         // Assert
         assertTrue(spotifyObjectRepository.getPlaylistItems(playlist).isEmpty());
+    }
+
+    @Test
+    void ensure_playlist_information_can_be_updated() throws IOException {
+        // Arrange
+        final Playlist apiPlaylistV1 = new Playlist.JsonUtil().createModelObject(
+                loadFromPath("Spotify_Web_API_Testing_playlist.json"));
+        assertFalse(spotifyObjectRepository.exists(apiPlaylistV1));
+        final var playlistV1 = spotifyObjectRepository.persist(apiPlaylistV1);
+        assertEquals(apiPlaylistV1.getSnapshotId(), playlistV1.getSnapshotId());
+        final Playlist apiPlaylistV2 = new Playlist.JsonUtil().createModelObject(
+                loadFromPath("Spotify_Web_API_Testing_playlistV2.json"));
+        assertEquals(apiPlaylistV1.getId(), apiPlaylistV2.getId());
+        assertNotEquals(apiPlaylistV1.getSnapshotId(), apiPlaylistV2.getSnapshotId());
+
+        // Act
+        final var newPlaylist = spotifyObjectRepository.update(apiPlaylistV2).orElseThrow();
+
+        // Assert
+        assertEquals(apiPlaylistV2.getSnapshotId(), newPlaylist.getSnapshotId());
+        assertEquals(apiPlaylistV1.getId(), newPlaylist.getSpotifyID().getId());
     }
 }
