@@ -252,7 +252,7 @@ public class CLI {
             App.verbosePrint(4, "Requesting data for " + simpleAlbumIds.size() + " album(s)");
             for (var ids : combineIds(simpleAlbumIds, 20)) {
                 App.verbosePrint(".");
-                repo.persist(api.getSeveralAlbums(ids));
+                repo.persistShallow(api.getSeveralAlbums(ids));
             }
             App.verbosePrintln("");
         }

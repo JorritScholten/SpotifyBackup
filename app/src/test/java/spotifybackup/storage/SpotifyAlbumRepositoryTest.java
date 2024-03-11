@@ -153,4 +153,28 @@ class SpotifyAlbumRepositoryTest {
             assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
         }
     }
+
+    @Test
+    void ensure_album_array_can_be_persisted_shallowly() throws IOException {
+        // Arrange
+        final Album[] apiAlbums = {
+                loadFromPath("The_Heist.json"),
+                loadFromPath("The_Trick_To_Life.json"),
+                loadFromPath("King.json")
+        };
+        for (var apiAlbum : apiAlbums)
+            assertFalse(spotifyObjectRepository.exists(apiAlbum),
+                    "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
+        assertEquals(0, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
+
+        // Act
+        var persistedAlbums = spotifyObjectRepository.persistShallow(apiAlbums);
+
+        // Assert
+        assertEquals(apiAlbums.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ALBUM));
+        assertEquals(0, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
+        for (var album : persistedAlbums) {
+            assertTrue(album.getTracks().isEmpty());
+        }
+    }
 }
