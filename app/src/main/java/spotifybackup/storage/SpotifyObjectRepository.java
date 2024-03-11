@@ -513,6 +513,13 @@ public class SpotifyObjectRepository {
         }
     }
 
+    /** Retrieve all SpotifyPlaylist objects from the database. */
+    public List<SpotifyPlaylist> findAllPlaylists() {
+        try (var em = emf.createEntityManager()) {
+            return SpotifyPlaylistRepository.findAll(em);
+        }
+    }
+
     /**
      * Attempts to persist a genre by its name, if it already exists returns already existing SpotifyGenre.
      * @param genreName name of genre as defined by Spotify.
@@ -733,11 +740,6 @@ public class SpotifyObjectRepository {
     }
 
     public List<SpotifyAlbum> persist(@NonNull Album[] apiAlbums) {
-        throw new UnsupportedOperationException("to be implemented");
-    }
-
-    /** Retrieve all SpotifyPlaylist objects from the database. */
-    public List<SpotifyPlaylist> findAllPlaylists() {
         throw new UnsupportedOperationException("to be implemented");
     }
 }
