@@ -1,6 +1,6 @@
 package spotifybackup.storage;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import se.michaelthelin.spotify.model_objects.specification.Album;
@@ -9,25 +9,28 @@ import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnabledIfEnvironmentVariable(named = "EnableStorageTests", matches = "true")
 class SpotifyAlbumRepositoryTest {
     static final String albumDir = "src/test/java/spotifybackup/storage/spotify_api_get/album/";
-    static private SpotifyObjectRepository spotifyObjectRepository;
+    private SpotifyObjectRepository spotifyObjectRepository;
 
-    @BeforeAll
-    static void setup() {
+    static Album loadFromPath(String fileName) throws IOException {
+        return new Album.JsonUtil().createModelObject(new String(Files.readAllBytes(Path.of(albumDir + fileName))));
+    }
+
+    @BeforeEach
+    void setup() {
         spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
     }
 
     @Test
     void ensure_album_can_be_persisted() throws IOException {
         // Arrange
-        final Album apiAlbum = new Album.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(albumDir + "The_Heist.json")))
-        );
+        final Album apiAlbum = loadFromPath("The_Heist.json");
         assertFalse(spotifyObjectRepository.exists(apiAlbum),
                 "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
         assertTrue(apiAlbum.getGenres().length > 0, "Album should have 1 or more genres.");
@@ -52,9 +55,7 @@ class SpotifyAlbumRepositoryTest {
     @Test
     void ensure_singles_album_can_be_persisted() throws IOException {
         // Arrange
-        final Album apiAlbum = new Album.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(albumDir + "Embers_Rise.json")))
-        );
+        final Album apiAlbum = loadFromPath("Embers_Rise.json");
         assertFalse(spotifyObjectRepository.exists(apiAlbum),
                 "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
         assertTrue(apiAlbum.getArtists().length > 0, "Album should have 1 or more artists.");
@@ -119,5 +120,37 @@ class SpotifyAlbumRepositoryTest {
 
         // Assert 2
         assertFalse(newSimpleAlbumIds.contains(apiAlbumSimple.getId()));
+    }
+
+    @Test
+    void ensure_album_array_can_be_persisted() throws IOException {
+        // Arrange
+        final Album[] apiAlbums = {
+                loadFromPath("The_Heist.json"),
+                loadFromPath("The_Trick_To_Life.json"),
+                loadFromPath("King.json")
+        };
+        for (var apiAlbum : apiAlbums)
+            assertFalse(spotifyObjectRepository.exists(apiAlbum),
+                    "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
+
+        // Act
+        var persistedAlbums = spotifyObjectRepository.persist(apiAlbums);
+
+        // Assert
+        for (var persistedAlbum : persistedAlbums) {
+            final var apiAlbum = Arrays.stream(apiAlbums)
+                    .filter(a -> a.getId().equals(persistedAlbum.getSpotifyID().getId()))
+                    .findFirst().orElseThrow();
+            assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
+                    "Can't find Album by Spotify ID.");
+            assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
+            assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
+            assertTrue(apiAlbum.getArtists().length > 0);
+            assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
+            assertTrue(apiAlbum.getImages().length > 0);
+            assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
+            assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
+        }
     }
 }
