@@ -3,6 +3,9 @@ package spotifybackup.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.PlaylistSimplified;
 import se.michaelthelin.spotify.model_objects.specification.User;
@@ -10,6 +13,7 @@ import se.michaelthelin.spotify.model_objects.specification.User;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,10 +60,11 @@ class SpotifyUserRepositoryTest {
         artistIds = artists.stream().map(SpotifyArtist::getSpotifyID).collect(Collectors.toSet());
     }
 
-    @Test
-    void ensure_user_can_be_persisted() throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = {"user.json", "user2.json", "user3.json"})
+    void ensure_user_can_be_persisted(final String fileName) throws IOException {
         // Arrange
-        final User apiUser = loadFromPath("user2.json");
+        final User apiUser = loadFromPath(fileName);
         assertFalse(spotifyObjectRepository.exists(apiUser.getId(), SpotifyUser.class));
 
         // Act
@@ -67,7 +72,11 @@ class SpotifyUserRepositoryTest {
 
         // Assert
         assertTrue(spotifyObjectRepository.find(apiUser.getId()).isPresent());
-        assertEquals(user.getSpotifyUserID(), apiUser.getId());
+        assertEquals(apiUser.getId(), user.getSpotifyUserID());
+        assertEquals(apiUser.getImages().length, user.getImages().size());
+        assertEquals(apiUser.getDisplayName(), user.getDisplayName().orElseThrow());
+        assertEquals(apiUser.getCountry().getAlpha2(), user.getCountryCode().orElseThrow());
+        assertEquals(apiUser.getProduct(), user.getProductType().orElseThrow());
     }
 
     @Test
