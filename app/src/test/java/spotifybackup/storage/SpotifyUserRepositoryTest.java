@@ -1,6 +1,6 @@
 package spotifybackup.storage;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
@@ -22,14 +22,18 @@ class SpotifyUserRepositoryTest {
     static final String playlistDir = testDataDir + "playlist/";
     static final String userDir = testDataDir + "user/";
     static final String artistDir = testDataDir + "artist/";
-    static private SpotifyObjectRepository spotifyObjectRepository;
-    static private List<SpotifyPlaylist> playlists;
-    static private Set<SpotifyID> playlistIds;
-    static private List<SpotifyArtist> artists;
-    static private Set<SpotifyID> artistIds;
+    private SpotifyObjectRepository spotifyObjectRepository;
+    private List<SpotifyPlaylist> playlists;
+    private Set<SpotifyID> playlistIds;
+    private List<SpotifyArtist> artists;
+    private Set<SpotifyID> artistIds;
 
-    @BeforeAll
-    static void setup() throws IOException {
+    private User loadFromPath(String fileName) throws IOException {
+        return new User.JsonUtil().createModelObject(new String(Files.readAllBytes(Path.of(userDir + fileName))));
+    }
+
+    @BeforeEach
+    void setup() throws IOException {
         spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
         final PlaylistSimplified[] apiPlaylists = {
                 new PlaylistSimplified.JsonUtil().createModelObject(
@@ -55,9 +59,7 @@ class SpotifyUserRepositoryTest {
     @Test
     void ensure_user_can_be_persisted() throws IOException {
         // Arrange
-        final User apiUser = new User.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(userDir + "user2.json")))
-        );
+        final User apiUser = loadFromPath("user2.json");
         assertFalse(spotifyObjectRepository.exists(apiUser.getId(), SpotifyUser.class));
 
         // Act
@@ -77,9 +79,7 @@ class SpotifyUserRepositoryTest {
     void find_account_holder_user_account() throws IOException {
         // Arrange
         // account holder
-        final User apiUser = new User.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(userDir + "user.json")))
-        );
+        final User apiUser = loadFromPath("user.json");
         final var user = spotifyObjectRepository.persist(apiUser);
 
         // Act
@@ -93,9 +93,7 @@ class SpotifyUserRepositoryTest {
     @Test
     void ensure_playlists_can_be_followed() throws IOException {
         // Arrange
-        final User apiUser = new User.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(userDir + "user.json")))
-        );
+        final User apiUser = loadFromPath("user.json");
         final var user = spotifyObjectRepository.persist(apiUser);
         assertTrue(spotifyObjectRepository.getFollowedPlaylists(user).isEmpty());
 
@@ -112,9 +110,7 @@ class SpotifyUserRepositoryTest {
     @Test
     void ensure_playlists_can_be_unfollowed() throws IOException {
         // Arrange
-        final User apiUser = new User.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(userDir + "user2.json")))
-        );
+        final User apiUser = loadFromPath("user2.json");
         final var user = spotifyObjectRepository.persist(apiUser);
         spotifyObjectRepository.followPlaylists(playlists, user);
         final var oldFollowedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
@@ -151,9 +147,7 @@ class SpotifyUserRepositoryTest {
     @Test
     void ensure_artists_can_be_followed() throws IOException {
         // Arrange
-        final User apiUser = new User.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(userDir + "user.json")))
-        );
+        final User apiUser = loadFromPath("user.json");
         final var user = spotifyObjectRepository.persist(apiUser);
         assertEquals(0, spotifyObjectRepository.getFollowedArtists(user).size());
 
@@ -170,9 +164,7 @@ class SpotifyUserRepositoryTest {
     @Test
     void ensure_artists_can_be_unfollowed() throws IOException {
         // Arrange
-        final User apiUser = new User.JsonUtil().createModelObject(
-                new String(Files.readAllBytes(Path.of(userDir + "user3.json")))
-        );
+        final User apiUser = loadFromPath("user3.json");
         final var user = spotifyObjectRepository.persist(apiUser);
         spotifyObjectRepository.followArtists(artists, user);
         final var oldFollowedArtists = spotifyObjectRepository.getFollowedArtists(user);
