@@ -79,9 +79,43 @@ class SpotifyUserRepositoryTest {
         assertEquals(apiUser.getProduct(), user.getProductType().orElseThrow());
     }
 
-    @Test
-    void ensure_user_can_be_persisted_with_different_image_selections() throws IOException {
-        throw new UnsupportedOperationException("implement methods and test");
+    @ParameterizedTest(name = "[{index}] {arguments}")
+    @CsvSource(useHeadersInDisplayName = true, value = {
+            "total, w,      h,      value",
+            "3,     -1,     -1,     ALL",
+            "1,     640,    640,    ONLY_LARGEST",
+            "1,     64,     64,     ONLY_SMALLEST",
+            "0,     -1,     -1,     NONE"
+    })
+    void ensure_user_can_be_persisted_with_different_image_selections(final int expectedTotal, final int w, final int h,
+                                                                      final ImageSelection selection)
+            throws IOException {
+        // Arrange
+        final User apiUser = loadFromPath("user.json");
+        assertFalse(spotifyObjectRepository.exists(apiUser.getId(), SpotifyUser.class));
+        assertTrue(apiUser.getImages().length > 1);
+        for (var apiImage : apiUser.getImages()) assertFalse(spotifyObjectRepository.exists(apiImage));
+
+        // Act
+        final var user = spotifyObjectRepository.persist(apiUser, selection);
+
+        // Assert
+        assertTrue(spotifyObjectRepository.find(apiUser.getId()).isPresent());
+        assertEquals(user.getSpotifyUserID(), apiUser.getId());
+        assertEquals(expectedTotal, user.getImages().size());
+        switch (selection) {
+            case ONLY_LARGEST, ONLY_SMALLEST -> {
+                assertEquals(1, user.getImages().size());
+                SpotifyImage image = user.getImages().iterator().next();
+                assertEquals(w, image.getWidth().orElseThrow());
+                assertEquals(h, image.getHeight().orElseThrow());
+                assertEquals(1, Arrays.stream(apiUser.getImages())
+                        .filter(i -> i.getHeight() == h && i.getWidth() == w).count());
+                assertEquals(Arrays.stream(apiUser.getImages()).filter(i -> i.getHeight() == h && i.getWidth() == w)
+                        .findFirst().orElseThrow().getUrl(), image.getUrl());
+            }
+            case ALL -> assertEquals(expectedTotal, apiUser.getImages().length);
+        }
     }
 
     @Test
