@@ -3,7 +3,6 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
@@ -136,12 +135,7 @@ class SpotifyUserRepository {
                     .countryCode(apiUser.getCountry() == null ? null : apiUser.getCountry().getAlpha2())
                     .productType(apiUser.getProduct())
                     .build();
-            newUser.addImages(SpotifyImageRepository.imageSetFactory(entityManager, switch (selection) {
-                case ALL -> apiUser.getImages();
-                case ONLY_LARGEST -> new Image[]{ImageSelection.findLargest(apiUser.getImages())};
-                case ONLY_SMALLEST -> new Image[]{ImageSelection.findSmallest(apiUser.getImages())};
-                case NONE -> new Image[]{};
-            }));
+            newUser.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiUser.getImages(), selection));
             entityManager.persist(newUser);
             return newUser;
         }

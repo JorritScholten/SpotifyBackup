@@ -5,7 +5,6 @@ import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
-import se.michaelthelin.spotify.model_objects.specification.Image;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.List;
@@ -108,12 +107,7 @@ class SpotifyArtistRepository {
             else {
                 final var simpleArtist = optionalArtist.get();
                 simpleArtist.setIsSimplified(false);
-                simpleArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, switch (selection) {
-                    case ALL -> apiArtist.getImages();
-                    case ONLY_LARGEST -> new Image[]{ImageSelection.findLargest(apiArtist.getImages())};
-                    case ONLY_SMALLEST -> new Image[]{ImageSelection.findSmallest(apiArtist.getImages())};
-                    case NONE -> new Image[]{};
-                }));
+                simpleArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiArtist.getImages(), selection));
                 simpleArtist.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiArtist.getGenres()));
                 entityManager.persist(simpleArtist);
                 return simpleArtist;
@@ -124,12 +118,7 @@ class SpotifyArtistRepository {
                     .spotifyID(new SpotifyID(apiArtist.getId()))
                     .isSimplified(false)
                     .build();
-            newArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, switch (selection) {
-                case ALL -> apiArtist.getImages();
-                case ONLY_LARGEST -> new Image[]{ImageSelection.findLargest(apiArtist.getImages())};
-                case ONLY_SMALLEST -> new Image[]{ImageSelection.findSmallest(apiArtist.getImages())};
-                case NONE -> new Image[]{};
-            }));
+            newArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiArtist.getImages(), selection));
             newArtist.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiArtist.getGenres()));
             entityManager.persist(newArtist);
             return newArtist;
