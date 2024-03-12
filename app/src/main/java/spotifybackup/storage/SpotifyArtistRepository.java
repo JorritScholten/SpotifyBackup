@@ -108,7 +108,12 @@ class SpotifyArtistRepository {
             else {
                 final var simpleArtist = optionalArtist.get();
                 simpleArtist.setIsSimplified(false);
-                simpleArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiArtist.getImages()));
+                simpleArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, switch (selection) {
+                    case ALL -> apiArtist.getImages();
+                    case ONLY_LARGEST -> new Image[]{ImageSelection.findLargest(apiArtist.getImages())};
+                    case ONLY_SMALLEST -> new Image[]{ImageSelection.findSmallest(apiArtist.getImages())};
+                    case NONE -> new Image[]{};
+                }));
                 simpleArtist.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiArtist.getGenres()));
                 entityManager.persist(simpleArtist);
                 return simpleArtist;
