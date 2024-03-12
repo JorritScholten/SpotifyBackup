@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,6 +70,16 @@ class SpotifyArtistRepositoryTest {
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
         assertTrue(apiArtist.getImages().length > 1);
         for (var apiImage : apiArtist.getImages()) assertFalse(spotifyObjectRepository.exists(apiImage));
+        switch (selection) {
+            case ONLY_LARGEST -> {
+                assertEquals(w, ImageSelection.findLargest(apiArtist.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findLargest(apiArtist.getImages()).getHeight());
+            }
+            case ONLY_SMALLEST -> {
+                assertEquals(w, ImageSelection.findSmallest(apiArtist.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findSmallest(apiArtist.getImages()).getHeight());
+            }
+        }
         final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
 
         // Act
@@ -115,6 +126,16 @@ class SpotifyArtistRepositoryTest {
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
         assertTrue(apiArtist.getImages().length > 1);
         for (var apiImage : apiArtist.getImages()) assertFalse(spotifyObjectRepository.exists(apiImage));
+        switch (selection) {
+            case ONLY_LARGEST -> {
+                assertEquals(w, ImageSelection.findLargest(apiArtist.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findLargest(apiArtist.getImages()).getHeight());
+            }
+            case ONLY_SMALLEST -> {
+                assertEquals(w, ImageSelection.findSmallest(apiArtist.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findSmallest(apiArtist.getImages()).getHeight());
+            }
+        }
         final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
 
         // Act
@@ -177,9 +198,71 @@ class SpotifyArtistRepositoryTest {
         assertEquals(oldCount + apiArtists.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
     }
 
-    @Test
-    void ensure_multiple_artists_can_be_persisted_with_different_image_selections() throws IOException {
-        throw new UnsupportedOperationException("implement methods and test");
+    @ParameterizedTest(name = "[{index}] {arguments}")
+    @CsvSource(useHeadersInDisplayName = true, value = {
+            "total, w,      h,      value",
+            "3,     -1,     -1,     ALL",
+            "1,     640,    640,    ONLY_LARGEST",
+            "1,     160,    160,    ONLY_SMALLEST",
+            "0,     -1,     -1,     NONE"
+    })
+    void ensure_multiple_artists_can_be_persisted_with_different_image_selections(final int expectedTotal,
+                                                                                  final int w,
+                                                                                  final int h,
+                                                                                  final ImageSelection selection)
+            throws IOException {
+        // Arrange
+        final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST);
+        final Artist[] apiArtists = {
+                loadFromPath("Macklemore_&_Ryan_Lewis.json"),
+                loadFromPath("Macklemore.json"),
+                loadFromPath("Ryan_Lewis.json")
+        };
+        for (var apiArtist : apiArtists) {
+            assertFalse(spotifyObjectRepository.exists(apiArtist),
+                    "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
+            assertTrue(apiArtist.getImages().length > 1);
+            for (var apiImage : apiArtist.getImages()) assertFalse(spotifyObjectRepository.exists(apiImage));
+            switch (selection) {
+                case ONLY_LARGEST -> {
+                    assertEquals(w, ImageSelection.findLargest(apiArtist.getImages()).getWidth());
+                    assertEquals(h, ImageSelection.findLargest(apiArtist.getImages()).getHeight());
+                }
+                case ONLY_SMALLEST -> {
+                    assertEquals(w, ImageSelection.findSmallest(apiArtist.getImages()).getWidth());
+                    assertEquals(h, ImageSelection.findSmallest(apiArtist.getImages()).getHeight());
+                }
+            }
+        }
+        final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
+
+        // Act
+        List<SpotifyArtist> persistedArtists = spotifyObjectRepository.persist(apiArtists, selection);
+
+        // Assert
+        for (var apiArtist : apiArtists) {
+            SpotifyArtist artist = persistedArtists.stream()
+                    .filter(a -> a.getSpotifyID().getId().equals(apiArtist.getId()))
+                    .findAny().orElseThrow();
+            assertTrue(spotifyObjectRepository.exists(apiArtist));
+            assertEquals(apiArtist.getId(), artist.getSpotifyID().getId());
+            assertEquals(expectedTotal, artist.getImages().size());
+            assertEquals(expectedTotal + oldImageCount, spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE));
+            switch (selection) {
+                case ONLY_LARGEST, ONLY_SMALLEST -> {
+                    assertEquals(1, artist.getImages().size());
+                    SpotifyImage image = artist.getImages().iterator().next();
+                    assertEquals(w, image.getWidth().orElseThrow());
+                    assertEquals(h, image.getHeight().orElseThrow());
+                    assertEquals(1, Arrays.stream(apiArtist.getImages())
+                            .filter(i -> i.getHeight() == h && i.getWidth() == w).count());
+                    assertEquals(Arrays.stream(apiArtist.getImages()).filter(i -> i.getHeight() == h && i.getWidth() == w)
+                            .findFirst().orElseThrow().getUrl(), image.getUrl());
+                }
+                case ALL -> assertEquals(expectedTotal, apiArtist.getImages().length);
+            }
+        }
+        assertEquals(oldCount + apiArtists.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
     }
 
     @Test

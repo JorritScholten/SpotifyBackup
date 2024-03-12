@@ -95,6 +95,16 @@ class SpotifyUserRepositoryTest {
         assertFalse(spotifyObjectRepository.exists(apiUser.getId(), SpotifyUser.class));
         assertTrue(apiUser.getImages().length > 1);
         for (var apiImage : apiUser.getImages()) assertFalse(spotifyObjectRepository.exists(apiImage));
+        switch (selection) {
+            case ONLY_LARGEST -> {
+                assertEquals(w, ImageSelection.findLargest(apiUser.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findLargest(apiUser.getImages()).getHeight());
+            }
+            case ONLY_SMALLEST -> {
+                assertEquals(w, ImageSelection.findSmallest(apiUser.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findSmallest(apiUser.getImages()).getHeight());
+            }
+        }
         final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
 
         // Act
