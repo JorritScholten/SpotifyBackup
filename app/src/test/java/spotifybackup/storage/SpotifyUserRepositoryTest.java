@@ -69,6 +69,11 @@ class SpotifyUserRepositoryTest {
     }
 
     @Test
+    void ensure_user_can_be_persisted_with_different_image_selections() throws IOException {
+        throw new UnsupportedOperationException("implement methods and test");
+    }
+
+    @Test
     void find_account_holder_user_account() throws IOException {
         // Arrange
         // account holder

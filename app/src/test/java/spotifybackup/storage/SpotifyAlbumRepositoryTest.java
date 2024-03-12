@@ -53,6 +53,11 @@ class SpotifyAlbumRepositoryTest {
     }
 
     @Test
+    void ensure_album_can_be_persisted_with_different_image_selections() throws IOException {
+        throw new UnsupportedOperationException("implement methods and test");
+    }
+
+    @Test
     void ensure_singles_album_can_be_persisted() throws IOException {
         // Arrange
         final Album apiAlbum = loadFromPath("Embers_Rise.json");
@@ -156,6 +161,11 @@ class SpotifyAlbumRepositoryTest {
     }
 
     @Test
+    void ensure_album_array_can_be_persisted_with_different_image_selections() throws IOException {
+        throw new UnsupportedOperationException("implement methods and test");
+    }
+
+    @Test
     void ensure_album_array_can_be_persisted_shallowly() throws IOException {
         // Arrange
         final Album[] apiAlbums = {
@@ -177,5 +187,10 @@ class SpotifyAlbumRepositoryTest {
         for (var album : persistedAlbums) {
             assertTrue(album.getTracks().isEmpty());
         }
+    }
+
+    @Test
+    void ensure_album_array_can_be_persisted_shallowly_with_different_image_selections() throws IOException {
+        throw new UnsupportedOperationException("implement methods and test");
     }
 }

@@ -46,6 +46,11 @@ class SpotifyArtistRepositoryTest {
     }
 
     @Test
+    void ensure_artist_can_be_persisted_with_different_image_selections() throws IOException {
+        throw new UnsupportedOperationException("implement methods and test");
+    }
+
+    @Test
     void ensure_multiple_artists_can_be_persisted() throws IOException {
         // Arrange
         final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST);
@@ -81,6 +86,11 @@ class SpotifyArtistRepositoryTest {
             assertEquals(apiArtist.getImages().length, persistedArtist.get().getImages().size());
         }
         assertEquals(oldCount + apiArtists.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
+    }
+
+    @Test
+    void ensure_multiple_artists_can_be_persisted_with_different_image_selections() throws IOException {
+        throw new UnsupportedOperationException("implement methods and test");
     }
 
     @Test
