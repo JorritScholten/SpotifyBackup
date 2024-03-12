@@ -3,6 +3,7 @@ package spotifybackup.storage;
 import jakarta.persistence.EntityManager;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 import se.michaelthelin.spotify.model_objects.specification.User;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
@@ -119,6 +120,10 @@ class SpotifyUserRepository {
      * Spotify ID.
      */
     static SpotifyUser persist(EntityManager entityManager, @NonNull User apiUser) {
+        return persist(entityManager, apiUser, ImageSelection.ALL);
+    }
+
+    static SpotifyUser persist(EntityManager entityManager, @NonNull User apiUser, @NonNull ImageSelection selection) {
         ensureTransactionActive.accept(entityManager);
         var optionalUser = find(entityManager, apiUser);
         if (optionalUser.isPresent()) {
@@ -131,7 +136,12 @@ class SpotifyUserRepository {
                     .countryCode(apiUser.getCountry() == null ? null : apiUser.getCountry().getAlpha2())
                     .productType(apiUser.getProduct())
                     .build();
-            newUser.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiUser.getImages()));
+            newUser.addImages(SpotifyImageRepository.imageSetFactory(entityManager, switch (selection) {
+                case ALL -> apiUser.getImages();
+                case ONLY_LARGEST -> new Image[]{ImageSelection.findLargest(apiUser.getImages())};
+                case ONLY_SMALLEST -> new Image[]{ImageSelection.findSmallest(apiUser.getImages())};
+                case NONE -> new Image[]{};
+            }));
             entityManager.persist(newUser);
             return newUser;
         }
