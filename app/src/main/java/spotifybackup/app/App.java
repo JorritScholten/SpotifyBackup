@@ -7,6 +7,7 @@ import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
+import spotifybackup.storage.ImageSelection;
 
 import java.io.File;
 import java.io.IOException;
@@ -46,13 +47,13 @@ public class App {
             .shortName('a')
             .description("Number of accounts to add.")
             .build();
-    static final DefaultEnumArgument<CLI.ImageSelection> imageSaveRestriction = new DefaultEnumArgument
-            .Builder<CLI.ImageSelection>()
+    static final DefaultEnumArgument<ImageSelection> imageSaveRestriction = new DefaultEnumArgument
+            .Builder<ImageSelection>()
             .name("restrictImages")
             .shortName('i')
             .description("Restrict which images are saved to save on database size.")
-            .defaultValue(CLI.ImageSelection.ONLY_LARGEST)
-            .enumClass(CLI.ImageSelection.class)
+            .defaultValue(ImageSelection.ONLY_LARGEST)
+            .enumClass(ImageSelection.class)
             .build();
     static final CmdParser argParser;
     static final Terminal term;
