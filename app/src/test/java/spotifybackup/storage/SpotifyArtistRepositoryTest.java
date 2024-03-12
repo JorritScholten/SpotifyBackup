@@ -206,7 +206,7 @@ class SpotifyArtistRepositoryTest {
             "1,     160,    160,    ONLY_SMALLEST",
             "0,     -1,     -1,     NONE"
     })
-    void ensure_multiple_artists_can_be_persisted_with_different_image_selections(final int expectedTotal,
+    void ensure_multiple_artists_can_be_persisted_with_different_image_selections(final long expectedTotal,
                                                                                   final int w,
                                                                                   final int h,
                                                                                   final ImageSelection selection)
@@ -247,7 +247,8 @@ class SpotifyArtistRepositoryTest {
             assertTrue(spotifyObjectRepository.exists(apiArtist));
             assertEquals(apiArtist.getId(), artist.getSpotifyID().getId());
             assertEquals(expectedTotal, artist.getImages().size());
-            assertEquals(expectedTotal + oldImageCount, spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE));
+            assertEquals((expectedTotal * apiArtists.length) + oldImageCount,
+                    spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE));
             switch (selection) {
                 case ONLY_LARGEST, ONLY_SMALLEST -> {
                     assertEquals(1, artist.getImages().size());
@@ -256,7 +257,8 @@ class SpotifyArtistRepositoryTest {
                     assertEquals(h, image.getHeight().orElseThrow());
                     assertEquals(1, Arrays.stream(apiArtist.getImages())
                             .filter(i -> i.getHeight() == h && i.getWidth() == w).count());
-                    assertEquals(Arrays.stream(apiArtist.getImages()).filter(i -> i.getHeight() == h && i.getWidth() == w)
+                    assertEquals(Arrays.stream(apiArtist.getImages())
+                            .filter(i -> i.getHeight() == h && i.getWidth() == w)
                             .findFirst().orElseThrow().getUrl(), image.getUrl());
                 }
                 case ALL -> assertEquals(expectedTotal, apiArtist.getImages().length);
