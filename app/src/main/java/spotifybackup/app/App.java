@@ -4,6 +4,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
+import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 
@@ -45,12 +46,20 @@ public class App {
             .shortName('a')
             .description("Number of accounts to add.")
             .build();
+    static final DefaultEnumArgument<CLI.ImageSelection> imageSaveRestriction = new DefaultEnumArgument
+            .Builder<CLI.ImageSelection>()
+            .name("restrictImages")
+            .shortName('i')
+            .description("Restrict which images are saved to save on database size.")
+            .defaultValue(CLI.ImageSelection.ONLY_LARGEST)
+            .enumClass(CLI.ImageSelection.class)
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, doBackup, addAccounts, verboseArg)
+                .arguments(configFileArg, dbFileArg, doBackup, imageSaveRestriction, addAccounts, verboseArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
