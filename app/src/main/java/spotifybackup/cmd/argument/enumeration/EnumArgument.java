@@ -31,6 +31,12 @@ abstract class EnumArgument<E extends Enum<E>> extends Argument<E> {
     }
 
     @Override
+    protected String getDescription() {
+        return super.getDescription() + " Possible values: " +
+                String.join(", ", Arrays.toString(enumClass.getEnumConstants()));
+    }
+
+    @Override
     protected String getValueName() {
         return "ENUM";
     }
@@ -42,8 +48,9 @@ abstract class EnumArgument<E extends Enum<E>> extends Argument<E> {
             super(isMandatory, true);
         }
 
-        /** @param enumClass Class capture of enum this argument references, this is needed due to a java language
-         *                    quirk. */
+        /**
+         * @param enumClass Class capture of enum this argument references, this is needed due to a java language quirk.
+         */
         public T enumClass(Class<E> enumClass) {
             this.enumClass = enumClass;
             return getThis();

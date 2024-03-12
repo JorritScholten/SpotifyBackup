@@ -6,6 +6,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.FlagArgument;
+import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
+import spotifybackup.cmd.argument.enumeration.MandatoryEnumArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
@@ -476,11 +478,13 @@ class CmdParserTest {
     void ensure_that_getHelp_output_is_formatted_correctly_for_default_width() {
         // Arrange
         final String expectedOutput = """
-                Usage: --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]
+                Usage: --int INTEGER --txt FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s
+                [STRING]] [--enum2 [ENUM]]
 
                 Mandatory arguments:
                   --int INTEGER     some integer
                   --txt FILEPATH    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                  --enum ENUM       enum argument description Possible values: [abc, ABC, none]
 
                 Optional arguments:
                   -h, --help        Show this help message and exit.
@@ -490,6 +494,8 @@ class CmdParserTest {
                   -s [STRING], --str [STRING]
                                     some sort of string, dunno, not gonna use it. Default
                                     value:[string]
+                  --enum2 [ENUM]    enum2 argument description Possible values: [abc, ABC, none]
+                                    Default value:[ABC]
                 """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
@@ -512,6 +518,17 @@ class CmdParserTest {
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit,")
                                 .isFile()
+                                .build(),
+                        new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                .name("enum")
+                                .description("enum argument description")
+                                .enumClass(EnumArgumentTest.TestEnum.class)
+                                .build(),
+                        new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                .name("enum2")
+                                .description("enum2 argument description")
+                                .enumClass(EnumArgumentTest.TestEnum.class)
+                                .defaultValue(EnumArgumentTest.TestEnum.ABC)
                                 .build())
                 .addHelp()
                 .build();
@@ -524,7 +541,7 @@ class CmdParserTest {
     void ensure_that_getHelp_output_is_formatted_correctly_for_125_width() {
         // Arrange
         final String expectedOutput = """
-                Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i [INTEGER]] [-s [STRING]]
+                Usage: testName.jar --int INTEGER --txt FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]]
                                 
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                                 
@@ -532,12 +549,14 @@ class CmdParserTest {
                   --int INTEGER                         some integer
                   --txt FILEPATH                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                                         incididunt ut
+                  --enum ENUM                           enum argument description Possible values: [abc, ABC, none]
                                 
                 Optional arguments:
                   -h, --help                            Show this help message and exit.
                   -i [INTEGER], --int2 [INTEGER]        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                                         incididunt ut Default value:[23]
                   -s [STRING], --str [STRING]           some sort of string, dunno, not gonna use it. Default value:[string]
+                  --enum2 [ENUM]                        enum2 argument description Possible values: [abc, ABC, none] Default value:[ABC]
                                 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                 """;
@@ -564,6 +583,17 @@ class CmdParserTest {
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
                                         " tempor incididunt ut")
                                 .isFile()
+                                .build(),
+                        new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                .name("enum")
+                                .description("enum argument description")
+                                .enumClass(EnumArgumentTest.TestEnum.class)
+                                .build(),
+                        new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                .name("enum2")
+                                .description("enum2 argument description")
+                                .enumClass(EnumArgumentTest.TestEnum.class)
+                                .defaultValue(EnumArgumentTest.TestEnum.ABC)
                                 .build())
                 .addHelp()
                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
@@ -578,8 +608,8 @@ class CmdParserTest {
     @Test
     void ensure_that_getHelp_output_is_formatted_correctly_for_60_width() {
         final String expectedOutput = """
-                Usage: testName.jar --int INTEGER --txt FILEPATH [-h] [-i
-                [INTEGER]] [-s [STRING]]
+                Usage: testName.jar --int INTEGER --txt FILEPATH --enum ENUM
+                [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]]
 
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                 do eiusmod tempor incididunt ut
@@ -591,6 +621,8 @@ class CmdParserTest {
                                Lorem ipsum dolor sit amet, consectetur
                                adipiscing elit, sed do eiusmod tempor
                                incididunt ut
+                  --enum ENUM  enum argument description Possible values:
+                               [abc, ABC, none]
 
                 Optional arguments:
                   -h, --help   Show this help message and exit.
@@ -601,6 +633,9 @@ class CmdParserTest {
                   -s [STRING], --str [STRING]
                                some sort of string, dunno, not gonna use it.
                                Default value:[string]
+                  --enum2 [ENUM]
+                               enum2 argument description Possible values:
+                               [abc, ABC, none] Default value:[ABC]
 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                 nostrud exercitation
@@ -628,6 +663,17 @@ class CmdParserTest {
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
                                         " tempor incididunt ut")
                                 .isFile()
+                                .build(),
+                        new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                .name("enum")
+                                .description("enum argument description")
+                                .enumClass(EnumArgumentTest.TestEnum.class)
+                                .build(),
+                        new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                .name("enum2")
+                                .description("enum2 argument description")
+                                .enumClass(EnumArgumentTest.TestEnum.class)
+                                .defaultValue(EnumArgumentTest.TestEnum.ABC)
                                 .build())
                 .addHelp()
                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
