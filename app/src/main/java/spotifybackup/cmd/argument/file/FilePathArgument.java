@@ -6,7 +6,7 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
 
-abstract class FilePathArgument extends Argument {
+abstract class FilePathArgument extends Argument<File> {
     final boolean isFolder;
     File value;
 
@@ -50,7 +50,7 @@ abstract class FilePathArgument extends Argument {
         }
     }
 
-    abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
+    abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T, File> {
         private Boolean isFolder;
 
         Builder(boolean isMandatory) {

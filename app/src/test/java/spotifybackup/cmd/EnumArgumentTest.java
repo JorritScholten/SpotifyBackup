@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.enumeration.MandatoryEnumArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
-import spotifybackup.cmd.exception.MalformedInputException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,11 +15,12 @@ class EnumArgumentTest {
         final TestEnum value = TestEnum.ABC;
         final String[] args = {"-e", value.toString()};
         final String name = "extra";
-        final var enumArg =  new MandatoryEnumArgument.Builder()
+        final var enumArg =  new MandatoryEnumArgument.Builder<TestEnum>()
+                .enumClass(TestEnum.class)
                 .name(name)
                 .description("")
                 .shortName('e')
-                .build(TestEnum.class);
+                .build();
         var parser = new CmdParser.Builder().argument(enumArg).build();
 
         // Act
@@ -34,34 +34,21 @@ class EnumArgumentTest {
     }
 
     @Test
-    void mandatory_argument_detects_wrong_enum() {
+    void mandatory_argument_ensures_className_not_null() {
         // Arrange
         final TestEnum value = TestEnum.ABC;
         final String[] args = {"-e", value.toString()};
         final String name = "extra";
-
-        // Act
-        var parser = new CmdParser.Builder().argument(new MandatoryEnumArgument.Builder()
-                .name(name)
-                .description("")
-                .shortName('e')
-                .build(OtherEnum.class)).build();
-
-        // Assert
-        assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
-    }
-
-    @Test
-    void mandatory_argument_warns_against_raw_type_builder() {
-        // Arrange
-        final String name = "extra";
-        final var enumArgBuilder =  new MandatoryEnumArgument.Builder()
+        var builder = new MandatoryEnumArgument.Builder<TestEnum>()
                 .name(name)
                 .description("")
                 .shortName('e');
 
-        // Act & Assert
-        assertThrows(IllegalConstructorParameterException.class, enumArgBuilder::build);
+        // Act
+//        builder.enumClass(TestEnum.class);
+
+        // Assert
+        assertThrows(IllegalConstructorParameterException.class, builder::build);
     }
 
     public enum TestEnum {

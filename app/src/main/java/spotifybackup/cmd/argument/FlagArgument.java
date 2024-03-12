@@ -4,7 +4,7 @@ import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 /** A flag argument has no inherent value, rather it either is or isn't present in the input. */
-public class FlagArgument extends Argument {
+public class FlagArgument extends Argument<Boolean> {
     /** A flag argument has no inherent value, rather it either is or isn't present in the input. */
     private FlagArgument(Builder builder) {
         super(builder);
@@ -41,7 +41,7 @@ public class FlagArgument extends Argument {
         return isPresent;
     }
 
-    public static class Builder extends Argument.Builder<Builder> {
+    public static class Builder extends Argument.Builder<Builder, Boolean> {
         public Builder() {
             super(false, false);
         }

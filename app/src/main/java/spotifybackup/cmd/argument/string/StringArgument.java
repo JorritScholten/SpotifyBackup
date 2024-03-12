@@ -3,7 +3,7 @@ package spotifybackup.cmd.argument.string;
 import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.MalformedInputException;
 
-abstract class StringArgument extends Argument {
+abstract class StringArgument extends Argument<String> {
     String value;
 
     StringArgument(Builder<?> builder) {
@@ -29,7 +29,7 @@ abstract class StringArgument extends Argument {
         }
     }
 
-    abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
+    abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T, String> {
         protected Builder(boolean isMandatory) {
             super(isMandatory, true);
         }

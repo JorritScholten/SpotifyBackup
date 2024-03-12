@@ -6,13 +6,13 @@ import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.util.Arrays;
 
-public class MandatoryEnumArgument<E extends Enum<E>> extends Argument {
+public class MandatoryEnumArgument<E extends Enum<E>> extends Argument<E> {
     final Class<E> enumClass;
     E value;
 
-    private MandatoryEnumArgument(Builder builder, Class<E> enumClass) {
+    private MandatoryEnumArgument(Builder<E> builder) {
         super(builder);
-        this.enumClass = enumClass;
+        this.enumClass = builder.enumClass;
     }
 
     @Override
@@ -35,31 +35,31 @@ public class MandatoryEnumArgument<E extends Enum<E>> extends Argument {
         }
     }
 
-    public static class Builder extends Argument.Builder<Builder> {
+    public static class Builder<E extends Enum<E>> extends Argument.Builder<Builder<E>, E> {
+        private Class<E> enumClass;
+
         public Builder() {
             super(true, true);
         }
 
-        /**
-         * @throws IllegalConstructorParameterException When used at all.
-         * @apiNote Do not use, can't be omitted due to class structure.
-         * @deprecated Raw type builder call not to be used.
-         */
-        @Override
-        @Deprecated
-        public MandatoryEnumArgument build() throws IllegalConstructorParameterException {
+        public MandatoryEnumArgument<E> build() throws IllegalConstructorParameterException {
             validate();
-            throw new IllegalConstructorParameterException("Can't use raw type builder for Generic argument.");
+            return new MandatoryEnumArgument<>(this);
         }
 
-        public <E extends Enum<E>> MandatoryEnumArgument<E> build(Class<E> enumClass)
-                throws IllegalConstructorParameterException {
-            validate();
-            return new MandatoryEnumArgument<>(this, enumClass);
+        public Builder<E> enumClass(Class<E> enumClass) {
+            this.enumClass = enumClass;
+            return getThis();
         }
 
         @Override
-        protected Builder getThis() {
+        protected void validate() throws IllegalConstructorParameterException {
+            super.validate();
+            if (enumClass == null) throw new IllegalConstructorParameterException("className can not be null value.");
+        }
+
+        @Override
+        protected Builder<E> getThis() {
             return this;
         }
     }

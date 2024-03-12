@@ -5,7 +5,7 @@ import spotifybackup.cmd.exception.*;
 
 import java.util.Formatter;
 
-public abstract class Argument {
+public abstract class Argument<V> {
     /** If true and missing from input then program will throw an Exception, flags cannot be mandatory. */
     protected final boolean isMandatory;
     protected final boolean hasValue;
@@ -16,7 +16,7 @@ public abstract class Argument {
     /** true if present in input. */
     protected boolean isPresent;
 
-    protected Argument(Builder<?> builder) {
+    protected Argument(Builder<?, ?> builder) {
         this.name = builder.name;
         this.description = builder.description;
         this.shortName = builder.shortName;
@@ -96,7 +96,7 @@ public abstract class Argument {
      * Gets value inherent to argument.
      * @return value of argument.
      */
-    public abstract Object getValue();
+    public abstract V getValue();
 
     /**
      * Set value of argument when parsing command line arguments.
@@ -105,7 +105,7 @@ public abstract class Argument {
      */
     protected abstract void setValue(final String value) throws MalformedInputException;
 
-    protected abstract static class Builder<T extends Builder<T>> {
+    protected abstract static class Builder<T extends Builder<T, V>, V> {
         private final boolean isMandatory;
         private final boolean hasValue;
         private String name;
@@ -135,7 +135,7 @@ public abstract class Argument {
             return getThis();
         }
 
-        public abstract Argument build() throws IllegalConstructorParameterException;
+        public abstract Argument<V> build() throws IllegalConstructorParameterException;
 
         protected abstract T getThis();
 

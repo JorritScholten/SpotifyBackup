@@ -4,7 +4,7 @@ import spotifybackup.cmd.Argument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
-abstract class BoundedIntArgument extends Argument {
+abstract class BoundedIntArgument extends Argument<Integer> {
     final Integer min;
     final Integer max;
     Integer value;
@@ -51,7 +51,7 @@ abstract class BoundedIntArgument extends Argument {
         }
     }
 
-    protected abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T> {
+    protected abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T, Integer> {
         private Integer min;
         private Integer max;
 

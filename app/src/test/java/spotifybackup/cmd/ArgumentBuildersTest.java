@@ -53,7 +53,7 @@ class ArgumentBuildersTest {
     void ensure_each_builder_implementation_chains_validate_correctly()
             throws InvocationTargetException, InstantiationException, IllegalAccessException {
         for (var argumentBuilder : implementedBuilders.loadClasses()) {
-            Argument.Builder<?> builder = (Argument.Builder<?>) argumentBuilder.getConstructors()[0].newInstance();
+            Argument.Builder<?, ?> builder = (Argument.Builder<?, ?>) argumentBuilder.getConstructors()[0].newInstance();
             builder.name("");
             assertThrows(IllegalArgumentNameException.class, builder::build,
                     argumentBuilder.getName() + " does not properly call super.validate() in build step.");
