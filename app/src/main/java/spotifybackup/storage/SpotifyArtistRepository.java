@@ -5,6 +5,7 @@ import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
+import se.michaelthelin.spotify.model_objects.specification.Image;
 import spotifybackup.storage.exception.ConstructorUsageException;
 
 import java.util.List;
@@ -95,6 +96,11 @@ class SpotifyArtistRepository {
      * @return Artist already in the database with matching Spotify ID or new Artist if apiArtist has a new Spotify ID.
      */
     static SpotifyArtist persist(EntityManager entityManager, @NonNull Artist apiArtist) {
+        return persist(entityManager, apiArtist, ImageSelection.ALL);
+    }
+
+    static SpotifyArtist persist(EntityManager entityManager, @NonNull Artist apiArtist,
+                                 @NonNull ImageSelection selection) {
         ensureTransactionActive.accept(entityManager);
         var optionalArtist = find(entityManager, apiArtist);
         if (optionalArtist.isPresent()) {
@@ -113,7 +119,12 @@ class SpotifyArtistRepository {
                     .spotifyID(new SpotifyID(apiArtist.getId()))
                     .isSimplified(false)
                     .build();
-            newArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, apiArtist.getImages()));
+            newArtist.addImages(SpotifyImageRepository.imageSetFactory(entityManager, switch (selection) {
+                case ALL -> apiArtist.getImages();
+                case ONLY_LARGEST -> new Image[]{ImageSelection.findLargest(apiArtist.getImages())};
+                case ONLY_SMALLEST -> new Image[]{ImageSelection.findSmallest(apiArtist.getImages())};
+                case NONE -> new Image[]{};
+            }));
             newArtist.addGenres(SpotifyGenreRepository.genreSetFactory(entityManager, apiArtist.getGenres()));
             entityManager.persist(newArtist);
             return newArtist;

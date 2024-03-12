@@ -660,7 +660,7 @@ public class SpotifyObjectRepository {
      * new Spotify ID.
      */
     public SpotifyArtist persist(@NonNull Artist apiArtist, @NonNull ImageSelection selection) {
-        throw new UnsupportedOperationException("to be implemented");
+        return persistAbstractModel(apiArtist, (em, unused) -> SpotifyArtistRepository.persist(em, apiArtist, selection));
     }
 
     /**
