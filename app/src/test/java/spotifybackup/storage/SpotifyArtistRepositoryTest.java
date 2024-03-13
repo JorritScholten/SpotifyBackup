@@ -74,7 +74,7 @@ class SpotifyArtistRepositoryTest {
     @ValueSource(strings = {"Rivers_Cuomo.json", "Macklemore_&_Ryan_Lewis.json", "Ryan_Lewis.json", "Texas.json"})
     void ensure_artist_can_be_persisted(final String fileName) throws IOException {
         // Arrange
-        final Artist apiArtist = loadFromPath("Rivers_Cuomo.json");
+        final Artist apiArtist = loadFromPath(fileName);
         assertFalse(spotifyObjectRepository.exists(apiArtist),
                 "Artist with Spotify ID " + apiArtist.getId() + " shouldn't already exist.");
 
