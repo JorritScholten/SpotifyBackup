@@ -115,7 +115,7 @@ public class CLI {
             do {
                 App.verbosePrint(".");
                 apiArtists = api.getCurrentUserFollowedArtists(limit, after);
-                artists.addAll(repo.persist(apiArtists.getItems()));
+                artists.addAll(repo.persist(apiArtists.getItems(), App.imageSaveRestriction.getValue()));
                 after = apiArtists.getCursors()[0].getAfter();
             } while (apiArtists.getNext() != null);
             repo.followArtists(artists, user);
@@ -134,7 +134,7 @@ public class CLI {
             do {
                 App.verbosePrint(".");
                 apiSavedAlbums = api.getCurrentUserSavedAlbums(limit, offset);
-                savedAlbums.addAll(repo.persist(apiSavedAlbums.getItems(), user));
+                savedAlbums.addAll(repo.persist(apiSavedAlbums.getItems(), user, App.imageSaveRestriction.getValue()));
                 offset += limit;
             } while (apiSavedAlbums.getNext() != null);
             App.verbosePrintln("");
@@ -252,7 +252,7 @@ public class CLI {
             App.verbosePrint(4, "Requesting data for " + simpleAlbumIds.size() + " album(s)");
             for (var ids : combineIds(simpleAlbumIds, 20)) {
                 App.verbosePrint(".");
-                repo.persistWithoutTracks(api.getSeveralAlbums(ids));
+                repo.persistWithoutTracks(api.getSeveralAlbums(ids), App.imageSaveRestriction.getValue());
             }
             App.verbosePrintln("");
         }
@@ -263,7 +263,7 @@ public class CLI {
             App.verbosePrint(4, "Requesting data for " + simpleArtistIds.size() + " artist(s)");
             for (var ids : combineIds(simpleArtistIds, 50)) {
                 App.verbosePrint(".");
-                repo.persist(api.getSeveralArtists(ids));
+                repo.persist(api.getSeveralArtists(ids), App.imageSaveRestriction.getValue());
             }
             App.verbosePrintln("");
         }
