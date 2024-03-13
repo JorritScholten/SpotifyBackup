@@ -67,11 +67,11 @@ class SpotifyAlbumRepositoryTest {
                 "Can't find Album by Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
         assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
-        assertTrue(apiAlbum.getArtists().length > 0);
+        assertTrue(apiAlbum.getArtists().length > 0, apiAlbum.getName() + " should have artists.");
         assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
-        assertTrue(apiAlbum.getGenres().length > 0);
+        assertTrue(apiAlbum.getGenres().length > 0, apiAlbum.getName() + " should have genres.");
         assertEquals(apiAlbum.getGenres().length, persistedAlbum.getGenres().size());
-        assertTrue(apiAlbum.getImages().length > 0);
+        assertTrue(apiAlbum.getImages().length > 0, apiAlbum.getName() + " should have images.");
         assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
         assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
     }

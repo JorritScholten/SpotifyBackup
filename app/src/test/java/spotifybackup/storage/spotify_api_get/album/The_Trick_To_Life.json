@@ -177,7 +177,11 @@
   "external_urls": {
     "spotify": "https://open.spotify.com/album/5sScGdiKDLwMPQMO688baH"
   },
-  "genres": [],
+  "genres": [
+    "pop rock",
+    "indie pop",
+    "post-punk revival"
+  ],
   "href": "https://api.spotify.com/v1/albums/5sScGdiKDLwMPQMO688baH",
   "id": "5sScGdiKDLwMPQMO688baH",
   "images": [
