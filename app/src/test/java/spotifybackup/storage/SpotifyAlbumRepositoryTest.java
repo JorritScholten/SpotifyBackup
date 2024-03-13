@@ -41,12 +41,13 @@ class SpotifyAlbumRepositoryTest {
         }
     }
 
-    private void assertAlbumWithSelectionPersistedCorrectly(long expectedTotal, int w, int h, ImageSelection selection,
-                                                            Album apiAlbum, SpotifyAlbum album, long oldImageCount) {
+    private void assertAlbumWithSelectionPersistedCorrectly(long expectedAlbumImageCount, long expectedTotal, int w,
+                                                            int h, ImageSelection selection,
+                                                            Album apiAlbum, SpotifyAlbum album) {
         assertTrue(spotifyObjectRepository.exists(apiAlbum));
         assertEquals(apiAlbum.getId(), album.getSpotifyID().getId());
-        assertEquals(expectedTotal, album.getImages().size());
-        assertEquals(expectedTotal + oldImageCount, spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE));
+        assertEquals(expectedAlbumImageCount, album.getImages().size());
+        assertEquals(expectedTotal, spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE));
         switch (selection) {
             case ONLY_LARGEST, ONLY_SMALLEST -> {
                 assertEquals(1, album.getImages().size());
@@ -58,7 +59,7 @@ class SpotifyAlbumRepositoryTest {
                 assertEquals(Arrays.stream(apiAlbum.getImages()).filter(i -> i.getHeight() == h && i.getWidth() == w)
                         .findFirst().orElseThrow().getUrl(), image.getUrl());
             }
-            case ALL -> assertEquals(expectedTotal, apiAlbum.getImages().length);
+            case ALL -> assertEquals(expectedAlbumImageCount, apiAlbum.getImages().length);
         }
     }
 
@@ -118,7 +119,8 @@ class SpotifyAlbumRepositoryTest {
         final SpotifyAlbum album = spotifyObjectRepository.persist(apiAlbum, selection);
 
         // Assert
-        assertAlbumWithSelectionPersistedCorrectly(expectedTotal, w, h, selection, apiAlbum, album, oldImageCount);
+        assertAlbumWithSelectionPersistedCorrectly(expectedTotal, expectedTotal + oldImageCount, w, h,
+                selection, apiAlbum, album);
     }
 
     @Test
@@ -212,7 +214,7 @@ class SpotifyAlbumRepositoryTest {
             "total, w,      h,      value",
             "3,     -1,     -1,     ALL",
             "1,     640,    640,    ONLY_LARGEST",
-            "1,     160,    160,    ONLY_SMALLEST",
+            "1,     64,     64,     ONLY_SMALLEST",
             "0,     -1,     -1,     NONE"
     })
     void ensure_album_array_can_be_persisted_with_different_image_selections(final long expectedTotal,
@@ -221,6 +223,7 @@ class SpotifyAlbumRepositoryTest {
                                                                              final ImageSelection selection)
             throws IOException {
         // Arrange
+        final long oldCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.ALBUM);
         final Album[] apiAlbums = {
                 loadFromPath("The_Heist.json"),
                 loadFromPath("The_Trick_To_Life.json"),
@@ -237,9 +240,10 @@ class SpotifyAlbumRepositoryTest {
             SpotifyAlbum album = albums.stream()
                     .filter(a -> a.getSpotifyID().getId().equals(apiAlbum.getId()))
                     .findAny().orElseThrow();
-            assertAlbumWithSelectionPersistedCorrectly(expectedTotal, w, h, selection, apiAlbum, album, oldImageCount);
+            assertAlbumWithSelectionPersistedCorrectly(expectedTotal,
+                    (expectedTotal * apiAlbums.length) + oldImageCount, w, h, selection, apiAlbum, album);
         }
-        assertEquals(oldImageCount + apiAlbums.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
+        assertEquals(oldCount + apiAlbums.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ALBUM));
     }
 
     @Test

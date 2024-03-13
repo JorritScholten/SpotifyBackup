@@ -822,7 +822,8 @@ public class SpotifyObjectRepository {
      * @return List of SpotifyAlbum objects.
      */
     public List<SpotifyAlbum> persist(@NonNull Album[] apiAlbums, @NonNull ImageSelection selection) {
-        throw new UnsupportedOperationException("to be implemented");
+        return persistAbstractModels(apiAlbums, new ArrayList<>(), (em, apiAlbum) -> SpotifyAlbumRepository.persist(em,
+                apiAlbum, true, selection));
     }
 
     /**
