@@ -68,7 +68,8 @@ class SpotifySavedAlbumRepository {
         );
     }
 
-    static Optional<SpotifySavedAlbum> removeAlbumFromSavedAlbums(EntityManager em, @NonNull SpotifyAlbum album, @NonNull SpotifyUser user) {
+    static Optional<SpotifySavedAlbum> removeAlbumFromSavedAlbums(EntityManager em, @NonNull SpotifyAlbum album,
+                                                                  @NonNull SpotifyUser user) {
         ensureTransactionActive.accept(em);
         var spotifySavedAlbum = find(em, album, user);
         if (spotifySavedAlbum.isPresent()) {
@@ -87,9 +88,10 @@ class SpotifySavedAlbumRepository {
         return getSingleResultOptionally(em, query);
     }
 
-    static SpotifySavedAlbum persist(EntityManager em, @NonNull SavedAlbum apiAlbum, @NonNull SpotifyUser user) {
+    static SpotifySavedAlbum persist(EntityManager em, @NonNull SavedAlbum apiAlbum, @NonNull SpotifyUser user,
+                                     @NonNull ImageSelection selection) {
         ensureTransactionActive.accept(em);
-        var album = SpotifyAlbumRepository.persist(em, apiAlbum.getAlbum(), true, ImageSelection.ALL);
+        var album = SpotifyAlbumRepository.persist(em, apiAlbum.getAlbum(), true, selection);
         var spotifySavedAlbum = find(em, album, user);
         if (spotifySavedAlbum.isPresent()) {
             if (spotifySavedAlbum.get().getIsRemoved()) {

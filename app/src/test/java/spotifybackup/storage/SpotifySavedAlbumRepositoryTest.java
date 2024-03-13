@@ -52,7 +52,6 @@ class SpotifySavedAlbumRepositoryTest {
     @ValueSource(strings = {"testaccount", "testaccount2"})
     @Order(2)
     void ensure_users_saved_albums_can_be_persisted(String userId) throws IOException {
-        fail("implement ImageSelection limit to persist methods");
         // Arrange
         final var user = getUserFromId.apply(userId);
         final SavedAlbum[] apiSavedAlbums = new SavedAlbum.JsonUtil().createModelObjectArray(
@@ -61,7 +60,7 @@ class SpotifySavedAlbumRepositoryTest {
         assertEquals(0, spotifyObjectRepository.countSavedAlbums(user));
 
         // Act
-        spotifyObjectRepository.persist(apiSavedAlbums, user);
+        spotifyObjectRepository.persist(apiSavedAlbums, user, ImageSelection.ALL);
 
         // Assert
         assertEquals(apiSavedAlbums.length, spotifyObjectRepository.countSavedAlbums(user));
@@ -137,7 +136,7 @@ class SpotifySavedAlbumRepositoryTest {
                 .setAlbum(new Album.JsonUtil().createModelObject(
                         new String(Files.readAllBytes(Path.of(albumDir + "The_Heist.json")))
                 )).build()};
-        spotifyObjectRepository.persist(apiSavedAlbum, user);
+        spotifyObjectRepository.persist(apiSavedAlbum, user, ImageSelection.ALL);
 
         // Act
         final var newMostRecentlyAdded = spotifyObjectRepository.getNewestSavedAlbum(user).orElseThrow();
@@ -193,7 +192,7 @@ class SpotifySavedAlbumRepositoryTest {
         );
 
         // Act
-        final var savedAlbums = spotifyObjectRepository.persist(apiSavedAlbum, user);
+        final var savedAlbums = spotifyObjectRepository.persist(apiSavedAlbum, user, ImageSelection.ALL);
         final var newMostRecentlyAdded = spotifyObjectRepository.getNewestSavedAlbum(user).orElseThrow();
 
         // Assert
