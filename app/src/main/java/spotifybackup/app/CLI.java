@@ -221,8 +221,10 @@ public class CLI {
         private void saveDetailedPlaylistInfo() throws IOException, InterruptedException {
             final var playlists = repo.findAllPlaylists();
             if (playlists.isEmpty()) return;
-            App.verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
-                    " new playlist(s)");
+            if (playlists.stream().anyMatch(SpotifyPlaylist::getIsSimplified)) {
+                App.verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
+                        " new playlist(s)");
+            }
             for (var playlist : playlists) {
                 Optional<Playlist> apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
                 if (apiPlaylist.isEmpty())
