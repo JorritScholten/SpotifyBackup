@@ -24,51 +24,7 @@ class SpotifyAlbumRepositoryTest {
         return new Album.JsonUtil().createModelObject(new String(Files.readAllBytes(Path.of(albumDir + fileName))));
     }
 
-    @BeforeEach
-    void setup() {
-        spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
-    }
-
-    @Test
-    void ensure_album_can_be_persisted() throws IOException {
-        // Arrange
-        final Album apiAlbum = loadFromPath("The_Heist.json");
-        assertFalse(spotifyObjectRepository.exists(apiAlbum),
-                "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
-        assertTrue(apiAlbum.getGenres().length > 0, "Album should have 1 or more genres.");
-
-        // Act
-        var persistedAlbum = spotifyObjectRepository.persist(apiAlbum);
-
-        // Assert
-        assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
-                "Can't find Album by Spotify ID.");
-        assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
-        assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
-        assertTrue(apiAlbum.getArtists().length > 0);
-        assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
-        assertTrue(apiAlbum.getGenres().length > 0);
-        assertEquals(apiAlbum.getGenres().length, persistedAlbum.getGenres().size());
-        assertTrue(apiAlbum.getImages().length > 0);
-        assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
-        assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
-    }
-
-    @ParameterizedTest(name = "[{index}] {arguments}")
-    @CsvSource(useHeadersInDisplayName = true, value = {
-            "total, w,      h,      value",
-            "3,     -1,     -1,     ALL",
-            "1,     640,    640,    ONLY_LARGEST",
-            "1,     64,     64,     ONLY_SMALLEST",
-            "0,     -1,     -1,     NONE"
-    })
-    void ensure_album_can_be_persisted_with_different_image_selections(final long expectedTotal,
-                                                                       final int w,
-                                                                       final int h,
-                                                                       final ImageSelection selection)
-            throws IOException {
-        // Arrange
-        final Album apiAlbum = loadFromPath("The_Heist.json");
+    private void assertAlbumForSelectionTestIsSuitable(int w, int h, ImageSelection selection, Album apiAlbum) {
         assertFalse(spotifyObjectRepository.exists(apiAlbum),
                 "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
         assertTrue(apiAlbum.getImages().length > 1);
@@ -83,12 +39,10 @@ class SpotifyAlbumRepositoryTest {
                 assertEquals(h, ImageSelection.findSmallest(apiAlbum.getImages()).getHeight());
             }
         }
-        final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
+    }
 
-        // Act
-        final SpotifyAlbum album = spotifyObjectRepository.persist(apiAlbum, selection);
-
-        // Assert
+    private void assertAlbumWithSelectionPersistedCorrectly(long expectedTotal, int w, int h, ImageSelection selection,
+                                                            Album apiAlbum, SpotifyAlbum album, long oldImageCount) {
         assertTrue(spotifyObjectRepository.exists(apiAlbum));
         assertEquals(apiAlbum.getId(), album.getSpotifyID().getId());
         assertEquals(expectedTotal, album.getImages().size());
@@ -108,6 +62,65 @@ class SpotifyAlbumRepositoryTest {
         }
     }
 
+    private void assertAlbumPersistedCorrectly(Album apiAlbum, SpotifyAlbum persistedAlbum) {
+        assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
+                "Can't find Album by Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
+        assertTrue(apiAlbum.getArtists().length > 0);
+        assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
+        assertTrue(apiAlbum.getGenres().length > 0);
+        assertEquals(apiAlbum.getGenres().length, persistedAlbum.getGenres().size());
+        assertTrue(apiAlbum.getImages().length > 0);
+        assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
+        assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
+    }
+
+    @BeforeEach
+    void setup() {
+        spotifyObjectRepository = SpotifyObjectRepository.testFactory(false);
+    }
+
+    @Test
+    void ensure_album_can_be_persisted() throws IOException {
+        // Arrange
+        final Album apiAlbum = loadFromPath("The_Heist.json");
+        assertFalse(spotifyObjectRepository.exists(apiAlbum),
+                "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
+        assertTrue(apiAlbum.getGenres().length > 0, "Album should have 1 or more genres.");
+
+        // Act
+        var persistedAlbum = spotifyObjectRepository.persist(apiAlbum);
+
+        // Assert
+        assertAlbumPersistedCorrectly(apiAlbum, persistedAlbum);
+    }
+
+    @ParameterizedTest(name = "[{index}] {arguments}")
+    @CsvSource(useHeadersInDisplayName = true, value = {
+            "total, w,      h,      value",
+            "3,     -1,     -1,     ALL",
+            "1,     640,    640,    ONLY_LARGEST",
+            "1,     64,     64,     ONLY_SMALLEST",
+            "0,     -1,     -1,     NONE"
+    })
+    void ensure_album_can_be_persisted_with_different_image_selections(final long expectedTotal,
+                                                                       final int w,
+                                                                       final int h,
+                                                                       final ImageSelection selection)
+            throws IOException {
+        // Arrange
+        final Album apiAlbum = loadFromPath("The_Heist.json");
+        assertAlbumForSelectionTestIsSuitable(w, h, selection, apiAlbum);
+        final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
+
+        // Act
+        final SpotifyAlbum album = spotifyObjectRepository.persist(apiAlbum, selection);
+
+        // Assert
+        assertAlbumWithSelectionPersistedCorrectly(expectedTotal, w, h, selection, apiAlbum, album, oldImageCount);
+    }
+
     @Test
     void ensure_singles_album_can_be_persisted() throws IOException {
         // Arrange
@@ -120,15 +133,7 @@ class SpotifyAlbumRepositoryTest {
         var persistedAlbum = spotifyObjectRepository.persist(apiAlbum);
 
         // Assert
-        assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
-                "Can't find Album by Spotify ID.");
-        assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
-        assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
-        assertTrue(apiAlbum.getArtists().length > 0);
-        assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
-        assertTrue(apiAlbum.getImages().length > 0);
-        assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
-        assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
+        assertAlbumPersistedCorrectly(apiAlbum, persistedAlbum);
     }
 
     @Test
@@ -198,16 +203,7 @@ class SpotifyAlbumRepositoryTest {
             final var apiAlbum = Arrays.stream(apiAlbums)
                     .filter(a -> a.getId().equals(persistedAlbum.getSpotifyID().getId()))
                     .findFirst().orElseThrow();
-            assertTrue(spotifyObjectRepository.exists(apiAlbum.getId(), SpotifyID.class),
-                    "Can't find Album by Spotify ID.");
-            assertTrue(spotifyObjectRepository.exists(apiAlbum), "Can't find Album by apiAlbum/Spotify ID.");
-            assertTrue(spotifyObjectRepository.exists(persistedAlbum), "Can't find Album by Object reference.");
-            assertTrue(apiAlbum.getArtists().length > 0);
-            assertEquals(apiAlbum.getArtists().length, persistedAlbum.getArtists().size());
-            assertTrue(apiAlbum.getImages().length > 0);
-            assertEquals(apiAlbum.getImages().length, persistedAlbum.getImages().size());
-            assertFalse(persistedAlbum.getTracks().isEmpty());
-            assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
+            assertAlbumPersistedCorrectly(apiAlbum, persistedAlbum);
         }
     }
 
@@ -224,7 +220,26 @@ class SpotifyAlbumRepositoryTest {
                                                                              final int h,
                                                                              final ImageSelection selection)
             throws IOException {
-        throw new UnsupportedOperationException("implement methods and test");
+        // Arrange
+        final Album[] apiAlbums = {
+                loadFromPath("The_Heist.json"),
+                loadFromPath("The_Trick_To_Life.json"),
+                loadFromPath("King.json")
+        };
+        for (var apiAlbum : apiAlbums) assertAlbumForSelectionTestIsSuitable(w, h, selection, apiAlbum);
+        final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
+
+        // Act
+        var albums = spotifyObjectRepository.persist(apiAlbums, selection);
+
+        // Assert
+        for (var apiAlbum : apiAlbums) {
+            SpotifyAlbum album = albums.stream()
+                    .filter(a -> a.getSpotifyID().getId().equals(apiAlbum.getId()))
+                    .findAny().orElseThrow();
+            assertAlbumWithSelectionPersistedCorrectly(expectedTotal, w, h, selection, apiAlbum, album, oldImageCount);
+        }
+        assertEquals(oldImageCount + apiAlbums.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ARTIST));
     }
 
     @Test

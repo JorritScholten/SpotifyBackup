@@ -214,7 +214,9 @@
   "external_urls": {
     "spotify": "https://open.spotify.com/album/6csqvoYMNuWHBqyXDWOm4L"
   },
-  "genres": [],
+  "genres": [
+    "symphonic metal"
+  ],
   "href": "https://api.spotify.com/v1/albums/6csqvoYMNuWHBqyXDWOm4L",
   "id": "6csqvoYMNuWHBqyXDWOm4L",
   "images": [
