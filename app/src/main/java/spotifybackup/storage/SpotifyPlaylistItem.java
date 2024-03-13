@@ -30,7 +30,6 @@ public final class SpotifyPlaylistItem extends SpotifyObject {
     @JoinColumn(name = "added_by_user_id")
     private SpotifyUser addedBy;
 
-    @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE")
     private ZonedDateTime dateAdded;
 
     public Optional<SpotifyUser> getAddedBy() {

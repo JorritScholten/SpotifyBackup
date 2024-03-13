@@ -71,7 +71,6 @@ public final class SpotifyAlbum extends SpotifyObject {
     private AlbumType spotifyAlbumType;
 
     @NonNull
-    @Column(columnDefinition = "DATE")
     private LocalDate releaseDate;
 
     @NonNull

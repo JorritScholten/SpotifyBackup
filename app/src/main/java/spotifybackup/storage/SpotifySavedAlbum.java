@@ -28,7 +28,7 @@ public final class SpotifySavedAlbum extends SpotifyObject{
 
     @NonNull
     @Setter(AccessLevel.PACKAGE)
-    @Column(columnDefinition = "TIMESTAMP(0) WITH TIME ZONE", nullable = false)
+    @Column(nullable = false)
     private ZonedDateTime dateAdded;
 
     @NonNull
