@@ -3,6 +3,8 @@ package spotifybackup.storage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.model_objects.specification.Album;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 
@@ -52,9 +54,58 @@ class SpotifyAlbumRepositoryTest {
         assertEquals(apiAlbum.getTracks().getTotal(), persistedAlbum.getTracks().size());
     }
 
-    @Test
-    void ensure_album_can_be_persisted_with_different_image_selections() throws IOException {
-        throw new UnsupportedOperationException("implement methods and test");
+    @ParameterizedTest(name = "[{index}] {arguments}")
+    @CsvSource(useHeadersInDisplayName = true, value = {
+            "total, w,      h,      value",
+            "3,     -1,     -1,     ALL",
+            "1,     640,    640,    ONLY_LARGEST",
+            "1,     64,     64,     ONLY_SMALLEST",
+            "0,     -1,     -1,     NONE"
+    })
+    void ensure_album_can_be_persisted_with_different_image_selections(final long expectedTotal,
+                                                                       final int w,
+                                                                       final int h,
+                                                                       final ImageSelection selection)
+            throws IOException {
+        // Arrange
+        final Album apiAlbum = loadFromPath("The_Heist.json");
+        assertFalse(spotifyObjectRepository.exists(apiAlbum),
+                "Album with Spotify ID " + apiAlbum.getId() + " shouldn't already exist.");
+        assertTrue(apiAlbum.getImages().length > 1);
+        for (var apiImage : apiAlbum.getImages()) assertFalse(spotifyObjectRepository.exists(apiImage));
+        switch (selection) {
+            case ONLY_LARGEST -> {
+                assertEquals(w, ImageSelection.findLargest(apiAlbum.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findLargest(apiAlbum.getImages()).getHeight());
+            }
+            case ONLY_SMALLEST -> {
+                assertEquals(w, ImageSelection.findSmallest(apiAlbum.getImages()).getWidth());
+                assertEquals(h, ImageSelection.findSmallest(apiAlbum.getImages()).getHeight());
+            }
+        }
+        final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
+
+        // Act
+        final SpotifyAlbum album = spotifyObjectRepository.persist(apiAlbum, selection);
+
+        // Assert
+        assertTrue(spotifyObjectRepository.exists(apiAlbum));
+        assertEquals(apiAlbum.getId(), album.getSpotifyID().getId());
+        assertEquals(expectedTotal, album.getImages().size());
+        assertEquals(expectedTotal + oldImageCount, spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE));
+        switch (selection) {
+            case ONLY_LARGEST, ONLY_SMALLEST -> {
+                assertEquals(1, album.getImages().size());
+                SpotifyImage image = album.getImages().iterator().next();
+                assertEquals(w, image.getWidth().orElseThrow());
+                assertEquals(h, image.getHeight().orElseThrow());
+                assertEquals(1, Arrays.stream(apiAlbum.getImages())
+                        .filter(i -> i.getHeight() == h && i.getWidth() == w).count());
+                assertEquals(Arrays.stream(apiAlbum.getImages()).filter(i -> i.getHeight() == h && i.getWidth() == w)
+                        .findFirst().orElseThrow().getUrl(), image.getUrl());
+            }
+            case ALL -> assertEquals(expectedTotal, apiAlbum.getImages().length);
+        }
     }
 
     @Test
@@ -160,8 +211,19 @@ class SpotifyAlbumRepositoryTest {
         }
     }
 
-    @Test
-    void ensure_album_array_can_be_persisted_with_different_image_selections() throws IOException {
+    @ParameterizedTest(name = "[{index}] {arguments}")
+    @CsvSource(useHeadersInDisplayName = true, value = {
+            "total, w,      h,      value",
+            "3,     -1,     -1,     ALL",
+            "1,     640,    640,    ONLY_LARGEST",
+            "1,     160,    160,    ONLY_SMALLEST",
+            "0,     -1,     -1,     NONE"
+    })
+    void ensure_album_array_can_be_persisted_with_different_image_selections(final long expectedTotal,
+                                                                             final int w,
+                                                                             final int h,
+                                                                             final ImageSelection selection)
+            throws IOException {
         throw new UnsupportedOperationException("implement methods and test");
     }
 
@@ -189,8 +251,19 @@ class SpotifyAlbumRepositoryTest {
         }
     }
 
-    @Test
-    void ensure_album_array_can_be_persisted_shallowly_with_different_image_selections() throws IOException {
+    @ParameterizedTest(name = "[{index}] {arguments}")
+    @CsvSource(useHeadersInDisplayName = true, value = {
+            "total, w,      h,      value",
+            "3,     -1,     -1,     ALL",
+            "1,     640,    640,    ONLY_LARGEST",
+            "1,     160,    160,    ONLY_SMALLEST",
+            "0,     -1,     -1,     NONE"
+    })
+    void ensure_album_array_can_be_persisted_shallowly_with_different_image_selections(final long expectedTotal,
+                                                                                       final int w,
+                                                                                       final int h,
+                                                                                       final ImageSelection selection)
+            throws IOException {
         throw new UnsupportedOperationException("implement methods and test");
     }
 }
