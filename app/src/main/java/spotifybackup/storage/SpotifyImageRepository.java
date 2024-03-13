@@ -38,7 +38,7 @@ class SpotifyImageRepository {
      * @param selection Limit which images are saved to selection.
      */
     static Set<SpotifyImage> imageSetFactory(EntityManager entityManager, Image[] images, ImageSelection selection) {
-        if (images == null) return Collections.emptySet();
+        if (images == null || images.length == 0) return Collections.emptySet();
         ensureTransactionActive.accept(entityManager);
         return switch (selection) {
             case ALL -> Arrays.stream(images).map(i -> persist(entityManager, i)).collect(Collectors.toSet());

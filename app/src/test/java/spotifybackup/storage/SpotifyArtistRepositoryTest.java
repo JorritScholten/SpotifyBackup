@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
@@ -114,6 +115,26 @@ class SpotifyArtistRepositoryTest {
         // Assert
         assertArtistWithSelectionPersistedCorrectly(expectedTotal, expectedTotal + oldImageCount, w, h,
                 selection, apiArtist, artist);
+    }
+
+    @ParameterizedTest
+    @EnumSource(ImageSelection.class)
+    void ensure_artist_without_images_can_be_persisted_with_different_image_selections(final ImageSelection selection)
+            throws IOException {
+        // Arrange
+        final Artist apiArtist = loadFromPath("Texas_wo_images.json");
+        assertEquals(0, apiArtist.getImages().length);
+        final var oldImageCount = spotifyObjectRepository.count(SpotifyObject.SubTypes.IMAGE);
+
+        // Act
+        final SpotifyArtist artist = spotifyObjectRepository.persist(apiArtist, selection);
+
+        // Assert
+        assertTrue(spotifyObjectRepository.exists(apiArtist.getId(), SpotifyID.class),
+                "Can't find Artist by Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(apiArtist), "Can't find Artist by apiArtist/Spotify ID.");
+        assertTrue(spotifyObjectRepository.exists(artist), "Can't find Artist by Object reference.");
+        assertEquals(0, artist.getImages().size());
     }
 
     @ParameterizedTest(name = "[{index}] {arguments}")
