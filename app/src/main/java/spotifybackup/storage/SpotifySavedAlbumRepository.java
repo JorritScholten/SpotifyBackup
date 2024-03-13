@@ -89,7 +89,7 @@ class SpotifySavedAlbumRepository {
 
     static SpotifySavedAlbum persist(EntityManager em, @NonNull SavedAlbum apiAlbum, @NonNull SpotifyUser user) {
         ensureTransactionActive.accept(em);
-        var album = SpotifyAlbumRepository.persist(em, apiAlbum.getAlbum());
+        var album = SpotifyAlbumRepository.persist(em, apiAlbum.getAlbum(), true, ImageSelection.ALL);
         var spotifySavedAlbum = find(em, album, user);
         if (spotifySavedAlbum.isPresent()) {
             if (spotifySavedAlbum.get().getIsRemoved()) {

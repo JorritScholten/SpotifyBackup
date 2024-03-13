@@ -4,8 +4,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import se.michaelthelin.spotify.model_objects.specification.SavedAlbum;
 import se.michaelthelin.spotify.model_objects.specification.Album;
+import se.michaelthelin.spotify.model_objects.specification.SavedAlbum;
 import se.michaelthelin.spotify.model_objects.specification.User;
 
 import java.io.IOException;
@@ -52,6 +52,7 @@ class SpotifySavedAlbumRepositoryTest {
     @ValueSource(strings = {"testaccount", "testaccount2"})
     @Order(2)
     void ensure_users_saved_albums_can_be_persisted(String userId) throws IOException {
+        fail("implement ImageSelection limit to persist methods");
         // Arrange
         final var user = getUserFromId.apply(userId);
         final SavedAlbum[] apiSavedAlbums = new SavedAlbum.JsonUtil().createModelObjectArray(
