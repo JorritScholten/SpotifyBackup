@@ -275,7 +275,7 @@ class SpotifyAlbumRepositoryTest {
             "total, w,      h,      value",
             "3,     -1,     -1,     ALL",
             "1,     640,    640,    ONLY_LARGEST",
-            "1,     160,    160,    ONLY_SMALLEST",
+            "1,     64,     64,     ONLY_SMALLEST",
             "0,     -1,     -1,     NONE"
     })
     void ensure_album_array_can_be_persisted_shallowly_with_different_image_selections(final long expectedTotal,
@@ -283,6 +283,23 @@ class SpotifyAlbumRepositoryTest {
                                                                                        final int h,
                                                                                        final ImageSelection selection)
             throws IOException {
-        throw new UnsupportedOperationException("implement methods and test");
+        // Arrange
+        final Album[] apiAlbums = {
+                loadFromPath("The_Heist.json"),
+                loadFromPath("The_Trick_To_Life.json"),
+                loadFromPath("King.json")
+        };
+        for (var apiAlbum : apiAlbums) assertAlbumForSelectionTestIsSuitable(w, h, selection, apiAlbum);
+        assertEquals(0, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
+
+        // Act
+        var persistedAlbums = spotifyObjectRepository.persistWithoutTracks(apiAlbums, selection);
+
+        // Assert
+        assertEquals(apiAlbums.length, spotifyObjectRepository.count(SpotifyObject.SubTypes.ALBUM));
+        assertEquals(0, spotifyObjectRepository.count(SpotifyObject.SubTypes.TRACK));
+        for (var album : persistedAlbums) {
+            assertTrue(album.getTracks().isEmpty());
+        }
     }
 }
