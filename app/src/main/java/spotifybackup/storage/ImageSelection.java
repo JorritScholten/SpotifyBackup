@@ -1,6 +1,10 @@
 package spotifybackup.storage;
 
+import lombok.NonNull;
 import se.michaelthelin.spotify.model_objects.specification.Image;
+
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 public enum ImageSelection {
     ALL,
@@ -8,35 +12,25 @@ public enum ImageSelection {
     ONLY_SMALLEST,
     NONE;
 
-    /** @return null if images is null, otherwise smallest image in array. */
-    static Image findSmallest(Image[] images) {
-        if (images == null) return null;
-        int smallestSize = Integer.MAX_VALUE;
-        Image smallestImage = null;
+    private static SortedMap<Integer, Image> sortBySize(@NonNull Image[] images) {
+        SortedMap<Integer, Image> map = new TreeMap<>();
         for (var image : images) {
             if (image.getHeight() == null || image.getWidth() == null ||
                     image.getHeight() <= 0 || image.getWidth() <= 0) continue;
-            if (image.getHeight() * image.getWidth() < smallestSize) {
-                smallestSize = image.getHeight() * image.getWidth();
-                smallestImage = image;
-            }
+            map.put(image.getWidth() * image.getHeight(), image);
         }
-        return smallestImage;
+        return map;
     }
 
-    /** @return null if images is null, otherwise smallest image in array. */
+    /** @return null if images is null or no image has a valid size, otherwise smallest image in array. */
+    static Image findSmallest(Image[] images) {
+        if (images == null) return null;
+        return sortBySize(images).pollFirstEntry().getValue();
+    }
+
+    /** @return null if images is null or no image has a valid size, otherwise smallest image in array. */
     static Image findLargest(Image[] images) {
         if (images == null) return null;
-        int largestSize = Integer.MIN_VALUE;
-        Image largestImage = null;
-        for (var image : images) {
-            if (image.getHeight() == null || image.getWidth() == null ||
-                    image.getHeight() <= 0 || image.getWidth() <= 0) continue;
-            if (image.getHeight() * image.getWidth() > largestSize) {
-                largestSize = image.getHeight() * image.getWidth();
-                largestImage = image;
-            }
-        }
-        return largestImage;
+        return sortBySize(images).pollLastEntry().getValue();
     }
 }
