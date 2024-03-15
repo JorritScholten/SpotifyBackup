@@ -22,7 +22,7 @@ public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
 
     @Override
     protected String getDescription() {
-        return super.getDescription() + " Default value:[" + getValue() + "]";
+        return super.getDescription() + " Default value: [" + getValue() + "]";
     }
 
     public static class Builder extends IntArgument.Builder<Builder> {

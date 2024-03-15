@@ -25,7 +25,7 @@ public class DefaultBoundedIntArgument extends BoundedIntArgument implements Has
 
     @Override
     protected String getDescription() {
-        return super.getDescription() + " Default value:[" + getValue() + "]";
+        return super.getDescription() + " Default value: [" + getValue() + "]";
     }
 
     public static class Builder extends BoundedIntArgument.Builder<Builder> {

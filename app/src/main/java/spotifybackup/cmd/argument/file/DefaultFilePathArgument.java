@@ -26,7 +26,7 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
 
     @Override
     protected String getDescription() {
-        return super.getDescription() + " Default value:[" + getValue().getAbsolutePath() + "]";
+        return super.getDescription() + " Default value: [" + getValue().getAbsolutePath() + "]";
     }
 
     public static class Builder extends FilePathArgument.Builder<Builder> {

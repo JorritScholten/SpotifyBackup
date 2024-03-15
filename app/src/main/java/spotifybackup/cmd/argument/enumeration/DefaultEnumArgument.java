@@ -25,7 +25,7 @@ public class DefaultEnumArgument<E extends Enum<E>> extends EnumArgument<E> impl
 
     @Override
     protected String getDescription() {
-        return super.getDescription() + " Default value:[" + getValue() + "]";
+        return super.getDescription() + " Default value: [" + getValue() + "]";
     }
 
     public static class Builder<E extends Enum<E>> extends EnumArgument.Builder<Builder<E>, E> {
