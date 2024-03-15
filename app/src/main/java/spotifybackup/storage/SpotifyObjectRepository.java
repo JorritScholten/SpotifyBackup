@@ -80,6 +80,18 @@ public class SpotifyObjectRepository {
         return dataSourceUrl.toString();
     }
 
+    public void outputDatabaseToSQLScript(@NonNull File outputPath) {
+        if (outputPath.exists() && !outputPath.canWrite()) {
+            throw new IllegalArgumentException("Supplied filepath to output SQL script to can't be written to: "
+                    + outputPath);
+        }
+        try (var em = emf.createEntityManager()) {
+            em.getTransaction().begin();
+            em.createNativeQuery("SCRIPT TO '" + outputPath.getAbsolutePath() + "'").getResultList();
+            em.getTransaction().commit();
+        }
+    }
+
     private void checkAvailableMarketsBitset() {
         try (var em = emf.createEntityManager()) {
             var cb = em.getCriteriaBuilder();

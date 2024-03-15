@@ -17,6 +17,7 @@ public class CLI {
     CLI() throws IOException, InterruptedException {
         if (!App.dbFileArg.isPresent()) App.println("db file: " + App.dbFileArg.getValue());
         if (!App.configFileArg.isPresent()) App.println("config file: " + App.configFileArg.getValue());
+        if (App.sqlOutputFileArg.isPresent()) App.println("sql scripts file: " + App.sqlOutputFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         Config.loadFromFile(App.configFileArg.getValue());
         performActions();
@@ -28,6 +29,7 @@ public class CLI {
             if (Config.refreshTokens.isPresent()) for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
             else new Backup(0);
         }
+        if (App.sqlOutputFileArg.isPresent()) repo.outputDatabaseToSQLScript(App.sqlOutputFileArg.getValue());
     }
 
     private void addAccounts() throws IOException, InterruptedException {
@@ -234,7 +236,7 @@ public class CLI {
                         !apiPlaylist.get().getSnapshotId().equals(playlist.getSnapshotId())) {
                     var apiTracks = getPlaylistTracks(playlist);
                     if (apiTracks.size() == apiPlaylist.get().getTracks().getTotal()) {
-                        App.verbosePrintln(6, "Saving " + apiTracks.size() + " track(s) for " +
+                        App.verbosePrintln(8, "Saving " + apiTracks.size() + " track(s) for " +
                                 playlist.getName());
                         repo.deletePlaylistItems(playlist);
                         repo.persist(apiTracks, playlist);

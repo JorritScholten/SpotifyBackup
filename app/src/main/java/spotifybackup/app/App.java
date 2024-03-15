@@ -30,6 +30,13 @@ public class App {
             .description("Path of H2 db file containing the data from the user.")
             .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
             .build();
+    static final DefaultFilePathArgument sqlOutputFileArg = new DefaultFilePathArgument.Builder()
+            .name("outputSQL")
+            .shortName('o')
+            .isFile()
+            .description("Path to text file of SQL script of the database, useful for version tracking with git. Output only created if argument is present.")
+            .defaultValue(new File(HOME_DIR + "spotify_backup.sql"))
+            .build();
     static final FlagArgument verboseArg = new FlagArgument.Builder()
             .name("verbose")
             .shortName('v')
@@ -60,7 +67,7 @@ public class App {
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, doBackup, imageSaveRestriction, addAccounts, verboseArg)
+                .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts, verboseArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
