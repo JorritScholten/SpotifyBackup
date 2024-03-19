@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NonNull;
+import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 @Getter
@@ -44,6 +46,7 @@ public class ConfigV2 {
     static ConfigV2 createNewForTesting(@NonNull File filePath) {
         var config = new ConfigV2();
         config.path = filePath;
+        config.users = new ArrayList<>();
         return config;
     }
 
@@ -73,6 +76,14 @@ public class ConfigV2 {
         try (var reader = new FileReader(file)) {
             var config = gson.fromJson(reader, ConfigV2.class);
             config.path = file;
+            if (config.getClientId() == null || config.getClientId().isBlank())
+                throw new BlankConfigFieldException("clientId field blank or missing in: " + file);
+            if (config.getRedirectURI() == null || config.getRedirectURI().toString().isBlank())
+                throw new BlankConfigFieldException("redirectURI field blank or missing in: " + file);
+            if (config.clientSecret != null && config.clientSecret.isBlank())
+                throw new BlankConfigFieldException("clientSecret field blank: " + file);
+            if (config.users == null)
+                throw new BlankConfigFieldException("users array field missing in: " + file);
             config.users.forEach(u -> u.serialize = v -> config.serialize());
             return config;
         }
@@ -83,18 +94,17 @@ public class ConfigV2 {
             ConfigV2 config = new ConfigV2();
             config.clientId = "";
             config.redirectURI = new URI("");
-            config.clientSecret = "";
+            config.clientSecret = "can be removed/omitted";
             config.users = new ArrayList<>();
             writer.write(gson.toJson(config));
             writer.write('\n');
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new ConfigFileException("This shouldn't be thrown for a blank URI.");
         }
     }
 
     public UserInfo addEmptyUser() {
         final UserInfo newUser = new UserInfo(v -> this.serialize());
-        if (users == null) users = new ArrayList<>();
         users.add(newUser);
         return newUser;
     }
@@ -113,6 +123,10 @@ public class ConfigV2 {
         serialize();
     }
 
+    public Optional<String> getClientSecret() {
+        return Optional.ofNullable(clientSecret);
+    }
+
     public void setClientSecret(@NonNull String clientSecret) {
         this.clientSecret = clientSecret;
         serialize();
@@ -123,7 +137,7 @@ public class ConfigV2 {
             writer.write(gson.toJson(this));
             writer.write('\n');
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ConfigFileException("Couldn't write to config file at " + path.getAbsolutePath() + " " + e);
         }
     }
 

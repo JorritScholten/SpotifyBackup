@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 
@@ -34,7 +36,7 @@ class ConfigV2Test {
                 {
                   "clientId": "",
                   "redirectURI": "",
-                  "clientSecret": "",
+                  "clientSecret": "can be removed/omitted",
                   "users": []
                 }
                 """;
@@ -47,30 +49,73 @@ class ConfigV2Test {
         assertEquals(blankConfig, newConfig);
     }
 
-    @Test
-    void ensure_blank_config_fields_are_rejected() throws IOException {
+    @ParameterizedTest
+    @ValueSource(strings = {
+            /* no fields are missing here, would not throw an exception
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": []
+            }
+            """,*/
+            """
+            {
+              "clientId": "",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": []
+            }
+            """,
+            """
+            {
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": []
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "",
+              "clientSecret": "123",
+              "users": []
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "clientSecret": "123",
+              "users": []
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "",
+              "users": []
+            }
+            """,
+            /* clientSecret is allowed to be missing, it is after all not essential
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "users": []
+            }
+            """,*/
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123"
+            }
+            """,
+    })
+    void ensure_blank_or_missing_fields_are_rejected(final String configContents) throws IOException{
         // Arrange
-        final String configContents = """
-                {
-                  "clientId": "",
-                  "redirectURI": "http://localhost:1234"
-                }
-                """;
-        Files.writeString(configFile.toPath(), configContents);
-
-        // Act & Assert
-        assertThrows(BlankConfigFieldException.class, () -> ConfigV2.loadFromFile(configFile));
-    }
-
-    @Test
-    void ensure_required_fields_are_present() throws IOException {
-        // Arrange
-        final String configContents = """
-                {
-                  "redirectURI": "http://localhost:1234",
-                  "clientSecret": "123"
-                }
-                """;
         Files.writeString(configFile.toPath(), configContents);
 
         // Act & Assert
@@ -114,7 +159,7 @@ class ConfigV2Test {
         // Assert
         assertEquals(clientId, config.getClientId());
         assertEquals(redirectURI, config.getRedirectURI());
-        assertEquals(clientSecret, config.getClientSecret());
+        assertEquals(clientSecret, config.getClientSecret().orElseThrow());
         assertEquals(users.get(0), config.getUsers()[0]);
         assertEquals(users.get(1), config.getUsers()[1]);
         assertEquals(users.size(), config.getUsers().length);
@@ -169,7 +214,7 @@ class ConfigV2Test {
     }
 
     @Test
-    void create_new_config_file_and_load_values_into_it() throws IOException, URISyntaxException {
+    void create_new_config_file_and_load_values_into_it() throws URISyntaxException {
         // Arrange
         assertThrows(ConfigFileException.class, () -> ConfigV2.loadFromFile(configFile));
         final String clientId = "some-client-id";
@@ -200,7 +245,7 @@ class ConfigV2Test {
     }
 
     @Test
-    void ensure_added_user_info_is_saved() throws IOException, URISyntaxException {
+    void ensure_added_user_info_is_saved() throws IOException {
         // Arrange
         final String initialConfigContents = """
                 {
@@ -246,11 +291,6 @@ class ConfigV2Test {
                 }
                 """;
         final ConfigV2.UserInfo newUser = new ConfigV2.UserInfo(null, "user3", "User 3", "1a2b3c");
-        final List<ConfigV2.UserInfo> users = List.of(
-                new ConfigV2.UserInfo(null, "user1", "User 1", "q1w2e3r4t5"),
-                new ConfigV2.UserInfo(null, "user2", "User 2", "y6u7i8o9p0"),
-                newUser
-        );
         Files.writeString(configFile.toPath(), initialConfigContents);
         final var config = ConfigV2.loadFromFile(configFile);
 
