@@ -36,7 +36,7 @@ class ConfigV2Test {
                 {
                   "clientId": "",
                   "redirectURI": "",
-                  "clientSecret": "can be removed/omitted",
+                  "clientSecret": "",
                   "users": []
                 }
                 """;

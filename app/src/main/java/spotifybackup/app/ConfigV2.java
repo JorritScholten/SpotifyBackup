@@ -88,7 +88,7 @@ public class ConfigV2 {
         if (config.redirectURI == null || config.redirectURI.toString().isBlank())
             throw new BlankConfigFieldException("redirectURI field blank or missing in: " + file);
         if (config.clientSecret != null && config.clientSecret.isBlank())
-            throw new BlankConfigFieldException("clientSecret field blank: " + file);
+            throw new BlankConfigFieldException("clientSecret field blank (can be omitted): " + file);
         if (config.users == null)
             throw new BlankConfigFieldException("users array field missing in: " + file);
         else config.users.forEach(user -> {
@@ -110,7 +110,7 @@ public class ConfigV2 {
             ConfigV2 config = new ConfigV2();
             config.clientId = "";
             config.redirectURI = new URI("");
-            config.clientSecret = "can be removed/omitted";
+            config.clientSecret = "";
             config.users = new ArrayList<>();
             writer.write(gson.toJson(config));
             writer.write('\n');

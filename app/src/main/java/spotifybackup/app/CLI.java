@@ -19,7 +19,7 @@ public class CLI {
         if (!App.configFileArg.isPresent()) App.println("config file: " + App.configFileArg.getValue());
         if (App.sqlOutputFileArg.isPresent()) App.println("sql scripts file: " + App.sqlOutputFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
-        Config.loadFromFile(App.configFileArg.getValue());
+        App.config = ConfigV2.loadFromFile(App.configFileArg.getValue());
         performActions();
     }
 
@@ -35,7 +35,7 @@ public class CLI {
     private void addAccounts() throws IOException, InterruptedException {
         App.verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
         for (int i = 0; i < App.addAccounts.getValue(); i++) {
-            var api = new ApiWrapper(Config.refreshTokens.size());
+            var api = new ApiWrapper(App.config.addEmptyUser(), App.getConfig());
             var currentUser = api.getCurrentUser().orElseThrow();
             var user = repo.persist(currentUser);
             App.println("Added account: " + user.getDisplayName().orElseThrow());

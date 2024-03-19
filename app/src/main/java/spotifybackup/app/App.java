@@ -1,5 +1,6 @@
 package spotifybackup.app;
 
+import lombok.Getter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import spotifybackup.cmd.CmdParser;
@@ -57,17 +58,20 @@ public class App {
     static final DefaultEnumArgument<ImageSelection> imageSaveRestriction = new DefaultEnumArgument
             .Builder<ImageSelection>()
             .name("restrictImages")
-            .shortName('i')
+//            .shortName('i')
             .description("Restrict which images are saved to save on database size.")
             .defaultValue(ImageSelection.ONLY_LARGEST)
             .enumClass(ImageSelection.class)
             .build();
     static final CmdParser argParser;
     static final Terminal term;
+    @Getter
+    static ConfigV2 config;
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts, verboseArg)
+                .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
+                        verboseArg)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
