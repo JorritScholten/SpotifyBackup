@@ -16,7 +16,7 @@ import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.AbstractRequest;
-import spotifybackup.app.ConfigV2;
+import spotifybackup.app.Config;
 import spotifybackup.storage.SpotifyID;
 
 import java.awt.*;
@@ -51,14 +51,14 @@ public class ApiWrapper {
     private final Supplier<AbstractRequest<AuthorizationCodeCredentials>> authorizationRefreshRequest;
     private final AbstractRequest<URI> authorizationCodeUriRequest;
     private final Function<String, AbstractRequest<AuthorizationCodeCredentials>> authorizationCodeRequest;
-    private final ConfigV2.UserInfo account;
+    private final Config.UserInfo account;
 
     /**
      * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
      * @throws IOException          when an issue occurs with creating the redirect catch server or there is a network
      *                              issue (HTTP 3xx status code).
      */
-    public ApiWrapper(final ConfigV2.UserInfo account, final ConfigV2 config) throws InterruptedException, IOException {
+    public ApiWrapper(final Config.UserInfo account, final Config config) throws InterruptedException, IOException {
         this.account = account;
         var apiBuilder = SpotifyApi.builder();
         apiBuilder.setClientId(config.getClientId());

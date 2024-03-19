@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
 import se.michaelthelin.spotify.model_objects.specification.User;
-import spotifybackup.app.ConfigV2;
+import spotifybackup.app.Config;
 import spotifybackup.storage.SpotifyArtist;
 import spotifybackup.storage.SpotifyObject;
 import spotifybackup.storage.SpotifyObjectRepository;
@@ -24,11 +24,11 @@ public class ApiWrapperIntegrationTest {
     static final String CONFIG_FILE_PATH = System.getProperty("user.home") +
             FileSystems.getDefault().getSeparator() + ".spotify_backup_config.json";
     static ApiWrapper apiWrapper;
-    static ConfigV2 config;
+    static Config config;
 
     @BeforeAll
     public static void perform_authentication() throws IOException, InterruptedException {
-        config = ConfigV2.loadFromFile(new File(CONFIG_FILE_PATH));
+        config = Config.loadFromFile(new File(CONFIG_FILE_PATH));
         apiWrapper = new ApiWrapper(config.getUsers()[0], config);
     }
 

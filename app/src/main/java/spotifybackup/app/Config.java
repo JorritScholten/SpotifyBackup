@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Getter
-public class ConfigV2 {
+public class Config {
     @Getter(AccessLevel.NONE)
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -40,11 +40,11 @@ public class ConfigV2 {
     @Expose
     private List<UserInfo> users;
 
-    private ConfigV2() {}
+    private Config() {}
 
     /** @apiNote Only to be used for testing purposes. */
-    static ConfigV2 createNewForTesting(@NonNull File filePath) {
-        var config = new ConfigV2();
+    static Config createNewForTesting(@NonNull File filePath) {
+        var config = new Config();
         config.path = filePath;
         config.users = new ArrayList<>();
         return config;
@@ -56,11 +56,11 @@ public class ConfigV2 {
      * @throws ConfigFileException Thrown when filePath doesn't point to an existing config file, a blank config file is
      *                             created at filePath.
      */
-    public static ConfigV2 loadFromFile(@NonNull File filePath) throws IOException {
+    public static Config loadFromFile(@NonNull File filePath) throws IOException {
         if (filePath.isDirectory())
             throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + filePath);
         if (filePath.exists()) {
-            ConfigV2 config;
+            Config config;
             if (filePath.canRead()) config = readFile(filePath);
             else throw new IllegalArgumentException("Can't read file at supplied filepath: " + filePath);
             if (!filePath.canWrite())
@@ -72,9 +72,9 @@ public class ConfigV2 {
         }
     }
 
-    private static ConfigV2 readFile(File file) throws IOException {
+    private static Config readFile(File file) throws IOException {
         try (var reader = new FileReader(file)) {
-            var config = gson.fromJson(reader, ConfigV2.class);
+            var config = gson.fromJson(reader, Config.class);
             config.path = file;
             checkAllFields(file, config);
             config.users.forEach(u -> u.serialize = v -> config.serialize());
@@ -82,7 +82,7 @@ public class ConfigV2 {
         }
     }
 
-    private static void checkAllFields(File file, ConfigV2 config) {
+    private static void checkAllFields(File file, Config config) {
         if (isNullOrBlank(config.clientId))
             throw new BlankConfigFieldException("clientId field blank or missing in: " + file);
         if (config.redirectURI == null || config.redirectURI.toString().isBlank())
@@ -107,7 +107,7 @@ public class ConfigV2 {
 
     private static void createNewFile(File file) throws IOException {
         try (var writer = new FileWriter(file)) {
-            ConfigV2 config = new ConfigV2();
+            Config config = new Config();
             config.clientId = "";
             config.redirectURI = new URI("");
             config.clientSecret = "";

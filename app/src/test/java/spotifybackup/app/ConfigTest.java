@@ -20,7 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @EnabledIfEnvironmentVariable(named = "EnableMiscTests", matches = "true")
-class ConfigV2Test {
+class ConfigTest {
     File configFile;
 
     @BeforeEach
@@ -42,7 +42,7 @@ class ConfigV2Test {
                 """;
 
         // Act
-        assertThrows(ConfigFileException.class, () -> ConfigV2.loadFromFile(configFile));
+        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
 
         // Assert
         newConfig = Files.readString(configFile.toPath());
@@ -215,7 +215,7 @@ class ConfigV2Test {
         Files.writeString(configFile.toPath(), configContents);
 
         // Act & Assert
-        assertThrows(BlankConfigFieldException.class, () -> ConfigV2.loadFromFile(configFile));
+        assertThrows(BlankConfigFieldException.class, () -> Config.loadFromFile(configFile));
     }
 
     @Test
@@ -243,14 +243,14 @@ class ConfigV2Test {
         final String clientId = "abcdefg";
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
-        final List<ConfigV2.UserInfo> users = List.of(
-                new ConfigV2.UserInfo(null, "user1", "User 1", "token-1"),
-                new ConfigV2.UserInfo(null, "user2", "User 2", "token-2")
+        final List<Config.UserInfo> users = List.of(
+                new Config.UserInfo(null, "user1", "User 1", "token-1"),
+                new Config.UserInfo(null, "user2", "User 2", "token-2")
         );
         Files.writeString(configFile.toPath(), configContents);
 
         // Act
-        final var config = ConfigV2.loadFromFile(configFile);
+        final var config = Config.loadFromFile(configFile);
 
         // Assert
         assertEquals(clientId, config.getClientId());
@@ -264,7 +264,7 @@ class ConfigV2Test {
     @Test
     void ensure_new_config_file_with_loaded_values_is_properly_formatted() throws IOException, URISyntaxException {
         // Arrange
-        assertThrows(ConfigFileException.class, () -> ConfigV2.loadFromFile(configFile));
+        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
         final String configContents = """
                 {
                   "clientId": "abcdefg",
@@ -287,11 +287,11 @@ class ConfigV2Test {
         final String clientId = "abcdefg";
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
-        final List<ConfigV2.UserInfo> users = List.of(
-                new ConfigV2.UserInfo(null, "user1", "User 1", "token-1"),
-                new ConfigV2.UserInfo(null, "user2", "User 2", "token-2")
+        final List<Config.UserInfo> users = List.of(
+                new Config.UserInfo(null, "user1", "User 1", "token-1"),
+                new Config.UserInfo(null, "user2", "User 2", "token-2")
         );
-        final ConfigV2 config = ConfigV2.createNewForTesting(configFile);
+        final Config config = Config.createNewForTesting(configFile);
 
         // Act
         config.setClientId(clientId);
@@ -312,14 +312,14 @@ class ConfigV2Test {
     @Test
     void create_new_config_file_and_load_values_into_it() throws URISyntaxException {
         // Arrange
-        assertThrows(ConfigFileException.class, () -> ConfigV2.loadFromFile(configFile));
+        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
         final String clientId = "some-client-id";
         final URI redirectURI = new URI("http://localhost:5678");
-        final List<ConfigV2.UserInfo> users = List.of(
-                new ConfigV2.UserInfo(null, "user1", "User 1", "token-1"),
-                new ConfigV2.UserInfo(null, "user2", "User 2", "token-2")
+        final List<Config.UserInfo> users = List.of(
+                new Config.UserInfo(null, "user1", "User 1", "token-1"),
+                new Config.UserInfo(null, "user2", "User 2", "token-2")
         );
-        final ConfigV2 config = ConfigV2.createNewForTesting(configFile);
+        final Config config = Config.createNewForTesting(configFile);
 
         // Act
         config.setClientId(clientId);
@@ -332,7 +332,7 @@ class ConfigV2Test {
         }
 
         // Assert
-        assertDoesNotThrow(() -> ConfigV2.loadFromFile(configFile));
+        assertDoesNotThrow(() -> Config.loadFromFile(configFile));
         assertEquals(clientId, config.getClientId());
         assertEquals(redirectURI, config.getRedirectURI());
         assertEquals(users.get(0), config.getUsers()[0]);
@@ -386,9 +386,9 @@ class ConfigV2Test {
                   ]
                 }
                 """;
-        final ConfigV2.UserInfo newUser = new ConfigV2.UserInfo(null, "user3", "User 3", "1a2b3c");
+        final Config.UserInfo newUser = new Config.UserInfo(null, "user3", "User 3", "1a2b3c");
         Files.writeString(configFile.toPath(), initialConfigContents);
-        final var config = ConfigV2.loadFromFile(configFile);
+        final var config = Config.loadFromFile(configFile);
 
         // Act
         {

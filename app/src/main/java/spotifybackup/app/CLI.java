@@ -19,7 +19,7 @@ public class CLI {
         if (!App.configFileArg.isPresent()) App.println("config file: " + App.configFileArg.getValue());
         if (App.sqlOutputFileArg.isPresent()) App.println("sql scripts file: " + App.sqlOutputFileArg.getValue());
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
-        App.config = ConfigV2.loadFromFile(App.configFileArg.getValue());
+        App.config = Config.loadFromFile(App.configFileArg.getValue());
         performActions();
     }
 
@@ -48,7 +48,7 @@ public class CLI {
         final ApiWrapper api;
         final SpotifyUser user;
 
-        private Backup(final ConfigV2.UserInfo account) throws InterruptedException, IOException {
+        private Backup(final Config.UserInfo account) throws InterruptedException, IOException {
             api = new ApiWrapper(account, App.getConfig());
             final var currentUser = api.getCurrentUser().orElseThrow();
             App.verbosePrintln("Logged in as: " + currentUser.getDisplayName());

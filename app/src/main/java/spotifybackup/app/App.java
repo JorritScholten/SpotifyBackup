@@ -66,7 +66,7 @@ public class App {
     static final CmdParser argParser;
     static final Terminal term;
     @Getter
-    static ConfigV2 config;
+    static Config config;
 
     static {
         argParser = new CmdParser.Builder()
