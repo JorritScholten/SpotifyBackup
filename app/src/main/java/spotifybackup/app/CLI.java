@@ -1,7 +1,10 @@
 package spotifybackup.app;
 
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
-import se.michaelthelin.spotify.model_objects.specification.*;
+import se.michaelthelin.spotify.model_objects.specification.Paging;
+import se.michaelthelin.spotify.model_objects.specification.PagingCursorbased;
+import se.michaelthelin.spotify.model_objects.specification.Playlist;
+import se.michaelthelin.spotify.model_objects.specification.PlaylistTrack;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.*;
 
@@ -62,8 +65,7 @@ public class CLI {
         private void performBackup() {
             saveLikedSongs();
             saveFollowedPlaylists();
-            var newFollowedArtists = saveFollowedArtists();
-            markUnfollowedArtists(newFollowedArtists);
+            saveFollowedArtists();
             saveLikedAlbums();
             saveDetailedInfo();
         }
@@ -83,23 +85,12 @@ public class CLI {
             markUnfollowedPlaylists(newPlaylists);
         }
 
-        /** @return List of artists currently followed by user as returned from the API. */
-        private List<SpotifyArtist> saveFollowedArtists() {
-            App.verbosePrint(2, "Saving followed artists");
-            final int limit = 50;
-            String after = null;
-            PagingCursorbased<Artist> apiArtists;
-            List<SpotifyArtist> artists = new ArrayList<>();
-            App.verbosePrint(", requesting data");
-            do {
-                App.verbosePrint(".");
-                apiArtists = api.getCurrentUserFollowedArtists(limit, after);
-                artists.addAll(repo.persist(apiArtists.getItems(), App.imageSaveRestriction.getValue()));
-                after = apiArtists.getCursors()[0].getAfter();
-            } while (apiArtists.getNext() != null);
-            repo.followArtists(artists, user);
-            App.verbosePrintln("");
-            return artists;
+        private void saveFollowedArtists() {
+            List<SpotifyArtist> newArtists = new ArrayList<>();
+            var pageItems = getFromApiPagedCursor(2, "Saving followed artists", api::getCurrentUserFollowedArtists);
+            for (var items : pageItems) newArtists.addAll(repo.persist(items, App.imageSaveRestriction.getValue()));
+            repo.followArtists(newArtists, user);
+            markUnfollowedArtists(newArtists);
         }
 
         private void saveLikedAlbums() {
@@ -128,6 +119,24 @@ public class CLI {
             return apiItems;
         }
 
+        private <A extends AbstractModelObject> List<A[]>
+        getFromApiPagedCursor(int spaces, String message, BiFunction<Integer, String, PagingCursorbased<A>> getPage) {
+            App.verbosePrint(spaces, message);
+            final int limit = 50;
+            String after = null;
+            PagingCursorbased<A> apiPage;
+            List<A[]> apiItems = new ArrayList<>();
+            App.verbosePrint(", requesting data");
+            do {
+                App.verbosePrint(".");
+                apiPage = getPage.apply(limit, after);
+                apiItems.add(apiPage.getItems());
+                after = apiPage.getCursors()[0].getAfter();
+            } while (apiPage.getNext() != null);
+            App.println("");
+            return apiItems;
+        }
+
         private void markRemovedTracks(final List<SpotifySavedTrack> newSavedTracks) {
             var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
             var oldSavedTracks = repo.getSavedTracks(user);
@@ -136,7 +145,7 @@ public class CLI {
             var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
-                App.verbosePrintln("    Removed " + removed.size() + " track(s) from Liked Songs");
+                App.verbosePrintln(4, "Removed " + removed.size() + " track(s) from Liked Songs");
             }
         }
 
@@ -146,7 +155,7 @@ public class CLI {
             var removed = oldPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowPlaylists(removed, user);
-                App.verbosePrintln("    Unfollowed " + removed.size() + " playlist(s)");
+                App.verbosePrintln(4, "Unfollowed " + removed.size() + " playlist(s)");
             }
         }
 
@@ -156,7 +165,7 @@ public class CLI {
             var removed = oldArtists.stream().filter(a -> !newArtisIds.contains(a.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowArtists(removed, user);
-                App.verbosePrintln("    Unfollowed " + removed.size() + " artists(s)");
+                App.verbosePrintln(4, "Unfollowed " + removed.size() + " artists(s)");
             }
         }
 
@@ -166,7 +175,7 @@ public class CLI {
             var removed = oldSavedAlbums.stream().filter(p -> !newSavedAlbumIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var album : removed) repo.removeSavedAlbum(album.getAlbum(), user);
-                App.verbosePrintln("    Removed " + removed.size() + " album(s) from Saved Albums");
+                App.verbosePrintln(4, "Removed " + removed.size() + " album(s) from Saved Albums");
             }
         }
 
