@@ -17,6 +17,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 @Getter
@@ -38,6 +39,13 @@ public class ConfigV2 {
     private List<UserInfo> users;
 
     private ConfigV2() {}
+
+    /** @apiNote Only to be used for testing purposes. */
+    static ConfigV2 createNewForTesting(@NonNull File filePath) {
+        var config = new ConfigV2();
+        config.path = filePath;
+        return config;
+    }
 
     /**
      * Load config properties from a file, the file path is stored to allow for the saving of updated values.
@@ -152,6 +160,20 @@ public class ConfigV2 {
         public void setDisplayName(@NonNull String displayName) {
             this.displayName = displayName;
             serialize.accept(null);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof UserInfo userInfo)) return false;
+            return Objects.equals(spotifyId, userInfo.spotifyId) &&
+                    Objects.equals(displayName, userInfo.displayName) &&
+                    Objects.equals(refreshToken, userInfo.refreshToken);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(spotifyId, displayName, refreshToken);
         }
     }
 }
