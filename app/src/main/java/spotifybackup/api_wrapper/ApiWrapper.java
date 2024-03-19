@@ -160,9 +160,9 @@ public class ApiWrapper {
             }
             spotifyApi.setAccessToken(authorizationCodeCredentials.getAccessToken());
             spotifyApi.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
-            account.setRefreshToken(authorizationCodeCredentials.getRefreshToken());
             scheduleTokenRefresh(authorizationCodeCredentials.getExpiresIn());
             waitingForAPI.release();
+            saveAccountDetails(authorizationCodeCredentials.getRefreshToken());
         } catch (BadRequestException e) {
             if (e.getMessage().equals("Invalid refresh token")) {
                 // delete current refresh token and try again with an auth code request
@@ -187,6 +187,23 @@ public class ApiWrapper {
         } catch (InterruptedException e) {
             // caused by semaphore interruptions
             throw new RuntimeException(e);
+        }
+    }
+
+    private void saveAccountDetails(String refreshToken) throws IOException, InterruptedException {
+        var user = getCurrentUser().orElseThrow();
+        if (account.getSpotifyId().isEmpty() || account.getSpotifyId().get().isBlank()) {
+            account.setRefreshToken(refreshToken);
+            account.setDisplayName(user.getDisplayName());
+            account.setSpotifyId(user.getId());
+        } else {
+            if (account.getSpotifyId().get().equals(user.getId())) {
+                account.setRefreshToken(refreshToken);
+                account.setDisplayName(user.getDisplayName());
+            } else {
+                throw new RuntimeException("RefreshToken doesn't match expected account according to expected Spotify" +
+                        " User ID. Expected: " + account.getSpotifyId().orElseThrow() + " got: " + user.getId());
+            }
         }
     }
 

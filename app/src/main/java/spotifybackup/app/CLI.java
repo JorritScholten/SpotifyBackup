@@ -26,8 +26,8 @@ public class CLI {
     private void performActions() throws IOException, InterruptedException {
         if (App.addAccounts.isPresent()) addAccounts();
         if (App.doBackup.isPresent()) {
-            if (Config.refreshTokens.isPresent()) for (int i = 0; i < Config.refreshTokens.size(); i++) new Backup(i);
-            else new Backup(0);
+            if (App.config.getUsers().length > 0) for (var user : App.config.getUsers()) new Backup(user);
+            else new Backup(App.config.addEmptyUser());
         }
         if (App.sqlOutputFileArg.isPresent()) repo.outputDatabaseToSQLScript(App.sqlOutputFileArg.getValue());
     }
@@ -48,8 +48,8 @@ public class CLI {
         final ApiWrapper api;
         final SpotifyUser user;
 
-        private Backup(final int accountNumber) throws InterruptedException, IOException {
-            api = new ApiWrapper(accountNumber);
+        private Backup(final ConfigV2.UserInfo account) throws InterruptedException, IOException {
+            api = new ApiWrapper(account, App.getConfig());
             final var currentUser = api.getCurrentUser().orElseThrow();
             App.verbosePrintln("Logged in as: " + currentUser.getDisplayName());
             user = repo.persist(currentUser);
