@@ -203,9 +203,9 @@ class ConfigV2Test {
         config.setClientSecret(clientSecret);
         for (var user : users) {
             var newUser = config.addEmptyUser();
-            newUser.setSpotifyId(user.getSpotifyId());
-            newUser.setDisplayName(user.getDisplayName());
-            newUser.setRefreshToken(user.getRefreshToken());
+            newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
+            newUser.setDisplayName(user.getDisplayName().orElseThrow());
+            newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
         }
 
         // Assert
@@ -230,9 +230,9 @@ class ConfigV2Test {
         config.setRedirectURI(redirectURI);
         for (var user : users) {
             var newUser = config.addEmptyUser();
-            newUser.setSpotifyId(user.getSpotifyId());
-            newUser.setDisplayName(user.getDisplayName());
-            newUser.setRefreshToken(user.getRefreshToken());
+            newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
+            newUser.setDisplayName(user.getDisplayName().orElseThrow());
+            newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
         }
 
         // Assert
@@ -297,9 +297,9 @@ class ConfigV2Test {
         // Act
         {
             var emptyUser = config.addEmptyUser();
-            emptyUser.setSpotifyId(newUser.getSpotifyId());
-            emptyUser.setDisplayName(newUser.getDisplayName());
-            emptyUser.setRefreshToken(newUser.getRefreshToken());
+            emptyUser.setSpotifyId(newUser.getSpotifyId().orElseThrow());
+            emptyUser.setDisplayName(newUser.getDisplayName().orElseThrow());
+            emptyUser.setRefreshToken(newUser.getRefreshToken().orElseThrow());
         }
 
         // Assert

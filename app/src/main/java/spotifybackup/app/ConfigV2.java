@@ -146,9 +146,7 @@ public class ConfigV2 {
     }
 
     @AllArgsConstructor
-    @Getter
     public static class UserInfo {
-        @Getter(AccessLevel.NONE)
         private Consumer<Void> serialize;
         @Expose
         private String spotifyId;
@@ -161,9 +159,17 @@ public class ConfigV2 {
             this.serialize = serialize;
         }
 
-        public void setRefreshToken(@NonNull String refreshToken) {
-            this.refreshToken = refreshToken;
+        public Optional<String> getDisplayName() {
+            return Optional.ofNullable(displayName);
+        }
+
+        public void setDisplayName(@NonNull String displayName) {
+            this.displayName = displayName;
             serialize.accept(null);
+        }
+
+        public Optional<String> getSpotifyId() {
+            return Optional.ofNullable(spotifyId);
         }
 
         public void setSpotifyId(@NonNull String spotifyId) {
@@ -171,8 +177,12 @@ public class ConfigV2 {
             serialize.accept(null);
         }
 
-        public void setDisplayName(@NonNull String displayName) {
-            this.displayName = displayName;
+        public Optional<String> getRefreshToken() {
+            return Optional.ofNullable(refreshToken);
+        }
+
+        public void setRefreshToken(@NonNull String refreshToken) {
+            this.refreshToken = refreshToken;
             serialize.accept(null);
         }
 
