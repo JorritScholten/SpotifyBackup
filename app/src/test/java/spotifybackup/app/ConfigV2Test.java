@@ -113,6 +113,102 @@ class ConfigV2Test {
               "clientSecret": "123"
             }
             """,
+            /* no user fields are missing here, would not throw an exception
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "spotifyId": "user1",
+                  "displayName": "User 1",
+                  "refreshToken": "token-1"
+                }
+              ]
+            }
+            """,*/
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "spotifyId": "",
+                  "displayName": "User 1",
+                  "refreshToken": "token-1"
+                }
+              ]
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "displayName": "User 1",
+                  "refreshToken": "token-1"
+                }
+              ]
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "spotifyId": "user1",
+                  "displayName": "",
+                  "refreshToken": "token-1"
+                }
+              ]
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "spotifyId": "user1",
+                  "refreshToken": "token-1"
+                }
+              ]
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "spotifyId": "user1",
+                  "displayName": "User 1",
+                  "refreshToken": ""
+                }
+              ]
+            }
+            """,
+            """
+            {
+              "clientId": "sdf77e",
+              "redirectURI": "http://localhost:1234",
+              "clientSecret": "123",
+              "users": [
+                {
+                  "spotifyId": "user1",
+                  "displayName": "User 1"
+                }
+              ]
+            }
+            """,
     })
     void ensure_blank_or_missing_fields_are_rejected(final String configContents) throws IOException{
         // Arrange

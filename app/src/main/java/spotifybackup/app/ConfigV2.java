@@ -76,17 +76,33 @@ public class ConfigV2 {
         try (var reader = new FileReader(file)) {
             var config = gson.fromJson(reader, ConfigV2.class);
             config.path = file;
-            if (config.getClientId() == null || config.getClientId().isBlank())
-                throw new BlankConfigFieldException("clientId field blank or missing in: " + file);
-            if (config.getRedirectURI() == null || config.getRedirectURI().toString().isBlank())
-                throw new BlankConfigFieldException("redirectURI field blank or missing in: " + file);
-            if (config.clientSecret != null && config.clientSecret.isBlank())
-                throw new BlankConfigFieldException("clientSecret field blank: " + file);
-            if (config.users == null)
-                throw new BlankConfigFieldException("users array field missing in: " + file);
+            checkAllFields(file, config);
             config.users.forEach(u -> u.serialize = v -> config.serialize());
             return config;
         }
+    }
+
+    private static void checkAllFields(File file, ConfigV2 config) {
+        if (isNullOrBlank(config.clientId))
+            throw new BlankConfigFieldException("clientId field blank or missing in: " + file);
+        if (config.redirectURI == null || config.redirectURI.toString().isBlank())
+            throw new BlankConfigFieldException("redirectURI field blank or missing in: " + file);
+        if (config.clientSecret != null && config.clientSecret.isBlank())
+            throw new BlankConfigFieldException("clientSecret field blank: " + file);
+        if (config.users == null)
+            throw new BlankConfigFieldException("users array field missing in: " + file);
+        else config.users.forEach(user -> {
+            if (isNullOrBlank(user.spotifyId))
+                throw new BlankConfigFieldException("user.spotifyId field blank or missing in: " + file);
+            if (isNullOrBlank(user.displayName))
+                throw new BlankConfigFieldException("user.displayName field blank or missing in: " + file);
+            if (isNullOrBlank(user.refreshToken))
+                throw new BlankConfigFieldException("user.refreshToken field blank or missing in: " + file);
+        });
+    }
+
+    private static boolean isNullOrBlank(String string) {
+        return string == null || string.isBlank();
     }
 
     private static void createNewFile(File file) throws IOException {
