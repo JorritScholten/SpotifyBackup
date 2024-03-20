@@ -478,24 +478,23 @@ class CmdParserTest {
     void ensure_that_getHelp_output_is_formatted_correctly_for_default_width() {
         // Arrange
         final String expectedOutput = """
-                Usage: --int INTEGER --txt FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s
-                [STRING]] [--enum2 [ENUM]]
+                Usage: --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]]
+                [--enum2 [ENUM]]
 
                 Mandatory arguments:
-                  --int INTEGER     some integer
-                  --txt FILEPATH    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                  --enum ENUM       enum argument description Possible values: [abc, ABC, none]
+                    --int INTEGER   some integer
+                -t, --txt FILEPATH  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                    --enum ENUM     enum argument description Possible values: [abc, ABC, none]
 
                 Optional arguments:
-                  -h, --help        Show this help message and exit.
-                  -i [INTEGER], --int2 [INTEGER]
+                -h, --help          Show this help message and exit.
+                -i, --int2 [INTEGER]
                                     Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    Default value:[23]
-                  -s [STRING], --str [STRING]
-                                    some sort of string, dunno, not gonna use it. Default
-                                    value:[string]
-                  --enum2 [ENUM]    enum2 argument description Possible values: [abc, ABC, none]
-                                    Default value:[ABC]
+                                    Default value: [23]
+                -s, --str [STRING]  some sort of string, dunno, not gonna use it. Default value:
+                                    [string]
+                    --enum2 [ENUM]  enum2 argument description Possible values: [abc, ABC, none]
+                                    Default value: [ABC]
                 """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
@@ -517,6 +516,7 @@ class CmdParserTest {
                         new MandatoryFilePathArgument.Builder()
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit,")
+                                .shortName('t')
                                 .isFile()
                                 .build(),
                         new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
@@ -582,6 +582,7 @@ class CmdParserTest {
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
                                         " tempor incididunt ut")
+                                .shortName('t')
                                 .isFile()
                                 .build(),
                         new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
@@ -662,6 +663,7 @@ class CmdParserTest {
                                 .name("txt")
                                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
                                         " tempor incididunt ut")
+                                .shortName('t')
                                 .isFile()
                                 .build(),
                         new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
