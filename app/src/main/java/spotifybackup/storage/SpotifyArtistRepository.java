@@ -1,6 +1,7 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.model_objects.specification.Artist;
@@ -25,6 +26,15 @@ class SpotifyArtistRepository {
         query.select(root.get(SpotifyArtist_.spotifyID).asString())
                 .where(query.isTrue(root.get(SpotifyArtist_.isSimplified)));
         return em.createQuery(query).getResultList();
+    }
+
+    static TypedQuery<String> findArtistIdsByFollowingUser(EntityManager em, @NonNull SpotifyUser user) {
+        var query = new CriteriaDefinition<>(em, String.class) {};
+        var root = query.from(SpotifyArtist.class);
+        return em.createQuery(query
+                .select(root.get(SpotifyArtist_.spotifyID).asString())
+                .where(query.isMember(user, root.get(SpotifyArtist_.followers)))
+        );
     }
 
     /**

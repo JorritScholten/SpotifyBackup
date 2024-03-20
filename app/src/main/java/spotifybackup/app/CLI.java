@@ -71,33 +71,53 @@ public class CLI {
         }
 
         private void saveLikedSongs() {
-            List<SpotifySavedTrack> newTrackList = new ArrayList<>();
+            var oldTrackIds = repo.getSavedTrackIds(user);
+            List<SpotifySavedTrack> newTracks = new ArrayList<>();
             var pageItems = getFromApiPaged(2, "Saving all Liked Songs", api::getLikedSongs);
-            for (var items : pageItems) newTrackList.addAll(repo.persist(items, user));
-            markRemovedTracks(newTrackList);
+            for (var items : pageItems) newTracks.addAll(repo.persist(items, user));
+            var newTrackIds = newTracks.stream().map(t -> t.getTrack().getSpotifyID().getId()).collect(Collectors.toList());
+            newTrackIds.removeAll(oldTrackIds);
+            if (!newTrackIds.isEmpty())
+                App.verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs");
+            markRemovedTracks(newTracks);
         }
 
         private void saveFollowedPlaylists() {
+            var oldPlaylistIds = repo.getFollowedPlaylistIds(user);
             List<SpotifyPlaylist> newPlaylists = new ArrayList<>();
             var pageItems = getFromApiPaged(2, "Saving all playlists", api::getCurrentUserPlaylists);
             for (var items : pageItems) newPlaylists.addAll(repo.persist(items));
+            var newPlaylistIds = newPlaylists.stream().map(p -> p.getSpotifyID().getId()).collect(Collectors.toList());
+            newPlaylistIds.removeAll(oldPlaylistIds);
+            if (!newPlaylistIds.isEmpty())
+                App.verbosePrintln(4, "Following " + newPlaylistIds.size() + " new playlist(s)");
             repo.followPlaylists(newPlaylists, user);
             markUnfollowedPlaylists(newPlaylists);
         }
 
         private void saveFollowedArtists() {
+            var oldArtistIds = repo.getFollowedArtistIds(user);
             List<SpotifyArtist> newArtists = new ArrayList<>();
             var pageItems = getFromApiPagedCursor(2, "Saving followed artists", api::getCurrentUserFollowedArtists);
             for (var items : pageItems) newArtists.addAll(repo.persist(items, App.imageSaveRestriction.getValue()));
+            var newArtistIds = newArtists.stream().map(a -> a.getSpotifyID().getId()).collect(Collectors.toList());
+            newArtistIds.removeAll(oldArtistIds);
+            if (!newArtistIds.isEmpty())
+                App.verbosePrintln(4, "Following " + newArtistIds.size() + " new artist(s)");
             repo.followArtists(newArtists, user);
             markUnfollowedArtists(newArtists);
         }
 
         private void saveLikedAlbums() {
+            var oldAlbumIds = repo.getSavedAlbumIds(user);
             List<SpotifySavedAlbum> newAlbums = new ArrayList<>();
             var pageItems = getFromApiPaged(2, "Saving all liked albums", api::getCurrentUserSavedAlbums);
             for (var items : pageItems)
                 newAlbums.addAll(repo.persist(items, user, App.imageSaveRestriction.getValue()));
+            var newAlbumIds = newAlbums.stream().map(a -> a.getAlbum().getSpotifyID().getId()).collect(Collectors.toList());
+            newAlbumIds.removeAll(oldAlbumIds);
+            if (!newAlbumIds.isEmpty())
+                App.verbosePrintln(4, "Added " + newAlbumIds.size() + " album(s) to liked");
             markUnlikedAlbums(newAlbums);
         }
 
@@ -139,10 +159,10 @@ public class CLI {
 
         private void markRemovedTracks(final List<SpotifySavedTrack> newSavedTracks) {
             var newSavedTrackIds = newSavedTracks.stream().map(SpotifySavedTrack::getId).collect(Collectors.toSet());
-            var oldSavedTracks = repo.getSavedTracks(user);
+            var allSavedTracks = repo.getSavedTracks(user);
             // filter using record ids instead of object compare (removeAll calling equalsTo) because SpotifySavedTrack has
             // no equalsTo method that works on internal fields
-            var removed = oldSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
+            var removed = allSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
                 App.verbosePrintln(4, "Removed " + removed.size() + " track(s) from Liked Songs");
@@ -151,8 +171,8 @@ public class CLI {
 
         private void markUnfollowedPlaylists(final List<SpotifyPlaylist> newPlaylists) {
             var newPlaylistIds = newPlaylists.stream().map(SpotifyPlaylist::getId).collect(Collectors.toSet());
-            var oldPlaylists = repo.getFollowedPlaylists(user);
-            var removed = oldPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
+            var allPlaylists = repo.getFollowedPlaylists(user);
+            var removed = allPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowPlaylists(removed, user);
                 App.verbosePrintln(4, "Unfollowed " + removed.size() + " playlist(s)");
@@ -161,8 +181,8 @@ public class CLI {
 
         private void markUnfollowedArtists(final List<SpotifyArtist> newFollowedArtists) {
             var newArtisIds = newFollowedArtists.stream().map(SpotifyArtist::getId).collect(Collectors.toSet());
-            var oldArtists = repo.getFollowedArtists(user);
-            var removed = oldArtists.stream().filter(a -> !newArtisIds.contains(a.getId())).toList();
+            var allArtists = repo.getFollowedArtists(user);
+            var removed = allArtists.stream().filter(a -> !newArtisIds.contains(a.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowArtists(removed, user);
                 App.verbosePrintln(4, "Unfollowed " + removed.size() + " artists(s)");
@@ -171,8 +191,8 @@ public class CLI {
 
         private void markUnlikedAlbums(final List<SpotifySavedAlbum> newLikedAlbums) {
             var newSavedAlbumIds = newLikedAlbums.stream().map(SpotifySavedAlbum::getId).collect(Collectors.toSet());
-            var oldSavedAlbums = repo.getSavedAlbums(user);
-            var removed = oldSavedAlbums.stream().filter(p -> !newSavedAlbumIds.contains(p.getId())).toList();
+            var allSavedAlbums = repo.getSavedAlbums(user);
+            var removed = allSavedAlbums.stream().filter(p -> !newSavedAlbumIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var album : removed) repo.removeSavedAlbum(album.getAlbum(), user);
                 App.verbosePrintln(4, "Removed " + removed.size() + " album(s) from Saved Albums");

@@ -155,11 +155,13 @@ class SpotifyUserRepositoryTest {
         // Act
         spotifyObjectRepository.followPlaylists(playlists, user);
         final var followedPlaylists = spotifyObjectRepository.getFollowedPlaylists(user);
+        final var followedPlaylistIds = spotifyObjectRepository.getFollowedPlaylistIds(user);
 
         // Assert
         assertEquals(playlists.size(), followedPlaylists.size());
-        final var followedPlaylistIds = followedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList();
-        assertTrue(playlistIds.containsAll(followedPlaylistIds));
+        assertTrue(playlistIds.containsAll(followedPlaylists.stream().map(SpotifyPlaylist::getSpotifyID).toList()));
+        assertEquals(playlistIds.size(), followedPlaylistIds.size());
+        assertTrue(playlistIds.stream().map(SpotifyID::getId).toList().containsAll(followedPlaylistIds));
     }
 
     @Test
@@ -209,11 +211,13 @@ class SpotifyUserRepositoryTest {
         // Act
         spotifyObjectRepository.followArtists(artists, user);
         final var followedArtists = spotifyObjectRepository.getFollowedArtists(user);
+        final var followedArtistIds = spotifyObjectRepository.getFollowedArtistIds(user);
 
         // Assert
         assertEquals(artists.size(), followedArtists.size());
-        final var followedArtistIds = followedArtists.stream().map(SpotifyArtist::getSpotifyID).toList();
-        assertTrue(followedArtistIds.containsAll(artistIds));
+        assertTrue(artistIds.containsAll(followedArtists.stream().map(SpotifyArtist::getSpotifyID).toList()));
+        assertEquals(artistIds.size(), followedArtistIds.size());
+        assertTrue(artistIds.stream().map(SpotifyID::getId).toList().containsAll(followedArtistIds));
     }
 
     @Test

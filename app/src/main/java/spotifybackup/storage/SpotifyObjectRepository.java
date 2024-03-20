@@ -466,7 +466,6 @@ public class SpotifyObjectRepository {
 
     /**
      * Get Spotify IDs of a users' saved songs as stored in the database.
-     * @param user The SpotifyUser account to get SpotifySavedTrack objects from.
      * @return Set of Spotify IDs of a users' SpotifySavedTrack objects, may be empty.
      */
     public Set<String> getSavedTrackIds(@NonNull SpotifyUser user) {
@@ -478,12 +477,33 @@ public class SpotifyObjectRepository {
 
     /**
      * Get Spotify IDs of a users' saved albums as stored in the database.
-     * @param user The SpotifyUser account to get SpotifySavedAlbum objects from.
      * @return Set of Spotify IDs of a users' SpotifySavedAlbum objects, may be empty.
      */
     public Set<String> getSavedAlbumIds(@NonNull SpotifyUser user) {
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedAlbumRepository.findAlbumIdsByUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
+    }
+
+    /**
+     * Get Spotify IDs of the playlists a user is following as stored in the database.
+     * @return Set of Spotify IDs of the playlists a user is following, may be empty.
+     */
+    public Set<String> getFollowedPlaylistIds(@NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifyPlaylistRepository.findPlaylistIdsByFollowingUser(em, user);
+            return new HashSet<>(query.getResultList());
+        }
+    }
+
+    /**
+     * Get Spotify IDs of the artists a user is following as stored in the database.
+     * @return Set of Spotify IDs of the artists a user is following, may be empty.
+     */
+    public Set<String> getFollowedArtistIds(@NonNull SpotifyUser user) {
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifyArtistRepository.findArtistIdsByFollowingUser(em, user);
             return new HashSet<>(query.getResultList());
         }
     }
