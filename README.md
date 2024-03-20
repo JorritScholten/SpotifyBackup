@@ -17,5 +17,5 @@ database and automated backups to an online repository.
         - [x] OptionalEnumArgument
         - [x] OptionalIntArgument
         - [x] OptionalBoundedIntArgument
-    - [ ] add optional arguments to print usage tests
+    - [x] add optional arguments to print usage tests
 - [ ] Implement string containing spaces as an input for string arguments

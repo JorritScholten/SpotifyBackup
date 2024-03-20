@@ -3,6 +3,7 @@ package spotifybackup.cmd;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.FlagArgument;
@@ -580,238 +581,6 @@ class CmdParserTest {
         assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
     }
 
-    @Test
-    void ensure_that_getHelp_output_is_formatted_correctly_for_default_width() {
-        // Arrange
-        final String expectedOutput = """
-                Usage: --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]]
-                [--enum2 [ENUM]] [--opt STRING]
-
-                Mandatory arguments:
-                    --int INTEGER   some integer
-                -t, --txt FILEPATH  Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                    --enum ENUM     enum argument description Possible values: [abc, ABC, none]
-
-                Optional arguments:
-                -h, --help          Show this help message and exit.
-                -i, --int2 [INTEGER]
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    Default value: [23]
-                -s, --str [STRING]  some sort of string, dunno, not gonna use it. Default value:
-                                    [string]
-                    --enum2 [ENUM]  enum2 argument description Possible values: [abc, ABC, none]
-                                    Default value: [ABC]
-                    --opt STRING    argument can be missing from input, its value cannot
-                """;
-        CmdParser argParser = new CmdParser.Builder().arguments(
-                        new MandatoryIntArgument.Builder()
-                                .name("int")
-                                .description("some integer")
-                                .build(),
-                        new DefaultIntArgument.Builder()
-                                .name("int2")
-                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit,")
-                                .shortName('i')
-                                .defaultValue(23)
-                                .build(),
-                        new DefaultStringArgument.Builder()
-                                .name("str")
-                                .description("some sort of string, dunno, not gonna use it.")
-                                .shortName('s')
-                                .defaultValue("string")
-                                .build(),
-                        new MandatoryFilePathArgument.Builder()
-                                .name("txt")
-                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit,")
-                                .shortName('t')
-                                .isFile()
-                                .build(),
-                        new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
-                                .name("enum")
-                                .description("enum argument description")
-                                .enumClass(EnumArgumentTest.TestEnum.class)
-                                .build(),
-                        new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
-                                .name("enum2")
-                                .description("enum2 argument description")
-                                .enumClass(EnumArgumentTest.TestEnum.class)
-                                .defaultValue(EnumArgumentTest.TestEnum.ABC)
-                                .build(),
-                        new OptionalStringArgument.Builder()
-                                .name("opt")
-                                .description("argument can be missing from input, its value cannot")
-                                .build())
-                .addHelp()
-                .build();
-
-        // Act & Assert
-        assertEquals(expectedOutput, argParser.getHelp());
-    }
-
-    @Test
-    void ensure_that_getHelp_output_is_formatted_correctly_for_125_width() {
-        // Arrange
-        final String expectedOutput = """
-                Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]] [--opt STRING]
-                                
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                                
-                Mandatory arguments:
-                    --int INTEGER                       some integer
-                -t, --txt FILEPATH                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut
-                    --enum ENUM                         enum argument description Possible values: [abc, ABC, none]
-                                
-                Optional arguments:
-                -h, --help                              Show this help message and exit.
-                -i, --int2 [INTEGER]                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut Default value: [23]
-                -s, --str [STRING]                      some sort of string, dunno, not gonna use it. Default value: [string]
-                    --enum2 [ENUM]                      enum2 argument description Possible values: [abc, ABC, none] Default value: [ABC]
-                    --opt STRING                        argument can be missing from input, its value cannot
-                                
-                labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                """;
-        CmdParser argParser = new CmdParser.Builder().arguments(
-                        new MandatoryIntArgument.Builder()
-                                .name("int")
-                                .description("some integer")
-                                .build(),
-                        new DefaultIntArgument.Builder()
-                                .name("int2")
-                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
-                                        " tempor incididunt ut")
-                                .shortName('i')
-                                .defaultValue(23)
-                                .build(),
-                        new DefaultStringArgument.Builder()
-                                .name("str")
-                                .description("some sort of string, dunno, not gonna use it.")
-                                .shortName('s')
-                                .defaultValue("string")
-                                .build(),
-                        new MandatoryFilePathArgument.Builder()
-                                .name("txt")
-                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
-                                        " tempor incididunt ut")
-                                .shortName('t')
-                                .isFile()
-                                .build(),
-                        new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
-                                .name("enum")
-                                .description("enum argument description")
-                                .enumClass(EnumArgumentTest.TestEnum.class)
-                                .build(),
-                        new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
-                                .name("enum2")
-                                .description("enum2 argument description")
-                                .enumClass(EnumArgumentTest.TestEnum.class)
-                                .defaultValue(EnumArgumentTest.TestEnum.ABC)
-                                .build(),
-                        new OptionalStringArgument.Builder()
-                                .name("opt")
-                                .description("argument can be missing from input, its value cannot")
-                                .build())
-                .addHelp()
-                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
-                .programName("testName.jar")
-                .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
-                .build();
-
-        // Act & Assert
-        assertEquals(expectedOutput, argParser.getHelp(125, 40));
-    }
-
-    @Test
-    void ensure_that_getHelp_output_is_formatted_correctly_for_60_width() {
-        final String expectedOutput = """
-                Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM
-                [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]] [--opt
-                STRING]
-
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                do eiusmod tempor incididunt ut
-
-                Mandatory arguments:
-                    --int INTEGER
-                               some integer
-                -t, --txt FILEPATH
-                               Lorem ipsum dolor sit amet, consectetur
-                               adipiscing elit, sed do eiusmod tempor
-                               incididunt ut
-                    --enum ENUM
-                               enum argument description Possible values:
-                               [abc, ABC, none]
-
-                Optional arguments:
-                -h, --help     Show this help message and exit.
-                -i, --int2 [INTEGER]
-                               Lorem ipsum dolor sit amet, consectetur
-                               adipiscing elit, sed do eiusmod tempor
-                               incididunt ut Default value: [23]
-                -s, --str [STRING]
-                               some sort of string, dunno, not gonna use it.
-                               Default value: [string]
-                    --enum2 [ENUM]
-                               enum2 argument description Possible values:
-                               [abc, ABC, none] Default value: [ABC]
-                    --opt STRING
-                               argument can be missing from input, its value
-                               cannot
-
-                labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                nostrud exercitation
-                """;
-        CmdParser argParser = new CmdParser.Builder().arguments(
-                        new MandatoryIntArgument.Builder()
-                                .name("int")
-                                .description("some integer")
-                                .build(),
-                        new DefaultIntArgument.Builder()
-                                .name("int2")
-                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
-                                        " tempor incididunt ut")
-                                .shortName('i')
-                                .defaultValue(23)
-                                .build(),
-                        new DefaultStringArgument.Builder()
-                                .name("str")
-                                .description("some sort of string, dunno, not gonna use it.")
-                                .shortName('s')
-                                .defaultValue("string")
-                                .build(),
-                        new MandatoryFilePathArgument.Builder()
-                                .name("txt")
-                                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
-                                        " tempor incididunt ut")
-                                .shortName('t')
-                                .isFile()
-                                .build(),
-                        new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
-                                .name("enum")
-                                .description("enum argument description")
-                                .enumClass(EnumArgumentTest.TestEnum.class)
-                                .build(),
-                        new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
-                                .name("enum2")
-                                .description("enum2 argument description")
-                                .enumClass(EnumArgumentTest.TestEnum.class)
-                                .defaultValue(EnumArgumentTest.TestEnum.ABC)
-                                .build(),
-                        new OptionalStringArgument.Builder()
-                                .name("opt")
-                                .description("argument can be missing from input, its value cannot")
-                                .build())
-                .addHelp()
-                .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
-                .programName("testName.jar")
-                .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
-                .build();
-
-        // Act & Assert
-        assertEquals(expectedOutput, argParser.getHelp(60));
-    }
-
     /**
      * This test ensures that each Argument child has its constructor access set correctly. This test was implemented to
      * ease future development.
@@ -871,5 +640,248 @@ class CmdParserTest {
                 }
             }
         });
+    }
+
+    @Nested
+    class testGetHelpOutput {
+        final CmdParser argParser;
+
+        testGetHelpOutput() {
+            argParser = new CmdParser.Builder().arguments(
+                            new MandatoryIntArgument.Builder()
+                                    .name("int")
+                                    .description("some integer")
+                                    .build(),
+                            new DefaultIntArgument.Builder()
+                                    .name("int2")
+                                    .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
+                                            " tempor incididunt ut")
+                                    .shortName('i')
+                                    .defaultValue(23)
+                                    .build(),
+                            new DefaultStringArgument.Builder()
+                                    .name("str")
+                                    .description("some sort of string, dunno, not gonna use it.")
+                                    .shortName('s')
+                                    .defaultValue("string")
+                                    .build(),
+                            new MandatoryFilePathArgument.Builder()
+                                    .name("txt")
+                                    .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod" +
+                                            " tempor incididunt ut")
+                                    .shortName('t')
+                                    .isDirectory()
+                                    .build(),
+                            new MandatoryEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                    .name("enum")
+                                    .description("enum argument description")
+                                    .enumClass(EnumArgumentTest.TestEnum.class)
+                                    .build(),
+                            new DefaultEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                                    .name("enum2")
+                                    .description("enum2 argument description")
+                                    .enumClass(EnumArgumentTest.TestEnum.class)
+                                    .defaultValue(EnumArgumentTest.TestEnum.ABC)
+                                    .build(),
+                            new OptionalStringArgument.Builder()
+                                    .name("opt")
+                                    .description("argument can be missing from input, its value cannot")
+                                    .build(),
+                            new OptionalEnumArgument.Builder<EnumArgumentTest.OtherEnum>()
+                                    .name("optionalEnum")
+                                    .description("an enum value, passed optionally")
+                                    .enumClass(EnumArgumentTest.OtherEnum.class)
+                                    .build(),
+                            new MandatoryBoundedIntArgument.Builder()
+                                    .name("mandatoryBoundedInteger")
+                                    .description("A description.")
+                                    .minimum(8)
+                                    .build(),
+                            new DefaultBoundedIntArgument.Builder()
+                                    .name("defaultBoundedInteger")
+                                    .description("A description.")
+                                    .defaultValue(4)
+                                    .minimum(3)
+                                    .build(),
+                            new DefaultBoundedIntArgument.Builder()
+                                    .name("defaultBoundedInteger2")
+                                    .description("A description.")
+                                    .shortName('b')
+                                    .defaultValue(9347)
+                                    .minimum(234)
+                                    .maximum(87435)
+                                    .build(),
+                            new OptionalBoundedIntArgument.Builder()
+                                    .name("optionalBoundedInteger")
+                                    .description("a bounded integer value, passed optionally")
+                                    .minimum(-3)
+                                    .maximum(42)
+                                    .build(),
+                            new OptionalFilePathArgument.Builder()
+                                    .name("errorLogFile")
+                                    .description("File to write error messages to in case of an exception.")
+                                    .isFile()
+                                    .shortName('e')
+                                    .build())
+                    .addHelp()
+                    .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
+                    .programName("testName.jar")
+                    .epilogue("labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation")
+                    .build();
+        }
+
+        @Test
+        void correctly_formatted_for_default_width() {
+            // Arrange
+            final String expectedOutput = """
+                    Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM
+                    --mandatoryBoundedInteger INTEGER [-h] [-i [INTEGER]] [-s [STRING]] [--enum2
+                    [ENUM]] [--opt STRING] [--optionalEnum ENUM] [--defaultBoundedInteger [INTEGER]]
+                    [-b [INTEGER]] [--optionalBoundedInteger INTEGER] [-e FILEPATH]
+                                        
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    incididunt ut
+                                        
+                    Mandatory arguments:
+                        --int INTEGER   some integer
+                    -t, --txt FILEPATH  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                                        do eiusmod tempor incididunt ut Expects a folder.
+                        --enum ENUM     enum argument description Possible values: [abc, ABC, none]
+                        --mandatoryBoundedInteger INTEGER
+                                        A description. Minimum: [8]
+                                        
+                    Optional arguments:
+                    -h, --help          Show this help message and exit.
+                    -i, --int2 [INTEGER]
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                                        do eiusmod tempor incididunt ut Default value: [23]
+                    -s, --str [STRING]  some sort of string, dunno, not gonna use it. Default value:
+                                        [string]
+                        --enum2 [ENUM]  enum2 argument description Possible values: [abc, ABC, none]
+                                        Default value: [ABC]
+                        --opt STRING    argument can be missing from input, its value cannot
+                        --optionalEnum ENUM
+                                        an enum value, passed optionally Possible values: [ONE, TWO,
+                                        THREE]
+                        --defaultBoundedInteger [INTEGER]
+                                        A description. Minimum: [3] Default value: [4]
+                    -b, --defaultBoundedInteger2 [INTEGER]
+                                        A description. Minimum: [234] Maximum: [87435] Default
+                                        value: [9347]
+                        --optionalBoundedInteger INTEGER
+                                        a bounded integer value, passed optionally Minimum: [-3]
+                                        Maximum: [42]
+                    -e, --errorLogFile FILEPATH
+                                        File to write error messages to in case of an exception.
+                                        Expects a file.
+                                        
+                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+                    exercitation
+                    """;
+
+            // Act & Assert
+            assertEquals(expectedOutput, argParser.getHelp());
+        }
+
+        @Test
+        void correctly_formatted_for_125_width() {
+            // Arrange
+            final String expectedOutput = """
+                    Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM --mandatoryBoundedInteger INTEGER [-h] [-i [INTEGER]] [-s [STRING]]
+                    [--enum2 [ENUM]] [--opt STRING] [--optionalEnum ENUM] [--defaultBoundedInteger [INTEGER]] [-b [INTEGER]]
+                    [--optionalBoundedInteger INTEGER] [-e FILEPATH]
+                                       
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                                       
+                    Mandatory arguments:
+                        --int INTEGER                       some integer
+                    -t, --txt FILEPATH                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                                            incididunt ut Expects a folder.
+                        --enum ENUM                         enum argument description Possible values: [abc, ABC, none]
+                        --mandatoryBoundedInteger INTEGER   A description. Minimum: [8]
+                                       
+                    Optional arguments:
+                    -h, --help                              Show this help message and exit.
+                    -i, --int2 [INTEGER]                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                                            incididunt ut Default value: [23]
+                    -s, --str [STRING]                      some sort of string, dunno, not gonna use it. Default value: [string]
+                        --enum2 [ENUM]                      enum2 argument description Possible values: [abc, ABC, none] Default value: [ABC]
+                        --opt STRING                        argument can be missing from input, its value cannot
+                        --optionalEnum ENUM                 an enum value, passed optionally Possible values: [ONE, TWO, THREE]
+                        --defaultBoundedInteger [INTEGER]   A description. Minimum: [3] Default value: [4]
+                    -b, --defaultBoundedInteger2 [INTEGER]  A description. Minimum: [234] Maximum: [87435] Default value: [9347]
+                        --optionalBoundedInteger INTEGER    a bounded integer value, passed optionally Minimum: [-3] Maximum: [42]
+                    -e, --errorLogFile FILEPATH             File to write error messages to in case of an exception. Expects a file.
+                                       
+                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    """;
+
+            // Act & Assert
+            assertEquals(expectedOutput, argParser.getHelp(125, 40));
+        }
+
+        @Test
+        void correctly_formatted_for_60_width() {
+            final String expectedOutput = """
+                    Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM
+                    --mandatoryBoundedInteger INTEGER [-h] [-i [INTEGER]] [-s
+                    [STRING]] [--enum2 [ENUM]] [--opt STRING] [--optionalEnum
+                    ENUM] [--defaultBoundedInteger [INTEGER]] [-b [INTEGER]]
+                    [--optionalBoundedInteger INTEGER] [-e FILEPATH]
+                                        
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut
+                                        
+                    Mandatory arguments:
+                        --int INTEGER
+                                   some integer
+                    -t, --txt FILEPATH
+                                   Lorem ipsum dolor sit amet, consectetur
+                                   adipiscing elit, sed do eiusmod tempor
+                                   incididunt ut Expects a folder.
+                        --enum ENUM
+                                   enum argument description Possible values:
+                                   [abc, ABC, none]
+                        --mandatoryBoundedInteger INTEGER
+                                   A description. Minimum: [8]
+                                        
+                    Optional arguments:
+                    -h, --help     Show this help message and exit.
+                    -i, --int2 [INTEGER]
+                                   Lorem ipsum dolor sit amet, consectetur
+                                   adipiscing elit, sed do eiusmod tempor
+                                   incididunt ut Default value: [23]
+                    -s, --str [STRING]
+                                   some sort of string, dunno, not gonna use it.
+                                   Default value: [string]
+                        --enum2 [ENUM]
+                                   enum2 argument description Possible values:
+                                   [abc, ABC, none] Default value: [ABC]
+                        --opt STRING
+                                   argument can be missing from input, its value
+                                   cannot
+                        --optionalEnum ENUM
+                                   an enum value, passed optionally Possible
+                                   values: [ONE, TWO, THREE]
+                        --defaultBoundedInteger [INTEGER]
+                                   A description. Minimum: [3] Default value:
+                                   [4]
+                    -b, --defaultBoundedInteger2 [INTEGER]
+                                   A description. Minimum: [234] Maximum:
+                                   [87435] Default value: [9347]
+                        --optionalBoundedInteger INTEGER
+                                   a bounded integer value, passed optionally
+                                   Minimum: [-3] Maximum: [42]
+                    -e, --errorLogFile FILEPATH
+                                   File to write error messages to in case of an
+                                   exception. Expects a file.
+                                        
+                    labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+                    nostrud exercitation
+                    """;
+
+            // Act & Assert
+            assertEquals(expectedOutput, argParser.getHelp(60));
+        }
     }
 }
