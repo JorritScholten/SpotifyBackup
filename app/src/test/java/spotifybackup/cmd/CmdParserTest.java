@@ -14,10 +14,8 @@ import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
-import spotifybackup.cmd.exception.ArgumentNotPresentException;
-import spotifybackup.cmd.exception.IllegalConstructorParameterException;
-import spotifybackup.cmd.exception.MalformedInputException;
-import spotifybackup.cmd.exception.MissingArgumentException;
+import spotifybackup.cmd.argument.string.OptionalStringArgument;
+import spotifybackup.cmd.exception.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -163,6 +161,27 @@ class CmdParserTest {
 
         // Assert
         assertThrows(MissingArgumentException.class, () -> argParser.parseArguments(args));
+    }
+
+    @Test
+    void parser_with_optional_argument_ensures_value_present() {
+        // Arrange
+        final var name = "opt";
+        for (String[] args : new String[][]{{"--" + name}, {"--" + name, "-h"}, {"--" + name, "-f"}}) {
+            final var arg = new OptionalStringArgument.Builder()
+                    .name(name)
+                    .description("")
+                    .build();
+            final var argParser = new CmdParser.Builder()
+                    .argument(arg)
+                    .addHelp()
+                    .build();
+            assertTrue(arg.valMandatory);
+            assertFalse(arg.argMandatory);
+
+            // Act & Assert
+            assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
+        }
     }
 
     @Test
@@ -529,6 +548,10 @@ class CmdParserTest {
                                 .description("enum2 argument description")
                                 .enumClass(EnumArgumentTest.TestEnum.class)
                                 .defaultValue(EnumArgumentTest.TestEnum.ABC)
+                                .build(),
+                        new OptionalStringArgument.Builder()
+                                .name("opt")
+                                .description("argument can be missing from input, its value cannot")
                                 .build())
                 .addHelp()
                 .build();
@@ -541,7 +564,7 @@ class CmdParserTest {
     void ensure_that_getHelp_output_is_formatted_correctly_for_125_width() {
         // Arrange
         final String expectedOutput = """
-                Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]]
+                Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]] [--opt STRING]
                                 
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                                 
@@ -557,6 +580,7 @@ class CmdParserTest {
                                                         incididunt ut Default value: [23]
                 -s, --str [STRING]                      some sort of string, dunno, not gonna use it. Default value: [string]
                     --enum2 [ENUM]                      enum2 argument description Possible values: [abc, ABC, none] Default value: [ABC]
+                    --opt STRING                        argument can be missing from input, its value cannot
                                 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                 """;
@@ -595,6 +619,10 @@ class CmdParserTest {
                                 .description("enum2 argument description")
                                 .enumClass(EnumArgumentTest.TestEnum.class)
                                 .defaultValue(EnumArgumentTest.TestEnum.ABC)
+                                .build(),
+                        new OptionalStringArgument.Builder()
+                                .name("opt")
+                                .description("argument can be missing from input, its value cannot")
                                 .build())
                 .addHelp()
                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")
@@ -677,6 +705,10 @@ class CmdParserTest {
                                 .description("enum2 argument description")
                                 .enumClass(EnumArgumentTest.TestEnum.class)
                                 .defaultValue(EnumArgumentTest.TestEnum.ABC)
+                                .build(),
+                        new OptionalStringArgument.Builder()
+                                .name("opt")
+                                .description("argument can be missing from input, its value cannot")
                                 .build())
                 .addHelp()
                 .description("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut")

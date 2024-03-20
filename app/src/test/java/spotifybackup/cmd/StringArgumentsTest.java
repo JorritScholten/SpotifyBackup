@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
+import spotifybackup.cmd.argument.string.OptionalStringArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 import spotifybackup.cmd.exception.MissingArgumentException;
@@ -211,5 +212,74 @@ class StringArgumentsTest {
 
         // Assert
         assertThrows(IllegalConstructorParameterException.class, builder::build);
+    }
+
+    @Test
+    void string_argument_loads_value_with_spaces() {
+        // Arrange
+        final var name = "opt";
+        final var value = "\"some value\"";
+        final String[] args = {"-o", value, "--help"};
+        final var arg = new MandatoryStringArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_loads_value_from_name() {
+        // Arrange
+        final var name = "opt";
+        final var value = "some_value";
+        final String[] args = {"--" + name, value};
+        final var arg = new OptionalStringArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_loads_value_from_shortname() {
+        // Arrange
+        final var name = "opt";
+        final var value = "some_value";
+        final String[] args = {"-o", value};
+        final var arg = new OptionalStringArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
     }
 }
