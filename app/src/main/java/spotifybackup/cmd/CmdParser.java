@@ -137,13 +137,14 @@ public class CmdParser {
         var sortedArguments = new ArrayList<>(arguments.stream().filter(Argument::getArgMandatory).toList());
         sortedArguments.addAll(arguments.stream().filter(not(Argument::getArgMandatory)).toList());
         StringBuilder usageText = new StringBuilder();
-        try(Formatter formatter = new Formatter(usageText)) {
+        try (Formatter formatter = new Formatter(usageText)) {
             formatter.format("Usage: %s", programName != null ? programName + " " : "");
             for (var argument : sortedArguments) {
+                var valueString = argument.argMandatory || argument.valMandatory ?
+                        (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]");
                 formatter.format(argument.argMandatory ? "-%s%s " : "[-%s%s] ",
                         argument.hasShortName() ? argument.shortName : "-" + argument.name,
-                        !argument.hasValue ? "" : argument.argMandatory || argument.valMandatory ?
-                                (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]")
+                        !argument.hasValue ? "" : valueString
                 );
             }
         }
