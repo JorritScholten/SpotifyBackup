@@ -15,5 +15,5 @@ database and automated backups to an online repository.
         - [x] OptionalStringArgument
         - [x] OptionalFilePathArgument
         - [x] OptionalEnumArgument
-        - [ ] OptionalIntArgument
+        - [x] OptionalIntArgument
         - [ ] OptionalBoundedIntArgument

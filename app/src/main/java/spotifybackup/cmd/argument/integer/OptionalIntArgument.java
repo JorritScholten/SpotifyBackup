@@ -1,14 +1,14 @@
-package spotifybackup.cmd.argument.string;
+package spotifybackup.cmd.argument.integer;
 
 import spotifybackup.cmd.OptionallyPresent;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 import java.util.NoSuchElementException;
 
-/** Optional string argument, program won't execute if flag is present but value is missing. */
-public class OptionalStringArgument extends StringArgument implements OptionallyPresent {
-    /** Optional string argument, program won't execute if flag is present but value is missing. */
-    private OptionalStringArgument(Builder builder) {
+/** Optional integer argument, program won't execute if flag is present but value is missing. */
+public class OptionalIntArgument extends IntArgument implements OptionallyPresent {
+    /** Optional integer argument, program won't execute if flag is present but value is missing. */
+    private OptionalIntArgument(Builder builder) {
         super(builder);
     }
 
@@ -17,7 +17,7 @@ public class OptionalStringArgument extends StringArgument implements Optionally
      * @apiNote Always call {@link #isPresent()} first to avoid the NoSuchElementException.
      */
     @Override
-    public String getValue() throws NoSuchElementException {
+    public Integer getValue() throws NoSuchElementException {
         if (!isPresent) throw new NoSuchElementException(name + " was not present in input, cannot get value.");
         return super.getValue();
     }
@@ -27,7 +27,7 @@ public class OptionalStringArgument extends StringArgument implements Optionally
         return super.isPresent;
     }
 
-    public static class Builder extends StringArgument.Builder<Builder> {
+    public static class Builder extends IntArgument.Builder<Builder> {
         public Builder() {
             super(false, true);
         }
@@ -37,9 +37,9 @@ public class OptionalStringArgument extends StringArgument implements Optionally
          *                                              character not in the alphabet.
          */
         @Override
-        public OptionalStringArgument build() {
+        public OptionalIntArgument build() {
             validate();
-            return new OptionalStringArgument(this);
+            return new OptionalIntArgument(this);
         }
 
         @Override

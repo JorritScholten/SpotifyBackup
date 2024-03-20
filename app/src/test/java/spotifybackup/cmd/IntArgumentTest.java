@@ -2,14 +2,14 @@ package spotifybackup.cmd;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
-import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
-import spotifybackup.cmd.argument.integer.DefaultIntArgument;
-import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
-import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
+import spotifybackup.cmd.argument.integer.*;
+import spotifybackup.cmd.argument.string.OptionalStringArgument;
 import spotifybackup.cmd.exception.ArgumentsNotParsedException;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 import spotifybackup.cmd.exception.MissingValueException;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -224,5 +224,74 @@ class IntArgumentTest {
 
         // Act & Assert
         assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
+    }
+
+    @Test
+    void optional_argument_loads_value_from_name() {
+        // Arrange
+        final var name = "opt";
+        final var value = 8;
+        final String[] args = {"--" + name, String.valueOf(value)};
+        final var arg = new OptionalIntArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_loads_value_from_shortname() {
+        // Arrange
+        final var name = "opt";
+        final var value = 33;
+        final String[] args = {"-o", String.valueOf(value)};
+        final var arg = new OptionalIntArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_missing_in_input_throws_exception_when_getting_value() {
+        // Arrange
+        final var name = "opt";
+        final String[] args = {};
+        final var arg = new OptionalIntArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertFalse(arg::isPresent);
+        assertThrows(NoSuchElementException.class, arg::getValue);
     }
 }
