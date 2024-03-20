@@ -11,10 +11,7 @@ import spotifybackup.cmd.argument.enumeration.MandatoryEnumArgument;
 import spotifybackup.cmd.argument.enumeration.OptionalEnumArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
-import spotifybackup.cmd.argument.integer.DefaultIntArgument;
-import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
-import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
-import spotifybackup.cmd.argument.integer.OptionalIntArgument;
+import spotifybackup.cmd.argument.integer.*;
 import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
 import spotifybackup.cmd.argument.string.OptionalStringArgument;
@@ -239,6 +236,28 @@ class CmdParserTest {
             final var arg = new OptionalIntArgument.Builder()
                     .name(name)
                     .description("")
+                    .build();
+            final var argParser = new CmdParser.Builder()
+                    .argument(arg)
+                    .addHelp()
+                    .build();
+            assertTrue(arg.valMandatory);
+            assertFalse(arg.argMandatory);
+
+            // Act & Assert
+            assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
+        }
+    }
+
+    @Test
+    void parser_with_optional_bounded_int_argument_ensures_value_present() {
+        // Arrange
+        final var name = "opt";
+        for (String[] args : new String[][]{{"--" + name}, {"--" + name, "-h"}, {"--" + name, "-f"}}) {
+            final var arg = new OptionalBoundedIntArgument.Builder()
+                    .name(name)
+                    .description("")
+                    .minimum(10)
                     .build();
             final var argParser = new CmdParser.Builder()
                     .argument(arg)

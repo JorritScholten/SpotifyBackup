@@ -9,11 +9,13 @@ database and automated backups to an online repository.
 
 - [x] Improve visual appearance of help text
     - [x] Modify tests to reflect new help appearance
-- [ ] Implement optional arguments (optionally present, value mandatory)
+- [x] Implement optional arguments (optionally present, value mandatory)
     - [x] untangle mandatory presence from having value in parser
     - create optional arguments for existing types
         - [x] OptionalStringArgument
         - [x] OptionalFilePathArgument
         - [x] OptionalEnumArgument
         - [x] OptionalIntArgument
-        - [ ] OptionalBoundedIntArgument
+        - [x] OptionalBoundedIntArgument
+    - [ ] add optional arguments to print usage tests
+- [ ] Implement string containing spaces as an input for string arguments
