@@ -541,22 +541,22 @@ class CmdParserTest {
     void ensure_that_getHelp_output_is_formatted_correctly_for_125_width() {
         // Arrange
         final String expectedOutput = """
-                Usage: testName.jar --int INTEGER --txt FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]]
+                Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]]
                                 
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
                                 
                 Mandatory arguments:
-                  --int INTEGER                         some integer
-                  --txt FILEPATH                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                    --int INTEGER                       some integer
+                -t, --txt FILEPATH                      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                                         incididunt ut
-                  --enum ENUM                           enum argument description Possible values: [abc, ABC, none]
+                    --enum ENUM                         enum argument description Possible values: [abc, ABC, none]
                                 
                 Optional arguments:
-                  -h, --help                            Show this help message and exit.
-                  -i [INTEGER], --int2 [INTEGER]        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                                        incididunt ut Default value:[23]
-                  -s [STRING], --str [STRING]           some sort of string, dunno, not gonna use it. Default value:[string]
-                  --enum2 [ENUM]                        enum2 argument description Possible values: [abc, ABC, none] Default value:[ABC]
+                -h, --help                              Show this help message and exit.
+                -i, --int2 [INTEGER]                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+                                                        incididunt ut Default value: [23]
+                -s, --str [STRING]                      some sort of string, dunno, not gonna use it. Default value: [string]
+                    --enum2 [ENUM]                      enum2 argument description Possible values: [abc, ABC, none] Default value: [ABC]
                                 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation
                 """;
