@@ -18,4 +18,4 @@ database and automated backups to an online repository.
         - [x] OptionalIntArgument
         - [x] OptionalBoundedIntArgument
     - [x] add optional arguments to print usage tests
-- [ ] Implement string containing spaces as an input for string arguments
+- [x] Implement string containing spaces as an input for string arguments

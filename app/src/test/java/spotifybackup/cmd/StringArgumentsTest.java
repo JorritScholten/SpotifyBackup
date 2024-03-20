@@ -220,7 +220,7 @@ class StringArgumentsTest {
     void string_argument_loads_value_with_spaces() {
         // Arrange
         final var name = "opt";
-        final var value = "\"some value\"";
+        final var value = "some value:\"quote text\"";
         final String[] args = {"-o", value, "--help"};
         final var arg = new MandatoryStringArgument.Builder()
                 .name(name)
