@@ -30,8 +30,8 @@ abstract class StringArgument extends Argument<String> {
     }
 
     abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T, String> {
-        protected Builder(boolean isMandatory) {
-            super(isMandatory, true);
+        protected Builder(boolean argMandatory, boolean valMandatory) {
+            super(argMandatory, true, valMandatory);
         }
     }
 }

@@ -33,7 +33,7 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
         private File defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */

@@ -43,7 +43,7 @@ public class FlagArgument extends Argument<Boolean> {
 
     public static class Builder extends Argument.Builder<Builder, Boolean> {
         public Builder() {
-            super(false, false);
+            super(false, false, false);
         }
 
         @Override

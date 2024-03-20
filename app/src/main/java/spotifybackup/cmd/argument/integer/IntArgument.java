@@ -30,8 +30,8 @@ abstract class IntArgument extends Argument<Integer> {
     }
 
     protected abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T, Integer> {
-        protected Builder(boolean isMandatory) {
-            super(isMandatory, true);
+        protected Builder(boolean argMandatory, boolean valMandatory) {
+            super(argMandatory, true, valMandatory);
         }
     }
 }

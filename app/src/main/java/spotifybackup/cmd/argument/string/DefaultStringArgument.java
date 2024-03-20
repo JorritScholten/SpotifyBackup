@@ -25,7 +25,7 @@ public class DefaultStringArgument extends StringArgument implements HasDefaultV
         private String defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */

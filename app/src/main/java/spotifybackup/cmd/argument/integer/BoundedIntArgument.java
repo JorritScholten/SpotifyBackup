@@ -55,8 +55,8 @@ abstract class BoundedIntArgument extends Argument<Integer> {
         private Integer min;
         private Integer max;
 
-        protected Builder(boolean isMandatory) {
-            super(isMandatory, true);
+        protected Builder(boolean argMandatory, boolean valMandatory) {
+            super(argMandatory, true, valMandatory);
         }
 
         /** @param minimum Minimum value integer should be (also applied to defaultValue). */

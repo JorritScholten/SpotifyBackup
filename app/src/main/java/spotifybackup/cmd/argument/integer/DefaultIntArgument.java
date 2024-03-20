@@ -29,7 +29,7 @@ public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
         private Integer defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */

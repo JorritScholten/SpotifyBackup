@@ -32,7 +32,7 @@ public class DefaultEnumArgument<E extends Enum<E>> extends EnumArgument<E> impl
         private E defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /**

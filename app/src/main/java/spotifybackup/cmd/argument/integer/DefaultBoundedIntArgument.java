@@ -32,7 +32,7 @@ public class DefaultBoundedIntArgument extends BoundedIntArgument implements Has
         private Integer defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */
