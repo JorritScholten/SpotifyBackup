@@ -29,6 +29,11 @@ abstract class FilePathArgument extends Argument<File> {
     }
 
     @Override
+    protected String getDescription() {
+        return super.getDescription() + " Expects a " + (isFolder ? "folder." : "file.");
+    }
+
+    @Override
     protected String getValueName() {
         return "FILEPATH";
     }
