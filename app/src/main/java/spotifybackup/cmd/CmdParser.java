@@ -30,6 +30,7 @@ public class CmdParser {
      * @param args String[] parameter from main method.
      * @throws MissingArgumentException when a mandatory argument is missing from the input.
      * @throws MalformedInputException  when the input from the command line is written incorrectly.
+     * @throws MissingValueException    when an optional or mandatory argument is missing its value.
      */
     public void parseArguments(final String[] args)
             throws MissingArgumentException, MalformedInputException {
@@ -228,7 +229,7 @@ public class CmdParser {
                         var nextInput = iter.next();
                         if (nextInput.type == ArgType.VALUE) {
                             argument.get().setValue(nextInput.arg);
-                        } else if (argument.get().argMandatory) {
+                        } else if (argument.get().argMandatory || argument.get().valMandatory) {
                             throw new MissingValueException("Argument " + argument.get().name +
                                     " supplied without value.");
                         } else {
@@ -237,6 +238,10 @@ public class CmdParser {
                     } catch (NoSuchElementException e) {
                         if (argument.get().argMandatory) {
                             throw new MissingValueException("Missing value for mandatory argument: " +
+                                    argument.get().name);
+                        }
+                        if (argument.get().valMandatory) {
+                            throw new MissingValueException("Missing value for optional argument: " +
                                     argument.get().name);
                         }
                     }

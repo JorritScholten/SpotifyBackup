@@ -164,7 +164,7 @@ class CmdParserTest {
     }
 
     @Test
-    void parser_with_optional_argument_ensures_value_present() {
+    void parser_with_optional_string_argument_ensures_value_present() {
         // Arrange
         final var name = "opt";
         for (String[] args : new String[][]{{"--" + name}, {"--" + name, "-h"}, {"--" + name, "-f"}}) {
