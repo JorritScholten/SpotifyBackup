@@ -6,6 +6,7 @@ import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
+import spotifybackup.cmd.exception.MissingValueException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -71,7 +72,7 @@ class BoundedIntArgumentTest {
                 .build();
 
         // Act & Assert
-        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
+        assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
     }
 
     @Test

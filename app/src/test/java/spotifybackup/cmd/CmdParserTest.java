@@ -490,7 +490,7 @@ class CmdParserTest {
         final String[] args = {"-he", "-28", "--string", "test", "-i"};
 
         // Assert
-        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
+        assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
     }
 
     @Test

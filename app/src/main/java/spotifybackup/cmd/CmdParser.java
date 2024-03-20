@@ -228,14 +228,14 @@ public class CmdParser {
                         if (nextInput.type == ArgType.VALUE) {
                             argument.get().setValue(nextInput.arg);
                         } else if (argument.get().argMandatory) {
-                            throw new MalformedInputException("Argument " + argument.get().name +
+                            throw new MissingValueException("Argument " + argument.get().name +
                                     " supplied without value.");
                         } else {
                             iter.previous(); // undo ingestion of next argument
                         }
                     } catch (NoSuchElementException e) {
                         if (argument.get().argMandatory) {
-                            throw new MalformedInputException("Missing value for mandatory argument: " +
+                            throw new MissingValueException("Missing value for mandatory argument: " +
                                     argument.get().name);
                         }
                     }

@@ -10,6 +10,7 @@ import spotifybackup.cmd.argument.string.OptionalStringArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 import spotifybackup.cmd.exception.MissingArgumentException;
+import spotifybackup.cmd.exception.MissingValueException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -148,7 +149,7 @@ class StringArgumentsTest {
                 .build();
 
         // Act & Assert
-        assertThrows(MalformedInputException.class, () -> parser.parseArguments(args));
+        assertThrows(MissingValueException.class, () -> parser.parseArguments(args));
     }
 
     @Test

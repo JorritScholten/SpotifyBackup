@@ -9,6 +9,7 @@ import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
 import spotifybackup.cmd.exception.ArgumentsNotParsedException;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
+import spotifybackup.cmd.exception.MissingValueException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -190,7 +191,7 @@ class IntArgumentTest {
                 .build();
 
         // Act & Assert
-        assertThrows(MalformedInputException.class, () -> argParser.parseArguments(args));
+        assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
     }
 
     @Test
