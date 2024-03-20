@@ -14,6 +14,6 @@ database and automated backups to an online repository.
     - create optional arguments for existing types
         - [x] OptionalStringArgument
         - [x] OptionalFilePathArgument
-        - [ ] OptionalEnumArgument
+        - [x] OptionalEnumArgument
         - [ ] OptionalIntArgument
         - [ ] OptionalBoundedIntArgument

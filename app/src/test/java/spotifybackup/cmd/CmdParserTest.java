@@ -8,6 +8,7 @@ import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
 import spotifybackup.cmd.argument.enumeration.MandatoryEnumArgument;
+import spotifybackup.cmd.argument.enumeration.OptionalEnumArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
@@ -194,6 +195,28 @@ class CmdParserTest {
                     .name(name)
                     .description("")
                     .isFile()
+                    .build();
+            final var argParser = new CmdParser.Builder()
+                    .argument(arg)
+                    .addHelp()
+                    .build();
+            assertTrue(arg.valMandatory);
+            assertFalse(arg.argMandatory);
+
+            // Act & Assert
+            assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
+        }
+    }
+
+    @Test
+    void parser_with_optional_enum_argument_ensures_value_present() {
+        // Arrange
+        final var name = "opt";
+        for (String[] args : new String[][]{{"--" + name}, {"--" + name, "-h"}, {"--" + name, "-f"}}) {
+            final var arg = new OptionalEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                    .name(name)
+                    .description("")
+                    .enumClass(EnumArgumentTest.TestEnum.class)
                     .build();
             final var argParser = new CmdParser.Builder()
                     .argument(arg)

@@ -1,21 +1,17 @@
-package spotifybackup.cmd.argument.file;
+package spotifybackup.cmd.argument.enumeration;
 
 import spotifybackup.cmd.OptionallyPresent;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
-import java.io.File;
 import java.util.NoSuchElementException;
 
 /**
- * Optional file path argument, program won't execute if flag is present but value is missing. Argument throws exception
- * at runtime if supplied value does not adhere to isFolder rule.
+ * Optional enum argument, program won't execute if flag is present but value is missing.
+ * @param <E> target enum of argument.
  */
-public class OptionalFilePathArgument extends FilePathArgument implements OptionallyPresent {
-    /**
-     * Optional file path argument, program won't execute if flag is present but value is missing. Argument throws exception
-     * at runtime if supplied value does not adhere to isFolder rule.
-     */
-    private OptionalFilePathArgument(Builder builder) {
+public class OptionalEnumArgument<E extends Enum<E>> extends EnumArgument<E> implements OptionallyPresent {
+    /** Optional enum argument, program won't execute if flag is present but value is missing. */
+    private OptionalEnumArgument(Builder<E> builder) {
         super(builder);
     }
 
@@ -24,7 +20,7 @@ public class OptionalFilePathArgument extends FilePathArgument implements Option
      * @apiNote Always call {@link #isPresent()} first to avoid the NoSuchElementException.
      */
     @Override
-    public File getValue() throws NoSuchElementException {
+    public E getValue() throws NoSuchElementException {
         if (!isPresent) throw new NoSuchElementException(name + " was not present in input, cannot get value.");
         return super.getValue();
     }
@@ -34,7 +30,7 @@ public class OptionalFilePathArgument extends FilePathArgument implements Option
         return super.isPresent;
     }
 
-    public static class Builder extends FilePathArgument.Builder<Builder> {
+    public static class Builder<E extends Enum<E>> extends EnumArgument.Builder<Builder<E>, E> {
         public Builder() {
             super(false, true);
         }
@@ -44,13 +40,13 @@ public class OptionalFilePathArgument extends FilePathArgument implements Option
          *                                              or assigning shortName a character not in the alphabet.
          */
         @Override
-        public OptionalFilePathArgument build() throws IllegalConstructorParameterException {
+        public OptionalEnumArgument<E> build() throws IllegalConstructorParameterException {
             validate();
-            return new OptionalFilePathArgument(this);
+            return new OptionalEnumArgument<>(this);
         }
 
         @Override
-        protected Builder getThis() {
+        protected Builder<E> getThis() {
             return this;
         }
     }

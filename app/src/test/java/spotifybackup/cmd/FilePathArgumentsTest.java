@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
 import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
-import spotifybackup.cmd.argument.string.OptionalStringArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
