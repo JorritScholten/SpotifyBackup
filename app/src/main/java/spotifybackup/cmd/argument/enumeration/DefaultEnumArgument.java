@@ -1,6 +1,6 @@
 package spotifybackup.cmd.argument.enumeration;
 
-import spotifybackup.cmd.HasDefaultValue;
+import spotifybackup.cmd.OptionallyPresent;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 /**
@@ -8,7 +8,7 @@ import spotifybackup.cmd.exception.IllegalConstructorParameterException;
  * exception at runtime if supplied value is out of range.
  * @param <E> target enum of argument.
  */
-public class DefaultEnumArgument<E extends Enum<E>> extends EnumArgument<E> implements HasDefaultValue {
+public class DefaultEnumArgument<E extends Enum<E>> extends EnumArgument<E> implements OptionallyPresent {
     /**
      * Enum argument with default value, has flag-like behaviour because it can be called without a value. Argument
      * throws exception at runtime if supplied value is out of range.

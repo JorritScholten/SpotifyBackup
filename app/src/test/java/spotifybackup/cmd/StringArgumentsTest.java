@@ -8,9 +8,10 @@ import spotifybackup.cmd.argument.string.DefaultStringArgument;
 import spotifybackup.cmd.argument.string.MandatoryStringArgument;
 import spotifybackup.cmd.argument.string.OptionalStringArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
-import spotifybackup.cmd.exception.MalformedInputException;
 import spotifybackup.cmd.exception.MissingArgumentException;
 import spotifybackup.cmd.exception.MissingValueException;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -282,5 +283,28 @@ class StringArgumentsTest {
 
         // Assert
         assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_missing_in_input_throws_exception_when_getting_value() {
+        // Arrange
+        final var name = "opt";
+        final String[] args = {};
+        final var arg = new OptionalStringArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertFalse(arg::isPresent);
+        assertThrows(NoSuchElementException.class, arg::getValue);
     }
 }

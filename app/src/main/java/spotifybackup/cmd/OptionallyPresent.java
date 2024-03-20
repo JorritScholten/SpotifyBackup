@@ -1,5 +1,5 @@
 package spotifybackup.cmd;
 
-public interface HasDefaultValue {
+public interface OptionallyPresent {
     public boolean isPresent();
 }
