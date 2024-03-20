@@ -9,6 +9,7 @@ import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
 import spotifybackup.cmd.argument.enumeration.MandatoryEnumArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
+import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryBoundedIntArgument;
 import spotifybackup.cmd.argument.integer.MandatoryIntArgument;
@@ -171,6 +172,28 @@ class CmdParserTest {
             final var arg = new OptionalStringArgument.Builder()
                     .name(name)
                     .description("")
+                    .build();
+            final var argParser = new CmdParser.Builder()
+                    .argument(arg)
+                    .addHelp()
+                    .build();
+            assertTrue(arg.valMandatory);
+            assertFalse(arg.argMandatory);
+
+            // Act & Assert
+            assertThrows(MissingValueException.class, () -> argParser.parseArguments(args));
+        }
+    }
+
+    @Test
+    void parser_with_optional_file_argument_ensures_value_present() {
+        // Arrange
+        final var name = "opt";
+        for (String[] args : new String[][]{{"--" + name}, {"--" + name, "-h"}, {"--" + name, "-f"}}) {
+            final var arg = new OptionalFilePathArgument.Builder()
+                    .name(name)
+                    .description("")
+                    .isFile()
                     .build();
             final var argParser = new CmdParser.Builder()
                     .argument(arg)

@@ -13,7 +13,7 @@ database and automated backups to an online repository.
     - [x] untangle mandatory presence from having value in parser
     - create optional arguments for existing types
         - [x] OptionalStringArgument
-        - [ ] OptionalFilePathArgument
+        - [x] OptionalFilePathArgument
         - [ ] OptionalEnumArgument
         - [ ] OptionalIntArgument
         - [ ] OptionalBoundedIntArgument
