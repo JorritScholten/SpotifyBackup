@@ -142,7 +142,7 @@ public class CmdParser {
             for (var argument : sortedArguments) {
                 formatter.format(argument.argMandatory ? "-%s%s " : "[-%s%s] ",
                         argument.hasShortName() ? argument.shortName : "-" + argument.name,
-                        !argument.hasValue ? "" : argument.argMandatory ?
+                        !argument.hasValue ? "" : argument.argMandatory || argument.valMandatory ?
                                 (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]")
                 );
             }

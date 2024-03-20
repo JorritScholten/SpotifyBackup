@@ -42,7 +42,7 @@ public abstract class Argument<V> {
         try (Formatter formatter = new Formatter(helpText)) {
             if (hasShortName()) formatter.format("-%c, ", shortName);
             else helpText.append("    ");
-            if (argMandatory) formatter.format("--%s%s", name, hasValue ? " " + getValueName() : "");
+            if (argMandatory || valMandatory) formatter.format("--%s%s", name, hasValue ? " " + getValueName() : "");
             else formatter.format("--%s%s", name, hasValue ? " [" + getValueName() + "]" : "");
         }
 
