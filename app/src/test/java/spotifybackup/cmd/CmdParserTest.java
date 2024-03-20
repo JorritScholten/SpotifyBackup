@@ -498,7 +498,7 @@ class CmdParserTest {
         // Arrange
         final String expectedOutput = """
                 Usage: --int INTEGER -t FILEPATH --enum ENUM [-h] [-i [INTEGER]] [-s [STRING]]
-                [--enum2 [ENUM]]
+                [--enum2 [ENUM]] [--opt STRING]
 
                 Mandatory arguments:
                     --int INTEGER   some integer
@@ -514,6 +514,7 @@ class CmdParserTest {
                                     [string]
                     --enum2 [ENUM]  enum2 argument description Possible values: [abc, ABC, none]
                                     Default value: [ABC]
+                    --opt STRING    argument can be missing from input, its value cannot
                 """;
         CmdParser argParser = new CmdParser.Builder().arguments(
                         new MandatoryIntArgument.Builder()
@@ -638,7 +639,8 @@ class CmdParserTest {
     void ensure_that_getHelp_output_is_formatted_correctly_for_60_width() {
         final String expectedOutput = """
                 Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM
-                [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]]
+                [-h] [-i [INTEGER]] [-s [STRING]] [--enum2 [ENUM]] [--opt
+                STRING]
 
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
                 do eiusmod tempor incididunt ut
@@ -666,6 +668,9 @@ class CmdParserTest {
                     --enum2 [ENUM]
                                enum2 argument description Possible values:
                                [abc, ABC, none] Default value: [ABC]
+                    --opt STRING
+                               argument can be missing from input, its value
+                               cannot
 
                 labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                 nostrud exercitation

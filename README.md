@@ -10,9 +10,9 @@ database and automated backups to an online repository.
 - [x] Improve visual appearance of help text
     - [x] Modify tests to reflect new help appearance
 - [ ] Implement optional arguments (optionally present, value mandatory)
-    - [ ] untangle mandatory presence from having a value in parser
+    - [x] untangle mandatory presence from having value in parser
     - create optional arguments for existing types
-        - [ ] OptionalStringArgument
+        - [x] OptionalStringArgument
         - [ ] OptionalFilePathArgument
         - [ ] OptionalEnumArgument
         - [ ] OptionalIntArgument
