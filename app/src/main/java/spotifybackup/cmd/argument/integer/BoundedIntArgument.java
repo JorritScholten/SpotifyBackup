@@ -25,6 +25,12 @@ abstract class BoundedIntArgument extends Argument<Integer> {
     }
 
     @Override
+    protected String getDescription() {
+        if (max == Integer.MAX_VALUE) return super.getDescription() + " Minimum: [" + min + "]";
+        else return super.getDescription() + " Minimum: [" + min + "] Maximum: [" + max + "]";
+    }
+
+    @Override
     protected String getValueName() {
         return "INTEGER";
     }
