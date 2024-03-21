@@ -20,9 +20,9 @@ public class CLI {
     private final SpotifyObjectRepository repo;
 
     CLI() throws IOException, InterruptedException {
-        if (!App.dbFileArg.isPresent()) App.println("db file: " + App.dbFileArg.getValue());
-        if (!App.configFileArg.isPresent()) App.println("config file: " + App.configFileArg.getValue());
-        if (App.sqlOutputFileArg.isPresent()) App.println("sql scripts file: " + App.sqlOutputFileArg.getValue());
+        App.dbFileArg.ifNotPresent(path -> App.println("db file: " + path));
+        App.configFileArg.ifNotPresent(path -> App.println("config file: " + path));
+        App.sqlOutputFileArg.ifPresent(path -> App.println("sql scripts file: " + path));
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         App.config = Config.loadFromFile(App.configFileArg.getValue());
         performActions();
@@ -34,7 +34,7 @@ public class CLI {
             if (App.config.getUsers().length > 0) for (var user : App.config.getUsers()) new Backup(user);
             else new Backup(App.config.addEmptyUser());
         }
-        if (App.sqlOutputFileArg.isPresent()) repo.outputDatabaseToSQLScript(App.sqlOutputFileArg.getValue());
+        App.sqlOutputFileArg.ifPresent(repo::outputDatabaseToSQLScript);
     }
 
     private void addAccounts() throws IOException, InterruptedException {

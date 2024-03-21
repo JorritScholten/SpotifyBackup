@@ -1,6 +1,6 @@
 package spotifybackup.cmd.argument.enumeration;
 
-import spotifybackup.cmd.OptionallyPresent;
+import spotifybackup.cmd.OptionalArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 import java.util.NoSuchElementException;
@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
  * Optional enum argument, program won't execute if flag is present but value is missing.
  * @param <E> target enum of argument.
  */
-public class OptionalEnumArgument<E extends Enum<E>> extends EnumArgument<E> implements OptionallyPresent {
+public class OptionalEnumArgument<E extends Enum<E>> extends EnumArgument<E> implements OptionalArgument<E> {
     /** Optional enum argument, program won't execute if flag is present but value is missing. */
     private OptionalEnumArgument(Builder<E> builder) {
         super(builder);

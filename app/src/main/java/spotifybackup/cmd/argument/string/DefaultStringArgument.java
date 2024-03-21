@@ -1,10 +1,10 @@
 package spotifybackup.cmd.argument.string;
 
-import spotifybackup.cmd.OptionallyPresent;
+import spotifybackup.cmd.DefaultArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 /** String argument with default value, has flag-like behaviour because it can be called without a value. */
-public class DefaultStringArgument extends StringArgument implements OptionallyPresent {
+public class DefaultStringArgument extends StringArgument implements DefaultArgument<String> {
     /** String argument with default value, has flag-like behaviour because it can be called without a value. */
     private DefaultStringArgument(Builder builder) {
         super(builder);

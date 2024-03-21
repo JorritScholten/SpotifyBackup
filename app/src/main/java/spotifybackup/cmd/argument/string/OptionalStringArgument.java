@@ -1,12 +1,12 @@
 package spotifybackup.cmd.argument.string;
 
-import spotifybackup.cmd.OptionallyPresent;
+import spotifybackup.cmd.OptionalArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 import java.util.NoSuchElementException;
 
 /** Optional string argument, program won't execute if flag is present but value is missing. */
-public class OptionalStringArgument extends StringArgument implements OptionallyPresent {
+public class OptionalStringArgument extends StringArgument implements OptionalArgument<String> {
     /** Optional string argument, program won't execute if flag is present but value is missing. */
     private OptionalStringArgument(Builder builder) {
         super(builder);

@@ -1,13 +1,13 @@
 package spotifybackup.cmd.argument.integer;
 
-import spotifybackup.cmd.OptionallyPresent;
+import spotifybackup.cmd.DefaultArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 /**
  * Integer argument with range checking and default value, has flag-like behaviour because it can be called without a
  * value. Argument throws exception at runtime if supplied value is out of range.
  */
-public class DefaultBoundedIntArgument extends BoundedIntArgument implements OptionallyPresent {
+public class DefaultBoundedIntArgument extends BoundedIntArgument implements DefaultArgument<Integer> {
 
     /**
      * Integer argument with range checking and default value, has flag-like behaviour because it can be called without

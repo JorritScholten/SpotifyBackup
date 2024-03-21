@@ -1,6 +1,6 @@
 package spotifybackup.cmd.argument.file;
 
-import spotifybackup.cmd.OptionallyPresent;
+import spotifybackup.cmd.OptionalArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 import java.io.File;
@@ -10,7 +10,7 @@ import java.util.NoSuchElementException;
  * Optional file path argument, program won't execute if flag is present but value is missing. Argument throws exception
  * at runtime if supplied value does not adhere to isFolder rule.
  */
-public class OptionalFilePathArgument extends FilePathArgument implements OptionallyPresent {
+public class OptionalFilePathArgument extends FilePathArgument implements OptionalArgument<File> {
     /**
      * Optional file path argument, program won't execute if flag is present but value is missing. Argument throws exception
      * at runtime if supplied value does not adhere to isFolder rule.

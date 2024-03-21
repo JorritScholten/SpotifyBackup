@@ -27,6 +27,15 @@ public abstract class Argument<V> {
     }
 
     /**
+     * @param action      the action to be performed if argument is present
+     * @param emptyAction the action to be performed if argument is not present
+     */
+    public void ifPresentOrElse(Runnable action, Runnable emptyAction) {
+        if (isPresent) action.run();
+        else emptyAction.run();
+    }
+
+    /**
      * Get string representation of Argument to print to Command line.
      * @param nameWidth width of name and shortName printing block.
      * @param maxWidth  maximum width of terminal for description text wrapping.
