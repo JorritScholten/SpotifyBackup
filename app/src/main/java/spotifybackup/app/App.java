@@ -3,10 +3,12 @@ package spotifybackup.app;
 import lombok.Getter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.Log;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
+import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.storage.ImageSelection;
 
@@ -31,12 +33,11 @@ public class App {
             .description("Path of H2 db file containing the data from the user.")
             .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
             .build();
-    static final DefaultFilePathArgument sqlOutputFileArg = new DefaultFilePathArgument.Builder()
+    static final OptionalFilePathArgument sqlOutputFileArg = new OptionalFilePathArgument.Builder()
             .name("outputSQL")
             .shortName('o')
             .isFile()
             .description("Path to text file of SQL script of the database, useful for version tracking with git. Output only created if argument is present.")
-            .defaultValue(new File(HOME_DIR + "spotify_backup.sql"))
             .build();
     static final FlagArgument verboseArg = new FlagArgument.Builder()
             .name("verbose")
@@ -58,7 +59,6 @@ public class App {
     static final DefaultEnumArgument<ImageSelection> imageSaveRestriction = new DefaultEnumArgument
             .Builder<ImageSelection>()
             .name("restrictImages")
-//            .shortName('i')
             .description("Restrict which images are saved to save on database size.")
             .defaultValue(ImageSelection.ONLY_LARGEST)
             .enumClass(ImageSelection.class)
@@ -125,7 +125,7 @@ public class App {
         try {
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
-                println(argParser.getHelp(term.getWidth()));
+                println(argParser.getHelp(term.getType().equals("dumb") ? 120 : term.getWidth()));
             } else {
                 new CLI();
             }
