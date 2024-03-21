@@ -4,8 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
 import spotifybackup.cmd.argument.enumeration.MandatoryEnumArgument;
+import spotifybackup.cmd.argument.enumeration.OptionalEnumArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
+
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -123,6 +126,78 @@ class EnumArgumentTest {
             assertEquals(defaultValue, parser.getValue(name));
         });
         assertEquals(defaultValue, enumArg.getValue());
+    }
+
+    @Test
+    void optional_argument_loads_value_from_name() {
+        // Arrange
+        final var name = "opt";
+        final var value = TestEnum.ABC;
+        final String[] args = {"--" + name, value.name()};
+        final var arg = new OptionalEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .enumClass(TestEnum.class)
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_loads_value_from_shortname() {
+        // Arrange
+        final var name = "opt";
+        final var value = TestEnum.ABC;
+        final String[] args = {"-o", value.name()};
+        final var arg = new OptionalEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .enumClass(TestEnum.class)
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(value, arg.getValue());
+    }
+
+    @Test
+    void optional_argument_missing_in_input_throws_exception_when_getting_value() {
+        // Arrange
+        final var name = "opt";
+        final String[] args = {};
+        final var arg = new OptionalEnumArgument.Builder<EnumArgumentTest.TestEnum>()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .enumClass(TestEnum.class)
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertFalse(arg::isPresent);
+        assertThrows(NoSuchElementException.class, arg::getValue);
     }
 
     public enum TestEnum {

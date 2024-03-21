@@ -8,11 +8,13 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.file.MandatoryFilePathArgument;
+import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 import spotifybackup.cmd.exception.MalformedInputException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.NoSuchElementException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -266,5 +268,85 @@ class FilePathArgumentsTest {
 
         // Assert
         assertThrows(IllegalConstructorParameterException.class, builder::build);
+    }
+
+    @Test
+    void optional_argument_loads_value_from_name() throws IOException {
+        // Arrange
+        final File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
+        assert temp_file.exists();
+        temp_file.deleteOnExit();
+        final String value = temp_file.toString();
+        assert new File(value).exists();
+        final var name = "opt";
+        final String[] args = {"--" + name, value};
+        final var arg = new OptionalFilePathArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .isFile()
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(new File(value).getAbsoluteFile(), arg.getValue());
+    }
+
+    @Test
+    void optional_argument_loads_value_from_shortname() throws IOException {
+        // Arrange
+        final File temp_file = File.createTempFile("test", ".txt", sharedTempDir);
+        assert temp_file.exists();
+        temp_file.deleteOnExit();
+        final String value = temp_file.toString();
+        assert new File(value).exists();
+        final var name = "opt";
+        final String[] args = {"-o", value};
+        final var arg = new OptionalFilePathArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .isFile()
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertEquals(new File(value).getAbsoluteFile(), arg.getValue());
+    }
+
+    @Test
+    void optional_argument_missing_in_input_throws_exception_when_getting_value() {
+        // Arrange
+        final var name = "opt";
+        final String[] args = {};
+        final var arg = new OptionalFilePathArgument.Builder()
+                .name(name)
+                .description("")
+                .shortName('o')
+                .isFile()
+                .build();
+        final var argParser = new CmdParser.Builder()
+                .argument(arg)
+                .addHelp()
+                .build();
+
+        // Act
+        assertDoesNotThrow(() -> argParser.parseArguments(args));
+
+        // Assert
+        assertFalse(arg::isPresent);
+        assertThrows(NoSuchElementException.class, arg::getValue);
     }
 }

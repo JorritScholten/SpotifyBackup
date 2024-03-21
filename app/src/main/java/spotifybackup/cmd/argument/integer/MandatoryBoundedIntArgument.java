@@ -17,7 +17,7 @@ public class MandatoryBoundedIntArgument extends BoundedIntArgument {
 
     public static class Builder extends BoundedIntArgument.Builder<Builder> {
         public Builder() {
-            super(true);
+            super(true, true);
         }
 
         /**

@@ -11,7 +11,7 @@ public class MandatoryIntArgument extends IntArgument {
 
     public static class Builder extends IntArgument.Builder<Builder> {
         public Builder() {
-            super(true);
+            super(true, true);
         }
 
         /**

@@ -1,6 +1,6 @@
 package spotifybackup.cmd.argument.file;
 
-import spotifybackup.cmd.HasDefaultValue;
+import spotifybackup.cmd.OptionallyPresent;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 import java.io.File;
@@ -9,7 +9,7 @@ import java.io.File;
  * File path argument with default value, has flag-like behaviour because it can be called without a value. Argument
  * throws exception at runtime if supplied value does not adhere to isFolder rule.
  */
-public class DefaultFilePathArgument extends FilePathArgument implements HasDefaultValue {
+public class DefaultFilePathArgument extends FilePathArgument implements OptionallyPresent {
     /**
      * File path argument with default value, has flag-like behaviour because it can be called without a value. Argument
      * throws exception at runtime if supplied value does not adhere to isFolder rule.
@@ -26,14 +26,14 @@ public class DefaultFilePathArgument extends FilePathArgument implements HasDefa
 
     @Override
     protected String getDescription() {
-        return super.getDescription() + " Default value:[" + getValue().getAbsolutePath() + "]";
+        return super.getDescription() + " Default value: [" + getValue().getAbsolutePath() + "]";
     }
 
     public static class Builder extends FilePathArgument.Builder<Builder> {
         private File defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */

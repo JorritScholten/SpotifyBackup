@@ -12,7 +12,7 @@ public class MandatoryStringArgument extends StringArgument {
 
     public static class Builder extends StringArgument.Builder<Builder> {
         public Builder() {
-            super(true);
+            super(true, true);
         }
 
         /**

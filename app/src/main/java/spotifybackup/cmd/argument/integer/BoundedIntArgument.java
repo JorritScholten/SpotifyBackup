@@ -25,6 +25,12 @@ abstract class BoundedIntArgument extends Argument<Integer> {
     }
 
     @Override
+    protected String getDescription() {
+        if (max == Integer.MAX_VALUE) return super.getDescription() + " Minimum: [" + min + "]";
+        else return super.getDescription() + " Minimum: [" + min + "] Maximum: [" + max + "]";
+    }
+
+    @Override
     protected String getValueName() {
         return "INTEGER";
     }
@@ -55,8 +61,8 @@ abstract class BoundedIntArgument extends Argument<Integer> {
         private Integer min;
         private Integer max;
 
-        protected Builder(boolean isMandatory) {
-            super(isMandatory, true);
+        protected Builder(boolean argMandatory, boolean valMandatory) {
+            super(argMandatory, true, valMandatory);
         }
 
         /** @param minimum Minimum value integer should be (also applied to defaultValue). */

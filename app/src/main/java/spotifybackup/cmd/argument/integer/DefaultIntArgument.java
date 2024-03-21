@@ -1,12 +1,12 @@
 package spotifybackup.cmd.argument.integer;
 
-import spotifybackup.cmd.HasDefaultValue;
+import spotifybackup.cmd.OptionallyPresent;
 import spotifybackup.cmd.exception.IllegalConstructorParameterException;
 
 /**
  * Integer argument with default value, has flag-like behaviour because it can be called without a value.
  */
-public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
+public class DefaultIntArgument extends IntArgument implements OptionallyPresent {
     /**
      * Integer argument with default value, has flag-like behaviour because it can be called without a value.
      */
@@ -22,14 +22,14 @@ public class DefaultIntArgument extends IntArgument implements HasDefaultValue {
 
     @Override
     protected String getDescription() {
-        return super.getDescription() + " Default value:[" + getValue() + "]";
+        return super.getDescription() + " Default value: [" + getValue() + "]";
     }
 
     public static class Builder extends IntArgument.Builder<Builder> {
         private Integer defaultValue;
 
         public Builder() {
-            super(false);
+            super(false, false);
         }
 
         /** @param defaultValue The value produced if the argument is absent from or undefined in the command line. */

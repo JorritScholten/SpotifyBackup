@@ -17,7 +17,7 @@ public class MandatoryFilePathArgument extends FilePathArgument {
 
     public static class Builder extends FilePathArgument.Builder<Builder> {
         public Builder() {
-            super(true);
+            super(true, true);
         }
 
         @Override

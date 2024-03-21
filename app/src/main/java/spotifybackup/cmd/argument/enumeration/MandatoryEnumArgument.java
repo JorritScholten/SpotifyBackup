@@ -18,7 +18,7 @@ public class MandatoryEnumArgument<E extends Enum<E>> extends EnumArgument<E> {
 
     public static class Builder<E extends Enum<E>> extends EnumArgument.Builder<Builder<E>, E> {
         public Builder() {
-            super(true);
+            super(true, true);
         }
 
         /**

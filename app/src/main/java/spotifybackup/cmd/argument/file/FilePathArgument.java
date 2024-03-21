@@ -29,6 +29,11 @@ abstract class FilePathArgument extends Argument<File> {
     }
 
     @Override
+    protected String getDescription() {
+        return super.getDescription() + " Expects a " + (isFolder ? "folder." : "file.");
+    }
+
+    @Override
     protected String getValueName() {
         return "FILEPATH";
     }
@@ -53,8 +58,8 @@ abstract class FilePathArgument extends Argument<File> {
     abstract static class Builder<T extends Builder<T>> extends Argument.Builder<T, File> {
         private Boolean isFolder;
 
-        Builder(boolean isMandatory) {
-            super(isMandatory, true);
+        Builder(boolean argMandatory, boolean valMandatory) {
+            super(argMandatory, true, valMandatory);
         }
 
         /**

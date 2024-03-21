@@ -44,8 +44,8 @@ abstract class EnumArgument<E extends Enum<E>> extends Argument<E> {
     protected abstract static class Builder<T extends Builder<T, E>, E extends Enum<E>> extends Argument.Builder<T, E> {
         private Class<E> enumClass;
 
-        protected Builder(boolean isMandatory) {
-            super(isMandatory, true);
+        protected Builder(boolean argMandatory, boolean valMandatory) {
+            super(argMandatory, true, valMandatory);
         }
 
         /**

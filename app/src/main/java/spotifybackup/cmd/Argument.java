@@ -7,8 +7,9 @@ import java.util.Formatter;
 
 public abstract class Argument<V> {
     /** If true and missing from input then program will throw an Exception, flags cannot be mandatory. */
-    protected final boolean isMandatory;
+    protected final boolean argMandatory;
     protected final boolean hasValue;
+    protected final boolean valMandatory;
     protected final Character shortName;
     protected final String name;
     protected final String description;
@@ -20,8 +21,9 @@ public abstract class Argument<V> {
         this.name = builder.name;
         this.description = builder.description;
         this.shortName = builder.shortName;
-        this.isMandatory = builder.isMandatory;
+        this.argMandatory = builder.argMandatory;
         this.hasValue = builder.hasValue;
+        this.valMandatory = builder.valMandatory;
     }
 
     /**
@@ -34,29 +36,20 @@ public abstract class Argument<V> {
         if (nameWidth <= 0 || maxWidth <= 0 || maxWidth <= nameWidth) {
             throw new IllegalArgumentException("Illegal value for nameWidth or maxWidth.");
         }
-        StringBuilder helpText = new StringBuilder("  ");
+        StringBuilder helpText = new StringBuilder();
 
         // generate usage/name block
         try (Formatter formatter = new Formatter(helpText)) {
-            if (isMandatory) {
-                if (hasShortName()) {
-                    formatter.format("-%c%s, ", shortName, hasValue ? " " + getValueName() : "");
-                }
-                formatter.format("--%s%s", name, hasValue ? " " + getValueName() : "");
-            } else {
-                if (hasShortName()) {
-                    formatter.format("-%c%s, ", shortName, hasValue ? " [" + getValueName() + "]" : "");
-                }
-                formatter.format("--%s%s", name, hasValue ? " [" + getValueName() + "]" : "");
-            }
+            if (hasShortName()) formatter.format("-%c, ", shortName);
+            else helpText.append("    ");
+            if (!hasValue) formatter.format("--%s", name);
+            else if (argMandatory || valMandatory) formatter.format("--%s%s", name, " " + getValueName());
+            else formatter.format("--%s%s", name, " [" + getValueName() + "]");
         }
 
         // switch to new line if usage/name block is too wide
-        if (helpText.length() >= (nameWidth - 1)) {
-            helpText.append("\n").append(" ".repeat(nameWidth));
-        } else {
-            helpText.append(" ".repeat(nameWidth - helpText.length()));
-        }
+        if (helpText.length() >= (nameWidth - 1)) helpText.append("\n").append(" ".repeat(nameWidth));
+        else helpText.append(" ".repeat(nameWidth - helpText.length()));
 
         // add argument description with word wrapping
         final int descriptionWidth = maxWidth - nameWidth;
@@ -86,8 +79,8 @@ public abstract class Argument<V> {
         return hasValue;
     }
 
-    protected boolean getMandatory() {
-        return isMandatory;
+    protected boolean getArgMandatory() {
+        return argMandatory;
     }
 
     protected abstract String getValueName();
@@ -106,15 +99,17 @@ public abstract class Argument<V> {
     protected abstract void setValue(final String value) throws MalformedInputException;
 
     protected abstract static class Builder<T extends Builder<T, V>, V> {
-        private final boolean isMandatory;
+        private final boolean argMandatory;
         private final boolean hasValue;
+        private final boolean valMandatory;
         private String name;
         private String description;
         private Character shortName;
 
-        protected Builder(boolean isMandatory, boolean hasValue) {
-            this.isMandatory = isMandatory;
+        protected Builder(boolean argMandatory, boolean hasValue, boolean valMandatory) {
+            this.argMandatory = argMandatory;
             this.hasValue = hasValue;
+            this.valMandatory = valMandatory;
         }
 
         /** @param name Identifying name of argument, --{name} is used as identifier. */

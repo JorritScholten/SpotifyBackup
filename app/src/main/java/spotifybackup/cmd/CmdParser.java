@@ -30,13 +30,14 @@ public class CmdParser {
      * @param args String[] parameter from main method.
      * @throws MissingArgumentException when a mandatory argument is missing from the input.
      * @throws MalformedInputException  when the input from the command line is written incorrectly.
+     * @throws MissingValueException    when an optional or mandatory argument is missing its value.
      */
     public void parseArguments(final String[] args)
             throws MissingArgumentException, MalformedInputException {
         if (!argumentsParsed) {
             var lexedInput = lexer(args);
             parser(lexedInput);
-            if (arguments.stream().anyMatch(argument -> argument.isMandatory && !argument.isPresent)) {
+            if (arguments.stream().anyMatch(argument -> argument.argMandatory && !argument.isPresent)) {
                 throw new MissingArgumentException("Mandatory arguments missing from input.");
             }
             argumentsParsed = true;
@@ -102,8 +103,8 @@ public class CmdParser {
      * @return String containing help message.
      */
     public String getHelp(int maxWidth, int nameWidth) {
-        final List<Argument> mandatoryArguments = arguments.stream().filter(Argument::getMandatory).toList();
-        final List<Argument> optionalArguments = arguments.stream().filter(not(Argument::getMandatory)).toList();
+        final List<Argument> mandatoryArguments = arguments.stream().filter(Argument::getArgMandatory).toList();
+        final List<Argument> optionalArguments = arguments.stream().filter(not(Argument::getArgMandatory)).toList();
         StringBuilder helpText = new StringBuilder();
 
         helpText.append(generateUsage(maxWidth)).append("\n");
@@ -134,16 +135,17 @@ public class CmdParser {
     }
 
     private String generateUsage(int maxWidth) {
-        var sortedArguments = new ArrayList<>(arguments.stream().filter(Argument::getMandatory).toList());
-        sortedArguments.addAll(arguments.stream().filter(not(Argument::getMandatory)).toList());
+        var sortedArguments = new ArrayList<>(arguments.stream().filter(Argument::getArgMandatory).toList());
+        sortedArguments.addAll(arguments.stream().filter(not(Argument::getArgMandatory)).toList());
         StringBuilder usageText = new StringBuilder();
-        try(Formatter formatter = new Formatter(usageText)) {
+        try (Formatter formatter = new Formatter(usageText)) {
             formatter.format("Usage: %s", programName != null ? programName + " " : "");
             for (var argument : sortedArguments) {
-                formatter.format(argument.isMandatory ? "-%s%s " : "[-%s%s] ",
+                var valueString = argument.argMandatory || argument.valMandatory ?
+                        (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]");
+                formatter.format(argument.argMandatory ? "-%s%s " : "[-%s%s] ",
                         argument.hasShortName() ? argument.shortName : "-" + argument.name,
-                        !argument.hasValue ? "" : argument.isMandatory ?
-                                (" " + argument.getValueName()) : (" [" + argument.getValueName() + "]")
+                        !argument.hasValue ? "" : valueString
                 );
             }
         }
@@ -176,9 +178,9 @@ public class CmdParser {
     private Optional<Argument> identifyValueArgumentByShortName(String arg) throws MalformedInputException {
         List<Argument> shortArguments = listArgumentsFromShortNames(arg.substring(1).toCharArray(), arg);
         Supplier<Stream<Argument>> mandatoryValueArguments = () ->
-                shortArguments.stream().filter(Argument::getMandatory).filter(Argument::getHasValue);
+                shortArguments.stream().filter(Argument::getArgMandatory).filter(Argument::getHasValue);
         Supplier<Stream<Argument>> optionalValueArguments = () ->
-                shortArguments.stream().filter(not(Argument::getMandatory)).filter(Argument::getHasValue);
+                shortArguments.stream().filter(not(Argument::getArgMandatory)).filter(Argument::getHasValue);
 
         // mark all identified non-value (currently only FlagArgument) arguments as present
         shortArguments.stream().filter(not(Argument::getHasValue)).forEach(Argument::confirmPresent);
@@ -227,15 +229,19 @@ public class CmdParser {
                         var nextInput = iter.next();
                         if (nextInput.type == ArgType.VALUE) {
                             argument.get().setValue(nextInput.arg);
-                        } else if (argument.get().isMandatory) {
-                            throw new MalformedInputException("Argument " + argument.get().name +
+                        } else if (argument.get().argMandatory || argument.get().valMandatory) {
+                            throw new MissingValueException("Argument " + argument.get().name +
                                     " supplied without value.");
                         } else {
                             iter.previous(); // undo ingestion of next argument
                         }
                     } catch (NoSuchElementException e) {
-                        if (argument.get().isMandatory) {
-                            throw new MalformedInputException("Missing value for mandatory argument: " +
+                        if (argument.get().argMandatory) {
+                            throw new MissingValueException("Missing value for mandatory argument: " +
+                                    argument.get().name);
+                        }
+                        if (argument.get().valMandatory) {
+                            throw new MissingValueException("Missing value for optional argument: " +
                                     argument.get().name);
                         }
                     }
@@ -264,7 +270,7 @@ public class CmdParser {
         SHORT_ARGUMENT("^[-]{1}[a-zA-Z]{1}$"),
         SHORT_ARGUMENTS("^[-]{1}[a-zA-Z]{2,}$"),
         LONG_ARGUMENT("^[-]{2}[\\w]+$"),
-        VALUE("^([-]?[\\d]+([.,]{1}[\\d]+)?)|([^-]{1,2}[\\w ]+)$");
+        VALUE("^([-]?[\\d]+([.,]{1}[\\d]+)?)|([^-]{1,2}[\\w '\\\";:()<>.,{}\\[\\]\\\\/|?-_=+!@#$%^&*]+)$");
 
         final Pattern regex;
 
