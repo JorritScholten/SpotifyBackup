@@ -66,6 +66,10 @@ public class App {
             .name("show-total-library-duration")
             .description("Print out the total duration of a users' Liked songs.")
             .build();
+    static final FlagArgument showDurationOfNew = new FlagArgument.Builder()
+            .name("show-duration-new-liked")
+            .description("Print out total duration of all new Liked songs, only done during backup.")
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
     @Getter
@@ -74,7 +78,7 @@ public class App {
     static {
         argParser = new CmdParser.Builder()
                 .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
-                        verboseArg, showTotalLibraryDuration)
+                        verboseArg, showTotalLibraryDuration, showDurationOfNew)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()

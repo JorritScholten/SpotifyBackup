@@ -10,6 +10,9 @@ import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.storage.*;
 
 import java.io.IOException;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -56,10 +59,13 @@ public class CLI {
             var tracks = repo.getSavedTracks(account);
             long durationMs = tracks.stream().map(s -> s.getTrack().getDurationMs().longValue()).reduce(0L, Long::sum);
             App.println("Account [" + account.getDisplayName().orElseGet(account::getSpotifyUserID) +
-                    "] has a total library duration: " + DurationFormatUtils.formatDurationWords(durationMs,
-                    true, true)
+                    "] has a total library duration: " + msToPrettyString(durationMs)
             );
         }
+    }
+
+    private String msToPrettyString(final long durationMs) {
+        return DurationFormatUtils.formatDurationWords(durationMs, true, true);
     }
 
     private class Backup {
@@ -69,7 +75,8 @@ public class CLI {
         private Backup(final Config.UserInfo account) throws InterruptedException, IOException {
             api = new ApiWrapper(account, App.getConfig());
             final var currentUser = api.getCurrentUser().orElseThrow();
-            App.verbosePrintln("Logged in as: " + currentUser.getDisplayName());
+            if (App.verboseArg.isPresent() || App.showDurationOfNew.isPresent())
+                App.println("Logged in as: " + currentUser.getDisplayName());
             user = repo.persist(currentUser);
             performBackup();
         }
@@ -86,12 +93,22 @@ public class CLI {
         private void saveLikedSongs() {
             var oldTrackIds = repo.getSavedTrackIds(user);
             List<SpotifySavedTrack> newTracks = new ArrayList<>();
+            final ZonedDateTime newestSavedTrackAddedAt = repo.getNewestSavedTrack(user).isPresent() ?
+                    repo.getNewestSavedTrack(user).orElseThrow().getDateAdded() :
+                    ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
             var pageItems = getFromApiPaged(2, "Saving all Liked Songs", api::getLikedSongs);
             for (var items : pageItems) newTracks.addAll(repo.persist(items, user));
             var newTrackIds = newTracks.stream().map(t -> t.getTrack().getSpotifyID().getId()).collect(Collectors.toList());
             newTrackIds.removeAll(oldTrackIds);
-            if (!newTrackIds.isEmpty())
-                App.verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs");
+            if (!newTrackIds.isEmpty()) {
+                App.showDurationOfNew.ifPresentOrElse(() -> {
+                    var onlyNewTracks = repo.getSavedTracksAfter(user, newestSavedTrackAddedAt);
+                    var durationMs = onlyNewTracks.stream().map(s -> s.getTrack().getDurationMs().longValue())
+                            .reduce(0L, Long::sum);
+                    App.println(4, "Added " + newTrackIds.size() + " track(s) to Liked songs, duration: "
+                            + msToPrettyString(durationMs));
+                }, () -> App.verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs"));
+            }
             markRemovedTracks(newTracks);
         }
 
