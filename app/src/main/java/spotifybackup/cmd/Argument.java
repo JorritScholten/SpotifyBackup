@@ -158,9 +158,11 @@ public abstract class Argument<V> {
             } else if (name.isEmpty()) {
                 throw new IllegalArgumentNameException("Argument name can not be empty string.");
             } else if (name.length() == 1) {
-                throw new IllegalArgumentNameException("Argument name should be longer than 1 character to prevent confusion.");
+                throw new IllegalArgumentNameException("Argument name [" + name + "] should be longer than 1 " +
+                        "character to prevent confusion.");
             } else if (!CmdParser.ArgType.LONG_ARGUMENT.regex.matcher("--" + name).find()) {
-                throw new IllegalArgumentNameException("Argument name can not be identified as name by regex.");
+                throw new IllegalArgumentNameException("Argument name [" + name + "] can not be identified as name " +
+                        "by regex.");
             }
             if (description == null) {
                 throw new IllegalArgumentDescriptionException("Argument description can not be null value.");
