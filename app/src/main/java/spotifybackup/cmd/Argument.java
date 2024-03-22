@@ -35,6 +35,11 @@ public abstract class Argument<V> {
         else emptyAction.run();
     }
 
+    /** @param action the action to be performed if argument is present */
+    public void ifPresent(Runnable action) {
+        if (isPresent) action.run();
+    }
+
     /**
      * Get string representation of Argument to print to Command line.
      * @param nameWidth width of name and shortName printing block.

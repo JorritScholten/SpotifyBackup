@@ -1,5 +1,6 @@
 package spotifybackup.app;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.Paging;
 import se.michaelthelin.spotify.model_objects.specification.PagingCursorbased;
@@ -34,6 +35,7 @@ public class CLI {
             if (App.config.getUsers().length > 0) for (var user : App.config.getUsers()) new Backup(user);
             else new Backup(App.config.addEmptyUser());
         }
+        App.showTotalLibraryDuration.ifPresent(this::printTotalLibraryDurations);
         App.sqlOutputFileArg.ifPresent(repo::outputDatabaseToSQLScript);
     }
 
@@ -46,6 +48,17 @@ public class CLI {
             App.println("Added account: " + user.getDisplayName().orElseThrow());
             if (App.verboseArg.isPresent() && !user.getSpotifyUserID().equals(user.getDisplayName().orElseThrow()))
                 user.getDisplayName().ifPresent(name -> App.println(name + " has user ID: " + user.getSpotifyUserID()));
+        }
+    }
+
+    private void printTotalLibraryDurations() {
+        for (var account : repo.getAccountHolders()) {
+            var tracks = repo.getSavedTracks(account);
+            long durationMs = tracks.stream().map(s -> s.getTrack().getDurationMs().longValue()).reduce(0L, Long::sum);
+            App.println("Account [" + account.getDisplayName().orElseGet(account::getSpotifyUserID) +
+                    "] has a total library duration: " + DurationFormatUtils.formatDurationWords(durationMs,
+                    true, true)
+            );
         }
     }
 
@@ -135,7 +148,7 @@ public class CLI {
                 apiItems.add(apiPage.getItems());
                 offset += limit;
             } while (apiPage.getNext() != null);
-            App.println("");
+            App.verbosePrintln("");
             return apiItems;
         }
 
@@ -153,7 +166,7 @@ public class CLI {
                 apiItems.add(apiPage.getItems());
                 after = apiPage.getCursors()[0].getAfter();
             } while (apiPage.getNext() != null);
-            App.println("");
+            App.verbosePrintln("");
             return apiItems;
         }
 

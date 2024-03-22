@@ -62,6 +62,10 @@ public class App {
             .defaultValue(ImageSelection.ONLY_LARGEST)
             .enumClass(ImageSelection.class)
             .build();
+    static final FlagArgument showTotalLibraryDuration = new FlagArgument.Builder()
+            .name("show-total-library-duration")
+            .description("Print out the total duration of a users' Liked songs.")
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
     @Getter
@@ -70,7 +74,7 @@ public class App {
     static {
         argParser = new CmdParser.Builder()
                 .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
-                        verboseArg)
+                        verboseArg, showTotalLibraryDuration)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
