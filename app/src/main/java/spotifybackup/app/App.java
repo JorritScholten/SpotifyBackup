@@ -3,7 +3,6 @@ package spotifybackup.app;
 import lombok.Getter;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.Log;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
@@ -34,7 +33,7 @@ public class App {
             .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
             .build();
     static final OptionalFilePathArgument sqlOutputFileArg = new OptionalFilePathArgument.Builder()
-            .name("outputSQL")
+            .name("output-SQL")
             .shortName('o')
             .isFile()
             .description("Path to text file of SQL script of the database, useful for version tracking with git. Output only created if argument is present.")
@@ -45,12 +44,12 @@ public class App {
             .description("Print full stacktrace and verbose progress messages.")
             .build();
     static final FlagArgument doBackup = new FlagArgument.Builder()
-            .name("doBackup")
+            .name("do-backup")
             .shortName('b')
             .description("Perform backups for all accounts. Added for development, to be replaced with option to explicitly disable backup.")
             .build();
     static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
-            .name("addAccounts")
+            .name("add-accounts")
             .defaultValue(1)
             .minimum(1)
             .shortName('a')
@@ -58,7 +57,7 @@ public class App {
             .build();
     static final DefaultEnumArgument<ImageSelection> imageSaveRestriction = new DefaultEnumArgument
             .Builder<ImageSelection>()
-            .name("restrictImages")
+            .name("restrict-images")
             .description("Restrict which images are saved to save on database size.")
             .defaultValue(ImageSelection.ONLY_LARGEST)
             .enumClass(ImageSelection.class)
