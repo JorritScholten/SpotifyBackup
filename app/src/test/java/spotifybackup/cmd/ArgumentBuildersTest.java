@@ -201,4 +201,35 @@ class ArgumentBuildersTest {
         // Assert
         assertThrows(IllegalArgumentShortnameException.class, flagArgumentBuilder::build);
     }
+
+    /**
+     * This test ensures that Argument$Builder.validate() validates name is recognised as
+     * {@link CmdParser.ArgType#LONG_ARGUMENT}
+     */
+    @ParameterizedTest
+    @ValueSource(strings = {"name", "snake_case", "camelCase", "PascalCase", "kebab-case"})
+    void argument_builder_validates_valid_name(final String name) {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder().description("flag argument");
+
+        // Act
+        flagArgumentBuilder.name(name);
+
+        // Assert
+        assertDoesNotThrow(flagArgumentBuilder::build);
+    }
+
+    /** This test ensures that Argument$Builder.validate() rejects name values with illegal characters. */
+    @ParameterizedTest
+    @ValueSource(strings = {"flag argument", "flag$", "f", "flag.argument"})
+    void argument_builder_rejects_invalid_name(final String name) {
+        // Arrange
+        var flagArgumentBuilder = new FlagArgument.Builder().description("flag argument");
+
+        // Act
+        flagArgumentBuilder.name(name);
+
+        // Assert
+        assertThrows(IllegalArgumentNameException.class, flagArgumentBuilder::build);
+    }
 }
