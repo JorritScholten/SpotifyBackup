@@ -176,7 +176,7 @@ class SpotifySavedTrackRepositoryTest {
         // Arrange
         final var user = getUserFromId.apply("testaccount");
         final var previousMostRecentlyAdded = spotifyObjectRepository.getNewestSavedTrack(user).orElseThrow();
-        final var originallyAdded = previousMostRecentlyAdded.getDateAdded().plusYears(1);
+        final var originallyAdded = previousMostRecentlyAdded.getDateAdded();
         final SavedTrack[] apiSavedTrack = {new SavedTrack.Builder()
                 .setAddedAt(Date.from(originallyAdded.plusDays(2).toInstant()))
                 .setTrack(new Track.JsonUtil().createModelObject(
@@ -202,5 +202,24 @@ class SpotifySavedTrackRepositoryTest {
         assertFalse(savedTracks.getFirst().getIsRemoved());
         assertEquals(apiSavedTrack[0].getTrack().getId(), savedTracks.getFirst().getTrack().getSpotifyID().getId());
         assertNotEquals(originallyAdded, newMostRecentlyAdded.getDateAdded());
+    }
+
+    @Test
+    @Order(9)
+    void ensure_get_saved_after_works() {
+        // Arrange
+        final var user = getUserFromId.apply("testaccount");
+        final var allSavedTracks = spotifyObjectRepository.getSavedTracks(user).stream()
+                .sorted(Comparator.comparing(SpotifySavedTrack::getDateAdded).reversed()).toList(); // most recent first
+        final int halfwayIndex = allSavedTracks.size() / 2;
+        final var moment = allSavedTracks.get(halfwayIndex).getDateAdded();
+        final var afterHalfwayTracks = allSavedTracks.subList(0, halfwayIndex);
+
+        // Act
+        final var tracksAfter = spotifyObjectRepository.getSavedTracksAfter(user, moment);
+
+        // Assert
+        assertEquals(afterHalfwayTracks.size(), tracksAfter.size());
+        assertTrue(tracksAfter.containsAll(afterHalfwayTracks));
     }
 }

@@ -11,6 +11,7 @@ import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
 
 import java.io.File;
+import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.logging.Level;
@@ -366,6 +367,17 @@ public class SpotifyObjectRepository {
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedTrackRepository.findNewestByUser(em, user);
             return query.getResultStream().findFirst();
+        }
+    }
+
+    /**
+     * Get list of SpotifySavedTrack objects added to library after the specified timestamp.
+     * @param user The SpotifyUser account to get SpotifySavedTrack from.
+     * @param from Non-inclusive timestamp, everything added after this moment is returned.
+     */
+    public List<SpotifySavedTrack> getSavedTracksAfter(@NonNull SpotifyUser user, @NonNull ZonedDateTime from) {
+        try (var em = emf.createEntityManager()) {
+            throw new UnsupportedOperationException("to be implemented");
         }
     }
 
