@@ -371,17 +371,6 @@ public class SpotifyObjectRepository {
     }
 
     /**
-     * Get list of SpotifySavedTrack objects added to library after the specified timestamp.
-     * @param user The SpotifyUser account to get SpotifySavedTrack from.
-     * @param from Non-inclusive timestamp, everything added after this moment is returned.
-     */
-    public List<SpotifySavedTrack> getSavedTracksAfter(@NonNull SpotifyUser user, @NonNull ZonedDateTime from) {
-        try (var em = emf.createEntityManager()) {
-            throw new UnsupportedOperationException("to be implemented");
-        }
-    }
-
-    /**
      * Get most recently added saved album in the database.
      * @param user The SpotifyUser account to get SpotifySavedAlbum from.
      * @return Optional containing most recently added SpotifySavedAlbum if user has SpotifySavedAlbum object(s) in the
@@ -403,6 +392,18 @@ public class SpotifyObjectRepository {
         try (var em = emf.createEntityManager()) {
             var query = SpotifySavedTrackRepository.findByUser(em, user);
             return new HashSet<>(query.getResultList());
+        }
+    }
+
+    /**
+     * Get list of SpotifySavedTrack objects added to library after the specified timestamp.
+     * @param user The SpotifyUser account to get SpotifySavedTrack from.
+     * @param from Non-inclusive timestamp, everything added after this moment is returned.
+     */
+    public List<SpotifySavedTrack> getSavedTracksAfter(@NonNull SpotifyUser user, @NonNull ZonedDateTime from) {
+        try (var em = emf.createEntityManager()) {
+            var query = SpotifySavedTrackRepository.findByUserAndAfter(em, user, from);
+            return query.getResultList();
         }
     }
 

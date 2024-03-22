@@ -214,12 +214,14 @@ class SpotifySavedTrackRepositoryTest {
         final int halfwayIndex = allSavedTracks.size() / 2;
         final var moment = allSavedTracks.get(halfwayIndex).getDateAdded();
         final var afterHalfwayTracks = allSavedTracks.subList(0, halfwayIndex);
+        final var afterHalfwayTrackIds = afterHalfwayTracks.stream().map(SpotifySavedTrack::getId).toList();
 
         // Act
         final var tracksAfter = spotifyObjectRepository.getSavedTracksAfter(user, moment);
+        final var tracksAfterIds = tracksAfter.stream().map(SpotifySavedTrack::getId).toList();
 
         // Assert
         assertEquals(afterHalfwayTracks.size(), tracksAfter.size());
-        assertTrue(tracksAfter.containsAll(afterHalfwayTracks));
+        assertTrue(tracksAfterIds.containsAll(afterHalfwayTrackIds));
     }
 }

@@ -49,6 +49,15 @@ class SpotifySavedTrackRepository {
         );
     }
 
+    static TypedQuery<SpotifySavedTrack> findByUserAndAfter(EntityManager em, @NonNull SpotifyUser user, @NonNull ZonedDateTime after) {
+        var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
+        var root = query.from(SpotifySavedTrack.class);
+        return em.createQuery(query
+                .where(query.equal(root.get(SpotifySavedTrack_.user), user),
+                        query.greaterThan(root.get(SpotifySavedTrack_.dateAdded), after))
+        );
+    }
+
     static TypedQuery<SpotifySavedTrack> findRemovedByUser(EntityManager em, @NonNull SpotifyUser user) {
         var query = new CriteriaDefinition<>(em, SpotifySavedTrack.class) {};
         var root = query.from(SpotifySavedTrack.class);
