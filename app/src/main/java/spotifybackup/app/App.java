@@ -10,27 +10,26 @@ import spotifybackup.cmd.argument.file.DefaultFilePathArgument;
 import spotifybackup.cmd.argument.file.OptionalFilePathArgument;
 import spotifybackup.cmd.argument.integer.DefaultBoundedIntArgument;
 import spotifybackup.storage.ImageSelection;
+import spotifybackup.utils.PathUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 
 public class App {
-    static final String HOME_DIR = System.getProperty("user.home") + FileSystems.getDefault().getSeparator();
-    static final String USER_DIR = System.getProperty("user.dir") + FileSystems.getDefault().getSeparator();
+    public static final String APP_NAME = "SpotifyBackup";
     static final DefaultFilePathArgument configFileArg = new DefaultFilePathArgument.Builder()
             .name("config")
             .shortName('c')
             .isFile()
             .description("Settings file containing the Spotify API key and persistent configuration properties.")
-            .defaultValue(new File(HOME_DIR + ".spotify_backup_config.json"))
+            .defaultValue(new File(PathUtils.configDir(), "config.json"))
             .build();
     static final DefaultFilePathArgument dbFileArg = new DefaultFilePathArgument.Builder()
             .name("database")
             .shortName('d')
             .isFile()
             .description("Path of H2 db file containing the data from the user.")
-            .defaultValue(new File(HOME_DIR + "spotify_backup.mv.db"))
+            .defaultValue(new File(PathUtils.dataDir(), "backup.mv.db"))
             .build();
     static final OptionalFilePathArgument sqlOutputFileArg = new OptionalFilePathArgument.Builder()
             .name("output-SQL")
@@ -130,6 +129,7 @@ public class App {
 
     public static void main(String[] args) throws InterruptedException {
         try {
+            PathUtils.configDir();
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
                 println(argParser.getHelp(term.getType().equals("dumb") ? 120 : term.getWidth()));

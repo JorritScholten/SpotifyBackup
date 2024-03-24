@@ -24,9 +24,9 @@ public class CLI {
     private final SpotifyObjectRepository repo;
 
     CLI() throws IOException, InterruptedException {
-        App.dbFileArg.ifNotPresent(path -> App.println("db file: " + path));
-        App.configFileArg.ifNotPresent(path -> App.println("config file: " + path));
-        App.sqlOutputFileArg.ifPresent(path -> App.println("sql scripts file: " + path));
+        App.dbFileArg.ifNotPresent(path -> App.verbosePrintln("Database file: " + path));
+        App.configFileArg.ifNotPresent(path -> App.verbosePrintln("Config file: " + path));
+        App.sqlOutputFileArg.ifPresent(path -> App.verbosePrintln("SQL scripts file: " + path));
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         App.config = Config.loadFromFile(App.configFileArg.getValue());
         performActions();
