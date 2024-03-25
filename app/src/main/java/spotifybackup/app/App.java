@@ -23,6 +23,7 @@ public class App {
             .isFile()
             .description("Settings file containing the Spotify API key and persistent configuration properties.")
             .defaultValue(new File(PathUtils.configDir(), "config.json"))
+            .makeValueMandatory()
             .build();
     static final DefaultFilePathArgument dbFileArg = new DefaultFilePathArgument.Builder()
             .name("database")
@@ -30,6 +31,7 @@ public class App {
             .isFile()
             .description("Path of H2 db file containing the data from the user.")
             .defaultValue(new File(PathUtils.dataDir(), "backup.mv.db"))
+            .makeValueMandatory()
             .build();
     static final OptionalFilePathArgument sqlOutputFileArg = new OptionalFilePathArgument.Builder()
             .name("output-SQL")
@@ -60,6 +62,7 @@ public class App {
             .description("Restrict which images are saved to save on database size.")
             .defaultValue(ImageSelection.ONLY_LARGEST)
             .enumClass(ImageSelection.class)
+            .makeValueMandatory()
             .build();
     static final FlagArgument showTotalLibraryDuration = new FlagArgument.Builder()
             .name("show-total-library-duration")
