@@ -41,6 +41,12 @@ public class DefaultBoundedIntArgument extends BoundedIntArgument implements Def
             return this;
         }
 
+        /** Argument will throw exception if value is not supplied with the argument name. */
+        public Builder makeValueMandatory() {
+            setValMandatory(true);
+            return this;
+        }
+
         @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();

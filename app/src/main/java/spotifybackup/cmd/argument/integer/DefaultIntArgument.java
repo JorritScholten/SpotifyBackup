@@ -38,6 +38,12 @@ public class DefaultIntArgument extends IntArgument implements DefaultArgument<I
             return this;
         }
 
+        /** Argument will throw exception if value is not supplied with the argument name. */
+        public Builder makeValueMandatory() {
+            setValMandatory(true);
+            return this;
+        }
+
         @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();

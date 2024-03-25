@@ -42,6 +42,12 @@ public class DefaultFilePathArgument extends FilePathArgument implements Default
             return this;
         }
 
+        /** Argument will throw exception if value is not supplied with the argument name. */
+        public Builder makeValueMandatory() {
+            setValMandatory(true);
+            return this;
+        }
+
         @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();

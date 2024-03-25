@@ -702,6 +702,7 @@ class CmdParserTest {
                                     .description("A description.")
                                     .defaultValue(4)
                                     .minimum(3)
+                                    .makeValueMandatory()
                                     .build(),
                             new DefaultBoundedIntArgument.Builder()
                                     .name("defaultBoundedInteger2")
@@ -736,7 +737,7 @@ class CmdParserTest {
             final String expectedOutput = """
                     Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM
                     --mandatoryBoundedInteger INTEGER [-h] [-i [INTEGER]] [-s [STRING]] [--enum2
-                    [ENUM]] [--opt STRING] [--optionalEnum ENUM] [--defaultBoundedInteger [INTEGER]]
+                    [ENUM]] [--opt STRING] [--optionalEnum ENUM] [--defaultBoundedInteger INTEGER]
                     [-b [INTEGER]] [--optionalBoundedInteger INTEGER] [-e FILEPATH]
                                         
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
@@ -763,7 +764,7 @@ class CmdParserTest {
                         --optionalEnum ENUM
                                         an enum value, passed optionally Possible values: [ONE, TWO,
                                         THREE]
-                        --defaultBoundedInteger [INTEGER]
+                        --defaultBoundedInteger INTEGER
                                         A description. Minimum: [3] Default value: [4]
                     -b, --defaultBoundedInteger2 [INTEGER]
                                         A description. Minimum: [234] Maximum: [87435] Default
@@ -788,7 +789,7 @@ class CmdParserTest {
             // Arrange
             final String expectedOutput = """
                     Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM --mandatoryBoundedInteger INTEGER [-h] [-i [INTEGER]] [-s [STRING]]
-                    [--enum2 [ENUM]] [--opt STRING] [--optionalEnum ENUM] [--defaultBoundedInteger [INTEGER]] [-b [INTEGER]]
+                    [--enum2 [ENUM]] [--opt STRING] [--optionalEnum ENUM] [--defaultBoundedInteger INTEGER] [-b [INTEGER]]
                     [--optionalBoundedInteger INTEGER] [-e FILEPATH]
                                        
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
@@ -808,7 +809,7 @@ class CmdParserTest {
                         --enum2 [ENUM]                      enum2 argument description Possible values: [abc, ABC, none] Default value: [ABC]
                         --opt STRING                        argument can be missing from input, its value cannot
                         --optionalEnum ENUM                 an enum value, passed optionally Possible values: [ONE, TWO, THREE]
-                        --defaultBoundedInteger [INTEGER]   A description. Minimum: [3] Default value: [4]
+                        --defaultBoundedInteger INTEGER     A description. Minimum: [3] Default value: [4]
                     -b, --defaultBoundedInteger2 [INTEGER]  A description. Minimum: [234] Maximum: [87435] Default value: [9347]
                         --optionalBoundedInteger INTEGER    a bounded integer value, passed optionally Minimum: [-3] Maximum: [42]
                     -e, --errorLogFile FILEPATH             File to write error messages to in case of an exception. Expects a file.
@@ -826,7 +827,7 @@ class CmdParserTest {
                     Usage: testName.jar --int INTEGER -t FILEPATH --enum ENUM
                     --mandatoryBoundedInteger INTEGER [-h] [-i [INTEGER]] [-s
                     [STRING]] [--enum2 [ENUM]] [--opt STRING] [--optionalEnum
-                    ENUM] [--defaultBoundedInteger [INTEGER]] [-b [INTEGER]]
+                    ENUM] [--defaultBoundedInteger INTEGER] [-b [INTEGER]]
                     [--optionalBoundedInteger INTEGER] [-e FILEPATH]
                                         
                     Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
@@ -863,7 +864,7 @@ class CmdParserTest {
                         --optionalEnum ENUM
                                    an enum value, passed optionally Possible
                                    values: [ONE, TWO, THREE]
-                        --defaultBoundedInteger [INTEGER]
+                        --defaultBoundedInteger INTEGER
                                    A description. Minimum: [3] Default value:
                                    [4]
                     -b, --defaultBoundedInteger2 [INTEGER]

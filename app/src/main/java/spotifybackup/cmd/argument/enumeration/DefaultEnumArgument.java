@@ -45,6 +45,12 @@ public class DefaultEnumArgument<E extends Enum<E>> extends EnumArgument<E> impl
             return new DefaultEnumArgument<>(this);
         }
 
+        /** Argument will throw exception if value is not supplied with the argument name. */
+        public Builder<E> makeValueMandatory() {
+            setValMandatory(true);
+            return this;
+        }
+
         @Override
         protected void validate() throws IllegalConstructorParameterException {
             super.validate();

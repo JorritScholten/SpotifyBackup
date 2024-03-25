@@ -115,7 +115,7 @@ public abstract class Argument<V> {
     protected abstract static class Builder<T extends Builder<T, V>, V> {
         private final boolean argMandatory;
         private final boolean hasValue;
-        private final boolean valMandatory;
+        private boolean valMandatory;
         private String name;
         private String description;
         private Character shortName;
@@ -142,6 +142,10 @@ public abstract class Argument<V> {
         public T shortName(char shortName) {
             this.shortName = shortName;
             return getThis();
+        }
+
+        protected void setValMandatory(boolean valMandatory) {
+            this.valMandatory = valMandatory;
         }
 
         public abstract Argument<V> build() throws IllegalConstructorParameterException;
