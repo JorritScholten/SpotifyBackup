@@ -37,7 +37,8 @@ public class App {
             .name("output-SQL")
             .shortName('o')
             .isFile()
-            .description("Path to text file of SQL script of the database, useful for version tracking with git. Output only created if argument is present.")
+            .description("Path to text file of SQL script of the database, useful for version tracking with git. " +
+                    "Output only created if argument is present.")
             .build();
     static final FlagArgument verboseArg = new FlagArgument.Builder()
             .name("verbose")
@@ -47,7 +48,8 @@ public class App {
     static final FlagArgument doBackup = new FlagArgument.Builder()
             .name("do-backup")
             .shortName('b')
-            .description("Perform backups for all accounts. Added for development, to be replaced with option to explicitly disable backup.")
+            .description("Perform backups for all accounts. Added for development, to be replaced with option to " +
+                    "explicitly disable backup.")
             .build();
     static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
             .name("add-accounts")
@@ -72,6 +74,16 @@ public class App {
             .name("show-duration-new-liked")
             .description("Print out total duration of all new Liked songs, only done during backup.")
             .build();
+    static final DefaultEnumArgument<CLI.PlaylistFilter> playlistSaveRestriction = new DefaultEnumArgument.Builder<CLI.PlaylistFilter>()
+            .enumClass(CLI.PlaylistFilter.class)
+            .name("restrict-playlists")
+            .description("Restrict which playlists are saved, meant for broadly filtering away the auto-generated " +
+                    "playlists by Spotify or just everything not made by the user. Examples of Spotify auto-generated " +
+                    "playlists are Discover Weekly and This is <Artist name>.")
+            .shortName('p')
+            .defaultValue(CLI.PlaylistFilter.ALL_BUT_SPOTIFY)
+            .makeValueMandatory()
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
     @Getter
@@ -80,7 +92,7 @@ public class App {
     static {
         argParser = new CmdParser.Builder()
                 .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
-                        verboseArg, showTotalLibraryDuration, showDurationOfNew)
+                        verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
