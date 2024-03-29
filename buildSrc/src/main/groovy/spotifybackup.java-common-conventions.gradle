@@ -16,15 +16,15 @@ dependencies {
     constraints {
         // Define dependency versions as constraints
         implementation(
-                'org.apache.commons:commons-text:1.10.0'
+                'org.apache.commons:commons-text:1.11.0'
         )
     }
 
     // Use JUnit Jupiter for testing.
     testImplementation(
-            'org.junit.jupiter:junit-jupiter:5.9.3',
-            'io.github.classgraph:classgraph:4.8.161',
-            'io.github.toolfactory:jvm-driver:9.4.3'
+            'org.junit.jupiter:junit-jupiter:5.10.2',
+            'io.github.classgraph:classgraph:4.8.168',
+            'io.github.toolfactory:jvm-driver:9.6.0'
     )
 }
 
