@@ -86,7 +86,7 @@ public class App {
             .build();
     static final FlagArgument listUserAccounts = new FlagArgument.Builder()
             .name("list-user-accounts")
-            .description("List user accounts stored the database.")
+            .description("List user accounts stored the database which have library information.")
             .build();
     static final CmdParser argParser;
     static final Terminal term;

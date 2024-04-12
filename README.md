@@ -28,7 +28,7 @@ database and automated backups to an online repository.
     - [x] Request detailed information for various SpotifyObjects
     - [ ] Handle cloning/duplicating one account to another
         - [ ] handle selecting target and source account in the commandline
-            - [ ] list accounts in the database (source accounts)
+            - [x] list accounts in the database (source accounts)
             - [ ] list accounts in the config (target accounts)
         - [ ] create methods for transferring various account details
             - [ ] Liked Songs

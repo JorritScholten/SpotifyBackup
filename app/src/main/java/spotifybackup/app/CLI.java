@@ -37,6 +37,27 @@ public class CLI {
         }
         App.showTotalLibraryDuration.ifPresent(this::printTotalLibraryDurations);
         App.sqlOutputFileArg.ifPresent(repo::outputDatabaseToSQLScript);
+        App.listUserAccounts.ifPresent(this::listUserAccounts);
+    }
+
+    private void listUserAccounts() {
+        var accounts = repo.getAccountHolders();
+        final int spacing = 2;
+        final int countMaxWidth = ("" + accounts.size()).length();
+        final var idHeading = "Spotify ID";
+        final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyUserID().length()).reduce(Integer::max)
+                                       .orElse(idHeading.length());
+        App.println(countMaxWidth + spacing, idHeading +
+                " ".repeat(spacing + idMaxWidth - idHeading.length()) + "Account display name");
+        int count = 1;
+        for (var account : accounts) {
+            final int countWidth = ("" + count).length();
+            final int idWidth = account.getSpotifyUserID().length();
+            App.println(countMaxWidth - countWidth, count + " ".repeat(spacing)
+                    + account.getSpotifyUserID() + " ".repeat(
+                    spacing + (idMaxWidth - idWidth)) + account.getDisplayName().orElse(""));
+            count++;
+        }
     }
 
     private void addAccounts() throws IOException, InterruptedException {
@@ -56,7 +77,7 @@ public class CLI {
             var tracks = repo.getSavedTracks(account);
             long durationMs = tracks.stream().map(s -> s.getTrack().getDurationMs().longValue()).reduce(0L, Long::sum);
             App.println("Account [" + account.getDisplayName().orElseGet(account::getSpotifyUserID) +
-                    "] has a total library duration: " + msToPrettyString(durationMs)
+                                "] has a total library duration: " + msToPrettyString(durationMs)
             );
         }
     }
@@ -107,13 +128,14 @@ public class CLI {
                     ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
             var pageItems = getFromApiPaged(2, "Saving all Liked Songs", api::getLikedSongs);
             for (var items : pageItems) newTracks.addAll(repo.persist(items, user));
-            var newTrackIds = newTracks.stream().map(t -> t.getTrack().getSpotifyID().getId()).collect(Collectors.toList());
+            var newTrackIds = newTracks.stream().map(t -> t.getTrack().getSpotifyID().getId())
+                                       .collect(Collectors.toList());
             newTrackIds.removeAll(oldTrackIds);
             if (!newTrackIds.isEmpty()) {
                 App.showDurationOfNew.ifPresentOrElse(() -> {
                     var onlyNewTracks = repo.getSavedTracksAfter(user, newestSavedTrackAddedAt);
                     var durationMs = onlyNewTracks.stream().map(s -> s.getTrack().getDurationMs().longValue())
-                            .reduce(0L, Long::sum);
+                                                  .reduce(0L, Long::sum);
                     App.println(4, "Added " + newTrackIds.size() + " track(s) to Liked songs, duration: "
                             + msToPrettyString(durationMs));
                 }, () -> App.verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs"));
@@ -130,11 +152,11 @@ public class CLI {
                 newPlaylists.addAll(repo.persist(switch (App.playlistSaveRestriction.getValue()) {
                     case ALL -> items;
                     case ALL_BUT_SPOTIFY -> Arrays.stream(items)
-                            .filter(p -> !p.getOwner().getId().equals(SPOTIFY_USER_ID))
-                            .toArray(PlaylistSimplified[]::new);
+                                                  .filter(p -> !p.getOwner().getId().equals(SPOTIFY_USER_ID))
+                                                  .toArray(PlaylistSimplified[]::new);
                     case ONLY_USER -> Arrays.stream(items)
-                            .filter(p -> p.getOwner().getId().equals(user.getSpotifyUserID()))
-                            .toArray(PlaylistSimplified[]::new);
+                                            .filter(p -> p.getOwner().getId().equals(user.getSpotifyUserID()))
+                                            .toArray(PlaylistSimplified[]::new);
                 }));
             }
             var newPlaylistIds = newPlaylists.stream().map(p -> p.getSpotifyID().getId()).collect(Collectors.toList());
@@ -164,7 +186,8 @@ public class CLI {
             var pageItems = getFromApiPaged(2, "Saving all liked albums", api::getCurrentUserSavedAlbums);
             for (var items : pageItems)
                 newAlbums.addAll(repo.persist(items, user, App.imageSaveRestriction.getValue()));
-            var newAlbumIds = newAlbums.stream().map(a -> a.getAlbum().getSpotifyID().getId()).collect(Collectors.toList());
+            var newAlbumIds = newAlbums.stream().map(a -> a.getAlbum().getSpotifyID().getId())
+                                       .collect(Collectors.toList());
             newAlbumIds.removeAll(oldAlbumIds);
             if (!newAlbumIds.isEmpty())
                 App.verbosePrintln(4, "Added " + newAlbumIds.size() + " album(s) to liked");
@@ -253,7 +276,8 @@ public class CLI {
             List<String> combined = new ArrayList<>();
             for (int i = 0; i <= separateIds.size() / limit; i++) {
                 combined.add(String.join(",",
-                        separateIds.subList(i * limit, Math.min(i * limit + limit, separateIds.size()))));
+                                         separateIds.subList(i * limit,
+                                                             Math.min(i * limit + limit, separateIds.size()))));
             }
             return combined;
         }
@@ -299,7 +323,7 @@ public class CLI {
         private void savePlaylistTracks(SpotifyPlaylist playlist, Playlist apiPlaylist) {
             List<PlaylistTrack> apiTracks = new ArrayList<>();
             getFromApiPaged(6, "Requesting tracks for " + playlist.getName(),
-                    (l, o) -> api.getPlaylistTracks(l, o, playlist.getSpotifyID()))
+                            (l, o) -> api.getPlaylistTracks(l, o, playlist.getSpotifyID()))
                     .forEach(a -> apiTracks.addAll(Arrays.asList(a)));
             if (apiTracks.size() == apiPlaylist.getTracks().getTotal()) {
                 App.verbosePrintln(8, "Saving " + apiTracks.size() + " track(s) for " +
