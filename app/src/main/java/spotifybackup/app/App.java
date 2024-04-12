@@ -84,6 +84,10 @@ public class App {
             .defaultValue(CLI.PlaylistFilter.ALL_BUT_SPOTIFY)
             .makeValueMandatory()
             .build();
+    static final FlagArgument listUserAccounts = new FlagArgument.Builder()
+            .name("list-user-accounts")
+            .description("List user accounts stored the database.")
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
     @Getter
@@ -92,7 +96,8 @@ public class App {
     static {
         argParser = new CmdParser.Builder()
                 .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
-                        verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction)
+                        verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction,
+                           listUserAccounts)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()

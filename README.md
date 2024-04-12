@@ -27,6 +27,15 @@ database and automated backups to an online repository.
     - [x] Store followed artists to db
     - [x] Request detailed information for various SpotifyObjects
     - [ ] Handle cloning/duplicating one account to another
+        - [ ] handle selecting target and source account in the commandline
+            - [ ] list accounts in the database (source accounts)
+            - [ ] list accounts in the config (target accounts)
+        - [ ] create methods for transferring various account details
+            - [ ] Liked Songs
+            - [ ] created playlists (and their contents)
+            - [ ] playlist subscriptions
+            - [ ] liked albums
+            - [ ] followed artists
     - [ ] create custom exceptions to replace generic RuntimeException
 - [x] Design a sensible SQL database that minimises data duplication.
     - [ ] handle updating SpotifyUser info when detailed info changes
