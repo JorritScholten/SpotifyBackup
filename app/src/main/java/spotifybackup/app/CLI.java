@@ -77,7 +77,7 @@ public class CLI {
     }
 
     private class Backup {
-        static final String spotifyUserId = "spotify";
+        static final String SPOTIFY_USER_ID = "spotify";
         final ApiWrapper api;
         final SpotifyUser user;
 
@@ -130,7 +130,7 @@ public class CLI {
                 newPlaylists.addAll(repo.persist(switch (App.playlistSaveRestriction.getValue()) {
                     case ALL -> items;
                     case ALL_BUT_SPOTIFY -> Arrays.stream(items)
-                            .filter(p -> !p.getOwner().getId().equals(spotifyUserId))
+                            .filter(p -> !p.getOwner().getId().equals(SPOTIFY_USER_ID))
                             .toArray(PlaylistSimplified[]::new);
                     case ONLY_USER -> Arrays.stream(items)
                             .filter(p -> p.getOwner().getId().equals(user.getSpotifyUserID()))
@@ -284,7 +284,7 @@ public class CLI {
                     switch (App.playlistSaveRestriction.getValue()) {
                         case ALL -> savePlaylistTracks(playlist, apiPlaylist.get());
                         case ALL_BUT_SPOTIFY -> {
-                            if (!apiPlaylist.get().getOwner().getId().equals(spotifyUserId))
+                            if (!apiPlaylist.get().getOwner().getId().equals(SPOTIFY_USER_ID))
                                 savePlaylistTracks(playlist, apiPlaylist.get());
                         }
                         case ONLY_USER -> {

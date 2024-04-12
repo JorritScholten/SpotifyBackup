@@ -92,7 +92,6 @@ abstract class BoundedIntArgument extends Argument<Integer> {
                 throw new IllegalConstructorParameterException("minimum can not be null value.");
             }
             if (max == null) {
-//                throw new IllegalConstructorParameterException("maximum can not be null value.");
                 max = Integer.MAX_VALUE;
             }
             if (max <= min) {

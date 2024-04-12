@@ -1,7 +1,6 @@
 package spotifybackup.storage;
 
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaDelete;
 import lombok.NonNull;
 import org.hibernate.query.criteria.CriteriaDefinition;
 import se.michaelthelin.spotify.enums.ModelObjectType;
@@ -48,7 +47,7 @@ class SpotifyPlaylistItemRepository {
                 return find(entityManager, optionalTrack.get(), playlist);
             else
                 return find(entityManager, optionalTrack.get(), playlist,
-                        SpotifyUserRepository.persist(entityManager, apiPlaylistItem.getAddedBy()));
+                            SpotifyUserRepository.persist(entityManager, apiPlaylistItem.getAddedBy()));
         }
     }
 
@@ -61,7 +60,7 @@ class SpotifyPlaylistItemRepository {
         var query = new CriteriaDefinition<>(em, SpotifyPlaylistItem.class) {};
         var root = query.from(SpotifyPlaylistItem.class);
         query.where(query.equal(root.get(SpotifyPlaylistItem_.playlist), playlist),
-                query.equal(root.get(SpotifyPlaylistItem_.track), track));
+                    query.equal(root.get(SpotifyPlaylistItem_.track), track));
         return em.createQuery(query).getResultList();
     }
 
@@ -74,8 +73,8 @@ class SpotifyPlaylistItemRepository {
         var query = new CriteriaDefinition<>(em, SpotifyPlaylistItem.class) {};
         var root = query.from(SpotifyPlaylistItem.class);
         query.where(query.equal(root.get(SpotifyPlaylistItem_.playlist), playlist),
-                query.equal(root.get(SpotifyPlaylistItem_.track), track),
-                query.equal(root.get(SpotifyPlaylistItem_.addedBy), addedBy));
+                    query.equal(root.get(SpotifyPlaylistItem_.track), track),
+                    query.equal(root.get(SpotifyPlaylistItem_.addedBy), addedBy));
         return em.createQuery(query).getResultList();
     }
 
@@ -99,13 +98,21 @@ class SpotifyPlaylistItemRepository {
                     apiPlaylistItem.getTrack().getType() + " storage not implemented yet."
             );
             var newItem = SpotifyPlaylistItem.builder()
-                    .track(SpotifyTrackRepository.persist(entityManager, (Track) apiPlaylistItem.getTrack()))
-                    .playlist(playlist)
-                    .addedBy(apiPlaylistItem.getAddedBy() == null || apiPlaylistItem.getAddedBy().getId().isBlank() ?
-                            null : SpotifyUserRepository.persist(entityManager, apiPlaylistItem.getAddedBy()))
-                    .dateAdded(apiPlaylistItem.getAddedAt() == null ? null :
-                            ZonedDateTime.ofInstant(apiPlaylistItem.getAddedAt().toInstant(), ZoneOffset.UTC))
-                    .build();
+                                             .track(SpotifyTrackRepository.persist(entityManager,
+                                                                                   (Track) apiPlaylistItem.getTrack()))
+                                             .playlist(playlist)
+                                             .addedBy(
+                                                     apiPlaylistItem.getAddedBy() == null || apiPlaylistItem.getAddedBy()
+                                                                                                            .getId()
+                                                                                                            .isBlank() ?
+                                                             null :
+                                                             SpotifyUserRepository.persist(entityManager,
+                                                                                           apiPlaylistItem.getAddedBy()))
+                                             .dateAdded(apiPlaylistItem.getAddedAt() == null ? null :
+                                                                ZonedDateTime.ofInstant(
+                                                                        apiPlaylistItem.getAddedAt().toInstant(),
+                                                                        ZoneOffset.UTC))
+                                             .build();
             entityManager.persist(newItem);
             return newItem;
         }

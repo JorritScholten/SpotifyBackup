@@ -1,21 +1,9 @@
 package spotifybackup.storage;
 
-import com.neovisionaries.i18n.CountryCode;
-import io.hypersistence.utils.hibernate.type.array.LongArrayType;
-import io.hypersistence.utils.hibernate.type.array.internal.LongArrayTypeDescriptor;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CollectionType;
-import org.hibernate.annotations.JavaType;
-import org.hibernate.annotations.JdbcType;
 import org.hibernate.annotations.Type;
-import org.hibernate.type.SqlTypes;
-import org.hibernate.type.descriptor.java.BasicJavaType;
-import org.hibernate.type.descriptor.java.LongPrimitiveArrayJavaType;
-import org.hibernate.type.descriptor.java.ObjectJavaType;
-import org.hibernate.type.descriptor.jdbc.*;
 
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;

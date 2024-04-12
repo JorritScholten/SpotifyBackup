@@ -1,20 +1,12 @@
 package spotifybackup.storage;
 
-import com.neovisionaries.i18n.CountryCode;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.JavaType;
-import org.hibernate.annotations.JdbcType;
-import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
-import org.hibernate.type.descriptor.java.BlobJavaType;
-import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType;
 import se.michaelthelin.spotify.enums.AlbumType;
 import se.michaelthelin.spotify.enums.ReleaseDatePrecision;
 
-import java.sql.Types;
 import java.time.LocalDate;
-import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -32,7 +24,7 @@ public final class SpotifyAlbum extends SpotifyObject {
     private final Set<SpotifyImage> images = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
+                cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.DETACH})
     private final Set<SpotifyArtist> artists = new HashSet<>();
 
     @ManyToMany(fetch = FetchType.LAZY, cascade =
