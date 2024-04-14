@@ -126,8 +126,9 @@ public class Config {
         return newUser;
     }
 
-    public UserInfo[] getUsers() {
-        return users.toArray(new UserInfo[0]);
+    /** @return Unmodifiable list of UserInfo objects. */
+    public List<UserInfo> getUsers() {
+        return users.stream().toList();
     }
 
     public void setClientId(@NonNull String clientId) {

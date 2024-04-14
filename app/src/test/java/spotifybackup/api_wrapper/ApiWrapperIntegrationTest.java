@@ -29,20 +29,20 @@ public class ApiWrapperIntegrationTest {
     public static void perform_authentication() throws IOException, InterruptedException {
         Config.loadAppConfigFromFile(new File(PathUtils.configDir(), "config.json"));
         config = App.getConfig();
-        apiWrapper = new ApiWrapper(config.getUsers()[0], config);
+        apiWrapper = new ApiWrapper(config.getUsers().getFirst(), config);
     }
 
     @Test
     void store_account_info_to_config() throws IOException, InterruptedException {
         // Arrange
-        final String oldSpotifyId = config.getUsers()[0].getSpotifyId().orElseThrow();
+        final String oldSpotifyId = config.getUsers().getFirst().getSpotifyId().orElseThrow();
 
         // Act
         final User user = apiWrapper.getCurrentUser().orElseThrow();
 
         // Assert
         assertEquals(oldSpotifyId, user.getId());
-        config.getUsers()[0].setDisplayName(user.getDisplayName());
+        config.getUsers().getFirst().setDisplayName(user.getDisplayName());
     }
 
     @ParameterizedTest

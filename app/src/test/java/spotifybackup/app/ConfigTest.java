@@ -280,9 +280,7 @@ class ConfigTest {
         assertEquals(clientId, App.config.getClientId());
         assertEquals(redirectURI, App.config.getRedirectURI());
         assertEquals(clientSecret, App.config.getClientSecret().orElseThrow());
-        assertEquals(users.get(0), App.config.getUsers()[0]);
-        assertEquals(users.get(1), App.config.getUsers()[1]);
-        assertEquals(users.size(), App.config.getUsers().length);
+        assertEquals(users, App.config.getUsers());
     }
 
     @Test
@@ -363,9 +361,7 @@ class ConfigTest {
         assertDoesNotThrow(() -> Config.loadAppConfigFromFile(configFile));
         assertEquals(clientId, config.getClientId());
         assertEquals(redirectURI, config.getRedirectURI());
-        assertEquals(users.get(0), config.getUsers()[0]);
-        assertEquals(users.get(1), config.getUsers()[1]);
-        assertEquals(users.size(), config.getUsers().length);
+        assertEquals(users, App.config.getUsers());
     }
 
     @Test

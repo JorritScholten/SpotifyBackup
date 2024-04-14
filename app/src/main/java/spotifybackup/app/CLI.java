@@ -43,8 +43,8 @@ public class CLI {
         if (App.addAccounts.isPresent()) addAccounts();
         if (App.doBackups.isPresent()) setAccountsToBackup();
         if (!App.noBackups.isPresent()) {
-            if (App.config.getUsers().length > 0)
-                for (var user : Arrays.stream(App.config.getUsers()).filter(Config.UserInfo::getDoBackup).toList())
+            if (!App.config.getUsers().isEmpty())
+                for (var user : App.config.getUsers().stream().filter(Config.UserInfo::getDoBackup).toList())
                     new Backup(user);
             else new Backup(App.config.addEmptyUser(true));
         }
@@ -98,7 +98,7 @@ public class CLI {
     }
 
     private void listUserAccountsInConfig() {
-        var accounts = Arrays.stream(App.config.getUsers()).filter(u -> u.getSpotifyId().isPresent()).toList();
+        var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
         final int spacing = 2;
         final int countMaxWidth = ("" + accounts.size()).length();
         final var idHeading = "Spotify ID";
