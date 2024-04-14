@@ -52,8 +52,9 @@ public class Config {
     /**
      * Load config properties from a file, the file path is stored to allow for the saving of updated values.
      * @param filePath Path to .json config file.
-     * @throws ConfigFileException Thrown when filePath doesn't point to an existing config file, a blank config file is
-     *                             created at filePath.
+     * @throws ConfigFileException when {@code filepath} doesn't point to an existing config file, a blank config file
+     *                             is created at filePath.
+     * @throws IOException         when trying to read or write to <code>filepath</code> doesn't work.
      */
     public static Config loadFromFile(@NonNull File filePath) throws IOException {
         if (filePath.isDirectory())

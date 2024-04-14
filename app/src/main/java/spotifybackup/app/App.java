@@ -89,6 +89,10 @@ public class App {
             .description("List user accounts stored the database which have library information and accounts in the " +
                     "config file which can be targets in account cloning.")
             .build();
+    static final FlagArgument setConfigValues = new FlagArgument.Builder()
+            .name("set-config-values")
+            .description("Set application credentials in config file needed to connect to the Spotify API.")
+            .build();
     static final CmdParser argParser;
     static final Terminal term;
     @Getter
@@ -98,7 +102,7 @@ public class App {
         argParser = new CmdParser.Builder()
                 .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
                         verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction,
-                        listUserAccounts)
+                        listUserAccounts, setConfigValues)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
