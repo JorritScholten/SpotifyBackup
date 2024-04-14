@@ -26,6 +26,7 @@ class ConfigTest {
     @BeforeEach
     void create_new_config_file(@TempDir Path tempDir) {
         configFile = tempDir.resolve("config.json").toFile();
+        configFile.deleteOnExit();
     }
 
     @Test
