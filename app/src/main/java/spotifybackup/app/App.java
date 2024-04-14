@@ -1,8 +1,6 @@
 package spotifybackup.app;
 
 import lombok.Getter;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
 import spotifybackup.cmd.CmdParser;
 import spotifybackup.cmd.argument.FlagArgument;
 import spotifybackup.cmd.argument.enumeration.DefaultEnumArgument;
@@ -13,9 +11,8 @@ import spotifybackup.storage.ImageSelection;
 import spotifybackup.utils.PathUtils;
 
 import java.io.File;
-import java.io.IOException;
 
-public class App {
+public class App extends TerminalInteraction {
     public static final String APP_NAME = "SpotifyBackup";
     static final DefaultFilePathArgument configFileArg = new DefaultFilePathArgument.Builder()
             .name("config")
@@ -94,7 +91,6 @@ public class App {
             .description("Set application credentials in config file needed to connect to the Spotify API.")
             .build();
     static final CmdParser argParser;
-    static final Terminal term;
     @Getter
     static Config config;
 
@@ -107,49 +103,6 @@ public class App {
                 .programName("SpotifyBackup.jar")
                 .addHelp()
                 .build();
-        try {
-            term = TerminalBuilder.terminal();
-        } catch (IOException e) {
-            throw new RuntimeException("Can't create terminal. " + e);
-        }
-    }
-
-    public static void println(String message) {
-        term.writer().println(message);
-        term.flush();
-    }
-
-    /** @param spaces Amount of spaces to prepend to message. */
-    public static void println(int spaces, String message) {
-        println(" ".repeat(spaces) + message);
-    }
-
-    public static void verbosePrintln(String message) {
-        if (verboseArg.isPresent()) println(message);
-    }
-
-    /** @param spaces Amount of spaces to prepend to message. */
-    public static void verbosePrintln(int spaces, String message) {
-        if (verboseArg.isPresent()) println(spaces, message);
-    }
-
-    public static void print(String message) {
-        term.writer().print(message);
-        term.flush();
-    }
-
-    /** @param spaces Amount of spaces to prepend to message. */
-    public static void print(int spaces, String message) {
-        print(" ".repeat(spaces) + message);
-    }
-
-    public static void verbosePrint(String message) {
-        if (verboseArg.isPresent()) print(message);
-    }
-
-    /** @param spaces Amount of spaces to prepend to message. */
-    public static void verbosePrint(int spaces, String message) {
-        if (verboseArg.isPresent()) print(spaces, message);
     }
 
     public static void main(String[] args) throws InterruptedException {
@@ -157,7 +110,7 @@ public class App {
             PathUtils.configDir();
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
-                println(argParser.getHelp(term.getType().equals("dumb") ? 120 : term.getWidth()));
+                println(argParser.getHelp(getTerm().getType().equals("dumb") ? 120 : getTerm().getWidth()));
             } else {
                 new CLI();
             }
@@ -165,9 +118,9 @@ public class App {
         } catch (InterruptedException e) {
             throw e;
         } catch (Exception e) {
-            println(e.getMessage());
-            if (verboseArg.isPresent()) e.printStackTrace(term.writer());
-            term.flush();
+            if (verboseArg.isPresent()) e.printStackTrace(getTerm().writer());
+            else println(e.getMessage());
+            getTerm().flush();
             System.exit(1);
         }
     }
