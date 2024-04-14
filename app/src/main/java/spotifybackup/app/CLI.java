@@ -62,7 +62,7 @@ public class CLI {
             App.config.setClientId(App.askForNonBlankString("Please enter the Spotify client ID: "));
         }
         if (firstConfig || App.confirmUsingChar("Set Spotify redirect URI? [Y/n]", 'y', 'y', 'n') == 'y') {
-            App.config.setRedirectURI(App.askForURI("Please enter the Spotify redirect URI: "));
+            App.config.setRedirectURI(App.askForRedirectURI("Please enter the Spotify redirect URI: "));
         }
         if (App.confirmUsingChar("Set Spotify client secret? [y/N]", 'n', 'y', 'n') == 'y') {
             var secret = App.askForString("Please enter the Spotify client secret (enter blank to clear value): ");

@@ -7,9 +7,9 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.*;
 
 public abstract class TerminalInteraction {
@@ -190,11 +190,11 @@ public abstract class TerminalInteraction {
     }
 
     /**
-     * Utility function to ask for a URI in the terminal, will re-prompt if uri is blank or not valid.
+     * Utility function to ask for a redirect URI in the terminal, will re-prompt if uri is blank or not valid.
      * @param prompt Question to print to terminal.
      * @return reply to prompt.
      */
-    public static URI askForURI(String prompt) {
+    public static URI askForRedirectURI(String prompt) {
         String choice;
         Scanner scan = new Scanner(term.input());
         do {
@@ -204,10 +204,28 @@ public abstract class TerminalInteraction {
                 if (choice.isBlank()) {
                     print("Input can not be blank. ");
                     continue;
+                } else if (Objects.isNull(URI.create(choice).getHost())) {
+                    print("Hostname can not be blank/undefined. ");
+                    continue;
+                } else if (URI.create(choice).getPort() == -1) {
+                    print("Port can not be undefined. ");
+                    continue;
                 }
-                return URI.create(choice).toURL().toURI();
-            } catch (MalformedURLException | URISyntaxException | InputMismatchException ex) {
+                // try to create server with entered URI to check its validity
+                final URI uri = URI.create(choice);
+                try (var socket = new Socket(uri.getHost(), uri.getPort())) {
+                    if (socket.isBound()) {
+                        print("Socket already bound. ");
+                        continue;
+                    }
+                } catch (ConnectException ignored) {
+                }
+                return uri;
+            } catch (IllegalArgumentException | InputMismatchException ex) {
                 printInvalidChoice();
+                scan.nextLine();
+            } catch (IOException e) {
+                print("Cannot bind redirect handler to specified URI. ");
                 scan.nextLine();
             }
         } while (true);

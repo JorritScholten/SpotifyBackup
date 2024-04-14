@@ -80,24 +80,24 @@ public class Config {
     }
 
     private static void checkAllFields(File file, Config config) {
+        List<String> fieldWarnings = new ArrayList<>();
         if (isNullOrBlank(config.clientId))
-            throw new BlankConfigFieldException("clientId field blank or missing in: " + file);
+            fieldWarnings.add("  clientId field blank or missing in.");
         if (config.redirectURI == null || config.redirectURI.toString().isBlank())
-            throw new BlankConfigFieldException("redirectURI field blank or missing in: " + file);
+            fieldWarnings.add("  redirectURI field blank or missing in.");
         if (config.clientSecret != null && config.clientSecret.isBlank())
-            throw new BlankConfigFieldException("clientSecret field blank (can be omitted): " + file);
-        if (config.users == null)
-            config.users = new ArrayList<>();
+            fieldWarnings.add("  clientSecret field blank (can be omitted).");
+        if (config.users == null) config.users = new ArrayList<>();
         else config.users.forEach(user -> {
-            if (isNullOrBlank(user.spotifyId))
-                throw new BlankConfigFieldException("user.spotifyId field blank or missing in: " + file);
-            if (isNullOrBlank(user.displayName))
-                throw new BlankConfigFieldException("user.displayName field blank or missing in: " + file);
-            if (isNullOrBlank(user.refreshToken))
-                throw new BlankConfigFieldException("user.refreshToken field blank or missing in: " + file);
-            if (user.doBackup == null)
-                throw new BlankConfigFieldException("user.doBackup field missing in: " + file);
+            if (isNullOrBlank(user.spotifyId)) fieldWarnings.add("  user.spotifyId field blank or missing in.");
+            if (isNullOrBlank(user.displayName)) fieldWarnings.add("  user.displayName field blank or missing in.");
+            if (isNullOrBlank(user.refreshToken)) fieldWarnings.add("  user.refreshToken field blank or missing in.");
+            if (user.doBackup == null) fieldWarnings.add("  user.doBackup field missing in.");
         });
+        if (!fieldWarnings.isEmpty()) {
+            fieldWarnings.addFirst("Blank or missing field(s) in: " + file);
+            throw new BlankConfigFieldException(String.join("\n", fieldWarnings));
+        }
     }
 
     private static boolean isNullOrBlank(String string) {
