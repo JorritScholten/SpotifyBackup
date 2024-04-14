@@ -54,6 +54,8 @@ public class ApiWrapper {
     private final Config.UserInfo account;
 
     /**
+     * @param account Persistence object to store credentials for a specific account needed to connect to the Spotify API.
+     * @param config  Persistence object to store application credentials needed to connect to the Spotify API.
      * @throws InterruptedException when there is an error with acquiring the API handling semaphore.
      * @throws IOException          when an issue occurs with creating the redirect catch server or there is a network
      *                              issue (HTTP 3xx status code).
