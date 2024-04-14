@@ -9,9 +9,9 @@ database and automated backups to an online repository.
 
 - [x] Implement a robust commandline interface.
     - [ ] specify which accounts are targeted for backups
-        - [ ] add flag to `Config.UserInfo` to mark backups
+        - [x] add flag to `Config.UserInfo` to mark backups
         - [ ] specify accounts using a REPL or bounded list from `listAccountsInConfig()`
-        - [ ] add flag to suppress all backups (to simplify development and testing)
+        - [x] add flag to suppress all backups (to simplify development and testing)
     - [x] request values for config file when creating a new config
         - [x] create cmd line argument to set config values directly
         - [x] specify values in terminal using prompt upon file creation

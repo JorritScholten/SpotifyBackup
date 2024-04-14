@@ -95,6 +95,8 @@ public class Config {
                 throw new BlankConfigFieldException("user.displayName field blank or missing in: " + file);
             if (isNullOrBlank(user.refreshToken))
                 throw new BlankConfigFieldException("user.refreshToken field blank or missing in: " + file);
+            if (user.doBackup == null)
+                throw new BlankConfigFieldException("user.doBackup field missing in: " + file);
         });
     }
 
@@ -117,8 +119,9 @@ public class Config {
         }
     }
 
-    public UserInfo addEmptyUser() {
+    public UserInfo addEmptyUser(boolean doBackup) {
         final UserInfo newUser = new UserInfo(this::serialize);
+        newUser.setDoBackup(doBackup);
         users.add(newUser);
         return newUser;
     }
@@ -173,6 +176,9 @@ public class Config {
         private String displayName;
         @Expose
         private String refreshToken;
+        @Expose
+        @Getter(AccessLevel.PUBLIC)
+        private Boolean doBackup = false;
 
         UserInfo(Runnable serialize) {
             this.serialize = serialize;
@@ -205,13 +211,19 @@ public class Config {
             serialize.run();
         }
 
+        public void setDoBackup(boolean doBackup) {
+            this.doBackup = doBackup;
+            serialize.run();
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (!(o instanceof UserInfo userInfo)) return false;
             return Objects.equals(spotifyId, userInfo.spotifyId) &&
                     Objects.equals(displayName, userInfo.displayName) &&
-                    Objects.equals(refreshToken, userInfo.refreshToken);
+                    Objects.equals(refreshToken, userInfo.refreshToken) &&
+                    Objects.equals(doBackup, userInfo.doBackup);
         }
 
         @Override

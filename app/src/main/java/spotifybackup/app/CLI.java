@@ -41,13 +41,20 @@ public class CLI {
 
     private void performActions() throws IOException, InterruptedException {
         if (App.addAccounts.isPresent()) addAccounts();
-        if (App.doBackup.isPresent()) {
-            if (App.config.getUsers().length > 0) for (var user : App.config.getUsers()) new Backup(user);
-            else new Backup(App.config.addEmptyUser());
+        if (App.doBackups.isPresent()) setAccountsToBackup();
+        if (!App.noBackups.isPresent()) {
+            if (App.config.getUsers().length > 0)
+                for (var user : Arrays.stream(App.config.getUsers()).filter(Config.UserInfo::getDoBackup).toList())
+                    new Backup(user);
+            else new Backup(App.config.addEmptyUser(true));
         }
         App.showTotalLibraryDuration.ifPresent(this::printTotalLibraryDurations);
         App.sqlOutputFileArg.ifPresent(repo::outputDatabaseToSQLScript);
         App.listUserAccounts.ifPresent(this::listUserAccounts);
+    }
+
+    private void setAccountsToBackup() {
+        throw new UnsupportedOperationException("to be implemented");
     }
 
     private void setConfigValues(boolean firstConfig) {
@@ -97,16 +104,23 @@ public class CLI {
         final var idHeading = "Spotify ID";
         final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyId().orElseThrow().length()).reduce(Integer::max)
                 .orElse(idHeading.length());
+        final var nameHeading = "Account display name";
+        final int nameMaxWidth = accounts.stream().map(u -> u.getDisplayName().orElse(nameHeading).length())
+                .reduce(Integer::max).orElse(nameHeading.length());
         App.println("\nUser accounts in the config file (target(s) for account cloning).");
-        App.println(countMaxWidth + spacing, idHeading +
-                " ".repeat(spacing + idMaxWidth - idHeading.length()) + "Account display name");
+        App.println(countMaxWidth + spacing,
+                idHeading + " ".repeat(spacing + idMaxWidth - idHeading.length()) +
+                        nameHeading + " ".repeat(spacing + nameMaxWidth - nameHeading.length()) +
+                        "Perform backup?");
         int count = 1;
         for (var account : accounts) {
             final int countWidth = ("" + count).length();
             final int idWidth = account.getSpotifyId().orElseThrow().length();
-            App.println(countMaxWidth - countWidth, count + " ".repeat(spacing)
-                    + account.getSpotifyId().orElseThrow() + " ".repeat(
-                    spacing + (idMaxWidth - idWidth)) + account.getDisplayName().orElse(""));
+            final var nameWidth = account.getDisplayName().orElse("").length();
+            App.println(countMaxWidth - countWidth, count + " ".repeat(spacing) +
+                    account.getSpotifyId().orElseThrow() + " ".repeat(spacing + (idMaxWidth - idWidth)) +
+                    account.getDisplayName().orElse("") + " ".repeat(spacing + (nameMaxWidth - nameWidth)) +
+                    account.getDoBackup());
             count++;
         }
     }
@@ -114,7 +128,9 @@ public class CLI {
     private void addAccounts() throws IOException, InterruptedException {
         App.verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
         for (int i = 0; i < App.addAccounts.getValue(); i++) {
-            var api = new ApiWrapper(App.config.addEmptyUser(), App.getConfig());
+            var api = new ApiWrapper(App.config.addEmptyUser(
+                    App.confirmUsingChar("Perform backups for this account? [Y/n]", 'y',
+                            'n', 'y') == 'y'), App.getConfig());
             var currentUser = api.getCurrentUser().orElseThrow();
             var user = repo.persist(currentUser);
             App.println("Added account: " + user.getDisplayName().orElseThrow());

@@ -60,43 +60,43 @@ class ConfigTest {
             }
             """,*/
             """
-            {
-              "clientId": "",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": []
-            }
-            """,
+                    {
+                      "clientId": "",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": []
+                    }
+                    """,
             """
-            {
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": []
-            }
-            """,
+                    {
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": []
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "",
-              "clientSecret": "123",
-              "users": []
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "",
+                      "clientSecret": "123",
+                      "users": []
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "clientSecret": "123",
-              "users": []
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "clientSecret": "123",
+                      "users": []
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "",
-              "users": []
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "",
+                      "users": []
+                    }
+                    """,
             /* clientSecret is allowed to be missing, it is after all not essential
             """
             {
@@ -123,94 +123,115 @@ class ConfigTest {
                 {
                   "spotifyId": "user1",
                   "displayName": "User 1",
-                  "refreshToken": "token-1"
+                  "refreshToken": "token-1",
+                  "doBackup": false
                 }
               ]
             }
             """,*/
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "spotifyId": "",
-                  "displayName": "User 1",
-                  "refreshToken": "token-1"
-                }
-              ]
-            }
-            """,
+                    {
+                      "clientId": "~sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "spotifyId": "user1",
+                          "displayName": "User 1",
+                          "refreshToken": "token-1"
+                        }
+                      ]
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "displayName": "User 1",
-                  "refreshToken": "token-1"
-                }
-              ]
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "spotifyId": "",
+                          "displayName": "User 1",
+                          "refreshToken": "token-1",
+                          "doBackup": false
+                        }
+                      ]
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "spotifyId": "user1",
-                  "displayName": "",
-                  "refreshToken": "token-1"
-                }
-              ]
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "displayName": "User 1",
+                          "refreshToken": "token-1",
+                          "doBackup": false
+                        }
+                      ]
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "spotifyId": "user1",
-                  "refreshToken": "token-1"
-                }
-              ]
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "spotifyId": "user1",
+                          "displayName": "",
+                          "refreshToken": "token-1",
+                          "doBackup": false
+                        }
+                      ]
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "spotifyId": "user1",
-                  "displayName": "User 1",
-                  "refreshToken": ""
-                }
-              ]
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "spotifyId": "user1",
+                          "refreshToken": "token-1",
+                          "doBackup": false
+                        }
+                      ]
+                    }
+                    """,
             """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "spotifyId": "user1",
-                  "displayName": "User 1"
-                }
-              ]
-            }
-            """,
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "spotifyId": "user1",
+                          "displayName": "User 1",
+                          "refreshToken": "",
+                          "doBackup": false
+                        }
+                      ]
+                    }
+                    """,
+            """
+                    {
+                      "clientId": "sdf77e",
+                      "redirectURI": "http://localhost:1234",
+                      "clientSecret": "123",
+                      "users": [
+                        {
+                          "spotifyId": "user1",
+                          "displayName": "User 1",
+                          "doBackup": false
+                        }
+                      ]
+                    }
+                    """,
     })
-    void ensure_blank_or_missing_fields_are_rejected(final String configContents) throws IOException{
+    void ensure_blank_or_missing_fields_are_rejected(final String configContents) throws IOException {
         // Arrange
         Files.writeString(configFile.toPath(), configContents);
 
@@ -230,12 +251,14 @@ class ConfigTest {
                     {
                       "spotifyId": "user1",
                       "displayName": "User 1",
-                      "refreshToken": "token-1"
+                      "refreshToken": "token-1",
+                      "doBackup": false
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
-                      "refreshToken": "token-2"
+                      "refreshToken": "token-2",
+                      "doBackup": false
                     }
                   ]
                 }
@@ -244,8 +267,8 @@ class ConfigTest {
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
         final List<Config.UserInfo> users = List.of(
-                new Config.UserInfo(null, "user1", "User 1", "token-1"),
-                new Config.UserInfo(null, "user2", "User 2", "token-2")
+                new Config.UserInfo(null, "user1", "User 1", "token-1", false),
+                new Config.UserInfo(null, "user2", "User 2", "token-2", false)
         );
         Files.writeString(configFile.toPath(), configContents);
 
@@ -274,12 +297,14 @@ class ConfigTest {
                     {
                       "spotifyId": "user1",
                       "displayName": "User 1",
-                      "refreshToken": "token-1"
+                      "refreshToken": "token-1",
+                      "doBackup": false
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
-                      "refreshToken": "token-2"
+                      "refreshToken": "token-2",
+                      "doBackup": true
                     }
                   ]
                 }
@@ -288,8 +313,8 @@ class ConfigTest {
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
         final List<Config.UserInfo> users = List.of(
-                new Config.UserInfo(null, "user1", "User 1", "token-1"),
-                new Config.UserInfo(null, "user2", "User 2", "token-2")
+                new Config.UserInfo(null, "user1", "User 1", "token-1", false),
+                new Config.UserInfo(null, "user2", "User 2", "token-2", true)
         );
         final Config config = Config.createNewForTesting(configFile);
 
@@ -298,10 +323,11 @@ class ConfigTest {
         config.setRedirectURI(redirectURI);
         config.setClientSecret(clientSecret);
         for (var user : users) {
-            var newUser = config.addEmptyUser();
+            var newUser = config.addEmptyUser(false);
             newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
             newUser.setDisplayName(user.getDisplayName().orElseThrow());
             newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
+            newUser.setDoBackup(user.getDoBackup());
         }
 
         // Assert
@@ -316,8 +342,8 @@ class ConfigTest {
         final String clientId = "some-client-id";
         final URI redirectURI = new URI("http://localhost:5678");
         final List<Config.UserInfo> users = List.of(
-                new Config.UserInfo(null, "user1", "User 1", "token-1"),
-                new Config.UserInfo(null, "user2", "User 2", "token-2")
+                new Config.UserInfo(null, "user1", "User 1", "token-1", false),
+                new Config.UserInfo(null, "user2", "User 2", "token-2", false)
         );
         final Config config = Config.createNewForTesting(configFile);
 
@@ -325,10 +351,11 @@ class ConfigTest {
         config.setClientId(clientId);
         config.setRedirectURI(redirectURI);
         for (var user : users) {
-            var newUser = config.addEmptyUser();
+            var newUser = config.addEmptyUser(false);
             newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
             newUser.setDisplayName(user.getDisplayName().orElseThrow());
             newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
+            newUser.setDoBackup(user.getDoBackup());
         }
 
         // Assert
@@ -352,12 +379,14 @@ class ConfigTest {
                     {
                       "spotifyId": "user1",
                       "displayName": "User 1",
-                      "refreshToken": "q1w2e3r4t5"
+                      "refreshToken": "q1w2e3r4t5",
+                      "doBackup": false
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
-                      "refreshToken": "y6u7i8o9p0"
+                      "refreshToken": "y6u7i8o9p0",
+                      "doBackup": false
                     }
                   ]
                 }
@@ -371,31 +400,35 @@ class ConfigTest {
                     {
                       "spotifyId": "user1",
                       "displayName": "User 1",
-                      "refreshToken": "q1w2e3r4t5"
+                      "refreshToken": "q1w2e3r4t5",
+                      "doBackup": false
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
-                      "refreshToken": "y6u7i8o9p0"
+                      "refreshToken": "y6u7i8o9p0",
+                      "doBackup": false
                     },
                     {
                       "spotifyId": "user3",
                       "displayName": "User 3",
-                      "refreshToken": "1a2b3c"
+                      "refreshToken": "1a2b3c",
+                      "doBackup": true
                     }
                   ]
                 }
                 """;
-        final Config.UserInfo newUser = new Config.UserInfo(null, "user3", "User 3", "1a2b3c");
+        final Config.UserInfo newUser = new Config.UserInfo(null, "user3", "User 3", "1a2b3c", true);
         Files.writeString(configFile.toPath(), initialConfigContents);
         Config.loadAppConfigFromFile(configFile);
 
         // Act
         {
-            var emptyUser = App.config.addEmptyUser();
+            var emptyUser = App.config.addEmptyUser(false);
             emptyUser.setSpotifyId(newUser.getSpotifyId().orElseThrow());
             emptyUser.setDisplayName(newUser.getDisplayName().orElseThrow());
             emptyUser.setRefreshToken(newUser.getRefreshToken().orElseThrow());
+            emptyUser.setDoBackup(newUser.getDoBackup());
         }
 
         // Assert
@@ -415,12 +448,14 @@ class ConfigTest {
                     {
                       "spotifyId": "user1",
                       "displayName": "User 1",
-                      "refreshToken": "q1w2e3r4t5"
+                      "refreshToken": "q1w2e3r4t5",
+                      "doBackup": true
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
-                      "refreshToken": "y6u7i8o9p0"
+                      "refreshToken": "y6u7i8o9p0",
+                      "doBackup": false
                     }
                   ]
                 }
@@ -433,12 +468,14 @@ class ConfigTest {
                     {
                       "spotifyId": "user1",
                       "displayName": "User 1",
-                      "refreshToken": "q1w2e3r4t5"
+                      "refreshToken": "q1w2e3r4t5",
+                      "doBackup": true
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
-                      "refreshToken": "y6u7i8o9p0"
+                      "refreshToken": "y6u7i8o9p0",
+                      "doBackup": false
                     }
                   ]
                 }

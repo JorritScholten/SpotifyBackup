@@ -42,11 +42,14 @@ public class App extends TerminalInteraction {
             .shortName('v')
             .description("Print full stacktrace and verbose progress messages.")
             .build();
-    static final FlagArgument doBackup = new FlagArgument.Builder()
-            .name("do-backup")
+    static final FlagArgument doBackups = new FlagArgument.Builder()
+            .name("specify-accounts-to-backup")
             .shortName('b')
-            .description("Perform backups for all accounts. Added for development, to be replaced with option to " +
-                    "explicitly disable backup.")
+            .description("Specify in config which accounts should be backed up.")
+            .build();
+    static final FlagArgument noBackups = new FlagArgument.Builder()
+            .name("no-backups")
+            .description("Perform no backup for any account.")
             .build();
     static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
             .name("add-accounts")
@@ -96,9 +99,9 @@ public class App extends TerminalInteraction {
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
+                .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackups, imageSaveRestriction, addAccounts,
                         verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction,
-                        listUserAccounts, setConfigValues)
+                        listUserAccounts, setConfigValues, noBackups)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
