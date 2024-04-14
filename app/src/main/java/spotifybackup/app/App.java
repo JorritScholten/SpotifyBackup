@@ -86,7 +86,8 @@ public class App {
             .build();
     static final FlagArgument listUserAccounts = new FlagArgument.Builder()
             .name("list-user-accounts")
-            .description("List user accounts stored the database which have library information.")
+            .description("List user accounts stored the database which have library information and accounts in the " +
+                    "config file which can be targets in account cloning.")
             .build();
     static final CmdParser argParser;
     static final Terminal term;
@@ -97,7 +98,7 @@ public class App {
         argParser = new CmdParser.Builder()
                 .arguments(configFileArg, dbFileArg, sqlOutputFileArg, doBackup, imageSaveRestriction, addAccounts,
                         verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction,
-                           listUserAccounts)
+                        listUserAccounts)
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()

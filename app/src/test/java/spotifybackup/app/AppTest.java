@@ -10,4 +10,9 @@ class AppTest {
     void ensure_app_arguments_defined_correctly() {
         assertDoesNotThrow(App::getConfig);
     }
+
+    @Test
+    void view_app_arguments_help_text() {
+        assertDoesNotThrow(() -> System.out.println(App.argParser.getHelp(120)));
+    }
 }

@@ -29,7 +29,7 @@ database and automated backups to an online repository.
     - [ ] Handle cloning/duplicating one account to another
         - [ ] handle selecting target and source account in the commandline
             - [x] list accounts in the database (source accounts)
-            - [ ] list accounts in the config (target accounts)
+            - [x] list accounts in the config file (target accounts)
         - [ ] create methods for transferring various account details
             - [ ] Liked Songs
             - [ ] created playlists (and their contents)
