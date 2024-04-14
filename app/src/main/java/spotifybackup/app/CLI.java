@@ -4,6 +4,8 @@ import org.apache.commons.lang3.time.DurationFormatUtils;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import spotifybackup.api_wrapper.ApiWrapper;
+import spotifybackup.app.exception.BlankConfigFieldException;
+import spotifybackup.app.exception.ConfigFileException;
 import spotifybackup.storage.*;
 
 import java.io.IOException;
@@ -25,7 +27,15 @@ public class CLI {
         App.configFileArg.ifNotPresent(path -> App.verbosePrintln("Config file: " + path));
         App.sqlOutputFileArg.ifPresent(path -> App.verbosePrintln("SQL scripts file: " + path));
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
-        App.config = Config.loadFromFile(App.configFileArg.getValue());
+        try {
+            Config.loadAppConfigFromFile(App.configFileArg.getValue());
+            App.setConfigValues.ifPresent(() -> setConfigValues(false));
+        } catch (BlankConfigFieldException e) {
+            App.println(e.getMessage());
+            setConfigValues(false);
+        } catch (ConfigFileException e) {
+            setConfigValues(true);
+        }
         performActions();
     }
 
@@ -38,6 +48,20 @@ public class CLI {
         App.showTotalLibraryDuration.ifPresent(this::printTotalLibraryDurations);
         App.sqlOutputFileArg.ifPresent(repo::outputDatabaseToSQLScript);
         App.listUserAccounts.ifPresent(this::listUserAccounts);
+    }
+
+    private void setConfigValues(boolean firstConfig) {
+        if (firstConfig || App.confirmUsingChar("Set Spotify client ID? [Y/n]", 'y', 'y', 'n') == 'y') {
+            App.config.setClientId(App.askForNonBlankString("Please enter the Spotify client ID: "));
+        }
+        if (firstConfig || App.confirmUsingChar("Set Spotify redirect URI? [Y/n]", 'y', 'y', 'n') == 'y') {
+            App.config.setRedirectURI(App.askForURI("Please enter the Spotify redirect URI: "));
+        }
+        if (App.confirmUsingChar("Set Spotify client secret? [y/N]", 'n', 'y', 'n') == 'y') {
+            var secret = App.askForString("Please enter the Spotify client secret (enter blank to clear value): ");
+            if (secret.isBlank()) App.config.clearClientSecret();
+            else App.config.setClientSecret(secret);
+        }
     }
 
     private void listUserAccounts() {

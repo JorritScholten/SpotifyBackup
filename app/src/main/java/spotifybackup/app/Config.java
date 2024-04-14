@@ -56,29 +56,26 @@ public class Config {
      *                             is created at filePath.
      * @throws IOException         when trying to read or write to <code>filepath</code> doesn't work.
      */
-    public static Config loadFromFile(@NonNull File filePath) throws IOException {
+    public static void loadAppConfigFromFile(@NonNull File filePath) throws IOException {
         if (filePath.isDirectory())
             throw new IllegalArgumentException("Supplied filepath must point to a file, supplied path: " + filePath);
         if (filePath.exists()) {
-            Config config;
-            if (filePath.canRead()) config = readFile(filePath);
+            if (filePath.canRead()) readFile(filePath);
             else throw new IllegalArgumentException("Can't read file at supplied filepath: " + filePath);
             if (!filePath.canWrite())
                 throw new IllegalArgumentException("Can't write to config file at supplied filepath: " + filePath);
-            else return config;
         } else {
             createNewFile(filePath);
             throw new ConfigFileException("Created empty config file, please fill in the fields at: " + filePath);
         }
     }
 
-    private static Config readFile(File file) throws IOException {
+    private static void readFile(File file) throws IOException {
         try (var reader = new FileReader(file)) {
-            var config = gson.fromJson(reader, Config.class);
-            config.path = file;
-            checkAllFields(file, config);
-            config.users.forEach(u -> u.serialize = config::serialize);
-            return config;
+            App.config = gson.fromJson(reader, Config.class);
+            App.config.path = file;
+            checkAllFields(file, App.config);
+            App.config.users.forEach(u -> u.serialize = App.config::serialize);
         }
     }
 
@@ -90,7 +87,7 @@ public class Config {
         if (config.clientSecret != null && config.clientSecret.isBlank())
             throw new BlankConfigFieldException("clientSecret field blank (can be omitted): " + file);
         if (config.users == null)
-            throw new BlankConfigFieldException("users array field missing in: " + file);
+            config.users = new ArrayList<>();
         else config.users.forEach(user -> {
             if (isNullOrBlank(user.spotifyId))
                 throw new BlankConfigFieldException("user.spotifyId field blank or missing in: " + file);
@@ -110,10 +107,11 @@ public class Config {
             Config config = new Config();
             config.clientId = "";
             config.redirectURI = new URI("");
-            config.clientSecret = "";
             config.users = new ArrayList<>();
             writer.write(gson.toJson(config));
             writer.write('\n');
+            config.path = file;
+            App.config = config;
         } catch (URISyntaxException e) {
             throw new ConfigFileException("This shouldn't be thrown for a blank URI.");
         }
@@ -145,6 +143,11 @@ public class Config {
 
     public void setClientSecret(@NonNull String clientSecret) {
         this.clientSecret = clientSecret;
+        serialize();
+    }
+
+    public void clearClientSecret() {
+        this.clientSecret = null;
         serialize();
     }
 

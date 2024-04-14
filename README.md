@@ -12,9 +12,9 @@ database and automated backups to an online repository.
         - [ ] add flag to `Config.UserInfo` to mark backups
         - [ ] specify accounts using a REPL or bounded list from `listAccountsInConfig()`
         - [ ] add flag to suppress all backups (to simplify development and testing)
-    - [ ] request values for config file when creating a new config
-        - [ ] create cmd line arguments to set config values directly
-        - [ ] specify values in terminal using prompt upon file creation
+    - [x] request values for config file when creating a new config
+        - [x] create cmd line argument to set config values directly
+        - [x] specify values in terminal using prompt upon file creation
 - [x] Make use of Spotify API
   wrapper. [Using this library](https://github.com/spotify-web-api-java/spotify-web-api-java/)
     - [x] Make successful GET request to Spotify API

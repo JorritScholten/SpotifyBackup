@@ -36,13 +36,12 @@ class ConfigTest {
                 {
                   "clientId": "",
                   "redirectURI": "",
-                  "clientSecret": "",
                   "users": []
                 }
                 """;
 
         // Act
-        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
+        assertThrows(ConfigFileException.class, () -> Config.loadAppConfigFromFile(configFile));
 
         // Assert
         newConfig = Files.readString(configFile.toPath());
@@ -106,13 +105,14 @@ class ConfigTest {
               "users": []
             }
             """,*/
+            /* missing "users" array will get filled in with an empty array
             """
             {
               "clientId": "sdf77e",
               "redirectURI": "http://localhost:1234",
               "clientSecret": "123"
             }
-            """,
+            """,*/
             /* no user fields are missing here, would not throw an exception
             """
             {
@@ -215,7 +215,7 @@ class ConfigTest {
         Files.writeString(configFile.toPath(), configContents);
 
         // Act & Assert
-        assertThrows(BlankConfigFieldException.class, () -> Config.loadFromFile(configFile));
+        assertThrows(BlankConfigFieldException.class, () -> Config.loadAppConfigFromFile(configFile));
     }
 
     @Test
@@ -250,21 +250,21 @@ class ConfigTest {
         Files.writeString(configFile.toPath(), configContents);
 
         // Act
-        final var config = Config.loadFromFile(configFile);
+        Config.loadAppConfigFromFile(configFile);
 
         // Assert
-        assertEquals(clientId, config.getClientId());
-        assertEquals(redirectURI, config.getRedirectURI());
-        assertEquals(clientSecret, config.getClientSecret().orElseThrow());
-        assertEquals(users.get(0), config.getUsers()[0]);
-        assertEquals(users.get(1), config.getUsers()[1]);
-        assertEquals(users.size(), config.getUsers().length);
+        assertEquals(clientId, App.config.getClientId());
+        assertEquals(redirectURI, App.config.getRedirectURI());
+        assertEquals(clientSecret, App.config.getClientSecret().orElseThrow());
+        assertEquals(users.get(0), App.config.getUsers()[0]);
+        assertEquals(users.get(1), App.config.getUsers()[1]);
+        assertEquals(users.size(), App.config.getUsers().length);
     }
 
     @Test
     void ensure_new_config_file_with_loaded_values_is_properly_formatted() throws IOException, URISyntaxException {
         // Arrange
-        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
+        assertThrows(ConfigFileException.class, () -> Config.loadAppConfigFromFile(configFile));
         final String configContents = """
                 {
                   "clientId": "abcdefg",
@@ -312,7 +312,7 @@ class ConfigTest {
     @Test
     void create_new_config_file_and_load_values_into_it() throws URISyntaxException {
         // Arrange
-        assertThrows(ConfigFileException.class, () -> Config.loadFromFile(configFile));
+        assertThrows(ConfigFileException.class, () -> Config.loadAppConfigFromFile(configFile));
         final String clientId = "some-client-id";
         final URI redirectURI = new URI("http://localhost:5678");
         final List<Config.UserInfo> users = List.of(
@@ -332,7 +332,7 @@ class ConfigTest {
         }
 
         // Assert
-        assertDoesNotThrow(() -> Config.loadFromFile(configFile));
+        assertDoesNotThrow(() -> Config.loadAppConfigFromFile(configFile));
         assertEquals(clientId, config.getClientId());
         assertEquals(redirectURI, config.getRedirectURI());
         assertEquals(users.get(0), config.getUsers()[0]);
@@ -388,15 +388,66 @@ class ConfigTest {
                 """;
         final Config.UserInfo newUser = new Config.UserInfo(null, "user3", "User 3", "1a2b3c");
         Files.writeString(configFile.toPath(), initialConfigContents);
-        final var config = Config.loadFromFile(configFile);
+        Config.loadAppConfigFromFile(configFile);
 
         // Act
         {
-            var emptyUser = config.addEmptyUser();
+            var emptyUser = App.config.addEmptyUser();
             emptyUser.setSpotifyId(newUser.getSpotifyId().orElseThrow());
             emptyUser.setDisplayName(newUser.getDisplayName().orElseThrow());
             emptyUser.setRefreshToken(newUser.getRefreshToken().orElseThrow());
         }
+
+        // Assert
+        final String newConfig = Files.readString(configFile.toPath());
+        assertEquals(finalConfigContents, newConfig);
+    }
+
+    @Test
+    void ensure_client_secret_can_be_cleared() throws IOException {
+        // Arrange
+        final String initialConfigContents = """
+                {
+                  "clientId": "abcdefg",
+                  "redirectURI": "http://localhost:1234",
+                  "clientSecret": "123",
+                  "users": [
+                    {
+                      "spotifyId": "user1",
+                      "displayName": "User 1",
+                      "refreshToken": "q1w2e3r4t5"
+                    },
+                    {
+                      "spotifyId": "user2",
+                      "displayName": "User 2",
+                      "refreshToken": "y6u7i8o9p0"
+                    }
+                  ]
+                }
+                """;
+        final String finalConfigContents = """
+                {
+                  "clientId": "abcdefg",
+                  "redirectURI": "http://localhost:1234",
+                  "users": [
+                    {
+                      "spotifyId": "user1",
+                      "displayName": "User 1",
+                      "refreshToken": "q1w2e3r4t5"
+                    },
+                    {
+                      "spotifyId": "user2",
+                      "displayName": "User 2",
+                      "refreshToken": "y6u7i8o9p0"
+                    }
+                  ]
+                }
+                """;
+        Files.writeString(configFile.toPath(), initialConfigContents);
+        Config.loadAppConfigFromFile(configFile);
+
+        // Act
+        App.config.clearClientSecret();
 
         // Assert
         final String newConfig = Files.readString(configFile.toPath());
