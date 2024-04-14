@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @Getter
 public class Config {
@@ -77,7 +76,7 @@ public class Config {
             var config = gson.fromJson(reader, Config.class);
             config.path = file;
             checkAllFields(file, config);
-            config.users.forEach(u -> u.serialize = v -> config.serialize());
+            config.users.forEach(u -> u.serialize = config::serialize);
             return config;
         }
     }
@@ -120,7 +119,7 @@ public class Config {
     }
 
     public UserInfo addEmptyUser() {
-        final UserInfo newUser = new UserInfo(v -> this.serialize());
+        final UserInfo newUser = new UserInfo(this::serialize);
         users.add(newUser);
         return newUser;
     }
@@ -163,7 +162,7 @@ public class Config {
 
     @AllArgsConstructor
     public static class UserInfo {
-        private Consumer<Void> serialize;
+        private Runnable serialize;
         @Expose
         private String spotifyId;
         @Expose
@@ -171,7 +170,7 @@ public class Config {
         @Expose
         private String refreshToken;
 
-        UserInfo(Consumer<Void> serialize) {
+        UserInfo(Runnable serialize) {
             this.serialize = serialize;
         }
 
@@ -181,7 +180,7 @@ public class Config {
 
         public void setDisplayName(@NonNull String displayName) {
             this.displayName = displayName;
-            serialize.accept(null);
+            serialize.run();
         }
 
         public Optional<String> getSpotifyId() {
@@ -190,7 +189,7 @@ public class Config {
 
         public void setSpotifyId(@NonNull String spotifyId) {
             this.spotifyId = spotifyId;
-            serialize.accept(null);
+            serialize.run();
         }
 
         public Optional<String> getRefreshToken() {
@@ -199,7 +198,7 @@ public class Config {
 
         public void setRefreshToken(@NonNull String refreshToken) {
             this.refreshToken = refreshToken;
-            serialize.accept(null);
+            serialize.run();
         }
 
         @Override
