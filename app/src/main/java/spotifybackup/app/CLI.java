@@ -41,7 +41,7 @@ public class CLI extends TerminalInteraction {
 
     private void performActions() throws IOException, InterruptedException {
         if (App.addAccounts.isPresent()) addAccounts();
-        if (App.doBackups.isPresent()) setAccountsToBackup();
+        App.configureBackups.ifPresent(this::setAccountsToBackup);
         if (!App.noBackups.isPresent()) {
             if (!App.config.getUsers().isEmpty())
                 for (var user : App.config.getUsers().stream().filter(Config.UserInfo::getDoBackup).toList())
@@ -54,7 +54,26 @@ public class CLI extends TerminalInteraction {
     }
 
     private void setAccountsToBackup() {
-        throw new UnsupportedOperationException("to be implemented");
+        final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
+        do {
+            print("\nSelect accounts by the left-most number. ");
+            listUserAccountsInConfig();
+            int[] toggleBackupStatus;
+            while (true) {
+                toggleBackupStatus = askForInts("Specify which accounts should have their backup settings " +
+                        "toggled by entering a space separated list of their identifying numbers: ", "[ ]{1}");
+                if (toggleBackupStatus.length <= accounts.size()) {
+                    if (Arrays.stream(toggleBackupStatus).anyMatch(i -> i < 1 || i > accounts.size()))
+                        println("One or more of the selection number(s) out of range, try again.");
+                    else if (Arrays.stream(toggleBackupStatus).distinct().count() != toggleBackupStatus.length)
+                        println("One or more of the selection number(s) repeated, try again.");
+                    else break;
+                } else println("Too many accounts selected, try again.");
+            }
+            for (var i : toggleBackupStatus) accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
+            print("\nNew configuration of ");
+            listUserAccountsInConfig();
+        } while (confirmUsingChar("Finished configuring which accounts to backup? [Y/n]", 'y', 'y', 'n') == 'n');
     }
 
     private void setConfigValues(boolean firstConfig) {
@@ -73,6 +92,7 @@ public class CLI extends TerminalInteraction {
 
     private void listUserAccounts() {
         listUserAccountsInDb();
+        println("");
         listUserAccountsInConfig();
     }
 
@@ -83,7 +103,7 @@ public class CLI extends TerminalInteraction {
         final var idHeading = "Spotify ID";
         final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyUserID().length()).reduce(Integer::max)
                 .orElse(idHeading.length());
-        println("\nUser accounts in the database (source(s) for account cloning).");
+        println("User accounts in the database.");
         println(countMaxWidth + spacing, idHeading +
                 " ".repeat(spacing + idMaxWidth - idHeading.length()) + "Account display name");
         int count = 1;
@@ -107,7 +127,7 @@ public class CLI extends TerminalInteraction {
         final var nameHeading = "Account display name";
         final int nameMaxWidth = accounts.stream().map(u -> u.getDisplayName().orElse(nameHeading).length())
                 .reduce(Integer::max).orElse(nameHeading.length());
-        println("\nUser accounts in the config file (target(s) for account cloning).");
+        println("User accounts in the config file.");
         println(countMaxWidth + spacing,
                 idHeading + " ".repeat(spacing + idMaxWidth - idHeading.length()) +
                         nameHeading + " ".repeat(spacing + nameMaxWidth - nameHeading.length()) +
