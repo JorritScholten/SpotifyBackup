@@ -19,19 +19,19 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-public class CLI {
+public class CLI extends TerminalInteraction {
     private final SpotifyObjectRepository repo;
 
     CLI() throws IOException, InterruptedException {
-        App.dbFileArg.ifNotPresent(path -> App.verbosePrintln("Database file: " + path));
-        App.configFileArg.ifNotPresent(path -> App.verbosePrintln("Config file: " + path));
-        App.sqlOutputFileArg.ifPresent(path -> App.verbosePrintln("SQL scripts file: " + path));
+        App.dbFileArg.ifNotPresent(path -> verbosePrintln("Database file: " + path));
+        App.configFileArg.ifNotPresent(path -> verbosePrintln("Config file: " + path));
+        App.sqlOutputFileArg.ifPresent(path -> verbosePrintln("SQL scripts file: " + path));
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         try {
             Config.loadAppConfigFromFile(App.configFileArg.getValue());
             App.setConfigValues.ifPresent(() -> setConfigValues(false));
         } catch (BlankConfigFieldException e) {
-            App.println(e.getMessage());
+            println(e.getMessage());
             setConfigValues(false);
         } catch (ConfigFileException e) {
             setConfigValues(true);
@@ -58,14 +58,14 @@ public class CLI {
     }
 
     private void setConfigValues(boolean firstConfig) {
-        if (firstConfig || App.confirmUsingChar("Set Spotify client ID? [Y/n]", 'y', 'y', 'n') == 'y') {
-            App.config.setClientId(App.askForNonBlankString("Please enter the Spotify client ID: "));
+        if (firstConfig || confirmUsingChar("Set Spotify client ID? [Y/n]", 'y', 'y', 'n') == 'y') {
+            App.config.setClientId(askForNonBlankString("Please enter the Spotify client ID: "));
         }
-        if (firstConfig || App.confirmUsingChar("Set Spotify redirect URI? [Y/n]", 'y', 'y', 'n') == 'y') {
-            App.config.setRedirectURI(App.askForRedirectURI("Please enter the Spotify redirect URI: "));
+        if (firstConfig || confirmUsingChar("Set Spotify redirect URI? [Y/n]", 'y', 'y', 'n') == 'y') {
+            App.config.setRedirectURI(askForRedirectURI("Please enter the Spotify redirect URI: "));
         }
-        if (App.confirmUsingChar("Set Spotify client secret? [y/N]", 'n', 'y', 'n') == 'y') {
-            var secret = App.askForString("Please enter the Spotify client secret (enter blank to clear value): ");
+        if (confirmUsingChar("Set Spotify client secret? [y/N]", 'n', 'y', 'n') == 'y') {
+            var secret = askForString("Please enter the Spotify client secret (enter blank to clear value): ");
             if (secret.isBlank()) App.config.clearClientSecret();
             else App.config.setClientSecret(secret);
         }
@@ -83,14 +83,14 @@ public class CLI {
         final var idHeading = "Spotify ID";
         final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyUserID().length()).reduce(Integer::max)
                 .orElse(idHeading.length());
-        App.println("\nUser accounts in the database (source(s) for account cloning).");
-        App.println(countMaxWidth + spacing, idHeading +
+        println("\nUser accounts in the database (source(s) for account cloning).");
+        println(countMaxWidth + spacing, idHeading +
                 " ".repeat(spacing + idMaxWidth - idHeading.length()) + "Account display name");
         int count = 1;
         for (var account : accounts) {
             final int countWidth = ("" + count).length();
             final int idWidth = account.getSpotifyUserID().length();
-            App.println(countMaxWidth - countWidth, count + " ".repeat(spacing)
+            println(countMaxWidth - countWidth, count + " ".repeat(spacing)
                     + account.getSpotifyUserID() + " ".repeat(
                     spacing + (idMaxWidth - idWidth)) + account.getDisplayName().orElse(""));
             count++;
@@ -107,8 +107,8 @@ public class CLI {
         final var nameHeading = "Account display name";
         final int nameMaxWidth = accounts.stream().map(u -> u.getDisplayName().orElse(nameHeading).length())
                 .reduce(Integer::max).orElse(nameHeading.length());
-        App.println("\nUser accounts in the config file (target(s) for account cloning).");
-        App.println(countMaxWidth + spacing,
+        println("\nUser accounts in the config file (target(s) for account cloning).");
+        println(countMaxWidth + spacing,
                 idHeading + " ".repeat(spacing + idMaxWidth - idHeading.length()) +
                         nameHeading + " ".repeat(spacing + nameMaxWidth - nameHeading.length()) +
                         "Perform backup?");
@@ -117,7 +117,7 @@ public class CLI {
             final int countWidth = ("" + count).length();
             final int idWidth = account.getSpotifyId().orElseThrow().length();
             final var nameWidth = account.getDisplayName().orElse("").length();
-            App.println(countMaxWidth - countWidth, count + " ".repeat(spacing) +
+            println(countMaxWidth - countWidth, count + " ".repeat(spacing) +
                     account.getSpotifyId().orElseThrow() + " ".repeat(spacing + (idMaxWidth - idWidth)) +
                     account.getDisplayName().orElse("") + " ".repeat(spacing + (nameMaxWidth - nameWidth)) +
                     account.getDoBackup());
@@ -126,16 +126,16 @@ public class CLI {
     }
 
     private void addAccounts() throws IOException, InterruptedException {
-        App.verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
+        verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
         for (int i = 0; i < App.addAccounts.getValue(); i++) {
             var api = new ApiWrapper(App.config.addEmptyUser(
-                    App.confirmUsingChar("Perform backups for this account? [Y/n]", 'y',
+                    confirmUsingChar("Perform backups for this account? [Y/n]", 'y',
                             'n', 'y') == 'y'), App.getConfig());
             var currentUser = api.getCurrentUser().orElseThrow();
             var user = repo.persist(currentUser);
-            App.println("Added account: " + user.getDisplayName().orElseThrow());
+            println("Added account: " + user.getDisplayName().orElseThrow());
             if (App.verboseArg.isPresent() && !user.getSpotifyUserID().equals(user.getDisplayName().orElseThrow()))
-                user.getDisplayName().ifPresent(name -> App.println(name + " has user ID: " + user.getSpotifyUserID()));
+                user.getDisplayName().ifPresent(name -> println(name + " has user ID: " + user.getSpotifyUserID()));
         }
     }
 
@@ -143,7 +143,7 @@ public class CLI {
         for (var account : repo.getAccountHolders()) {
             var tracks = repo.getSavedTracks(account);
             long durationMs = tracks.stream().map(s -> s.getTrack().getDurationMs().longValue()).reduce(0L, Long::sum);
-            App.println("Account [" + account.getDisplayName().orElseGet(account::getSpotifyUserID) +
+            println("Account [" + account.getDisplayName().orElseGet(account::getSpotifyUserID) +
                     "] has a total library duration: " + msToPrettyString(durationMs)
             );
         }
@@ -173,7 +173,7 @@ public class CLI {
             api = new ApiWrapper(account, App.getConfig());
             final var currentUser = api.getCurrentUser().orElseThrow();
             if (App.verboseArg.isPresent() || App.showDurationOfNew.isPresent())
-                App.println("Logged in as: " + currentUser.getDisplayName());
+                println("Logged in as: " + currentUser.getDisplayName());
             user = repo.persist(currentUser);
             performBackup();
         }
@@ -203,9 +203,9 @@ public class CLI {
                     var onlyNewTracks = repo.getSavedTracksAfter(user, newestSavedTrackAddedAt);
                     var durationMs = onlyNewTracks.stream().map(s -> s.getTrack().getDurationMs().longValue())
                             .reduce(0L, Long::sum);
-                    App.println(4, "Added " + newTrackIds.size() + " track(s) to Liked songs, duration: "
+                    println(4, "Added " + newTrackIds.size() + " track(s) to Liked songs, duration: "
                             + msToPrettyString(durationMs));
-                }, () -> App.verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs"));
+                }, () -> verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs"));
             }
             markRemovedTracks(newTracks);
         }
@@ -229,7 +229,7 @@ public class CLI {
             var newPlaylistIds = newPlaylists.stream().map(p -> p.getSpotifyID().getId()).collect(Collectors.toList());
             newPlaylistIds.removeAll(oldPlaylistIds);
             if (!newPlaylistIds.isEmpty())
-                App.verbosePrintln(4, "Following " + newPlaylistIds.size() + " new playlist(s)");
+                verbosePrintln(4, "Following " + newPlaylistIds.size() + " new playlist(s)");
             repo.followPlaylists(newPlaylists, user);
             markUnfollowedPlaylists(newPlaylists);
         }
@@ -242,7 +242,7 @@ public class CLI {
             var newArtistIds = newArtists.stream().map(a -> a.getSpotifyID().getId()).collect(Collectors.toList());
             newArtistIds.removeAll(oldArtistIds);
             if (!newArtistIds.isEmpty())
-                App.verbosePrintln(4, "Following " + newArtistIds.size() + " new artist(s)");
+                verbosePrintln(4, "Following " + newArtistIds.size() + " new artist(s)");
             repo.followArtists(newArtists, user);
             markUnfollowedArtists(newArtists);
         }
@@ -257,43 +257,43 @@ public class CLI {
                     .collect(Collectors.toList());
             newAlbumIds.removeAll(oldAlbumIds);
             if (!newAlbumIds.isEmpty())
-                App.verbosePrintln(4, "Added " + newAlbumIds.size() + " album(s) to liked");
+                verbosePrintln(4, "Added " + newAlbumIds.size() + " album(s) to liked");
             markUnlikedAlbums(newAlbums);
         }
 
         private <A extends AbstractModelObject> List<A[]>
         getFromApiPaged(int spaces, String message, BiFunction<Integer, Integer, Paging<A>> getPage) {
-            App.verbosePrint(spaces, message);
+            verbosePrint(spaces, message);
             final int limit = 50;
             int offset = 0;
             Paging<A> apiPage;
             List<A[]> apiItems = new ArrayList<>();
-            App.verbosePrint(", requesting data");
+            verbosePrint(", requesting data");
             do {
-                App.verbosePrint(".");
+                verbosePrint(".");
                 apiPage = getPage.apply(limit, offset);
                 apiItems.add(apiPage.getItems());
                 offset += limit;
             } while (apiPage.getNext() != null);
-            App.verbosePrintln("");
+            verbosePrintln("");
             return apiItems;
         }
 
         private <A extends AbstractModelObject> List<A[]>
         getFromApiPagedCursor(int spaces, String message, BiFunction<Integer, String, PagingCursorbased<A>> getPage) {
-            App.verbosePrint(spaces, message);
+            verbosePrint(spaces, message);
             final int limit = 50;
             String after = null;
             PagingCursorbased<A> apiPage;
             List<A[]> apiItems = new ArrayList<>();
-            App.verbosePrint(", requesting data");
+            verbosePrint(", requesting data");
             do {
-                App.verbosePrint(".");
+                verbosePrint(".");
                 apiPage = getPage.apply(limit, after);
                 apiItems.add(apiPage.getItems());
                 after = apiPage.getCursors()[0].getAfter();
             } while (apiPage.getNext() != null);
-            App.verbosePrintln("");
+            verbosePrintln("");
             return apiItems;
         }
 
@@ -305,7 +305,7 @@ public class CLI {
             var removed = allSavedTracks.stream().filter(t -> !newSavedTrackIds.contains(t.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var track : removed) repo.removeSavedTrack(track.getTrack(), user);
-                App.verbosePrintln(4, "Removed " + removed.size() + " track(s) from Liked Songs");
+                verbosePrintln(4, "Removed " + removed.size() + " track(s) from Liked Songs");
             }
         }
 
@@ -315,7 +315,7 @@ public class CLI {
             var removed = allPlaylists.stream().filter(p -> !newPlaylistIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowPlaylists(removed, user);
-                App.verbosePrintln(4, "Unfollowed " + removed.size() + " playlist(s)");
+                verbosePrintln(4, "Unfollowed " + removed.size() + " playlist(s)");
             }
         }
 
@@ -325,7 +325,7 @@ public class CLI {
             var removed = allArtists.stream().filter(a -> !newArtisIds.contains(a.getId())).toList();
             if (!removed.isEmpty()) {
                 repo.unfollowArtists(removed, user);
-                App.verbosePrintln(4, "Unfollowed " + removed.size() + " artists(s)");
+                verbosePrintln(4, "Unfollowed " + removed.size() + " artists(s)");
             }
         }
 
@@ -335,7 +335,7 @@ public class CLI {
             var removed = allSavedAlbums.stream().filter(p -> !newSavedAlbumIds.contains(p.getId())).toList();
             if (!removed.isEmpty()) {
                 for (var album : removed) repo.removeSavedAlbum(album.getAlbum(), user);
-                App.verbosePrintln(4, "Removed " + removed.size() + " album(s) from Saved Albums");
+                verbosePrintln(4, "Removed " + removed.size() + " album(s) from Saved Albums");
             }
         }
 
@@ -350,7 +350,7 @@ public class CLI {
         }
 
         private void saveDetailedInfo() {
-            App.verbosePrintln(2, "Requesting detailed information for simplified objects");
+            verbosePrintln(2, "Requesting detailed information for simplified objects");
             saveDetailedPlaylistInfo();
             saveDetailedAlbumInfo();
             saveDetailedArtistInfo();
@@ -361,13 +361,13 @@ public class CLI {
             final var playlists = repo.findAllPlaylists();
             if (playlists.isEmpty()) return;
             if (playlists.stream().anyMatch(SpotifyPlaylist::getIsSimplified)) {
-                App.verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
+                verbosePrintln(4, playlists.stream().filter(SpotifyPlaylist::getIsSimplified).count() +
                         " new playlist(s)");
             }
             for (var playlist : playlists) {
                 Optional<Playlist> apiPlaylist = api.getPlaylistWithoutTracks(playlist.getSpotifyID());
                 if (apiPlaylist.isEmpty())
-                    App.println(6, "Couldn't request detailed information for playlist " +
+                    println(6, "Couldn't request detailed information for playlist " +
                             playlist.getName());
                 else if (playlist.getIsSimplified()) {
                     savePlaylistTracks(playlist, apiPlaylist.get());
@@ -393,14 +393,14 @@ public class CLI {
                     (l, o) -> api.getPlaylistTracks(l, o, playlist.getSpotifyID()))
                     .forEach(a -> apiTracks.addAll(Arrays.asList(a)));
             if (apiTracks.size() == apiPlaylist.getTracks().getTotal()) {
-                App.verbosePrintln(8, "Saving " + apiTracks.size() + " track(s) for " +
+                verbosePrintln(8, "Saving " + apiTracks.size() + " track(s) for " +
                         playlist.getName());
                 repo.deletePlaylistItems(playlist);
                 repo.persist(apiTracks, playlist);
                 if (playlist.getIsSimplified()) repo.persist(apiPlaylist);
                 else repo.update(apiPlaylist);
             } else {
-                App.println(6, "Size mismatch between requested track amount and the " +
+                println(6, "Size mismatch between requested track amount and the " +
                         "amount that there should be for playlist " + playlist.getName());
             }
         }
@@ -408,34 +408,34 @@ public class CLI {
         private void saveDetailedAlbumInfo() {
             final var simpleAlbumIds = repo.getSimplifiedAlbumsSpotifyIDs();
             if (simpleAlbumIds.isEmpty()) return;
-            App.verbosePrint(4, "Requesting data for " + simpleAlbumIds.size() + " album(s)");
+            verbosePrint(4, "Requesting data for " + simpleAlbumIds.size() + " album(s)");
             for (var ids : combineIds(simpleAlbumIds, 20)) {
-                App.verbosePrint(".");
+                verbosePrint(".");
                 repo.persistWithoutTracks(api.getSeveralAlbums(ids), App.imageSaveRestriction.getValue());
             }
-            App.verbosePrintln("");
+            verbosePrintln("");
         }
 
         private void saveDetailedArtistInfo() {
             final var simpleArtistIds = repo.getSimplifiedArtistsSpotifyIDs();
             if (simpleArtistIds.isEmpty()) return;
-            App.verbosePrint(4, "Requesting data for " + simpleArtistIds.size() + " artist(s)");
+            verbosePrint(4, "Requesting data for " + simpleArtistIds.size() + " artist(s)");
             for (var ids : combineIds(simpleArtistIds, 50)) {
-                App.verbosePrint(".");
+                verbosePrint(".");
                 repo.persist(api.getSeveralArtists(ids), App.imageSaveRestriction.getValue());
             }
-            App.verbosePrintln("");
+            verbosePrintln("");
         }
 
         private void saveDetailedTrackInfo() {
             final var simpleTrackIds = repo.getSimplifiedTracksSpotifyIDs();
             if (simpleTrackIds.isEmpty()) return;
-            App.verbosePrint(4, "Requesting data for " + simpleTrackIds.size() + " track(s)");
+            verbosePrint(4, "Requesting data for " + simpleTrackIds.size() + " track(s)");
             for (var ids : combineIds(simpleTrackIds, 50)) {
-                App.verbosePrint(".");
+                verbosePrint(".");
                 repo.persist(api.getSeveralTracks(ids));
             }
-            App.verbosePrintln("");
+            verbosePrintln("");
         }
     }
 }

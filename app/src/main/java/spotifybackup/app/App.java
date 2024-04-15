@@ -12,7 +12,7 @@ import spotifybackup.utils.PathUtils;
 
 import java.io.File;
 
-public class App extends TerminalInteraction {
+public class App {
     public static final String APP_NAME = "SpotifyBackup";
     static final DefaultFilePathArgument configFileArg = new DefaultFilePathArgument.Builder()
             .name("config")
@@ -113,7 +113,7 @@ public class App extends TerminalInteraction {
             PathUtils.configDir();
             argParser.parseArguments(args);
             if (argParser.isPresent("help")) {
-                println(argParser.getHelp(getTerm().getType().equals("dumb") ? 120 : getTerm().getWidth()));
+                CLI.println(argParser.getHelp(CLI.getTerm().getType().equals("dumb") ? 120 : CLI.getTerm().getWidth()));
             } else {
                 new CLI();
             }
@@ -121,9 +121,9 @@ public class App extends TerminalInteraction {
         } catch (InterruptedException e) {
             throw e;
         } catch (Exception e) {
-            if (verboseArg.isPresent()) e.printStackTrace(getTerm().writer());
-            else println(e.getMessage());
-            getTerm().flush();
+            if (verboseArg.isPresent()) e.printStackTrace(CLI.getTerm().writer());
+            else CLI.println(e.getMessage());
+            CLI.getTerm().flush();
             System.exit(1);
         }
     }
