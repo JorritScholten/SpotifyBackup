@@ -1,0 +1,270 @@
+shouldThrow`message` json
+false`no fields are missing here, would not throw an exception`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": []
+}
+"""
+true`blank clientId`"""
+{
+  ""clientId"": """",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": []
+}
+"""
+true`missing clientId`"""
+{
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": []
+}
+"""
+true`blank redirectURI`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": """",
+  ""clientSecret"": ""123"",
+  ""users"": []
+}
+"""
+true`missing redirectURI`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""clientSecret"": ""123"",
+  ""users"": []
+}
+"""
+true`blank clientSecret`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": """",
+  ""users"": []
+}
+"""
+false`clientSecret is allowed to be missing, it is after all not essential`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""users"": []
+}
+"""
+false`missing users array will get filled in with an empty array`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234""
+}
+"""
+false`missing users.cloneTargets array will get filled in with empty array`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+false`empty users.cloneTargets is also fine`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false,
+      ""cloneTargets"": []
+    }
+  ]
+}
+"""
+true`blank users.spotifyId`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": """",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+true`missing users.spotifyId`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+true`blank users.displayName`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": """",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+true`missing users.displayName`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+true`blank users.refreshToken`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": """",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+true`missing users.refreshToken`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""doBackup"": false
+    }
+  ]
+}
+"""
+#true`users.doBackup not parseable`"""
+#{
+#  ""clientId"": ""sdf77e"",
+#  ""redirectURI"": ""http://localhost:1234"",
+#  ""clientSecret"": ""123"",
+#  ""users"": [
+#    {
+#      ""spotifyId"": ""user1"",
+#      ""displayName"": ""User 1"",
+#      ""refreshToken"": ""token-1"",
+#      ""doBackup"": ""fail"",
+#      ""cloneTargets"": []
+#    }
+#  ]
+#}
+#"""
+true`missing users.doBackup`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""cloneTargets"": []
+    }
+  ]
+}
+"""
+true`users.cloneTargets contains blank value`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false,
+      ""cloneTargets"": [
+        """"
+      ]
+    }
+  ]
+}
+"""
+true`users.cloneTargets references user not in config`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false,
+      ""cloneTargets"": [
+        ""non-existent-id""
+      ]
+    }
+  ]
+}
+"""
+false`users.cloneTargets references user in config`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": false,
+      ""cloneTargets"": [
+        ""user2""
+      ]
+    },
+    {
+      ""spotifyId"": ""user2"",
+      ""displayName"": ""User 2"",
+      ""refreshToken"": ""token-2"",
+      ""doBackup"": false,
+      ""cloneTargets"": []
+    }
+  ]
+}
+"""

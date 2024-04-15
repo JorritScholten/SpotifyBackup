@@ -1,11 +1,13 @@
 package spotifybackup.app;
 
+import org.junit.jupiter.api.AssertionFailureBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.CsvFileSource;
+import org.opentest4j.AssertionFailedError;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 
@@ -50,194 +52,27 @@ class ConfigTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {
-            /* no fields are missing here, would not throw an exception
-            """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": []
-            }
-            """,*/
-            """
-                    {
-                      "clientId": "",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": []
-                    }
-                    """,
-            """
-                    {
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": []
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "",
-                      "clientSecret": "123",
-                      "users": []
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "clientSecret": "123",
-                      "users": []
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "",
-                      "users": []
-                    }
-                    """,
-            /* clientSecret is allowed to be missing, it is after all not essential
-            """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "users": []
-            }
-            """,*/
-            /* missing "users" array will get filled in with an empty array
-            """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123"
-            }
-            """,*/
-            /* no user fields are missing here, would not throw an exception
-            """
-            {
-              "clientId": "sdf77e",
-              "redirectURI": "http://localhost:1234",
-              "clientSecret": "123",
-              "users": [
-                {
-                  "spotifyId": "user1",
-                  "displayName": "User 1",
-                  "refreshToken": "token-1",
-                  "doBackup": false
-                }
-              ]
-            }
-            """,*/
-            """
-                    {
-                      "clientId": "~sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "spotifyId": "user1",
-                          "displayName": "User 1",
-                          "refreshToken": "token-1"
-                        }
-                      ]
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "spotifyId": "",
-                          "displayName": "User 1",
-                          "refreshToken": "token-1",
-                          "doBackup": false
-                        }
-                      ]
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "displayName": "User 1",
-                          "refreshToken": "token-1",
-                          "doBackup": false
-                        }
-                      ]
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "spotifyId": "user1",
-                          "displayName": "",
-                          "refreshToken": "token-1",
-                          "doBackup": false
-                        }
-                      ]
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "spotifyId": "user1",
-                          "refreshToken": "token-1",
-                          "doBackup": false
-                        }
-                      ]
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "spotifyId": "user1",
-                          "displayName": "User 1",
-                          "refreshToken": "",
-                          "doBackup": false
-                        }
-                      ]
-                    }
-                    """,
-            """
-                    {
-                      "clientId": "sdf77e",
-                      "redirectURI": "http://localhost:1234",
-                      "clientSecret": "123",
-                      "users": [
-                        {
-                          "spotifyId": "user1",
-                          "displayName": "User 1",
-                          "doBackup": false
-                        }
-                      ]
-                    }
-                    """,
-    })
-    void ensure_blank_or_missing_fields_are_rejected(final String configContents) throws IOException {
+    @CsvFileSource(files = "src/test/java/spotifybackup/app/blank_or_missing_fields_config_test.csv", numLinesToSkip = 1, delimiter = '`')
+    void ensure_blank_or_missing_fields_are_rejected(final boolean shouldThrow, final String message, final String json) throws IOException {
         // Arrange
-        Files.writeString(configFile.toPath(), configContents);
+        Files.writeString(configFile.toPath(), json.substring(2, json.length() - 1));
 
         // Act & Assert
-        assertThrows(BlankConfigFieldException.class, () -> Config.loadAppConfigFromFile(configFile));
+        if (shouldThrow) {
+            boolean noIssue = false;
+            try {
+                Config.loadAppConfigFromFile(configFile);
+            } catch (BlankConfigFieldException e) {
+                if (e.getMessage().split("\n").length == 2) noIssue = true;
+                else throw new AssertionFailedError("Test case should only test one failure point in isolation, test " +
+                        "case tests " + (e.getMessage().split("\n").length - 1) + " failure points.");
+            }
+            if (!noIssue)
+                throw AssertionFailureBuilder.assertionFailure().message(message)
+                        .reason(String.format("Expected %s to be thrown, but nothing was thrown.",
+                                BlankConfigFieldException.class.getCanonicalName())
+                        ).build();
+        } else assertDoesNotThrow(() -> Config.loadAppConfigFromFile(configFile), message);
     }
 
     @Test
