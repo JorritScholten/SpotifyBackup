@@ -3,10 +3,7 @@ package spotifybackup.app;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.annotations.Expose;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
+import lombok.*;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 
@@ -82,17 +79,23 @@ public class Config {
     private static void checkAllFields(File file, Config config) {
         List<String> fieldWarnings = new ArrayList<>();
         if (isNullOrBlank(config.clientId))
-            fieldWarnings.add("  clientId field blank or missing in.");
+            fieldWarnings.add("  clientId field blank or missing.");
         if (config.redirectURI == null || config.redirectURI.toString().isBlank())
-            fieldWarnings.add("  redirectURI field blank or missing in.");
+            fieldWarnings.add("  redirectURI field blank or missing.");
         if (config.clientSecret != null && config.clientSecret.isBlank())
             fieldWarnings.add("  clientSecret field blank (can be omitted).");
         if (config.users == null) config.users = new ArrayList<>();
         else config.users.forEach(user -> {
-            if (isNullOrBlank(user.spotifyId)) fieldWarnings.add("  user.spotifyId field blank or missing in.");
-            if (isNullOrBlank(user.displayName)) fieldWarnings.add("  user.displayName field blank or missing in.");
-            if (isNullOrBlank(user.refreshToken)) fieldWarnings.add("  user.refreshToken field blank or missing in.");
-            if (user.doBackup == null) fieldWarnings.add("  user.doBackup field missing in.");
+            if (isNullOrBlank(user.spotifyId)) fieldWarnings.add("   user.spotifyId field blank or missing.");
+            if (isNullOrBlank(user.displayName)) fieldWarnings.add("   user.displayName field blank or missing.");
+            if (isNullOrBlank(user.refreshToken)) fieldWarnings.add("   user.refreshToken field blank or missing.");
+            if (user.doBackup == null) fieldWarnings.add("   user.doBackup field missing.");
+            if (user.cloneTargets == null) user.cloneTargets = new ArrayList<>();
+            else user.cloneTargets.forEach(id -> {
+                if (isNullOrBlank(id)) fieldWarnings.add("  user.cloneTargets has a blank entry.");
+                else if (config.users.stream().map(u -> u.getSpotifyId().orElseThrow()).noneMatch(t -> t.equals(id)))
+                    fieldWarnings.add("   user.cloneTargets targets a Spotify User ID [" + id + "] not found in config.");
+            });
         });
         if (!fieldWarnings.isEmpty()) {
             fieldWarnings.addFirst("Blank or missing field(s) in: " + file);
@@ -120,7 +123,7 @@ public class Config {
     }
 
     public UserInfo addEmptyUser(boolean doBackup) {
-        final UserInfo newUser = new UserInfo(this::serialize);
+        final UserInfo newUser = new UserInfo(this);
         newUser.setDoBackup(doBackup);
         users.add(newUser);
         return newUser;
@@ -168,8 +171,10 @@ public class Config {
         return gson.toJson(this);
     }
 
+    @Builder
     @AllArgsConstructor
     public static class UserInfo {
+        private Config parent;
         private Runnable serialize;
         @Expose
         private String spotifyId;
@@ -179,10 +184,15 @@ public class Config {
         private String refreshToken;
         @Expose
         @Getter(AccessLevel.PUBLIC)
+        @Builder.Default
         private Boolean doBackup = false;
+        @Expose
+        @Builder.Default
+        private List<String> cloneTargets = new ArrayList<>();
 
-        UserInfo(Runnable serialize) {
-            this.serialize = serialize;
+        UserInfo(Config parent) {
+            this.parent = parent;
+            this.serialize = parent::serialize;
         }
 
         public Optional<String> getDisplayName() {
@@ -217,6 +227,18 @@ public class Config {
             serialize.run();
         }
 
+        public List<UserInfo> getCloneTargets() {
+            throw new UnsupportedOperationException("to be implemented");
+        }
+
+        public void addCloneTarget(@NonNull UserInfo target) {
+            throw new UnsupportedOperationException("to be implemented");
+        }
+
+        public void removeCloneTarget(@NonNull UserInfo target) {
+            throw new UnsupportedOperationException("to be implemented");
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -224,7 +246,8 @@ public class Config {
             return Objects.equals(spotifyId, userInfo.spotifyId) &&
                     Objects.equals(displayName, userInfo.displayName) &&
                     Objects.equals(refreshToken, userInfo.refreshToken) &&
-                    Objects.equals(doBackup, userInfo.doBackup);
+                    Objects.equals(doBackup, userInfo.doBackup) &&
+                    Objects.equals(cloneTargets, userInfo.cloneTargets);
         }
 
         @Override

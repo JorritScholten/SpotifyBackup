@@ -88,7 +88,7 @@ class ConfigTest {
                       "spotifyId": "user1",
                       "displayName": "User 1",
                       "refreshToken": "token-1",
-                      "doBackup": false
+                      "doBackup": true
                     },
                     {
                       "spotifyId": "user2",
@@ -103,8 +103,17 @@ class ConfigTest {
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
         final List<Config.UserInfo> users = List.of(
-                new Config.UserInfo(null, "user1", "User 1", "token-1", false),
-                new Config.UserInfo(null, "user2", "User 2", "token-2", false)
+                Config.UserInfo.builder()
+                        .spotifyId("user1")
+                        .displayName("User 1")
+                        .refreshToken("token-1")
+                        .doBackup(true)
+                        .build(),
+                Config.UserInfo.builder()
+                        .spotifyId("user2")
+                        .displayName("User 2")
+                        .refreshToken("token-2")
+                        .build()
         );
         Files.writeString(configFile.toPath(), configContents);
 
@@ -138,7 +147,10 @@ class ConfigTest {
                       "spotifyId": "user2",
                       "displayName": "User 2",
                       "refreshToken": "token-2",
-                      "doBackup": true
+                      "doBackup": true,
+                      "cloneTargets": [
+                        "user1"
+                      ]
                     }
                   ]
                 }
@@ -147,8 +159,17 @@ class ConfigTest {
         final URI redirectURI = new URI("http://localhost:1234");
         final String clientSecret = "123";
         final List<Config.UserInfo> users = List.of(
-                new Config.UserInfo(null, "user1", "User 1", "token-1", false),
-                new Config.UserInfo(null, "user2", "User 2", "token-2", true)
+                Config.UserInfo.builder()
+                        .spotifyId("user1")
+                        .displayName("User 1")
+                        .refreshToken("token-1")
+                        .build(),
+                Config.UserInfo.builder()
+                        .spotifyId("user2")
+                        .displayName("User 2")
+                        .refreshToken("token-2")
+                        .doBackup(true)
+                        .build()
         );
         final Config config = Config.createNewForTesting(configFile);
 
@@ -163,6 +184,7 @@ class ConfigTest {
             newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
             newUser.setDoBackup(user.getDoBackup());
         }
+        users.getLast().addCloneTarget(users.getFirst());
 
         // Assert
         final String newConfig = Files.readString(configFile.toPath());
@@ -176,8 +198,16 @@ class ConfigTest {
         final String clientId = "some-client-id";
         final URI redirectURI = new URI("http://localhost:5678");
         final List<Config.UserInfo> users = List.of(
-                new Config.UserInfo(null, "user1", "User 1", "token-1", false),
-                new Config.UserInfo(null, "user2", "User 2", "token-2", false)
+                Config.UserInfo.builder()
+                        .spotifyId("user1")
+                        .displayName("User 1")
+                        .refreshToken("token-1")
+                        .build(),
+                Config.UserInfo.builder()
+                        .spotifyId("user2")
+                        .displayName("User 2")
+                        .refreshToken("token-2")
+                        .build()
         );
         final Config config = Config.createNewForTesting(configFile);
 
@@ -212,13 +242,15 @@ class ConfigTest {
                       "spotifyId": "user1",
                       "displayName": "User 1",
                       "refreshToken": "q1w2e3r4t5",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": []
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
                       "refreshToken": "y6u7i8o9p0",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": []
                     }
                   ]
                 }
@@ -233,24 +265,34 @@ class ConfigTest {
                       "spotifyId": "user1",
                       "displayName": "User 1",
                       "refreshToken": "q1w2e3r4t5",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": [
+                        "user3"
+                      ]
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
                       "refreshToken": "y6u7i8o9p0",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": []
                     },
                     {
                       "spotifyId": "user3",
                       "displayName": "User 3",
                       "refreshToken": "1a2b3c",
-                      "doBackup": true
+                      "doBackup": true,
+                      "cloneTargets": []
                     }
                   ]
                 }
                 """;
-        final Config.UserInfo newUser = new Config.UserInfo(null, "user3", "User 3", "1a2b3c", true);
+        final Config.UserInfo newUser = Config.UserInfo.builder()
+                .spotifyId("user3")
+                .displayName("User 3")
+                .refreshToken("1a2b3c")
+                .doBackup(true)
+                .build();
         Files.writeString(configFile.toPath(), initialConfigContents);
         Config.loadAppConfigFromFile(configFile);
 
@@ -261,6 +303,7 @@ class ConfigTest {
             emptyUser.setDisplayName(newUser.getDisplayName().orElseThrow());
             emptyUser.setRefreshToken(newUser.getRefreshToken().orElseThrow());
             emptyUser.setDoBackup(newUser.getDoBackup());
+            App.config.getUsers().getFirst().addCloneTarget(newUser);
         }
 
         // Assert
@@ -281,13 +324,15 @@ class ConfigTest {
                       "spotifyId": "user1",
                       "displayName": "User 1",
                       "refreshToken": "q1w2e3r4t5",
-                      "doBackup": true
+                      "doBackup": true,
+                      "cloneTargets": []
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
                       "refreshToken": "y6u7i8o9p0",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": []
                     }
                   ]
                 }
@@ -301,13 +346,15 @@ class ConfigTest {
                       "spotifyId": "user1",
                       "displayName": "User 1",
                       "refreshToken": "q1w2e3r4t5",
-                      "doBackup": true
+                      "doBackup": true,
+                      "cloneTargets": []
                     },
                     {
                       "spotifyId": "user2",
                       "displayName": "User 2",
                       "refreshToken": "y6u7i8o9p0",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": []
                     }
                   ]
                 }
