@@ -51,6 +51,12 @@ public class App {
             .name("no-backups")
             .description("Perform no backup for any account.")
             .build();
+    static final FlagArgument configureCloningTargets = new FlagArgument.Builder()
+            .name("configure-cloning-targets")
+            .description("Specify in config which accounts should copy their Liked songs and playlists onto which " +
+                    "accounts. Multiple differing accounts can target the same account but an account that is a " +
+                    "cloning target can not do its own backups.")
+            .build();
     static final DefaultBoundedIntArgument addAccounts = new DefaultBoundedIntArgument.Builder()
             .name("add-accounts")
             .defaultValue(1)
@@ -99,9 +105,22 @@ public class App {
 
     static {
         argParser = new CmdParser.Builder()
-                .arguments(configFileArg, dbFileArg, sqlOutputFileArg, configureBackups, imageSaveRestriction, addAccounts,
-                        verboseArg, showTotalLibraryDuration, showDurationOfNew, playlistSaveRestriction,
-                        listUserAccounts, setConfigValues, noBackups)
+                .arguments(
+                        configFileArg,
+                        dbFileArg,
+                        sqlOutputFileArg,
+                        setConfigValues,
+                        addAccounts,
+                        configureBackups,
+                        configureCloningTargets,
+                        imageSaveRestriction,
+                        playlistSaveRestriction,
+                        verboseArg,
+                        showTotalLibraryDuration,
+                        showDurationOfNew,
+                        listUserAccounts,
+                        noBackups
+                )
                 .description("Program to create offline backup of users Spotify account.")
                 .programName("SpotifyBackup.jar")
                 .addHelp()
