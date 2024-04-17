@@ -84,17 +84,16 @@ public class CLI extends TerminalInteraction {
                     else break;
                 } else println("Too many accounts selected, try again.");
             }
-            throw new UnsupportedOperationException("Handle the ConfigReferenceLoopException thrown by setDoBackup()");
-//            for (var i : toggleBackupStatus) {
-//                try {
-//                    accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
-//                } catch (ConfigReferenceLoopException e) {
-//                    if (confirmUsingChar(e.getMessage() + " Modify cloning targets? [Y/n]", 'y', 'y', 'n') == 'y')
-//                        setCloningTargets();
-//                }
-//            }
-//            print("\nNew configuration of ");
-//            listUserAccountsInConfig();
+            for (var i : toggleBackupStatus) {
+                try {
+                    accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
+                } catch (ConfigReferenceLoopException e) {
+                    if (confirmUsingChar(e.getMessage() + " Modify cloning targets? [Y/n]", 'y', 'y', 'n') == 'y')
+                        setCloningTargets();
+                }
+            }
+            print("\nNew configuration of ");
+            listUserAccountsInConfig();
         } while (confirmUsingChar("Finished configuring which accounts to backup? [Y/n]", 'y', 'y', 'n') == 'n');
     }
 
@@ -145,24 +144,28 @@ public class CLI extends TerminalInteraction {
         final int countMaxWidth = ("" + accounts.size()).length();
         final var idHeading = "Spotify ID";
         final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyId().orElseThrow().length()).reduce(Integer::max)
-                .orElse(idHeading.length());
+                .filter(w -> w > idHeading.length()).orElse(idHeading.length());
         final var nameHeading = "Account display name";
         final int nameMaxWidth = accounts.stream().map(u -> u.getDisplayName().orElse(nameHeading).length())
-                .reduce(Integer::max).orElse(nameHeading.length());
+                .reduce(Integer::max).filter(w -> w > nameHeading.length()).orElse(nameHeading.length());
+        final var backupHeading = "Perform backup?";
         println("User accounts in the config file.");
         println(countMaxWidth + spacing,
                 idHeading + " ".repeat(spacing + idMaxWidth - idHeading.length()) +
                         nameHeading + " ".repeat(spacing + nameMaxWidth - nameHeading.length()) +
-                        "Perform backup?");
+                        backupHeading + " ".repeat(spacing) +
+                        "Cloning target(s)");
         int count = 1;
         for (var account : accounts) {
             final int countWidth = ("" + count).length();
             final int idWidth = account.getSpotifyId().orElseThrow().length();
-            final var nameWidth = account.getDisplayName().orElse("").length();
+            final int nameWidth = account.getDisplayName().orElse("").length();
+            final int backupWidth = account.getDoBackup().toString().length();
             println(countMaxWidth - countWidth, count + " ".repeat(spacing) +
                     account.getSpotifyId().orElseThrow() + " ".repeat(spacing + (idMaxWidth - idWidth)) +
                     account.getDisplayName().orElse("") + " ".repeat(spacing + (nameMaxWidth - nameWidth)) +
-                    account.getDoBackup());
+                    account.getDoBackup() + " ".repeat(spacing + backupHeading.length() - backupWidth) +
+                    String.join(", ", account.getCloneTargets().stream().map(u -> u.getSpotifyId().orElseThrow()).toList()));
             count++;
         }
     }
