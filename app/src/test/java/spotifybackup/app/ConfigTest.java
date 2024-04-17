@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -143,7 +144,8 @@ class ConfigTest {
                       "spotifyId": "user1",
                       "displayName": "User 1",
                       "refreshToken": "token-1",
-                      "doBackup": false
+                      "doBackup": false,
+                      "cloneTargets": []
                     },
                     {
                       "spotifyId": "user2",
@@ -173,21 +175,20 @@ class ConfigTest {
                         .doBackup(true)
                         .build()
         );
-        final Config config = Config.createNewForTesting(configFile);
 
         // Act
         assertDoesNotThrow(() -> {
-            config.setClientId(clientId);
-            config.setRedirectURI(redirectURI);
-            config.setClientSecret(clientSecret);
+            App.config.setClientId(clientId);
+            App.config.setRedirectURI(redirectURI);
+            App.config.setClientSecret(clientSecret);
             for (var user : users) {
-                var newUser = config.addEmptyUser(false);
+                var newUser = App.config.addEmptyUser(false);
                 newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
                 newUser.setDisplayName(user.getDisplayName().orElseThrow());
                 newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
                 newUser.setDoBackup(user.getDoBackup());
             }
-            users.getLast().addCloneTarget(users.getFirst());
+            App.config.getUsers().getLast().addCloneTarget(App.config.getUsers().getFirst());
         });
 
         // Assert
@@ -198,7 +199,6 @@ class ConfigTest {
     @Test
     void create_new_config_file_and_load_values_into_it() throws URISyntaxException {
         // Arrange
-        assertThrows(ConfigFileException.class, () -> Config.loadAppConfigFromFile(configFile));
         final String clientId = "some-client-id";
         final URI redirectURI = new URI("http://localhost:5678");
         final List<Config.UserInfo> users = List.of(
@@ -213,14 +213,14 @@ class ConfigTest {
                         .refreshToken("token-2")
                         .build()
         );
-        final Config config = Config.createNewForTesting(configFile);
 
         // Act
+        assertThrows(ConfigFileException.class, () -> Config.loadAppConfigFromFile(configFile));
         assertDoesNotThrow(() -> {
-            config.setClientId(clientId);
-            config.setRedirectURI(redirectURI);
+            App.config.setClientId(clientId);
+            App.config.setRedirectURI(redirectURI);
             for (var user : users) {
-                var newUser = config.addEmptyUser(false);
+                var newUser = App.config.addEmptyUser(false);
                 newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
                 newUser.setDisplayName(user.getDisplayName().orElseThrow());
                 newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
@@ -230,8 +230,8 @@ class ConfigTest {
 
         // Assert
         assertDoesNotThrow(() -> Config.loadAppConfigFromFile(configFile));
-        assertEquals(clientId, config.getClientId());
-        assertEquals(redirectURI, config.getRedirectURI());
+        assertEquals(clientId, App.config.getClientId());
+        assertEquals(redirectURI, App.config.getRedirectURI());
         assertEquals(users, App.config.getUsers());
     }
 
@@ -380,9 +380,10 @@ class ConfigTest {
     void prevent_account_targeted_for_cloning_from_being_marked_for_backup() {
         // Arrange
         final String cloneTargetId = "clone-target";
+        final String backupAccountId = "user1";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId("user1")
+                        .spotifyId(backupAccountId)
                         .displayName("User 1")
                         .refreshToken("token-1")
                         .doBackup(true)
@@ -414,13 +415,17 @@ class ConfigTest {
                     newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
                     newUser.setDisplayName(user.getDisplayName().orElseThrow());
                     newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
-                    for (var target : user.getCloneTargets()) newUser.addCloneTarget(target);
                 }
             }
-        }, "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
+        });
+        final var backupAccount = App.config.getUsers().getFirst();
+        assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
+                "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals(cloneTargetId, cloneTarget.getSpotifyId().orElseThrow(),
                 "Last user should be the clone target, this a sanity check for the assert phase.");
+        assertDoesNotThrow(() -> backupAccount.addCloneTarget(cloneTarget),
+                "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
 
         // Act & Assert
         assertFalse(cloneTarget.getDoBackup());
@@ -459,17 +464,21 @@ class ConfigTest {
                     newUser.setSpotifyId(user.getSpotifyId().orElseThrow());
                     newUser.setDisplayName(user.getDisplayName().orElseThrow());
                     newUser.setRefreshToken(user.getRefreshToken().orElseThrow());
-                    for (var target : user.getCloneTargets()) newUser.addCloneTarget(target);
                 }
             }
-        }, "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
+        });
         final var backupAccount = App.config.getUsers().getFirst();
         assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
                 "First user should be the user1 account, this a sanity check for the assert phase.");
+        final var cloneTarget = App.config.getUsers().getLast();
+        assertEquals(cloneTargetId, cloneTarget.getSpotifyId().orElseThrow(),
+                "Last user should be the clone target, this a sanity check for the assert phase.");
+        assertDoesNotThrow(() -> backupAccount.addCloneTarget(cloneTarget),
+                "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
 
         // Act & Assert
         assertTrue(backupAccount.getDoBackup());
-        assertThrows(ConfigReferenceLoopException.class, () -> backupAccount.setDoBackup(true));
+        assertThrows(ConfigReferenceLoopException.class, () -> backupAccount.setDoBackup(false));
     }
 
     @Test

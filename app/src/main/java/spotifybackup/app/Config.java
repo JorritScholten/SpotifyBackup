@@ -39,14 +39,6 @@ public class Config {
 
     private Config() {}
 
-    /** @apiNote Only to be used for testing purposes. */
-    static Config createNewForTesting(@NonNull File filePath) {
-        var config = new Config();
-        config.path = filePath;
-        config.users = new ArrayList<>();
-        return config;
-    }
-
     /**
      * Load config properties from a file, the file path is stored to allow for the saving of updated values.
      * @param filePath Path to .json config file.
@@ -73,7 +65,7 @@ public class Config {
             App.config = gson.fromJson(reader, Config.class);
             App.config.path = file;
             checkAllFields(file, App.config);
-            App.config.users.forEach(u -> u.serialize = App.config::serialize);
+            App.config.users.forEach(u -> u.parent = App.config);
         }
     }
 
@@ -175,7 +167,6 @@ public class Config {
     @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class UserInfo {
         private Config parent;
-        private Runnable serialize;
         @Expose
         private String spotifyId;
         @Expose
@@ -192,8 +183,8 @@ public class Config {
 
         private UserInfo(Config parent, boolean doBackup) {
             this.parent = parent;
-            this.serialize = parent::serialize;
             this.doBackup = doBackup;
+            cloneTargets = new ArrayList<>();
         }
 
         public Optional<String> getDisplayName() {
@@ -202,7 +193,7 @@ public class Config {
 
         public void setDisplayName(@NonNull String displayName) {
             this.displayName = displayName;
-            serialize.run();
+            parent.serialize();
         }
 
         public Optional<String> getSpotifyId() {
@@ -211,7 +202,7 @@ public class Config {
 
         public void setSpotifyId(@NonNull String spotifyId) {
             this.spotifyId = spotifyId;
-            serialize.run();
+            parent.serialize();
         }
 
         public Optional<String> getRefreshToken() {
@@ -220,33 +211,69 @@ public class Config {
 
         public void setRefreshToken(@NonNull String refreshToken) {
             this.refreshToken = refreshToken;
-            serialize.run();
+            parent.serialize();
         }
 
-        public void setDoBackup(boolean doBackup) {
         public void setDoBackup(boolean doBackup) throws ConfigReferenceLoopException {
+            if (Objects.isNull(this.doBackup)) {
+                throw new NullPointerException("doBackup should not be capable of being null here, this is a sanity check.");
+            } else if (Boolean.FALSE.equals(this.doBackup) && doBackup) {
+                if (isCloningTarget()) throw new ConfigReferenceLoopException("account with spotifyId[" +
+                        spotifyId + "] is a cloning target.");
+            } else if (Boolean.TRUE.equals(this.doBackup) && !doBackup) {
+                if (!cloneTargets.isEmpty()) throw new ConfigReferenceLoopException("account with spotifyId[" +
+                        spotifyId + "] still has cloning targets: " + String.join(", ", cloneTargets));
+            } else return;
             this.doBackup = doBackup;
-            serialize.run();
+            parent.serialize();
         }
 
         private boolean isCloningTarget() {
-            throw new UnsupportedOperationException("isCloningTarget to be implemented");
+            for (var user : parent.users) {
+                if (user.getCloneTargets().stream().anyMatch(t -> t.equals(this))) return true;
+            }
+            return false;
         }
 
         public List<UserInfo> getCloneTargets() {
-            throw new UnsupportedOperationException("to be implemented");
+            List<UserInfo> targets = new ArrayList<>();
+            for (var targetId : cloneTargets)
+                targets.add(parent.users.stream()
+                        .filter(u -> u.getSpotifyId().isPresent() && u.getSpotifyId().orElseThrow().equals(targetId))
+                        .findFirst().orElseThrow(() -> new RuntimeException("Trying to reference account in users " +
+                                "with spotifyId[" + targetId + "] that no longer exists."))
+                );
+            return targets.stream().toList();
         }
 
         public boolean hasCloneTargets() {
             return !cloneTargets.isEmpty();
         }
 
-        public void addCloneTarget(@NonNull UserInfo target) {
-            throw new UnsupportedOperationException("to be implemented");
+        public void addCloneTarget(@NonNull UserInfo target) throws ConfigReferenceLoopException {
+            if (!Boolean.TRUE.equals(doBackup)) throw new ConfigReferenceLoopException("account with spotifyId[" +
+                    spotifyId + "] not marked for backup.");
+            if (!Boolean.FALSE.equals(target.getDoBackup()))
+                throw new ConfigReferenceLoopException("target[" + target.spotifyId + "] is marked for backup.");
+            if (!target.parent.equals(parent))
+                throw new IllegalArgumentException("target has different parent from this.");
+            if (target.getSpotifyId().isEmpty()) {
+                throw new IllegalArgumentException("target has no spotifyId.");
+            } else {
+                cloneTargets.add(target.getSpotifyId().get());
+                parent.serialize();
+            }
         }
 
         public void removeCloneTarget(@NonNull UserInfo target) {
-            throw new UnsupportedOperationException("to be implemented");
+            if (!target.parent.equals(parent))
+                throw new IllegalArgumentException("target has different parent from this.");
+            if (target.getSpotifyId().isEmpty()) {
+                throw new IllegalArgumentException("target has no spotifyId.");
+            } else {
+                cloneTargets.remove(target.getSpotifyId().get());
+                parent.serialize();
+            }
         }
 
         @Override
