@@ -299,3 +299,28 @@ false`users.cloneTargets references user in config correctly`"""
   ]
 }
 """
+true`users.cloneTargets references self in config correctly, this shouldn't happen`"""
+{
+  ""clientId"": ""sdf77e"",
+  ""redirectURI"": ""http://localhost:1234"",
+  ""clientSecret"": ""123"",
+  ""users"": [
+    {
+      ""spotifyId"": ""user1"",
+      ""displayName"": ""User 1"",
+      ""refreshToken"": ""token-1"",
+      ""doBackup"": true,
+      ""cloneTargets"": [
+        ""user1""
+      ]
+    },
+    {
+      ""spotifyId"": ""user2"",
+      ""displayName"": ""User 2"",
+      ""refreshToken"": ""token-2"",
+      ""doBackup"": false,
+      ""cloneTargets"": []
+    }
+  ]
+}
+"""
