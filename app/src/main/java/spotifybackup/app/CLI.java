@@ -63,38 +63,31 @@ public class CLI extends TerminalInteraction {
         throw new UnsupportedOperationException("CLI.setCloningTargets() to be implemented");
     }
 
-    private void setAccountsToBackup() {
+    private void setAccountsToBackup() {setAccountsToBackup(true);}
+
+    private void setAccountsToBackup(boolean printInitialTable) {
         if (App.config.getUsers().isEmpty()) {
             println("No accounts in config to configure settings for.");
             return;
         }
         final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
         do {
-            print("\nSelect accounts by the left-most number. ");
-            listUserAccountsInConfig();
-            int[] toggleBackupStatus;
-            while (true) {
-                toggleBackupStatus = askForInts("Specify which accounts should have their backup settings " +
-                        "toggled by entering a space separated list of their identifying numbers: ", "[ ]{1}");
-                if (toggleBackupStatus.length <= accounts.size()) {
-                    if (Arrays.stream(toggleBackupStatus).anyMatch(i -> i < 1 || i > accounts.size()))
-                        println("One or more of the selection number(s) out of range, try again.");
-                    else if (Arrays.stream(toggleBackupStatus).distinct().count() != toggleBackupStatus.length)
-                        println("One or more of the selection number(s) repeated, try again.");
-                    else break;
-                } else println("Too many accounts selected, try again.");
+            if (printInitialTable) {
+                print("\nSelect accounts by the left-most number. ");
+                listUserAccountsInConfig(accounts);
             }
-            for (var i : toggleBackupStatus) {
+            chooseZeroOrMoreFromList("Specify which accounts should have their backup settings toggled.",
+                    accounts).forEach(account -> {
                 try {
-                    accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
+                    account.setDoBackup(!account.getDoBackup());
                 } catch (ConfigReferenceLoopException e) {
-                    if (confirmUsingChar(e.getMessage() + " Modify cloning targets? [Y/n]", 'y', 'y', 'n') == 'y')
-                        setCloningTargets();
+                    if(confirmUsingCharYN(e.getMessage()+" Modify cloning targets?",'y'))
+                        setCloningTargets(false);
                 }
-            }
+            });
             print("\nNew configuration of ");
-            listUserAccountsInConfig();
-        } while (confirmUsingChar("Finished configuring which accounts to backup? [Y/n]", 'y', 'y', 'n') == 'n');
+            listUserAccountsInConfig(accounts);
+        } while (!confirmUsingCharYN("Finished configuring which accounts to backup?", 'y'));
     }
 
     private void setConfigValues(boolean firstConfig) {
@@ -114,7 +107,7 @@ public class CLI extends TerminalInteraction {
     private void listUserAccounts() {
         listUserAccountsInDb();
         println("");
-        listUserAccountsInConfig();
+        listUserAccountsInConfig(App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList());
     }
 
     private void listUserAccountsInDb() {
@@ -138,8 +131,7 @@ public class CLI extends TerminalInteraction {
         }
     }
 
-    private void listUserAccountsInConfig() {
-        var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
+    private void listUserAccountsInConfig(@NonNull List<Config.UserInfo> accounts) {
         final int spacing = 2;
         final int countMaxWidth = ("" + accounts.size()).length();
         final var idHeading = "Spotify ID";
