@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 import lombok.*;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
+import spotifybackup.app.exception.ConfigReferenceLoopException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -123,8 +124,7 @@ public class Config {
     }
 
     public UserInfo addEmptyUser(boolean doBackup) {
-        final UserInfo newUser = new UserInfo(this);
-        newUser.setDoBackup(doBackup);
+        final UserInfo newUser = new UserInfo(this, doBackup);
         users.add(newUser);
         return newUser;
     }
@@ -171,8 +171,8 @@ public class Config {
         return gson.toJson(this);
     }
 
-    @Builder
-    @AllArgsConstructor
+    @Builder(access = AccessLevel.PACKAGE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class UserInfo {
         private Config parent;
         private Runnable serialize;
@@ -190,9 +190,10 @@ public class Config {
         @Builder.Default
         private List<String> cloneTargets = new ArrayList<>();
 
-        UserInfo(Config parent) {
+        private UserInfo(Config parent, boolean doBackup) {
             this.parent = parent;
             this.serialize = parent::serialize;
+            this.doBackup = doBackup;
         }
 
         public Optional<String> getDisplayName() {
@@ -223,12 +224,21 @@ public class Config {
         }
 
         public void setDoBackup(boolean doBackup) {
+        public void setDoBackup(boolean doBackup) throws ConfigReferenceLoopException {
             this.doBackup = doBackup;
             serialize.run();
         }
 
+        private boolean isCloningTarget() {
+            throw new UnsupportedOperationException("isCloningTarget to be implemented");
+        }
+
         public List<UserInfo> getCloneTargets() {
             throw new UnsupportedOperationException("to be implemented");
+        }
+
+        public boolean hasCloneTargets() {
+            return !cloneTargets.isEmpty();
         }
 
         public void addCloneTarget(@NonNull UserInfo target) {

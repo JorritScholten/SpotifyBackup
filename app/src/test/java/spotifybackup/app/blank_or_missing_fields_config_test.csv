@@ -99,7 +99,8 @@ true`blank users.spotifyId`"""
       ""spotifyId"": """",
       ""displayName"": ""User 1"",
       ""refreshToken"": ""token-1"",
-      ""doBackup"": false
+      ""doBackup"": false,
+      ""cloneTargets"": []
     }
   ]
 }
@@ -113,7 +114,8 @@ true`missing users.spotifyId`"""
     {
       ""displayName"": ""User 1"",
       ""refreshToken"": ""token-1"",
-      ""doBackup"": false
+      ""doBackup"": false,
+      ""cloneTargets"": []
     }
   ]
 }
@@ -128,7 +130,8 @@ true`blank users.displayName`"""
       ""spotifyId"": ""user1"",
       ""displayName"": """",
       ""refreshToken"": ""token-1"",
-      ""doBackup"": false
+      ""doBackup"": false,
+      ""cloneTargets"": []
     }
   ]
 }
@@ -142,7 +145,8 @@ true`missing users.displayName`"""
     {
       ""spotifyId"": ""user1"",
       ""refreshToken"": ""token-1"",
-      ""doBackup"": false
+      ""doBackup"": false,
+      ""cloneTargets"": []
     }
   ]
 }
@@ -157,7 +161,8 @@ true`blank users.refreshToken`"""
       ""spotifyId"": ""user1"",
       ""displayName"": ""User 1"",
       ""refreshToken"": """",
-      ""doBackup"": false
+      ""doBackup"": false,
+      ""cloneTargets"": []
     }
   ]
 }
@@ -171,7 +176,8 @@ true`missing users.refreshToken`"""
     {
       ""spotifyId"": ""user1"",
       ""displayName"": ""User 1"",
-      ""doBackup"": false
+      ""doBackup"": false,
+      ""cloneTargets"": []
     }
   ]
 }

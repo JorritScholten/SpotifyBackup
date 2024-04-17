@@ -70,9 +70,10 @@ public class CLI extends TerminalInteraction {
                     else break;
                 } else println("Too many accounts selected, try again.");
             }
-            for (var i : toggleBackupStatus) accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
-            print("\nNew configuration of ");
-            listUserAccountsInConfig();
+            throw new UnsupportedOperationException("Handle the ConfigReferenceLoopException thrown by setDoBackup()");
+//            for (var i : toggleBackupStatus) accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
+//            print("\nNew configuration of ");
+//            listUserAccountsInConfig();
         } while (confirmUsingChar("Finished configuring which accounts to backup? [Y/n]", 'y', 'y', 'n') == 'n');
     }
 
