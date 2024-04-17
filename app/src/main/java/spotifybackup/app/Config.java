@@ -7,6 +7,7 @@ import lombok.*;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 import spotifybackup.app.exception.ConfigReferenceLoopException;
+import spotifybackup.app.exception.ConfigUsersFieldException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -42,9 +43,12 @@ public class Config {
     /**
      * Load config properties from a file, the file path is stored to allow for the saving of updated values.
      * @param filePath Path to .json config file.
-     * @throws ConfigFileException when {@code filepath} doesn't point to an existing config file, a blank config file
-     *                             is created at filePath.
-     * @throws IOException         when trying to read or write to <code>filepath</code> doesn't work.
+     * @throws ConfigFileException       when {@code filepath} doesn't point to an existing config file, a blank config
+     *                                   file is created at filePath.
+     * @throws BlankConfigFieldException when the config file has a blank or missing field.
+     * @throws ConfigUsersFieldException when one of the objects in the "users" field has a blank or missing field or
+     *                                   there exists potential for a self-reference loop.
+     * @throws IOException               when trying to read or write to <code>filepath</code> doesn't work.
      */
     public static void loadAppConfigFromFile(@NonNull File filePath) throws IOException {
         if (filePath.isDirectory())
@@ -70,6 +74,11 @@ public class Config {
     }
 
     private static void checkAllFields(File file, Config config) {
+        checkSimpleFields(file, config);
+        checkUsersField(file, config);
+    }
+
+    private static void checkSimpleFields(File file, Config config) {
         List<String> fieldWarnings = new ArrayList<>();
         if (isNullOrBlank(config.clientId))
             fieldWarnings.add("  clientId field blank or missing.");
@@ -77,27 +86,43 @@ public class Config {
             fieldWarnings.add("  redirectURI field blank or missing.");
         if (config.clientSecret != null && config.clientSecret.isBlank())
             fieldWarnings.add("  clientSecret field blank (can be omitted).");
+        if (!fieldWarnings.isEmpty()) {
+            fieldWarnings.addFirst("Blank or missing field(s) in: " + file);
+            throw new BlankConfigFieldException(String.join("\n", fieldWarnings));
+        }
+    }
+
+    private static void checkUsersField(File file, Config config) {
+        List<String> fieldWarnings = new ArrayList<>();
         if (config.users == null) config.users = new ArrayList<>();
         else config.users.forEach(user -> {
-            if (isNullOrBlank(user.spotifyId)) fieldWarnings.add("   user.spotifyId field blank or missing.");
-            if (isNullOrBlank(user.displayName)) fieldWarnings.add("   user.displayName field blank or missing.");
-            if (isNullOrBlank(user.refreshToken)) fieldWarnings.add("   user.refreshToken field blank or missing.");
-            if (user.doBackup == null) fieldWarnings.add("   user.doBackup field missing.");
-            if (user.cloneTargets == null) user.cloneTargets = new ArrayList<>();
+            if (isNullOrBlank(user.spotifyId))
+                fieldWarnings.add("   user.spotifyId field blank or missing.");
+            if (isNullOrBlank(user.displayName))
+                fieldWarnings.add("   user[" + user.spotifyId + "].displayName field blank or missing.");
+            if (isNullOrBlank(user.refreshToken))
+                fieldWarnings.add("   user[" + user.spotifyId + "].refreshToken field blank or missing.");
+            if (user.doBackup == null)
+                fieldWarnings.add("   user[" + user.spotifyId + "].doBackup field missing.");
+            if (user.cloneTargets == null)
+                user.cloneTargets = new ArrayList<>();
             else {
                 if (!user.cloneTargets.isEmpty() && !Boolean.TRUE.equals(user.doBackup))
-                    fieldWarnings.add("   user.doBackup is false whilst having cloning targets.");
+                    fieldWarnings.add("   user[" + user.spotifyId + "].doBackup is false whilst having cloning targets.");
                 user.cloneTargets.forEach(id -> {
-                    if (isNullOrBlank(id)) fieldWarnings.add("  user.cloneTargets has a blank entry.");
+                    if (isNullOrBlank(id))
+                        fieldWarnings.add("   user[" + user.spotifyId + "].cloneTargets has a blank entry.");
                     else if (config.users.stream().map(u -> u.getSpotifyId().orElseThrow()).noneMatch(t -> t.equals(id)))
-                        fieldWarnings.add("   user.cloneTargets targets a Spotify User ID [" + id +
+                        fieldWarnings.add("   user[" + user.spotifyId + "].cloneTargets targets a Spotify User ID [" + id +
                                 "] not found in config.");
+                    else if (id.equals(user.spotifyId))
+                        fieldWarnings.add("   user[" + user.spotifyId + "].cloneTargets targets self");
                 });
             }
         });
         if (!fieldWarnings.isEmpty()) {
             fieldWarnings.addFirst("Blank or missing field(s) in: " + file);
-            throw new BlankConfigFieldException(String.join("\n", fieldWarnings));
+            throw new ConfigUsersFieldException(String.join("\n", fieldWarnings));
         }
     }
 

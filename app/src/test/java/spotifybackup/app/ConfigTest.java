@@ -11,6 +11,7 @@ import org.opentest4j.AssertionFailedError;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 import spotifybackup.app.exception.ConfigReferenceLoopException;
+import spotifybackup.app.exception.ConfigUsersFieldException;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,17 +65,16 @@ class ConfigTest {
             boolean noIssue = false;
             try {
                 Config.loadAppConfigFromFile(configFile);
-            } catch (BlankConfigFieldException e) {
+            } catch (BlankConfigFieldException | ConfigUsersFieldException e) {
                 if (e.getMessage().split("\n").length == 2) noIssue = true;
                 else throw new AssertionFailedError("Test case should only test one failure point in isolation, test " +
                         "case tests " + (e.getMessage().split("\n").length - 1) + " failure points. Message: " +
                         e.getMessage());
             }
-            if (!noIssue)
-                throw AssertionFailureBuilder.assertionFailure().message(message)
-                        .reason(String.format("Expected %s to be thrown, but nothing was thrown.",
-                                BlankConfigFieldException.class.getCanonicalName())
-                        ).build();
+            if (!noIssue) throw AssertionFailureBuilder.assertionFailure().message(message)
+                    .reason(String.format("Expected %s to be thrown, but nothing was thrown.",
+                            BlankConfigFieldException.class.getCanonicalName())
+                    ).build();
         } else assertDoesNotThrow(() -> Config.loadAppConfigFromFile(configFile), message);
     }
 
