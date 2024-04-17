@@ -6,6 +6,7 @@ import se.michaelthelin.spotify.model_objects.specification.*;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
+import spotifybackup.app.exception.ConfigReferenceLoopException;
 import spotifybackup.storage.*;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ public class CLI extends TerminalInteraction {
         App.dbFileArg.ifNotPresent(path -> verbosePrintln("Database file: " + path));
         App.configFileArg.ifNotPresent(path -> verbosePrintln("Config file: " + path));
         App.sqlOutputFileArg.ifPresent(path -> verbosePrintln("SQL scripts file: " + path));
+        App.noBackups.ifPresent(() -> println("Performing no backups."));
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         try {
             Config.loadAppConfigFromFile(App.configFileArg.getValue());
@@ -53,7 +55,19 @@ public class CLI extends TerminalInteraction {
         App.listUserAccounts.ifPresent(this::listUserAccounts);
     }
 
+    private void setCloningTargets() {
+        if (App.config.getUsers().isEmpty()) {
+            println("No accounts in config to configure settings for.");
+            return;
+        }
+        throw new UnsupportedOperationException("CLI.setCloningTargets() to be implemented");
+    }
+
     private void setAccountsToBackup() {
+        if (App.config.getUsers().isEmpty()) {
+            println("No accounts in config to configure settings for.");
+            return;
+        }
         final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
         do {
             print("\nSelect accounts by the left-most number. ");
@@ -71,7 +85,14 @@ public class CLI extends TerminalInteraction {
                 } else println("Too many accounts selected, try again.");
             }
             throw new UnsupportedOperationException("Handle the ConfigReferenceLoopException thrown by setDoBackup()");
-//            for (var i : toggleBackupStatus) accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
+//            for (var i : toggleBackupStatus) {
+//                try {
+//                    accounts.get(i - 1).setDoBackup(!accounts.get(i - 1).getDoBackup());
+//                } catch (ConfigReferenceLoopException e) {
+//                    if (confirmUsingChar(e.getMessage() + " Modify cloning targets? [Y/n]", 'y', 'y', 'n') == 'y')
+//                        setCloningTargets();
+//                }
+//            }
 //            print("\nNew configuration of ");
 //            listUserAccountsInConfig();
         } while (confirmUsingChar("Finished configuring which accounts to backup? [Y/n]", 'y', 'y', 'n') == 'n');

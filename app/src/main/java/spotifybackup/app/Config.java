@@ -222,7 +222,7 @@ public class Config {
                         spotifyId + "] is a cloning target.");
             } else if (Boolean.TRUE.equals(this.doBackup) && !doBackup) {
                 if (!cloneTargets.isEmpty()) throw new ConfigReferenceLoopException("account with spotifyId[" +
-                        spotifyId + "] still has cloning targets: " + String.join(", ", cloneTargets));
+                        spotifyId + "] still has cloning targets: [" + String.join(", ", cloneTargets) + "]");
             } else return;
             this.doBackup = doBackup;
             parent.serialize();
