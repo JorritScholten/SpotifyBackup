@@ -150,6 +150,19 @@ public abstract class TerminalInteraction {
     }
 
     /**
+     * Utility function to ask for confirmation in terminal using a single character, options are y or n.
+     * @param prompt        Question to print to terminal, " [y/n]" is appended with capitalisation depending on default..
+     * @param defaultOption default choice to return when input is left blank, should be in {@code options}.
+     * @return true if default option selected.
+     */
+    public static boolean confirmUsingCharYN(String prompt, char defaultOption) {
+        if (defaultOption != 'y' && defaultOption != 'n')
+            throw new IllegalArgumentException("defaultOption should be y or n, not: " + defaultOption);
+        return confirmUsingChar(prompt + (defaultOption == 'y' ? " [Y/n]" : " [y/N]"),
+                defaultOption, 'y', 'n') == defaultOption;
+    }
+
+    /**
      * Utility function to ask for a string in the terminal.
      * @param prompt Question to print to terminal.
      * @return reply to prompt.
@@ -278,6 +291,8 @@ public abstract class TerminalInteraction {
                 print(prompt);
                 choice = scan.nextLine();
                 integerList.clear();
+                if (choice.isBlank() && !confirmUsingCharYN("Selected nothing, is this fine?", 'n'))
+                    return new int[]{};
                 for (String number : choice.split(separator)) {
                     integerList.add(Integer.decode(number));
                 }
@@ -338,7 +353,7 @@ public abstract class TerminalInteraction {
      */
     public static int chooseFromArray(String prompt, String[] options) throws IllegalArgumentException {
         if (options.length == 0) throw new IllegalArgumentException("List of options shouldn't be empty.");
-        if (prompt.isEmpty()) throw new IllegalArgumentException("message shouldn't be empty.");
+        if (prompt.isEmpty()) throw new IllegalArgumentException("Prompt shouldn't be empty.");
         println(prompt);
         int i = 1;
         for (String option : options) {
@@ -346,6 +361,34 @@ public abstract class TerminalInteraction {
             i++;
         }
         return chooseIntInRange(1, options.length) - 1;
+    }
+
+    /**
+     * Utility function to request zero or more objects from a list using their index number. Does not print the options
+     * list.
+     * @param prompt  Message to print to terminal as prompt.
+     * @param options List of objects that user can select from.
+     * @return an unmodifiable list of objects in {@code options} selected.
+     * @throws IllegalArgumentException when options array or prompt is empty.
+     */
+    public static <T> List<T> chooseZeroOrMoreFromList(@NonNull String prompt, @NonNull List<T> options) {
+        if (options.isEmpty()) throw new IllegalArgumentException("List of options shouldn't be empty.");
+        if (prompt.isEmpty()) throw new IllegalArgumentException("Prompt shouldn't be empty.");
+        int[] indexValues;
+        while (true) {
+            indexValues = askForInts(prompt + " Enter a space separated list of their identifying numbers: ",
+                    "[ ]{1}");
+            if (indexValues.length <= options.size()) {
+                if (Arrays.stream(indexValues).anyMatch(i -> i < 1 || i > options.size()))
+                    println("One or more of the selection number(s) out of range, try again.");
+                else if (Arrays.stream(indexValues).distinct().count() != indexValues.length)
+                    println("One or more of the selection number(s) repeated, try again.");
+                else break;
+            } else println("Too many options selected, try again.");
+        }
+        List<T> returnList = new ArrayList<>();
+        for (var i : indexValues) returnList.add(options.get(i - 1));
+        return returnList.stream().toList();
     }
 
     /**
