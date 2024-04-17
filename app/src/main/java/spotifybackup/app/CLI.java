@@ -1,5 +1,6 @@
 package spotifybackup.app;
 
+import lombok.NonNull;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
@@ -7,6 +8,7 @@ import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
 import spotifybackup.app.exception.ConfigReferenceLoopException;
+import spotifybackup.app.exception.ConfigUsersFieldException;
 import spotifybackup.storage.*;
 
 import java.io.IOException;
@@ -35,6 +37,8 @@ public class CLI extends TerminalInteraction {
         } catch (BlankConfigFieldException e) {
             println(e.getMessage());
             setConfigValues(false);
+        } catch (ConfigUsersFieldException e) {
+            throw new ConfigUsersFieldException("TODO: handle automatic recovery of " + e.getMessage());
         } catch (ConfigFileException e) {
             setConfigValues(true);
         }
@@ -44,6 +48,7 @@ public class CLI extends TerminalInteraction {
     private void performActions() throws IOException, InterruptedException {
         if (App.addAccounts.isPresent()) addAccounts();
         App.configureBackups.ifPresent(this::setAccountsToBackup);
+        App.configureCloningTargets.ifPresent(this::setCloningTargets);
         if (!App.noBackups.isPresent()) {
             if (!App.config.getUsers().isEmpty())
                 for (var user : App.config.getUsers().stream().filter(Config.UserInfo::getDoBackup).toList())
@@ -55,12 +60,29 @@ public class CLI extends TerminalInteraction {
         App.listUserAccounts.ifPresent(this::listUserAccounts);
     }
 
-    private void setCloningTargets() {
+    private void setCloningTargets() {setCloningTargets(true);}
+
+    private void setCloningTargets(boolean printInitialTable) {
         if (App.config.getUsers().isEmpty()) {
             println("No accounts in config to configure settings for.");
             return;
         }
-        throw new UnsupportedOperationException("CLI.setCloningTargets() to be implemented");
+        final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
+        do {
+            if (printInitialTable)
+                listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
+            chooseZeroOrMoreFromList("Specify which accounts should have their cloning targets removed.", accounts
+            ).forEach(account -> {
+                if (account.hasCloneTargets()) {
+                    listUserAccountsInConfig("Cloning targets of " + account.getSpotifyId().orElseThrow(),
+                            account.getCloneTargets());
+                    chooseZeroOrMoreFromList("Specify which cloning targets to remove.", account.getCloneTargets()
+                    ).forEach(account::removeCloneTarget);
+                }
+            });
+            // TODO: implement adding cloning targets
+            listUserAccountsInConfig("\nNew configuration of", accounts);
+        } while (!confirmUsingCharYN("Finished configuring which accounts to clone?", 'y'));
     }
 
     private void setAccountsToBackup() {setAccountsToBackup(true);}
@@ -72,32 +94,29 @@ public class CLI extends TerminalInteraction {
         }
         final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
         do {
-            if (printInitialTable) {
-                print("\nSelect accounts by the left-most number. ");
-                listUserAccountsInConfig(accounts);
-            }
-            chooseZeroOrMoreFromList("Specify which accounts should have their backup settings toggled.",
-                    accounts).forEach(account -> {
+            if (printInitialTable)
+                listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
+            chooseZeroOrMoreFromList("Specify which accounts should have their backup settings toggled.", accounts
+            ).forEach(account -> {
                 try {
                     account.setDoBackup(!account.getDoBackup());
                 } catch (ConfigReferenceLoopException e) {
-                    if(confirmUsingCharYN(e.getMessage()+" Modify cloning targets?",'y'))
+                    if (confirmUsingCharYN(e.getMessage() + " Modify cloning targets?", 'y'))
                         setCloningTargets(false);
                 }
             });
-            print("\nNew configuration of ");
-            listUserAccountsInConfig(accounts);
+            listUserAccountsInConfig("\nNew configuration of accounts.", accounts);
         } while (!confirmUsingCharYN("Finished configuring which accounts to backup?", 'y'));
     }
 
     private void setConfigValues(boolean firstConfig) {
-        if (firstConfig || confirmUsingChar("Set Spotify client ID? [Y/n]", 'y', 'y', 'n') == 'y') {
+        if (firstConfig || confirmUsingCharYN("Set Spotify client ID?", 'y')) {
             App.config.setClientId(askForNonBlankString("Please enter the Spotify client ID: "));
         }
-        if (firstConfig || confirmUsingChar("Set Spotify redirect URI? [Y/n]", 'y', 'y', 'n') == 'y') {
+        if (firstConfig || confirmUsingCharYN("Set Spotify redirect URI?", 'y')) {
             App.config.setRedirectURI(askForRedirectURI("Please enter the Spotify redirect URI: "));
         }
-        if (confirmUsingChar("Set Spotify client secret? [y/N]", 'n', 'y', 'n') == 'y') {
+        if (!confirmUsingCharYN("Set Spotify client secret?", 'n')) {
             var secret = askForString("Please enter the Spotify client secret (enter blank to clear value): ");
             if (secret.isBlank()) App.config.clearClientSecret();
             else App.config.setClientSecret(secret);
@@ -107,7 +126,8 @@ public class CLI extends TerminalInteraction {
     private void listUserAccounts() {
         listUserAccountsInDb();
         println("");
-        listUserAccountsInConfig(App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList());
+        listUserAccountsInConfig("User accounts in the config file.",
+                App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList());
     }
 
     private void listUserAccountsInDb() {
@@ -131,7 +151,7 @@ public class CLI extends TerminalInteraction {
         }
     }
 
-    private void listUserAccountsInConfig(@NonNull List<Config.UserInfo> accounts) {
+    private void listUserAccountsInConfig(@NonNull String preMessage, @NonNull List<Config.UserInfo> accounts) {
         final int spacing = 2;
         final int countMaxWidth = ("" + accounts.size()).length();
         final var idHeading = "Spotify ID";
@@ -141,7 +161,7 @@ public class CLI extends TerminalInteraction {
         final int nameMaxWidth = accounts.stream().map(u -> u.getDisplayName().orElse(nameHeading).length())
                 .reduce(Integer::max).filter(w -> w > nameHeading.length()).orElse(nameHeading.length());
         final var backupHeading = "Perform backup?";
-        println("User accounts in the config file.");
+        println(preMessage);
         println(countMaxWidth + spacing,
                 idHeading + " ".repeat(spacing + idMaxWidth - idHeading.length()) +
                         nameHeading + " ".repeat(spacing + nameMaxWidth - nameHeading.length()) +
@@ -166,8 +186,8 @@ public class CLI extends TerminalInteraction {
         verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
         for (int i = 0; i < App.addAccounts.getValue(); i++) {
             var api = new ApiWrapper(App.config.addEmptyUser(
-                    confirmUsingChar("Perform backups for this account? [Y/n]", 'y',
-                            'n', 'y') == 'y'), App.getConfig());
+                    confirmUsingCharYN("Perform backups for this account?", 'y')
+            ), App.getConfig());
             var currentUser = api.getCurrentUser().orElseThrow();
             var user = repo.persist(currentUser);
             println("Added account: " + user.getDisplayName().orElseThrow());
