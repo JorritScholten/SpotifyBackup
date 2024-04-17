@@ -84,11 +84,16 @@ public class Config {
             if (isNullOrBlank(user.refreshToken)) fieldWarnings.add("   user.refreshToken field blank or missing.");
             if (user.doBackup == null) fieldWarnings.add("   user.doBackup field missing.");
             if (user.cloneTargets == null) user.cloneTargets = new ArrayList<>();
-            else user.cloneTargets.forEach(id -> {
-                if (isNullOrBlank(id)) fieldWarnings.add("  user.cloneTargets has a blank entry.");
-                else if (config.users.stream().map(u -> u.getSpotifyId().orElseThrow()).noneMatch(t -> t.equals(id)))
-                    fieldWarnings.add("   user.cloneTargets targets a Spotify User ID [" + id + "] not found in config.");
-            });
+            else {
+                if (!user.cloneTargets.isEmpty() && !Boolean.TRUE.equals(user.doBackup))
+                    fieldWarnings.add("   user.doBackup is false whilst having cloning targets.");
+                user.cloneTargets.forEach(id -> {
+                    if (isNullOrBlank(id)) fieldWarnings.add("  user.cloneTargets has a blank entry.");
+                    else if (config.users.stream().map(u -> u.getSpotifyId().orElseThrow()).noneMatch(t -> t.equals(id)))
+                        fieldWarnings.add("   user.cloneTargets targets a Spotify User ID [" + id +
+                                "] not found in config.");
+                });
+            }
         });
         if (!fieldWarnings.isEmpty()) {
             fieldWarnings.addFirst("Blank or missing field(s) in: " + file);

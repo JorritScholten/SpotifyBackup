@@ -223,7 +223,7 @@ true`users.cloneTargets contains blank value`"""
       ""spotifyId"": ""user1"",
       ""displayName"": ""User 1"",
       ""refreshToken"": ""token-1"",
-      ""doBackup"": false,
+      ""doBackup"": true,
       ""cloneTargets"": [
         """"
       ]
@@ -241,7 +241,7 @@ true`users.cloneTargets references user not in config`"""
       ""spotifyId"": ""user1"",
       ""displayName"": ""User 1"",
       ""refreshToken"": ""token-1"",
-      ""doBackup"": false,
+      ""doBackup"": true,
       ""cloneTargets"": [
         ""non-existent-id""
       ]
@@ -249,7 +249,7 @@ true`users.cloneTargets references user not in config`"""
   ]
 }
 """
-true`users.cloneTargets references user in config but doBackup is false`"""
+true`users.cloneTargets references user in config correctly but doBackup is false`"""
 {
   ""clientId"": ""sdf77e"",
   ""redirectURI"": ""http://localhost:1234"",
@@ -274,7 +274,7 @@ true`users.cloneTargets references user in config but doBackup is false`"""
   ]
 }
 """
-false`users.cloneTargets references user in config`"""
+false`users.cloneTargets references user in config correctly`"""
 {
   ""clientId"": ""sdf77e"",
   ""redirectURI"": ""http://localhost:1234"",

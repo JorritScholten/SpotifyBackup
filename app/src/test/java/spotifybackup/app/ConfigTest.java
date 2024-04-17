@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +67,8 @@ class ConfigTest {
             } catch (BlankConfigFieldException e) {
                 if (e.getMessage().split("\n").length == 2) noIssue = true;
                 else throw new AssertionFailedError("Test case should only test one failure point in isolation, test " +
-                        "case tests " + (e.getMessage().split("\n").length - 1) + " failure points.");
+                        "case tests " + (e.getMessage().split("\n").length - 1) + " failure points. Message: " +
+                        e.getMessage());
             }
             if (!noIssue)
                 throw AssertionFailureBuilder.assertionFailure().message(message)
