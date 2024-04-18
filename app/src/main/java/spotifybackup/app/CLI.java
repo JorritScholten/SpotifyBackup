@@ -71,18 +71,38 @@ public class CLI extends TerminalInteraction {
         do {
             if (printInitialTable)
                 listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
-            chooseZeroOrMoreFromList("Specify which accounts should have their cloning targets removed.", accounts
-            ).forEach(account -> {
-                if (account.hasCloneTargets()) {
-                    listUserAccountsInConfig("Cloning targets of " + account.getSpotifyId().orElseThrow(),
-                            account.getCloneTargets());
-                    chooseZeroOrMoreFromList("Specify which cloning targets to remove.", account.getCloneTargets()
-                    ).forEach(account::removeCloneTarget);
-                }
-            });
-            // TODO: implement adding cloning targets
+            removeCloningTargets(accounts);
+            listUserAccountsInConfig("\nNew configuration of", accounts);
+            addCloningTargets(accounts);
             listUserAccountsInConfig("\nNew configuration of", accounts);
         } while (!confirmUsingCharYN("Finished configuring which accounts to clone?", 'y'));
+    }
+
+    private void addCloningTargets(List<Config.UserInfo> accounts) {
+        chooseZeroOrMoreFromList("Specify which accounts should have cloning targets.", accounts
+        ).forEach(account -> {
+            if (account.getDoBackup()) {
+//                listUserAccountsInConfig("Cloning targets of " + account.getSpotifyId().orElseThrow(),
+//                        account.getCloneTargets());
+//                chooseZeroOrMoreFromList("Specify which cloning targets to remove.", account.getCloneTargets()
+//                ).forEach(account::removeCloneTarget);
+            } else {
+                println("Account with Spotify user ID " + account.getSpotifyId().orElseThrow() + " can't be cloned " +
+                        "because it is not set to perform backups.");
+            }
+        });
+    }
+
+    private void removeCloningTargets(List<Config.UserInfo> accounts) {
+        chooseZeroOrMoreFromList("Specify which accounts should have their cloning targets removed.", accounts
+        ).forEach(account -> {
+            if (account.hasCloneTargets()) {
+                listUserAccountsInConfig("Cloning targets of " + account.getSpotifyId().orElseThrow(),
+                        account.getCloneTargets());
+                chooseZeroOrMoreFromList("Specify which cloning targets to remove.", account.getCloneTargets()
+                ).forEach(account::removeCloneTarget);
+            }
+        });
     }
 
     private void setAccountsToBackup() {setAccountsToBackup(true);}
@@ -101,8 +121,10 @@ public class CLI extends TerminalInteraction {
                 try {
                     account.setDoBackup(!account.getDoBackup());
                 } catch (ConfigReferenceLoopException e) {
-                    if (confirmUsingCharYN(e.getMessage() + " Modify cloning targets?", 'y'))
-                        setCloningTargets(false);
+                    if (confirmUsingCharYN(e.getMessage() + " Modify cloning targets?", 'y')) {
+                        removeCloningTargets(accounts);
+                        listUserAccountsInConfig("\nNew configuration of", accounts);
+                    }
                 }
             });
             listUserAccountsInConfig("\nNew configuration of accounts.", accounts);
@@ -172,7 +194,7 @@ public class CLI extends TerminalInteraction {
             final int countWidth = ("" + count).length();
             final int idWidth = account.getSpotifyId().orElseThrow().length();
             final int nameWidth = account.getDisplayName().orElse("").length();
-            final int backupWidth = account.getDoBackup().toString().length();
+            final int backupWidth = ("" + account.getDoBackup()).length();
             println(countMaxWidth - countWidth, count + " ".repeat(spacing) +
                     account.getSpotifyId().orElseThrow() + " ".repeat(spacing + (idMaxWidth - idWidth)) +
                     account.getDisplayName().orElse("") + " ".repeat(spacing + (nameMaxWidth - nameWidth)) +
