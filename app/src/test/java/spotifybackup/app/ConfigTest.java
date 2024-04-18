@@ -116,6 +116,7 @@ class ConfigTest {
                         .spotifyId("user2")
                         .displayName("User 2")
                         .refreshToken("token-2")
+                        .doBackup(false)
                         .build()
         );
         Files.writeString(configFile.toPath(), configContents);
@@ -167,6 +168,7 @@ class ConfigTest {
                         .spotifyId("user1")
                         .displayName("User 1")
                         .refreshToken("token-1")
+                        .doBackup(false)
                         .build(),
                 Config.UserInfo.builder()
                         .spotifyId("user2")
@@ -206,11 +208,13 @@ class ConfigTest {
                         .spotifyId("user1")
                         .displayName("User 1")
                         .refreshToken("token-1")
+                        .doBackup(false)
                         .build(),
                 Config.UserInfo.builder()
                         .spotifyId("user2")
                         .displayName("User 2")
                         .refreshToken("token-2")
+                        .doBackup(false)
                         .build()
         );
 

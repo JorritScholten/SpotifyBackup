@@ -204,9 +204,7 @@ public class Config {
         @Expose
         private String refreshToken;
         @Expose
-        @Getter(AccessLevel.PUBLIC)
-        @Builder.Default
-        private Boolean doBackup = false;
+        private Boolean doBackup;
         @Expose
         @Builder.Default
         private List<String> cloneTargets = new ArrayList<>();
@@ -244,13 +242,17 @@ public class Config {
             parent.serialize();
         }
 
+        public boolean getDoBackup() {
+            if (Objects.isNull(doBackup))
+                throw new NullPointerException("doBackup is null, UserInfo improperly initialized.");
+            else return doBackup;
+        }
+
         public void setDoBackup(boolean doBackup) throws ConfigReferenceLoopException {
-            if (Objects.isNull(this.doBackup)) {
-                throw new NullPointerException("doBackup should not be capable of being null here, this is a sanity check.");
-            } else if (Boolean.FALSE.equals(this.doBackup) && doBackup) {
+            if (!getDoBackup() && doBackup) {
                 if (isCloningTarget()) throw new ConfigReferenceLoopException("account with spotifyId[" +
                         spotifyId + "] is a cloning target.");
-            } else if (Boolean.TRUE.equals(this.doBackup) && !doBackup) {
+            } else if (getDoBackup() && !doBackup) {
                 if (!cloneTargets.isEmpty()) throw new ConfigReferenceLoopException("account with spotifyId[" +
                         spotifyId + "] still has cloning targets: [" + String.join(", ", cloneTargets) + "]");
             } else return;
@@ -281,9 +283,9 @@ public class Config {
         }
 
         public void addCloneTarget(@NonNull UserInfo target) throws ConfigReferenceLoopException {
-            if (!Boolean.TRUE.equals(doBackup)) throw new ConfigReferenceLoopException("account with spotifyId[" +
+            if (!getDoBackup()) throw new ConfigReferenceLoopException("account with spotifyId[" +
                     spotifyId + "] not marked for backup.");
-            if (!Boolean.FALSE.equals(target.getDoBackup()))
+            if (target.getDoBackup())
                 throw new ConfigReferenceLoopException("target[" + target.spotifyId + "] is marked for backup.");
             if (!target.parent.equals(parent))
                 throw new IllegalArgumentException("target has different parent from this.");
