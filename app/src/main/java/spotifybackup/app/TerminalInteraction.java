@@ -126,7 +126,7 @@ public abstract class TerminalInteraction {
         List<Character> optionsList = List.of(options);
         if (!optionsList.contains(defaultOption))
             throw new IllegalArgumentException("defaultOption[" + defaultOption + "] not in options" +
-                    Arrays.toString(options));
+                                                       Arrays.toString(options));
         char choice;
         String scanOut;
         Scanner scan = new Scanner(term.input());
@@ -151,7 +151,8 @@ public abstract class TerminalInteraction {
 
     /**
      * Utility function to ask for confirmation in terminal using a single character, options are y or n.
-     * @param prompt        Question to print to terminal, " [y/n]" is appended with capitalisation depending on default..
+     * @param prompt        Question to print to terminal, " [y/n]" is appended with capitalisation depending on
+     *                      default.
      * @param defaultOption default choice to return when input is left blank, should be in {@code options}.
      * @return true if default option selected.
      */
@@ -159,7 +160,7 @@ public abstract class TerminalInteraction {
         if (defaultOption != 'y' && defaultOption != 'n')
             throw new IllegalArgumentException("defaultOption should be y or n, not: " + defaultOption);
         return confirmUsingChar(prompt + (defaultOption == 'y' ? " [Y/n]" : " [y/N]"),
-                defaultOption, 'y', 'n') == defaultOption;
+                                defaultOption, 'y', 'n') == defaultOption;
     }
 
     /**
@@ -377,7 +378,7 @@ public abstract class TerminalInteraction {
         int[] indexValues;
         while (true) {
             indexValues = askForInts(prompt + " Enter a space separated list of their identifying numbers: ",
-                    "[ ]{1}");
+                                     "[ ]{1}");
             if (indexValues.length <= options.size()) {
                 if (Arrays.stream(indexValues).anyMatch(i -> i < 1 || i > options.size()))
                     println("One or more of the selection number(s) out of range, try again.");

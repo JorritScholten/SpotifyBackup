@@ -264,7 +264,7 @@ public class Config {
             parent.serialize();
         }
 
-        private boolean isCloningTarget() {
+        public boolean isCloningTarget() {
             for (var user : parent.users) {
                 if (user.getCloneTargets().stream().anyMatch(t -> t.equals(this))) return true;
             }

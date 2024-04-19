@@ -60,74 +60,90 @@ public class CLI extends TerminalInteraction {
         App.listUserAccounts.ifPresent(this::listUserAccounts);
     }
 
-    private void setCloningTargets() {setCloningTargets(true);}
-
-    private void setCloningTargets(boolean printInitialTable) {
+    private void setCloningTargets() {
         if (App.config.getUsers().isEmpty()) {
             println("No accounts in config to configure settings for.");
             return;
         }
         final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
         do {
-            if (printInitialTable)
-                listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
-            removeCloningTargets(accounts);
-            listUserAccountsInConfig("\nNew configuration of", accounts);
+            listUserAccountsInConfig("\nCurrent configuration of accounts in config.", accounts);
+            final var accountsWithTargets = accounts.stream().filter(Config.UserInfo::hasCloningTargets).toList();
+            listUserAccountsInConfig("\nSelect accounts by the left-most number.", accountsWithTargets);
+            removeCloningTargets(accountsWithTargets);
+            listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
             addCloningTargets(accounts);
-            listUserAccountsInConfig("\nNew configuration of", accounts);
+            listUserAccountsInConfig("\nCurrent configuration of accounts in config.", accounts);
         } while (!confirmUsingCharYN("Finished configuring which accounts to clone?", 'y'));
     }
 
     private void addCloningTargets(List<Config.UserInfo> accounts) {
-        chooseZeroOrMoreFromList("Specify which accounts should have cloning targets.", accounts
-        ).forEach(account -> {
-            if (account.getDoBackup()) {
-//                listUserAccountsInConfig("Cloning targets of " + account.getSpotifyId().orElseThrow(),
-//                        account.getCloneTargets());
-//                chooseZeroOrMoreFromList("Specify which cloning targets to remove.", account.getCloneTargets()
-//                ).forEach(account::removeCloneTarget);
-            } else {
-                println("Account with Spotify user ID " + account.getSpotifyId().orElseThrow() + " can't be cloned " +
-                        "because it is not set to perform backups.");
+        for (var account : chooseZeroOrMoreFromList("Specify which accounts should have cloning targets.", accounts)) {
+            final String spotifyId = account.getSpotifyId().orElseThrow();
+            if (!account.getDoBackup()) {
+                if (account.isCloningTarget()) {
+                    println("Account with Spotify user ID " + spotifyId + " can't be cloned because it is not set to " +
+                                    "perform backups and is a cloning target.");
+                    continue;
+                } else try {
+                    if (confirmUsingCharYN("Configure account with Spotify user ID " + spotifyId + " to do backups?",
+                                           'y'))
+                        account.setDoBackup(true);
+                    else continue;
+                } catch (ConfigReferenceLoopException e) {
+                    throw new RuntimeException("This shouldn't be capable of happening here: " + e.getMessage());
+                }
             }
-        });
+            final var validTargets = accounts.stream().filter(a -> !a.getDoBackup()).toList();
+            listUserAccountsInConfig("Valid cloning targets for " + spotifyId, validTargets);
+            chooseZeroOrMoreFromList("Specify which accounts to clone to.", validTargets).forEach(target -> {
+                try {
+                    account.addCloneTarget(target);
+                } catch (ConfigReferenceLoopException e) {
+                    throw new RuntimeException("This shouldn't be capable of happening here: " + e.getMessage());
+                }
+            });
+        }
     }
 
     private void removeCloningTargets(List<Config.UserInfo> accounts) {
         chooseZeroOrMoreFromList("Specify which accounts should have their cloning targets removed.", accounts
-        ).forEach(account -> {
-            if (account.hasCloneTargets()) {
+                                ).forEach(account -> {
+            if (account.hasCloningTargets()) {
                 listUserAccountsInConfig("Cloning targets of " + account.getSpotifyId().orElseThrow(),
-                        account.getCloneTargets());
+                                         account.getCloneTargets());
                 chooseZeroOrMoreFromList("Specify which cloning targets to remove.", account.getCloneTargets()
-                ).forEach(account::removeCloneTarget);
+                                        ).forEach(account::removeCloneTarget);
             }
         });
     }
 
-    private void setAccountsToBackup() {setAccountsToBackup(true);}
-
-    private void setAccountsToBackup(boolean printInitialTable) {
+    private void setAccountsToBackup() {
         if (App.config.getUsers().isEmpty()) {
             println("No accounts in config to configure settings for.");
             return;
         }
         final var accounts = App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList();
         do {
-            if (printInitialTable)
-                listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
+            listUserAccountsInConfig("\nSelect accounts by the left-most number.", accounts);
             chooseZeroOrMoreFromList("Specify which accounts should have their backup settings toggled.", accounts
-            ).forEach(account -> {
+                                    ).forEach(account -> {
                 try {
                     account.setDoBackup(!account.getDoBackup());
                 } catch (ConfigReferenceLoopException e) {
                     if (confirmUsingCharYN(e.getMessage() + " Modify cloning targets?", 'y')) {
                         removeCloningTargets(accounts);
-                        listUserAccountsInConfig("\nNew configuration of", accounts);
+                        if (!account.isCloningTarget() && !account.hasCloningTargets()) try {
+                            account.setDoBackup(!account.getDoBackup());
+                        } catch (ConfigReferenceLoopException ex) {
+                            throw new RuntimeException(
+                                    "This shouldn't be capable of happening here: " + ex.getMessage());
+                        }
+                        listUserAccountsInConfig("\nNew configuration of accounts in config.", accounts);
                     }
                 }
             });
-            listUserAccountsInConfig("\nNew configuration of accounts.", accounts);
+            listUserAccountsInConfig("\nNew configuration of accounts in config.", accounts);
         } while (!confirmUsingCharYN("Finished configuring which accounts to backup?", 'y'));
     }
 
@@ -146,10 +162,11 @@ public class CLI extends TerminalInteraction {
     }
 
     private void listUserAccounts() {
+        println("");
         listUserAccountsInDb();
         println("");
         listUserAccountsInConfig("User accounts in the config file.",
-                App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList());
+                                 App.config.getUsers().stream().filter(u -> u.getSpotifyId().isPresent()).toList());
     }
 
     private void listUserAccountsInDb() {
@@ -158,7 +175,7 @@ public class CLI extends TerminalInteraction {
         final int countMaxWidth = ("" + accounts.size()).length();
         final var idHeading = "Spotify ID";
         final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyUserID().length()).reduce(Integer::max)
-                .orElse(idHeading.length());
+                                       .orElse(idHeading.length());
         println("User accounts in the database.");
         println(countMaxWidth + spacing, idHeading +
                 " ".repeat(spacing + idMaxWidth - idHeading.length()) + "Account display name");
@@ -178,10 +195,11 @@ public class CLI extends TerminalInteraction {
         final int countMaxWidth = ("" + accounts.size()).length();
         final var idHeading = "Spotify ID";
         final int idMaxWidth = accounts.stream().map(u -> u.getSpotifyId().orElseThrow().length()).reduce(Integer::max)
-                .filter(w -> w > idHeading.length()).orElse(idHeading.length());
+                                       .filter(w -> w > idHeading.length()).orElse(idHeading.length());
         final var nameHeading = "Account display name";
         final int nameMaxWidth = accounts.stream().map(u -> u.getDisplayName().orElse(nameHeading).length())
-                .reduce(Integer::max).filter(w -> w > nameHeading.length()).orElse(nameHeading.length());
+                                         .reduce(Integer::max).filter(w -> w > nameHeading.length())
+                                         .orElse(nameHeading.length());
         final var backupHeading = "Perform backup?";
         println(preMessage);
         println(countMaxWidth + spacing,
@@ -199,7 +217,8 @@ public class CLI extends TerminalInteraction {
                     account.getSpotifyId().orElseThrow() + " ".repeat(spacing + (idMaxWidth - idWidth)) +
                     account.getDisplayName().orElse("") + " ".repeat(spacing + (nameMaxWidth - nameWidth)) +
                     account.getDoBackup() + " ".repeat(spacing + backupHeading.length() - backupWidth) +
-                    String.join(", ", account.getCloneTargets().stream().map(u -> u.getSpotifyId().orElseThrow()).toList()));
+                    String.join(", ",
+                                account.getCloneTargets().stream().map(u -> u.getSpotifyId().orElseThrow()).toList()));
             count++;
         }
     }
@@ -208,8 +227,7 @@ public class CLI extends TerminalInteraction {
         verbosePrintln("Adding " + App.addAccounts.getValue() + " new account(s)");
         for (int i = 0; i < App.addAccounts.getValue(); i++) {
             var api = new ApiWrapper(App.config.addEmptyUser(
-                    confirmUsingCharYN("Perform backups for this account?", 'y')
-            ), App.getConfig());
+                    confirmUsingCharYN("Perform backups for this account?", 'y')), App.getConfig());
             var currentUser = api.getCurrentUser().orElseThrow();
             var user = repo.persist(currentUser);
             println("Added account: " + user.getDisplayName().orElseThrow());
@@ -223,8 +241,8 @@ public class CLI extends TerminalInteraction {
             var tracks = repo.getSavedTracks(account);
             long durationMs = tracks.stream().map(s -> s.getTrack().getDurationMs().longValue()).reduce(0L, Long::sum);
             println("Account [" + account.getDisplayName().orElseGet(account::getSpotifyUserID) +
-                    "] has a total library duration: " + msToPrettyString(durationMs)
-            );
+                            "] has a total library duration: " + msToPrettyString(durationMs)
+                   );
         }
     }
 
@@ -274,14 +292,14 @@ public class CLI extends TerminalInteraction {
                     ZonedDateTime.ofInstant(Instant.EPOCH, ZoneOffset.UTC);
             var pageItems = getFromApiPaged(2, "Saving all Liked Songs", api::getLikedSongs);
             for (var items : pageItems) newTracks.addAll(repo.persist(items, user));
-            var newTrackIds = newTracks.stream().map(t -> t.getTrack().getSpotifyID().getId())
-                    .collect(Collectors.toList());
+            var newTrackIds = newTracks.stream().map(t -> t.getTrack().getSpotifyID().getId()).collect(
+                    Collectors.toList());
             newTrackIds.removeAll(oldTrackIds);
             if (!newTrackIds.isEmpty()) {
                 App.showDurationOfNew.ifPresentOrElse(() -> {
                     var onlyNewTracks = repo.getSavedTracksAfter(user, newestSavedTrackAddedAt);
                     var durationMs = onlyNewTracks.stream().map(s -> s.getTrack().getDurationMs().longValue())
-                            .reduce(0L, Long::sum);
+                                                  .reduce(0L, Long::sum);
                     println(4, "Added " + newTrackIds.size() + " track(s) to Liked songs, duration: "
                             + msToPrettyString(durationMs));
                 }, () -> verbosePrintln(4, "Added " + newTrackIds.size() + " track(s) to Liked songs"));
@@ -298,11 +316,11 @@ public class CLI extends TerminalInteraction {
                 newPlaylists.addAll(repo.persist(switch (App.playlistSaveRestriction.getValue()) {
                     case ALL -> items;
                     case ALL_BUT_SPOTIFY -> Arrays.stream(items)
-                            .filter(p -> !p.getOwner().getId().equals(SPOTIFY_USER_ID))
-                            .toArray(PlaylistSimplified[]::new);
+                                                  .filter(p -> !p.getOwner().getId().equals(SPOTIFY_USER_ID))
+                                                  .toArray(PlaylistSimplified[]::new);
                     case ONLY_USER -> Arrays.stream(items)
-                            .filter(p -> p.getOwner().getId().equals(user.getSpotifyUserID()))
-                            .toArray(PlaylistSimplified[]::new);
+                                            .filter(p -> p.getOwner().getId().equals(user.getSpotifyUserID()))
+                                            .toArray(PlaylistSimplified[]::new);
                 }));
             }
             var newPlaylistIds = newPlaylists.stream().map(p -> p.getSpotifyID().getId()).collect(Collectors.toList());
@@ -333,7 +351,7 @@ public class CLI extends TerminalInteraction {
             for (var items : pageItems)
                 newAlbums.addAll(repo.persist(items, user, App.imageSaveRestriction.getValue()));
             var newAlbumIds = newAlbums.stream().map(a -> a.getAlbum().getSpotifyID().getId())
-                    .collect(Collectors.toList());
+                                       .collect(Collectors.toList());
             newAlbumIds.removeAll(oldAlbumIds);
             if (!newAlbumIds.isEmpty())
                 verbosePrintln(4, "Added " + newAlbumIds.size() + " album(s) to liked");
@@ -421,9 +439,9 @@ public class CLI extends TerminalInteraction {
         private List<String> combineIds(final List<String> separateIds, final int limit) {
             List<String> combined = new ArrayList<>();
             for (int i = 0; i <= separateIds.size() / limit; i++) {
-                combined.add(String.join(",",
-                        separateIds.subList(i * limit,
-                                Math.min(i * limit + limit, separateIds.size()))));
+                combined.add(String.join(",", separateIds.subList(i * limit,
+                                                                  Math.min(i * limit + limit, separateIds.size())))
+                            );
             }
             return combined;
         }
@@ -469,7 +487,7 @@ public class CLI extends TerminalInteraction {
         private void savePlaylistTracks(SpotifyPlaylist playlist, Playlist apiPlaylist) {
             List<PlaylistTrack> apiTracks = new ArrayList<>();
             getFromApiPaged(6, "Requesting tracks for " + playlist.getName(),
-                    (l, o) -> api.getPlaylistTracks(l, o, playlist.getSpotifyID()))
+                            (l, o) -> api.getPlaylistTracks(l, o, playlist.getSpotifyID()))
                     .forEach(a -> apiTracks.addAll(Arrays.asList(a)));
             if (apiTracks.size() == apiPlaylist.getTracks().getTotal()) {
                 verbosePrintln(8, "Saving " + apiTracks.size() + " track(s) for " +

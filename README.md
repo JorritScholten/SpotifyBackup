@@ -38,8 +38,8 @@ database and automated backups to an online repository.
             - [x] list accounts in the database (source accounts)
             - [x] list accounts in the config file (target accounts)
             - [x] handle removing cloning targets
-            - [ ] handle adding cloning targets
-            - [ ] handle broken objects in users field in config file
+            - [x] handle adding cloning targets
+            - [ ] handle broken objects in users field in config file in commandline
         - [ ] create methods for transferring various account details
             - [ ] Liked Songs
             - [ ] created playlists (and their contents)
