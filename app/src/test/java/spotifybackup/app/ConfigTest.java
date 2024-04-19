@@ -55,8 +55,10 @@ class ConfigTest {
     }
 
     @ParameterizedTest
-    @CsvFileSource(files = "src/test/java/spotifybackup/app/blank_or_missing_fields_config_test.csv", numLinesToSkip = 1, delimiter = '`')
-    void ensure_blank_or_missing_fields_are_rejected(final boolean shouldThrow, final String message, final String json) throws IOException {
+    @CsvFileSource(files = "src/test/java/spotifybackup/app/blank_or_missing_fields_config_test.csv",
+                   numLinesToSkip = 1, delimiter = '`')
+    void ensure_blank_or_missing_fields_are_rejected(final boolean shouldThrow, final String message, final String json)
+    throws IOException {
         // Arrange
         Files.writeString(configFile.toPath(), json.substring(2, json.length() - 1));
 
@@ -68,13 +70,14 @@ class ConfigTest {
             } catch (BlankConfigFieldException | ConfigUsersFieldException e) {
                 if (e.getMessage().split("\n").length == 2) noIssue = true;
                 else throw new AssertionFailedError("Test case should only test one failure point in isolation, test " +
-                        "case tests " + (e.getMessage().split("\n").length - 1) + " failure points. Message: " +
-                        e.getMessage());
+                                                            "case tests " + (e.getMessage().split("\n").length - 1) +
+                                                            " failure points. Message: " + e.getMessage());
             }
             if (!noIssue) throw AssertionFailureBuilder.assertionFailure().message(message)
-                    .reason(String.format("Expected %s to be thrown, but nothing was thrown.",
-                            BlankConfigFieldException.class.getCanonicalName())
-                    ).build();
+                                                       .reason(String.format(
+                                                               "Expected %s to be thrown, but nothing was thrown.",
+                                                               BlankConfigFieldException.class.getCanonicalName())
+                                                              ).build();
         } else assertDoesNotThrow(() -> Config.loadAppConfigFromFile(configFile), message);
     }
 
@@ -107,18 +110,17 @@ class ConfigTest {
         final String clientSecret = "123";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId("user1")
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(true)
-                        .build(),
+                               .spotifyId("user1")
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(true)
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId("user2")
-                        .displayName("User 2")
-                        .refreshToken("token-2")
-                        .doBackup(false)
-                        .build()
-        );
+                               .spotifyId("user2")
+                               .displayName("User 2")
+                               .refreshToken("token-2")
+                               .doBackup(false)
+                               .build());
         Files.writeString(configFile.toPath(), configContents);
 
         // Act
@@ -165,18 +167,17 @@ class ConfigTest {
         final String clientSecret = "123";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId("user1")
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(false)
-                        .build(),
+                               .spotifyId("user1")
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(false)
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId("user2")
-                        .displayName("User 2")
-                        .refreshToken("token-2")
-                        .doBackup(true)
-                        .build()
-        );
+                               .spotifyId("user2")
+                               .displayName("User 2")
+                               .refreshToken("token-2")
+                               .doBackup(true)
+                               .build());
 
         // Act
         assertDoesNotThrow(() -> {
@@ -205,18 +206,17 @@ class ConfigTest {
         final URI redirectURI = new URI("http://localhost:5678");
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId("user1")
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(false)
-                        .build(),
+                               .spotifyId("user1")
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(false)
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId("user2")
-                        .displayName("User 2")
-                        .refreshToken("token-2")
-                        .doBackup(false)
-                        .build()
-        );
+                               .spotifyId("user2")
+                               .displayName("User 2")
+                               .refreshToken("token-2")
+                               .doBackup(false)
+                               .build());
 
         // Act
         assertThrows(ConfigFileException.class, () -> Config.loadAppConfigFromFile(configFile));
@@ -298,11 +298,11 @@ class ConfigTest {
                 }
                 """;
         final Config.UserInfo newUser = Config.UserInfo.builder()
-                .spotifyId("user3")
-                .displayName("User 3")
-                .refreshToken("1a2b3c")
-                .doBackup(true)
-                .build();
+                                                       .spotifyId("user3")
+                                                       .displayName("User 3")
+                                                       .refreshToken("1a2b3c")
+                                                       .doBackup(true)
+                                                       .build();
         Files.writeString(configFile.toPath(), initialConfigContents);
         Config.loadAppConfigFromFile(configFile);
 
@@ -387,27 +387,26 @@ class ConfigTest {
         final String backupAccountId = "user1";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId(backupAccountId)
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(true)
-                        .cloneTargets(List.of(cloneTargetId))
-                        .build(),
+                               .spotifyId(backupAccountId)
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(true)
+                               .cloneTargets(List.of(cloneTargetId))
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId("user2")
-                        .displayName("User 2")
-                        .refreshToken("token-2")
-                        .doBackup(false)
-                        .cloneTargets(Collections.emptyList())
-                        .build(),
+                               .spotifyId("user2")
+                               .displayName("User 2")
+                               .refreshToken("token-2")
+                               .doBackup(false)
+                               .cloneTargets(Collections.emptyList())
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId(cloneTargetId)
-                        .displayName("Clone target")
-                        .refreshToken("token-3")
-                        .doBackup(false)
-                        .cloneTargets(Collections.emptyList())
-                        .build()
-        );
+                               .spotifyId(cloneTargetId)
+                               .displayName("Clone target")
+                               .refreshToken("token-3")
+                               .doBackup(false)
+                               .cloneTargets(Collections.emptyList())
+                               .build());
         assertDoesNotThrow(() -> {
             try {
                 Config.loadAppConfigFromFile(configFile);
@@ -424,12 +423,12 @@ class ConfigTest {
         });
         final var backupAccount = App.config.getUsers().getFirst();
         assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals(cloneTargetId, cloneTarget.getSpotifyId().orElseThrow(),
-                "Last user should be the clone target, this a sanity check for the assert phase.");
+                     "Last user should be the clone target, this a sanity check for the assert phase.");
         assertDoesNotThrow(() -> backupAccount.addCloneTarget(cloneTarget),
-                "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
+                           "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
 
         // Act & Assert
         assertFalse(cloneTarget.getDoBackup());
@@ -443,20 +442,19 @@ class ConfigTest {
         final String backupAccountId = "user1";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId(backupAccountId)
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(true)
-                        .cloneTargets(List.of(cloneTargetId))
-                        .build(),
+                               .spotifyId(backupAccountId)
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(true)
+                               .cloneTargets(List.of(cloneTargetId))
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId(cloneTargetId)
-                        .displayName("Clone target")
-                        .refreshToken("token-3")
-                        .doBackup(false)
-                        .cloneTargets(Collections.emptyList())
-                        .build()
-        );
+                               .spotifyId(cloneTargetId)
+                               .displayName("Clone target")
+                               .refreshToken("token-3")
+                               .doBackup(false)
+                               .cloneTargets(Collections.emptyList())
+                               .build());
         assertDoesNotThrow(() -> {
             try {
                 Config.loadAppConfigFromFile(configFile);
@@ -473,12 +471,12 @@ class ConfigTest {
         });
         final var backupAccount = App.config.getUsers().getFirst();
         assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals(cloneTargetId, cloneTarget.getSpotifyId().orElseThrow(),
-                "Last user should be the clone target, this a sanity check for the assert phase.");
+                     "Last user should be the clone target, this a sanity check for the assert phase.");
         assertDoesNotThrow(() -> backupAccount.addCloneTarget(cloneTarget),
-                "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
+                           "UserInfo::addCloneTarget() should not throw anything here, starting from known good source.");
 
         // Act & Assert
         assertTrue(backupAccount.getDoBackup());
@@ -540,10 +538,10 @@ class ConfigTest {
         Config.loadAppConfigFromFile(configFile);
         final var user1 = App.config.getUsers().getFirst();
         assertEquals("user1", user1.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals("user2", cloneTarget.getSpotifyId().orElseThrow(),
-                "Last user should be the clone target, this a sanity check for the assert phase.");
+                     "Last user should be the clone target, this a sanity check for the assert phase.");
 
         // Act
         assertDoesNotThrow(() -> {
@@ -552,7 +550,7 @@ class ConfigTest {
         });
 
         // Assert
-        assertTrue(user1.hasCloneTargets());
+        assertTrue(user1.hasCloningTargets());
         final String newConfig = Files.readString(configFile.toPath());
         assertEquals(finalConfigContents, newConfig);
     }
@@ -612,16 +610,16 @@ class ConfigTest {
         Config.loadAppConfigFromFile(configFile);
         final var user1 = App.config.getUsers().getFirst();
         assertEquals("user1", user1.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals("user2", cloneTarget.getSpotifyId().orElseThrow(),
-                "Last user should be the clone target, this a sanity check for the assert phase.");
+                     "Last user should be the clone target, this a sanity check for the assert phase.");
 
         // Act
         user1.removeCloneTarget(cloneTarget);
 
         // Assert
-        assertFalse(user1.hasCloneTargets());
+        assertFalse(user1.hasCloningTargets());
         final String newConfig = Files.readString(configFile.toPath());
         assertEquals(finalConfigContents, newConfig);
     }
@@ -634,18 +632,17 @@ class ConfigTest {
         final String backupAccountId = "user1";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId(backupAccountId)
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(false)
-                        .build(),
+                               .spotifyId(backupAccountId)
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(false)
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId(cloneTargetId)
-                        .displayName("Clone target")
-                        .refreshToken("token-3")
-                        .doBackup(false)
-                        .build()
-        );
+                               .spotifyId(cloneTargetId)
+                               .displayName("Clone target")
+                               .refreshToken("token-3")
+                               .doBackup(false)
+                               .build());
         assertDoesNotThrow(() -> {
             try {
                 Config.loadAppConfigFromFile(configFile);
@@ -662,10 +659,10 @@ class ConfigTest {
         });
         final var backupAccount = App.config.getUsers().getFirst();
         assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals(cloneTargetId, cloneTarget.getSpotifyId().orElseThrow(),
-                "Last user should be the clone target, this a sanity check for the assert phase.");
+                     "Last user should be the clone target, this a sanity check for the assert phase.");
 
         // Act & Assert
         try {
@@ -687,18 +684,17 @@ class ConfigTest {
         final String backupAccountId = "user1";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId(backupAccountId)
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(true)
-                        .build(),
+                               .spotifyId(backupAccountId)
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(true)
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId(cloneTargetId)
-                        .displayName("Clone target")
-                        .refreshToken("token-3")
-                        .doBackup(true)
-                        .build()
-        );
+                               .spotifyId(cloneTargetId)
+                               .displayName("Clone target")
+                               .refreshToken("token-3")
+                               .doBackup(true)
+                               .build());
         assertDoesNotThrow(() -> {
             try {
                 Config.loadAppConfigFromFile(configFile);
@@ -715,14 +711,14 @@ class ConfigTest {
         });
         final var backupAccount = App.config.getUsers().getFirst();
         assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var cloneTarget = App.config.getUsers().getLast();
         assertEquals(cloneTargetId, cloneTarget.getSpotifyId().orElseThrow(),
-                "Last user should be the clone target, this a sanity check for the assert phase.");
+                     "Last user should be the clone target, this a sanity check for the assert phase.");
 
         // Act & Assert
         assertTrue(cloneTarget.getDoBackup());
-        assertFalse(backupAccount.hasCloneTargets());
+        assertFalse(backupAccount.hasCloningTargets());
         assertTrue(backupAccount.getDoBackup());
         assertThrows(ConfigReferenceLoopException.class, () -> backupAccount.addCloneTarget(cloneTarget));
     }
@@ -735,18 +731,17 @@ class ConfigTest {
         final String backupAccountId = "user1";
         final List<Config.UserInfo> users = List.of(
                 Config.UserInfo.builder()
-                        .spotifyId(backupAccountId)
-                        .displayName("User 1")
-                        .refreshToken("token-1")
-                        .doBackup(true)
-                        .build(),
+                               .spotifyId(backupAccountId)
+                               .displayName("User 1")
+                               .refreshToken("token-1")
+                               .doBackup(true)
+                               .build(),
                 Config.UserInfo.builder()
-                        .spotifyId(notCloneTargetId)
-                        .displayName("not a Clone target")
-                        .refreshToken("token-3")
-                        .doBackup(false)
-                        .build()
-        );
+                               .spotifyId(notCloneTargetId)
+                               .displayName("not a Clone target")
+                               .refreshToken("token-3")
+                               .doBackup(false)
+                               .build());
         assertDoesNotThrow(() -> {
             try {
                 Config.loadAppConfigFromFile(configFile);
@@ -763,10 +758,10 @@ class ConfigTest {
         });
         final var backupAccount = App.config.getUsers().getFirst();
         assertEquals(backupAccountId, backupAccount.getSpotifyId().orElseThrow(),
-                "First user should be the user1 account, this a sanity check for the assert phase.");
+                     "First user should be the user1 account, this a sanity check for the assert phase.");
         final var backupAccount2 = App.config.getUsers().getLast();
         assertEquals(notCloneTargetId, backupAccount2.getSpotifyId().orElseThrow(),
-                "Last user should be the not a clone target, this a sanity check for the assert phase.");
+                     "Last user should be the not a clone target, this a sanity check for the assert phase.");
 
         // Act & Assert
         assertTrue(backupAccount.getDoBackup());

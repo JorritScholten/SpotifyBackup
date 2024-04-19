@@ -66,7 +66,7 @@ public class Config {
 
     private static void readFile(File file) throws IOException {
         try (var reader = new FileReader(file)) {
-            App.config = gson.fromJson(reader, Config.class);
+            App.config      = gson.fromJson(reader, Config.class);
             App.config.path = file;
             checkAllFields(file, App.config);
             App.config.users.forEach(u -> u.parent = App.config);
@@ -107,16 +107,17 @@ public class Config {
             if (user.cloneTargets == null)
                 user.cloneTargets = new ArrayList<>();
             else {
-                if (!user.cloneTargets.isEmpty() && !Boolean.TRUE.equals(user.doBackup))
-                    fieldWarnings.add("   user[" + user.spotifyId + "].doBackup is false whilst having cloning targets.");
+                if (!user.cloneTargets.isEmpty() && !Boolean.TRUE.equals(user.doBackup)) fieldWarnings.add(
+                        "   user[" + user.spotifyId + "].doBackup is false whilst having cloning targets.");
                 user.cloneTargets.forEach(id -> {
                     if (isNullOrBlank(id))
                         fieldWarnings.add("   user[" + user.spotifyId + "].cloneTargets has a blank entry.");
-                    else if (config.users.stream().map(u -> u.getSpotifyId().orElseThrow()).noneMatch(t -> t.equals(id)))
-                        fieldWarnings.add("   user[" + user.spotifyId + "].cloneTargets targets a Spotify User ID [" + id +
-                                "] not found in config.");
-                    else if (id.equals(user.spotifyId))
-                        fieldWarnings.add("   user[" + user.spotifyId + "].cloneTargets targets self");
+                    else if (config.users.stream().map(u -> u.getSpotifyId().orElseThrow())
+                                         .noneMatch(t -> t.equals(id))) fieldWarnings.add(
+                            "   user[" + user.spotifyId + "].cloneTargets targets a Spotify User ID [" + id +
+                                    "] not found in config.");
+                    else if (id.equals(user.spotifyId)) fieldWarnings.add(
+                            "   user[" + user.spotifyId + "].cloneTargets targets self");
                 });
             }
         });
@@ -133,13 +134,13 @@ public class Config {
     private static void createNewFile(File file) throws IOException {
         try (var writer = new FileWriter(file)) {
             Config config = new Config();
-            config.clientId = "";
+            config.clientId    = "";
             config.redirectURI = new URI("");
-            config.users = new ArrayList<>();
+            config.users       = new ArrayList<>();
             writer.write(gson.toJson(config));
             writer.write('\n');
             config.path = file;
-            App.config = config;
+            App.config  = config;
         } catch (URISyntaxException e) {
             throw new ConfigFileException("This shouldn't be thrown for a blank URI.");
         }
@@ -210,9 +211,9 @@ public class Config {
         private List<String> cloneTargets = new ArrayList<>();
 
         private UserInfo(Config parent, boolean doBackup) {
-            this.parent = parent;
+            this.parent   = parent;
             this.doBackup = doBackup;
-            cloneTargets = new ArrayList<>();
+            cloneTargets  = new ArrayList<>();
         }
 
         public Optional<String> getDisplayName() {
@@ -250,11 +251,14 @@ public class Config {
 
         public void setDoBackup(boolean doBackup) throws ConfigReferenceLoopException {
             if (!getDoBackup() && doBackup) {
-                if (isCloningTarget()) throw new ConfigReferenceLoopException("account with spotifyId[" +
-                        spotifyId + "] is a cloning target.");
+                if (isCloningTarget()) throw new ConfigReferenceLoopException(
+                        "account with spotifyId[" + spotifyId + "] is a cloning target."
+                );
             } else if (getDoBackup() && !doBackup) {
-                if (!cloneTargets.isEmpty()) throw new ConfigReferenceLoopException("account with spotifyId[" +
-                        spotifyId + "] still has cloning targets: [" + String.join(", ", cloneTargets) + "]");
+                if (!cloneTargets.isEmpty()) throw new ConfigReferenceLoopException(
+                        "account with spotifyId[" + spotifyId + "] still has cloning targets: [" + String.join(
+                                ", ", cloneTargets) + "]"
+                );
             } else return;
             this.doBackup = doBackup;
             parent.serialize();
@@ -271,28 +275,31 @@ public class Config {
             List<UserInfo> targets = new ArrayList<>();
             for (var targetId : cloneTargets)
                 targets.add(parent.users.stream()
-                        .filter(u -> u.getSpotifyId().isPresent() && u.getSpotifyId().orElseThrow().equals(targetId))
-                        .findFirst().orElseThrow(() -> new RuntimeException("Trying to reference account in users " +
-                                "with spotifyId[" + targetId + "] that no longer exists."))
-                );
+                                        .filter(u -> u.getSpotifyId().isPresent())
+                                        .filter(u -> u.getSpotifyId().orElseThrow().equals(targetId))
+                                        .findFirst().orElseThrow(() -> new RuntimeException(
+                                "Trying to reference account in users with spotifyId[" + targetId +
+                                        "] that no longer exists."))
+                           );
             return targets.stream().toList();
         }
 
-        public boolean hasCloneTargets() {
+        public boolean hasCloningTargets() {
             return !cloneTargets.isEmpty();
         }
 
         public void addCloneTarget(@NonNull UserInfo target) throws ConfigReferenceLoopException {
-            if (!getDoBackup()) throw new ConfigReferenceLoopException("account with spotifyId[" +
-                    spotifyId + "] not marked for backup.");
+            if (!getDoBackup()) throw new ConfigReferenceLoopException(
+                    "account with spotifyId[" + spotifyId + "] not marked for backup."
+            );
             if (target.getDoBackup())
                 throw new ConfigReferenceLoopException("target[" + target.spotifyId + "] is marked for backup.");
             if (!target.parent.equals(parent))
                 throw new IllegalArgumentException("target has different parent from this.");
-            if (target.getSpotifyId().isEmpty()) {
-                throw new IllegalArgumentException("target has no spotifyId.");
-            } else {
-                cloneTargets.add(target.getSpotifyId().get());
+            var spotifyID = target.getSpotifyId()
+                                  .orElseThrow(() -> new IllegalArgumentException("target has no spotifyId."));
+            if (!cloneTargets.contains(spotifyID)) {
+                cloneTargets.add(spotifyID);
                 parent.serialize();
             }
         }
@@ -300,12 +307,10 @@ public class Config {
         public void removeCloneTarget(@NonNull UserInfo target) {
             if (!target.parent.equals(parent))
                 throw new IllegalArgumentException("target has different parent from this.");
-            if (target.getSpotifyId().isEmpty()) {
-                throw new IllegalArgumentException("target has no spotifyId.");
-            } else {
-                cloneTargets.remove(target.getSpotifyId().get());
-                parent.serialize();
-            }
+            var spotifyID = target.getSpotifyId()
+                                  .orElseThrow(() -> new IllegalArgumentException("target has no spotifyId."));
+            cloneTargets.remove(spotifyID);
+            parent.serialize();
         }
 
         @Override
