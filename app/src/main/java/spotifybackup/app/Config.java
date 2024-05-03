@@ -66,7 +66,7 @@ public class Config {
 
     private static void readFile(File file) throws IOException {
         try (var reader = new FileReader(file)) {
-            App.config      = gson.fromJson(reader, Config.class);
+            App.config = gson.fromJson(reader, Config.class);
             App.config.path = file;
             checkAllFields(file, App.config);
             App.config.users.forEach(u -> u.parent = App.config);
@@ -134,13 +134,13 @@ public class Config {
     private static void createNewFile(File file) throws IOException {
         try (var writer = new FileWriter(file)) {
             Config config = new Config();
-            config.clientId    = "";
+            config.clientId = "";
             config.redirectURI = new URI("");
-            config.users       = new ArrayList<>();
+            config.users = new ArrayList<>();
             writer.write(gson.toJson(config));
             writer.write('\n');
             config.path = file;
-            App.config  = config;
+            App.config = config;
         } catch (URISyntaxException e) {
             throw new ConfigFileException("This shouldn't be thrown for a blank URI.");
         }
@@ -211,9 +211,9 @@ public class Config {
         private List<String> cloneTargets = new ArrayList<>();
 
         private UserInfo(Config parent, boolean doBackup) {
-            this.parent   = parent;
+            this.parent = parent;
             this.doBackup = doBackup;
-            cloneTargets  = new ArrayList<>();
+            cloneTargets = new ArrayList<>();
         }
 
         public Optional<String> getDisplayName() {
