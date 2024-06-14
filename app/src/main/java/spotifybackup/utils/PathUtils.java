@@ -15,10 +15,10 @@ public class PathUtils {
 
     public static File configDir() {
         var path = new File(switch (System.getProperty("os.name")) {
-            case "Linux" -> env.getOrDefault("XDG_CONFIG_HOME",
-                    HOME_DIR + SEP + ".config" + SEP + App.APP_NAME);
-            case "Windows" -> env.getOrDefault("APPDATA",
-                    HOME_DIR + SEP + "AppData" + SEP + App.APP_NAME);
+            case "Linux" -> env.getOrDefault("XDG_CONFIG_HOME" + SEP + App.APP_NAME,
+                                             HOME_DIR + SEP + ".config" + SEP + App.APP_NAME);
+            case "Windows" -> env.getOrDefault("APPDATA" + SEP + App.APP_NAME,
+                                               HOME_DIR + SEP + "AppData" + SEP + App.APP_NAME);
             default -> System.getProperty("user.dir");
         } + SEP);
         if (!path.exists() && !path.mkdirs()) throw new RuntimeException("Couldn't create configuration directory.");
@@ -27,10 +27,10 @@ public class PathUtils {
 
     public static File dataDir() {
         var path = new File(switch (System.getProperty("os.name")) {
-            case "Linux" -> env.getOrDefault("XDG_DATA_HOME",
-                    HOME_DIR + SEP + ".local" + SEP + "share" + SEP + App.APP_NAME);
-            case "Windows" -> env.getOrDefault("APPDATA",
-                    HOME_DIR + SEP + "AppData" + SEP + App.APP_NAME);
+            case "Linux" -> env.getOrDefault("XDG_DATA_HOME" + SEP + App.APP_NAME,
+                                             HOME_DIR + SEP + ".local" + SEP + "share" + SEP + App.APP_NAME);
+            case "Windows" -> env.getOrDefault("APPDATA" + SEP + App.APP_NAME,
+                                               HOME_DIR + SEP + "AppData" + SEP + App.APP_NAME);
             default -> System.getProperty("user.dir");
         } + SEP);
         if (!path.exists() && !path.mkdirs()) throw new RuntimeException("Couldn't create data directory.");
