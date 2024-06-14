@@ -377,6 +377,26 @@ public class CLI extends TerminalInteraction {
             return apiItems;
         }
 
+        private <A extends AbstractModelObject> List<A>
+        getListFromApiPaged(int spaces, String message, BiFunction<Integer, Integer, Paging<A>> getPage) {
+            verbosePrint(spaces, message);
+            final int limit = 50;
+            int offset = 0;
+            Paging<A> apiPage;
+            List<A[]> apiItems = new ArrayList<>();
+            verbosePrint(", requesting data");
+            do {
+                verbosePrint(".");
+                apiPage = getPage.apply(limit, offset);
+                apiItems.add(apiPage.getItems());
+                offset += limit;
+            } while (apiPage.getNext() != null);
+            verbosePrintln("");
+            List<A> returnList = new ArrayList<>();
+            apiItems.stream().forEach(page -> returnList.addAll(Arrays.stream(page).toList()));
+            return returnList;
+        }
+
         private <A extends AbstractModelObject> List<A[]>
         getFromApiPagedCursor(int spaces, String message, BiFunction<Integer, String, PagingCursorbased<A>> getPage) {
             verbosePrint(spaces, message);
@@ -544,13 +564,31 @@ public class CLI extends TerminalInteraction {
                     final var target = new ApiWrapper(targetInfo, App.getConfig());
                     final var targetUser = target.getCurrentUser().orElseThrow();
                     verbosePrintln(4, "Cloning to: " + targetUser.getDisplayName());
-                    // cloneLikedSongsToPlaylist
+                    final var targetsPlaylists = getListFromApiPaged(6, "Retrieving targets' playlists.",
+                                                                     target::getCurrentUserPlaylists);
+                    cloneLikedSongsToPlaylist(target, targetUser, targetsPlaylists.stream().toList());
                     // cloneLikedSongs
                     // cloneFollowedPlaylists
                     // clonePlaylists
                     // cloneLikedAlbums
                     // cloneFollowedArtists
                 }
+            }
+        }
+
+        void cloneLikedSongsToPlaylist(final ApiWrapper target, final User targetUser, final List<PlaylistSimplified> playlists) {
+            final String playlistName = user.getDisplayName().orElse(user.getSpotifyUserID()) + " Liked Songs";
+            final var possibleTargetPlaylists = playlists.stream()
+                                                         .filter(ps -> ps.getOwner().getId().equals(targetUser.getId()))
+                                                         .filter(ps -> ps.getName().equals(playlistName)).toList();
+            final String likedSongsPlaylistId = switch (possibleTargetPlaylists.size()) {
+                case 1 -> possibleTargetPlaylists.getFirst().getId();
+                case 0 -> {
+                    // create new playlist here and yield its id
+                    yield newPlaylistId;
+                }
+                default -> throw new RuntimeException(
+                        "Multiple targets for cloning Liked Songs to a playlist not handled yet.");
             }
         }
     }
