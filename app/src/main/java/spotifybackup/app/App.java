@@ -67,7 +67,7 @@ public class App {
     static final DefaultEnumArgument<ImageSelection> imageSaveRestriction = new DefaultEnumArgument
             .Builder<ImageSelection>()
             .name("restrict-images")
-            .description("Restrict which images are saved to save on database size.")
+            .description("Restrict which image links are saved to save on database size.")
             .defaultValue(ImageSelection.ONLY_LARGEST)
             .enumClass(ImageSelection.class)
             .makeValueMandatory()

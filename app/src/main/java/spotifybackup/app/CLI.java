@@ -273,6 +273,7 @@ public class CLI extends TerminalInteraction {
                 println("Logged in as: " + currentUser.getDisplayName());
             user = repo.persist(currentUser);
             performBackup();
+            performCloning(account);
         }
 
         /** Perform various backup actions. */
@@ -533,6 +534,24 @@ public class CLI extends TerminalInteraction {
                 repo.persist(api.getSeveralTracks(ids));
             }
             verbosePrintln("");
+        }
+
+        private void performCloning(final Config.UserInfo account) throws InterruptedException, IOException {
+            if (account.hasCloningTargets()) {
+                verbosePrintln(2, user.getDisplayName().orElse(user.getSpotifyUserID()) + " has "
+                        + account.getCloneTargets().size() + " cloning target(s).");
+                for (var targetInfo : account.getCloneTargets()) {
+                    final var target = new ApiWrapper(targetInfo, App.getConfig());
+                    final var targetUser = target.getCurrentUser().orElseThrow();
+                    verbosePrintln(4, "Cloning to: " + targetUser.getDisplayName());
+                    // cloneLikedSongsToPlaylist
+                    // cloneLikedSongs
+                    // cloneFollowedPlaylists
+                    // clonePlaylists
+                    // cloneLikedAlbums
+                    // cloneFollowedArtists
+                }
+            }
         }
     }
 }

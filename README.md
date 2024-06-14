@@ -41,6 +41,7 @@ database and automated backups to an online repository.
             - [x] handle adding cloning targets
             - [ ] handle broken objects in users field in config file in commandline
         - [ ] create methods for transferring various account details
+            - [ ] Liked Songs to a playlist
             - [ ] Liked Songs
             - [ ] created playlists (and their contents)
             - [ ] playlist subscriptions
