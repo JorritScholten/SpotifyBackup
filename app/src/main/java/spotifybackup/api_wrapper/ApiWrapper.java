@@ -73,7 +73,8 @@ public class ApiWrapper {
                 final String key = RandomStringUtils.randomAlphanumeric(128);
                 final var md = MessageDigest.getInstance("SHA-256");
                 final String keyDigest = Base64.encodeBase64URLSafeString(md.digest(key.getBytes()));
-                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).scope(SCOPES).build();
+                authorizationCodeUriRequest = spotifyApi.authorizationCodePKCEUri(keyDigest).state(state).scope(SCOPES)
+                        .build();
                 authorizationCodeRequest = code -> spotifyApi.authorizationCodePKCE(code, key).build();
                 authorizationRefreshRequest = () -> spotifyApi.authorizationCodePKCERefresh().build();
             } else {
@@ -296,9 +297,9 @@ public class ApiWrapper {
     }
 
     public Optional<Playlist> getPlaylistWithoutTracks(@NonNull SpotifyID id) {
-        return getSpotifyObject(() -> spotifyApi.getPlaylist(id.getId()).fields(
-                "collaborative,description,id,name,owner,public,snapshot_id,type,followers,tracks(total)"
-        ).build());
+        return getSpotifyObject(() -> spotifyApi.getPlaylist(id.getId())
+                .fields("collaborative,description,id,name,owner,public,snapshot_id,type,followers,tracks(total)")
+                .build());
     }
 
     private <T extends AbstractModelObject> PagingCursorbased<T>

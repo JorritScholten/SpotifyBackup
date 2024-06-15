@@ -126,7 +126,7 @@ public abstract class TerminalInteraction {
         List<Character> optionsList = List.of(options);
         if (!optionsList.contains(defaultOption))
             throw new IllegalArgumentException("defaultOption[" + defaultOption + "] not in options" +
-                                                       Arrays.toString(options));
+                    Arrays.toString(options));
         char choice;
         String scanOut;
         Scanner scan = new Scanner(term.input());
@@ -160,7 +160,7 @@ public abstract class TerminalInteraction {
         if (defaultOption != 'y' && defaultOption != 'n')
             throw new IllegalArgumentException("defaultOption should be y or n, not: " + defaultOption);
         return confirmUsingChar(prompt + (defaultOption == 'y' ? " [Y/n]" : " [y/N]"),
-                                defaultOption, 'y', 'n') == defaultOption;
+                defaultOption, 'y', 'n') == defaultOption;
     }
 
     /**
@@ -378,7 +378,7 @@ public abstract class TerminalInteraction {
         int[] indexValues;
         while (true) {
             indexValues = askForInts(prompt + " Enter a space separated list of their identifying numbers: ",
-                                     "[ ]{1}");
+                    "[ ]{1}");
             if (indexValues.length <= options.size()) {
                 if (Arrays.stream(indexValues).anyMatch(i -> i < 1 || i > options.size()))
                     println("One or more of the selection number(s) out of range, try again.");
