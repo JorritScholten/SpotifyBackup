@@ -10,3 +10,8 @@ app/bin
 .idea/markdown.xml
 .idea
 .jpb
+
+# ignore temporary files created for testing and debugging
+*.json
+*.sql
+*.db
