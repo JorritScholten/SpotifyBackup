@@ -1,5 +1,7 @@
 package spotifybackup.app;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import lombok.NonNull;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
@@ -15,10 +17,7 @@ import java.io.IOException;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -399,7 +398,8 @@ public class CLI extends TerminalInteraction {
             } while (apiPage.getNext() != null);
             verbosePrintln("");
             List<A> returnList = new ArrayList<>();
-            apiItems.stream().forEach(page -> returnList.addAll(Arrays.stream(page).toList()));
+            apiItems.stream().filter(page -> !Objects.isNull(page))
+                    .forEach(page -> returnList.addAll(Arrays.stream(page).toList()));
             return returnList;
         }
 
@@ -569,10 +569,10 @@ public class CLI extends TerminalInteraction {
                     final var target = new ApiWrapper(targetInfo, App.getConfig());
                     final var targetUser = target.getCurrentUser().orElseThrow();
                     verbosePrintln(4, "Cloning to: " + targetUser.getDisplayName());
-                    final var targetsPlaylists = getListFromApiPaged(6, "Retrieving targets' playlists.",
+                    final var targetsPlaylists = getListFromApiPaged(6, "Retrieving targets' playlists",
                             target::getCurrentUserPlaylists);
                     cloneLikedSongsToPlaylist(target, targetUser, targetsPlaylists.stream().toList());
-                    // cloneLikedSongs
+                    // cloneLikedSongsToLikedSongs
                     // cloneFollowedPlaylists
                     // clonePlaylists
                     // cloneLikedAlbums
@@ -581,20 +581,80 @@ public class CLI extends TerminalInteraction {
             }
         }
 
-        void cloneLikedSongsToPlaylist(final ApiWrapper target, final User targetUser, final List<PlaylistSimplified> playlists) {
+        private void cloneLikedSongsToPlaylist(final ApiWrapper target, final User targetUser, final List<PlaylistSimplified> playlists) {
             final String playlistName = user.getDisplayName().orElse(user.getSpotifyUserID()) + " Liked Songs";
-            final var possibleTargetPlaylists = playlists.stream()
-                                                         .filter(ps -> ps.getOwner().getId().equals(targetUser.getId()))
-                                                         .filter(ps -> ps.getName().equals(playlistName)).toList();
+            final var possibleTargetPlaylists = playlists
+                    .stream()
+                    .filter(ps -> ps.getOwner().getId().equals(targetUser.getId()))
+                    .filter(ps -> ps.getName().equals(playlistName))
+                    .toList();
             final String likedSongsPlaylistId = switch (possibleTargetPlaylists.size()) {
                 case 1 -> possibleTargetPlaylists.getFirst().getId();
                 case 0 -> {
                     // create new playlist here and yield its id
-                    yield newPlaylistId;
+                    var newPlaylist = target.createPlaylist(playlistName,
+                            "Liked songs (in random order) cloned from account named \"" + user.getDisplayName()
+                                    .orElseThrow() + "\" with Spotify User ID: " + user.getSpotifyUserID());
+                    yield newPlaylist.orElseThrow().getId();
                 }
                 default -> throw new RuntimeException(
                         "Multiple targets for cloning Liked Songs to a playlist not handled yet.");
+            };
+            final Set<String> likedSongIds = repo.getSavedTrackIds(user);
+            final List<String> tracksInitiallyInPlaylist = getListFromApiPaged(8,
+                    "Retrieving tracks currently in playlist",
+                    (l, o) -> target.getPlaylistTrackIds(l, o, likedSongsPlaylistId))
+                    .stream().map(pt -> pt.getTrack().getId()).toList();
+
+            // // remove duplicate tracks in playlist
+            // final Set<String> uniqueTracksInitiallyInPlaylist = new HashSet<>(tracksInitiallyInPlaylist);
+            // if(tracksInitiallyInPlaylist.size() > uniqueTracksInitiallyInPlaylist.size()){
+            // }
+
+            // remove tracks present in playlist and not present in liked songs
+            final Set<String> idsNotInLikedSongsAnymore = new HashSet<>(tracksInitiallyInPlaylist);
+            if (idsNotInLikedSongsAnymore.removeAll(likedSongIds)) {
+                var arraysToRemove = createTrackIdURIArrays(idsNotInLikedSongsAnymore.stream().toList(), 100,
+                        UriArrayPurpose.REMOVE_PLAYLIST_ITEMS);
+                println("array amount: " + arraysToRemove.size());
+            }
+
+            // add tracks present in liked songs but not present in the playlist
+            final Set<String> newLikedSongIds = new HashSet<>(likedSongIds);
+            tracksInitiallyInPlaylist.forEach(newLikedSongIds::remove);
+            if (!newLikedSongIds.isEmpty()) {
+                var arraysToAdd = createTrackIdURIArrays(newLikedSongIds.stream().toList(), 100,
+                        UriArrayPurpose.ADD_PLAYLIST_ITEMS);
+                for (var trackArray : arraysToAdd) target.addItemsToPlaylist(likedSongsPlaylistId, trackArray);
             }
         }
+
+        private List<JsonArray> createTrackIdURIArrays(final List<String> trackIds, final int arraySize, final UriArrayPurpose arrayFormat) {
+            List<List<String>> splitTrackIds = new ArrayList<>();
+            for (int i = 0; i < trackIds.size(); i += arraySize) {
+                if (i + arraySize <= trackIds.size())
+                    splitTrackIds.add(trackIds.subList(i, i + arraySize));
+                else
+                    splitTrackIds.add(trackIds.subList(i, trackIds.size()));
+            }
+            List<JsonArray> trackIdArrays = new ArrayList<>();
+            for (List<String> sublist : splitTrackIds) {
+                var array = new JsonArray();
+                for (String id : sublist) {
+                    switch (arrayFormat) {
+                        case ADD_PLAYLIST_ITEMS -> array.add("spotify:track:" + id);
+                        case REMOVE_PLAYLIST_ITEMS -> {
+                            var uriElement = new JsonObject();
+                            uriElement.addProperty("uri", "spotify:track:" + id);
+                            array.add(uriElement);
+                        }
+                    }
+                }
+                trackIdArrays.add(array);
+            }
+            return trackIdArrays;
+        }
+
+        private enum UriArrayPurpose {ADD_PLAYLIST_ITEMS, REMOVE_PLAYLIST_ITEMS}
     }
 }

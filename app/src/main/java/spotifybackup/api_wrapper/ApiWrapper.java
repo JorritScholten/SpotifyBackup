@@ -1,5 +1,6 @@
 package spotifybackup.api_wrapper;
 
+import com.google.gson.JsonArray;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
@@ -14,6 +15,7 @@ import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.exceptions.detailed.BadRequestException;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.credentials.AuthorizationCodeCredentials;
+import se.michaelthelin.spotify.model_objects.special.SnapshotResult;
 import se.michaelthelin.spotify.model_objects.specification.*;
 import se.michaelthelin.spotify.requests.AbstractRequest;
 import spotifybackup.app.Config;
@@ -40,7 +42,9 @@ public class ApiWrapper {
             AuthorizationScope.USER_LIBRARY_READ,
             AuthorizationScope.USER_FOLLOW_READ,
             AuthorizationScope.PLAYLIST_READ_PRIVATE,
-            AuthorizationScope.PLAYLIST_READ_COLLABORATIVE
+            AuthorizationScope.PLAYLIST_READ_COLLABORATIVE,
+            AuthorizationScope.PLAYLIST_MODIFY_PUBLIC,
+            AuthorizationScope.PLAYLIST_MODIFY_PRIVATE
     };
     private final SpotifyApi spotifyApi;
     private final Semaphore waitingForAPI = new Semaphore(1);
@@ -296,10 +300,24 @@ public class ApiWrapper {
                 .additionalTypes(ModelObjectType.TRACK.type).build());
     }
 
-    public Optional<Playlist> getPlaylistWithoutTracks(@NonNull SpotifyID id) {
-        return getSpotifyObject(() -> spotifyApi.getPlaylist(id.getId())
+    public Paging<PlaylistTrack> getPlaylistTrackIds(int limit, int offset, @NonNull String playlistId) {
+        return getPage(() -> spotifyApi.getPlaylistsItems(playlistId).limit(limit).offset(offset)
+                .fields("track(id)").build());
+    }
+
+    public Optional<Playlist> getPlaylistWithoutTracks(@NonNull SpotifyID playlistId) {
+        return getSpotifyObject(() -> spotifyApi.getPlaylist(playlistId.getId())
                 .fields("collaborative,description,id,name,owner,public,snapshot_id,type,followers,tracks(total)")
                 .build());
+    }
+
+    public Optional<Playlist> createPlaylist(@NonNull String name, String description) {
+        return getSpotifyObject(() -> spotifyApi.createPlaylist(account.getSpotifyId().orElseThrow(), name)
+                .description(description).build());
+    }
+
+    public Optional<SnapshotResult> addItemsToPlaylist(@NonNull String playlistId, @NonNull JsonArray uris) {
+        return getSpotifyObject(() -> spotifyApi.addItemsToPlaylist(playlistId, uris).build());
     }
 
     private <T extends AbstractModelObject> PagingCursorbased<T>
