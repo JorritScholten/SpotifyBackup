@@ -7,7 +7,7 @@ database and automated backups to an online repository.
 
 ## Tasks
 
-- [x] Implement a robust commandline interface.
+- [ ] Implement a robust commandline interface.
     - [x] specify which accounts are targeted for backups
         - [x] add flag to `Config.UserInfo` to mark backups
         - [x] specify accounts using a REPL or bounded list from `listAccountsInConfig()`
@@ -15,6 +15,11 @@ database and automated backups to an online repository.
     - [x] request values for config file when creating a new config
         - [x] create cmd line argument to set config values directly
         - [x] specify values in terminal using prompt upon file creation
+    - [ ] Look into a better system to define/edit the config file (maybe using [Lanterna](https://github.com/mabe02/lanterna))
+    - [ ] Look into using an existing CLI options library that has more features than `spotifybackup.cmd.CmdParser`
+      - [ ] Look into [PicoCLI](https://picocli.info/)
+      - [ ] Look into [JCommander](https://jcommander.org/)
+      - [ ] Look into [Apache Commons CLI](https://commons.apache.org/proper/commons-cli/index.html)
 - [x] Make use of Spotify API
   wrapper. [Using this library](https://github.com/spotify-web-api-java/spotify-web-api-java/)
     - [x] Make successful GET request to Spotify API
