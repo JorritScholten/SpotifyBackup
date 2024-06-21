@@ -34,6 +34,7 @@ database and automated backups to an online repository.
     - [ ] Write unit test using mocking (leaning towards EasyMock)
     - [x] Store track info to db
     - [x] Store playlist to db
+        - [ ] Add option to limit playlist backups if they are attached to account currently being backed up
     - [x] Store Liked Songs to db
     - [x] Store Liked Albums to db
     - [x] Store followed artists to db
@@ -46,7 +47,7 @@ database and automated backups to an online repository.
             - [x] handle adding cloning targets
             - [ ] handle broken objects in users field in config file in commandline
         - [ ] create methods for transferring various account details
-            - [ ] Liked Songs to a playlist
+            - [x] Liked Songs to a playlist
             - [ ] Liked Songs
             - [ ] created playlists (and their contents)
             - [ ] playlist subscriptions
