@@ -297,12 +297,19 @@ public class ApiWrapper {
 
     public Paging<PlaylistTrack> getPlaylistTracks(int limit, int offset, SpotifyID id) {
         return getPage(() -> spotifyApi.getPlaylistsItems(id.getId()).limit(limit).offset(offset)
-                .additionalTypes(ModelObjectType.TRACK.type).build());
+                                       .additionalTypes(ModelObjectType.TRACK.type).build());
     }
 
+    public Paging<PlaylistTrack> getPlaylistTracks(int limit, int offset, @NonNull String playlistId) {
+        return getPage(() -> spotifyApi.getPlaylistsItems(playlistId).limit(limit).offset(offset)
+                                       .additionalTypes(ModelObjectType.TRACK.type).build());
+    }
+
+    /** @implNote limiting fields to track id should work but doesn't */
     public Paging<PlaylistTrack> getPlaylistTrackIds(int limit, int offset, @NonNull String playlistId) {
         return getPage(() -> spotifyApi.getPlaylistsItems(playlistId).limit(limit).offset(offset)
-                .fields("track(id)").build());
+                .fields("limit,offset,next,previous,total,items(track(id))").build());
+//                .fields("limit,offset,next,previous,total,items(track)").build()); <- this does work but is redundant
     }
 
     public Optional<Playlist> getPlaylistWithoutTracks(@NonNull SpotifyID playlistId) {
@@ -318,6 +325,10 @@ public class ApiWrapper {
 
     public Optional<SnapshotResult> addItemsToPlaylist(@NonNull String playlistId, @NonNull JsonArray uris) {
         return getSpotifyObject(() -> spotifyApi.addItemsToPlaylist(playlistId, uris).build());
+    }
+
+    public Optional<SnapshotResult> removeItemsFromPlaylist(@NonNull String playlistId, @NonNull JsonArray uris) {
+        return getSpotifyObject(() -> spotifyApi.removeItemsFromPlaylist(playlistId, uris).build());
     }
 
     private <T extends AbstractModelObject> PagingCursorbased<T>

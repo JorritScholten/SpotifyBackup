@@ -603,7 +603,7 @@ public class CLI extends TerminalInteraction {
             final Set<String> likedSongIds = repo.getSavedTrackIds(user);
             final List<String> tracksInitiallyInPlaylist = getListFromApiPaged(8,
                     "Retrieving tracks currently in playlist",
-                    (l, o) -> target.getPlaylistTrackIds(l, o, likedSongsPlaylistId))
+                    (l, o) -> target.getPlaylistTracks(l, o, likedSongsPlaylistId))
                     .stream().map(pt -> pt.getTrack().getId()).toList();
 
             // // remove duplicate tracks in playlist
@@ -616,7 +616,7 @@ public class CLI extends TerminalInteraction {
             if (idsNotInLikedSongsAnymore.removeAll(likedSongIds)) {
                 var arraysToRemove = createTrackIdURIArrays(idsNotInLikedSongsAnymore.stream().toList(), 100,
                         UriArrayPurpose.REMOVE_PLAYLIST_ITEMS);
-                println("array amount: " + arraysToRemove.size());
+                for (var trackArray: arraysToRemove) target.removeItemsFromPlaylist(likedSongsPlaylistId, trackArray);
             }
 
             // add tracks present in liked songs but not present in the playlist
