@@ -2,10 +2,12 @@ package spotifybackup.app;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import lombok.NonNull;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
@@ -29,6 +31,7 @@ public class CLI extends TerminalInteraction {
         App.configFileArg.ifNotPresent(path -> verbosePrintln("Config file: " + path));
         App.sqlOutputFileArg.ifPresent(path -> verbosePrintln("SQL scripts file: " + path));
         App.noBackups.ifPresent(() -> println("Performing no backups."));
+        App.useConfigurationMenu.ifPresent(this::lanternaDemo);
         repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         try {
             Config.loadAppConfigFromFile(App.configFileArg.getValue());
@@ -57,6 +60,19 @@ public class CLI extends TerminalInteraction {
         App.showTotalLibraryDuration.ifPresent(this::printTotalLibraryDurations);
         App.sqlOutputFileArg.ifPresent(repo::outputDatabaseToSQLScript);
         App.listUserAccounts.ifPresent(this::listUserAccounts);
+    }
+
+    private void lanternaDemo() {
+        var termFactory = new DefaultTerminalFactory();
+        termFactory.setTerminalEmulatorTitle("SpotifyBackup App Configuration");
+        try(var screen = termFactory.createScreen()) {
+            var gui = new MultiWindowTextGUI(screen);
+            screen.startScreen();
+//            gui.
+            screen.refresh();
+        } catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
 
     private void setCloningTargets() {

@@ -15,4 +15,5 @@ module SpotifyBackup.app.main {
     requires io.hypersistence.utils.hibernate.type;
     requires com.google.gson;
     requires org.jline;
+    requires com.googlecode.lanterna;
 }

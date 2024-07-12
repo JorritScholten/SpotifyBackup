@@ -99,6 +99,10 @@ public class App {
             .name("set-config-values")
             .description("Set application credentials in config file needed to connect to the Spotify API.")
             .build();
+    static final FlagArgument useConfigurationMenu = new FlagArgument.Builder()
+            .name("config-menu")
+            .description("Open interactive terminal based configuration menu.")
+            .build();
     static final CmdParser argParser;
     @Getter
     static Config config;
@@ -109,6 +113,7 @@ public class App {
                         configFileArg,
                         dbFileArg,
                         sqlOutputFileArg,
+                        useConfigurationMenu,
                         setConfigValues,
                         addAccounts,
                         configureBackups,
