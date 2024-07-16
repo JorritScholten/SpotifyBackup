@@ -2,12 +2,12 @@ package spotifybackup.app;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
+import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import lombok.NonNull;
 import org.apache.commons.lang3.time.DurationFormatUtils;
 import se.michaelthelin.spotify.model_objects.AbstractModelObject;
 import se.michaelthelin.spotify.model_objects.specification.*;
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import spotifybackup.api_wrapper.ApiWrapper;
 import spotifybackup.app.exception.BlankConfigFieldException;
 import spotifybackup.app.exception.ConfigFileException;
@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -65,14 +66,24 @@ public class CLI extends TerminalInteraction {
     private void lanternaDemo() {
         var termFactory = new DefaultTerminalFactory();
         termFactory.setTerminalEmulatorTitle("SpotifyBackup App Configuration");
-        try(var screen = termFactory.createScreen()) {
-            var gui = new MultiWindowTextGUI(screen);
+        try (var screen = termFactory.createScreen()) {
             screen.startScreen();
-//            gui.
-            screen.refresh();
-        } catch (IOException e){
+            println("screen terminal: " + screen.getTerminal().toString());
+            var gui = new MultiWindowTextGUI(screen);
+            final var window = new BasicWindow("SpotifyBackup App Configuration window");
+            var panel = new Panel(new GridLayout(1));
+            panel.addComponent(new TextBox("test string"));
+            window.setComponent(panel);
+            gui.addWindow(window);
+            gui.updateScreen();
+            println("sleeping for 10s");
+            TimeUnit.SECONDS.sleep(10);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.exit(0);
     }
 
     private void setCloningTargets() {
@@ -632,7 +643,7 @@ public class CLI extends TerminalInteraction {
             if (idsNotInLikedSongsAnymore.removeAll(likedSongIds)) {
                 var arraysToRemove = createTrackIdURIArrays(idsNotInLikedSongsAnymore.stream().toList(), 100,
                         UriArrayPurpose.REMOVE_PLAYLIST_ITEMS);
-                for (var trackArray: arraysToRemove) target.removeItemsFromPlaylist(likedSongsPlaylistId, trackArray);
+                for (var trackArray : arraysToRemove) target.removeItemsFromPlaylist(likedSongsPlaylistId, trackArray);
             }
 
             // add tracks present in liked songs but not present in the playlist
