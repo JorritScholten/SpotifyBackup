@@ -7,7 +7,6 @@ import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
-import com.googlecode.lanterna.terminal.ansi.UnixLikeTerminal;
 import com.googlecode.lanterna.terminal.ansi.UnixTerminal;
 import lombok.NonNull;
 import org.apache.commons.lang3.time.DurationFormatUtils;
@@ -69,47 +68,10 @@ public class CLI extends TerminalInteraction {
     }
 
     private void lanternaDemo() {
-        var termFactory = new DefaultTerminalFactory();
-        termFactory.setInitialTerminalSize(new TerminalSize(120, 40));
-        termFactory.setTerminalEmulatorTitle("SpotifyBackup App Configuration");
-        try (var screen = termFactory.createScreen()) {
-            println("screen terminal: " + screen.getTerminal().toString());
-            screen.refresh(Screen.RefreshType.DELTA);
-            screen.startScreen();
-            screen.doResizeIfNecessary();
-            var gui = new MultiWindowTextGUI(screen);
-            screen.getTerminal().addResizeListener((terminal, newSize) -> {
-                try {
-                    gui.updateScreen();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            final var window = new BasicWindow("SpotifyBackup App Configuration window");
-            var panel = new Panel(new GridLayout(1));
-            panel.addComponent(new TextBox("test string"));
-            window.setComponent(panel);
-            gui.addWindow(window);
-            gui.updateScreen();
-            if (screen.getTerminal().getClass() != UnixTerminal.class) println("sleeping for 2s");
-            TimeUnit.SECONDS.sleep(2);
-            Config.loadAppConfigFromFile(App.configFileArg.getValue());
-            var table = new Table<String>("Spotify ID", "Account display name", "Perform backup?", "Cloning target(s)");
-            for (var user : App.config.getUsers()) {
-                table.getTableModel().addRow(
-                        user.getSpotifyId().orElse("<ID missing>"),
-                        user.getDisplayName().orElse(""),
-                        user.getDoBackup() ? "Yes" : "No",
-                        String.join(", ", user.getCloneTargets().stream().map(u -> u.getSpotifyId().get()).toList())
-                                            );
-            }
-            panel.addComponent(table);
-            gui.updateScreen();
-            if (screen.getTerminal().getClass() != UnixTerminal.class) println("sleeping for 10s");
-            TimeUnit.SECONDS.sleep(10);
+        try {
+            var configMenu = new ConfigUI();
+            configMenu.run();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         System.exit(0);
