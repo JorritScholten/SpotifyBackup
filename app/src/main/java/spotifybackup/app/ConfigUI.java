@@ -15,7 +15,6 @@ public class ConfigUI {
     private final MultiWindowTextGUI gui;
     private final BasicWindow window;
     private final String title = "SpotifyBackup App Configuration";
-    private boolean finishedConfig = false;
 
     public ConfigUI() throws IOException {
         var termFactory = new DefaultTerminalFactory();
@@ -42,12 +41,11 @@ public class ConfigUI {
         var thread = gui.getGUIThread();
         gui.updateScreen();
         do {
-            if (gui.handleInput(screen.readInput())) gui.updateScreen();
-        } while (!finishedConfig);
             if (gui.handleInput(screen.readInput())) {
                 gui.updateScreen();
                 thread.processEventsAndUpdate();
             }
+        } while (!gui.getWindows().isEmpty());
         screen.stopScreen(true);
     }
 
@@ -67,15 +65,20 @@ public class ConfigUI {
         panel.addComponent(printLibraryDuration);
 
         panel.addComponent(new EmptySpace());
+        var testListener = new Button("listener test");
+        testListener.addListener(new ButtonListener("testListener"));
+        panel.addComponent(testListener);
 
-        var finishedConfigButton = new Button("Done?", () -> finishedConfig = true);
+        panel.addComponent(new EmptySpace());
+
+        var finishedConfigButton = new Button("Done?", window::close); // action executed before listener
         panel.addComponent(finishedConfigButton);
 
 
         window.setComponent(panel);
     }
 
-    private static class CheckBoxListener implements CheckBox.Listener {
+    private class CheckBoxListener implements CheckBox.Listener {
         private final String optionName;
 
         CheckBoxListener(String toggleableConfigOption) {
@@ -86,6 +89,21 @@ public class ConfigUI {
         @Override
         public void onStatusChanged(boolean checked) {
             TerminalInteraction.println(optionName + " set to: " + checked);
+        }
+    }
+
+    private class ButtonListener implements Button.Listener {
+        private final String buttonName;
+
+        ButtonListener(String name) {
+            buttonName = name;
+            TerminalInteraction.println("created button listener for: " + buttonName);
+        }
+
+        @Override
+        public void onTriggered(Button button) {
+            TerminalInteraction.println("button: " + buttonName + " triggered");
+            // window.close();
         }
     }
 }
