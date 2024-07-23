@@ -33,18 +33,21 @@ public class ConfigUI {
             }
         });
         window = new BasicWindow(title);
-        var windowListener = new WindowListenerAdapter();
-        window.addWindowListener(windowListener);
         window.setHints(Collections.singleton(Window.Hint.FULL_SCREEN));
         initializeComponents();
         gui.addWindow(window);
     }
 
     public void run() throws IOException {
+        var thread = gui.getGUIThread();
         gui.updateScreen();
         do {
             if (gui.handleInput(screen.readInput())) gui.updateScreen();
         } while (!finishedConfig);
+            if (gui.handleInput(screen.readInput())) {
+                gui.updateScreen();
+                thread.processEventsAndUpdate();
+            }
         screen.stopScreen(true);
     }
 
@@ -60,7 +63,6 @@ public class ConfigUI {
 
         var printLibraryDuration = new CheckBox("Print total library duration");
         printLibraryDuration.setChecked(false); // TODO: store and retrieve this value from Config
-        // TODO: figure out why the listener doesn't trigger when checkbox is toggled
         printLibraryDuration.addListener(new CheckBoxListener("printLibraryDuration"));
         panel.addComponent(printLibraryDuration);
 
@@ -81,7 +83,7 @@ public class ConfigUI {
             TerminalInteraction.println("created checkbox listener for: " + optionName);
         }
 
-
+        @Override
         public void onStatusChanged(boolean checked) {
             TerminalInteraction.println(optionName + " set to: " + checked);
         }
