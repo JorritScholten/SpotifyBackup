@@ -3,6 +3,7 @@ package spotifybackup.app;
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
@@ -24,6 +25,7 @@ public class ConfigUI {
         screen.refresh(Screen.RefreshType.DELTA);
         screen.startScreen();
         gui = new MultiWindowTextGUI(new SameTextGUIThread.Factory(), screen);
+        gui.setEOFWhenNoWindows(true);
         screen.getTerminal().addResizeListener((terminal, newSize) -> {
             try {
                 gui.updateScreen();
@@ -41,9 +43,15 @@ public class ConfigUI {
         var thread = gui.getGUIThread();
         gui.updateScreen();
         do {
-            if (gui.handleInput(screen.readInput())) {
+            final var input = screen.readInput();
+            if (gui.handleInput(input)) {
                 gui.updateScreen();
                 thread.processEventsAndUpdate();
+            } else if (input.getKeyType().equals(KeyType.EOF)) {
+                TerminalInteraction.println("window closed");
+                break;
+            } else {
+                TerminalInteraction.println("unhandled input: " + input);
             }
         } while (!gui.getWindows().isEmpty());
         screen.stopScreen(true);
