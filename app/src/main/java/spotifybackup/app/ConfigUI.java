@@ -8,9 +8,11 @@ import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.ansi.UnixTerminal;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 public class ConfigUI {
@@ -18,7 +20,7 @@ public class ConfigUI {
     private final MultiWindowTextGUI gui;
     private final BasicWindow window;
     private final String title = "SpotifyBackup App Configuration";
-    private final Table<String> configUsers = new Table<>("","Account display name", "Spotify ID",
+    private final Table<String> configUsers = new Table<>("", "Account display name", "Spotify ID",
             "Has refresh token?", "Do backup?", "Cloning Target(s)");
 
     public ConfigUI() throws IOException {
@@ -52,10 +54,11 @@ public class ConfigUI {
                 gui.updateScreen();
                 thread.processEventsAndUpdate();
             } else if (input.getKeyType().equals(KeyType.EOF)) {
-                TerminalInteraction.println("window closed");
+                if (screen.getTerminal().getClass() != UnixTerminal.class) TerminalInteraction.println("window closed");
                 break;
             } else {
-                TerminalInteraction.println("unhandled input: " + input);
+                if (screen.getTerminal().getClass() != UnixTerminal.class)
+                    TerminalInteraction.println("unhandled input: " + input);
             }
         } while (!gui.getWindows().isEmpty());
         screen.stopScreen(true);
@@ -84,6 +87,17 @@ public class ConfigUI {
         panel.addComponent(testListener);
 
         panel.addComponent(new EmptySpace());
+        var beep = new Button("beep");
+        beep.addListener(new ButtonListener("beeper", () -> {
+            try {
+                screen.getTerminal().bell();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+        panel.addComponent(beep);
+
+        panel.addComponent(new EmptySpace());
         panel.addComponent(new Label("textbox test"));
         var noSpaces = Pattern.compile("\\S*");
         var textBox = new TextBox("a-test-string", TextBox.Style.SINGLE_LINE)
@@ -101,9 +115,10 @@ public class ConfigUI {
         configUsers.setCellSelection(false);
         configUsers.setSelectAction(this::tableSelected);
         panel.addComponent(configUsers);
-        var addUserButton = new Button("add new user");
-        addUserButton.addListener(new ButtonListener("add new user"));
-        panel.addComponent(addUserButton);
+        panel.addComponent(new Button("add new user", () -> {
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println("adding new user");
+        }));
 
         panel.addComponent(new EmptySpace());
 
@@ -132,50 +147,77 @@ public class ConfigUI {
     }
 
     private void tableSelected() {
-        TerminalInteraction.println("table selected, row: " + configUsers.getSelectedRow());
+        if (screen.getTerminal().getClass() != UnixTerminal.class)
+            TerminalInteraction.println("table selected, row: " + configUsers.getSelectedRow());
     }
 
     private class CheckBoxListener implements CheckBox.Listener {
         private final String optionName;
+        private final Optional<Runnable> action;
 
         CheckBoxListener(String toggleableConfigOption) {
+            this(toggleableConfigOption, null);
+        }
+
+        CheckBoxListener(String toggleableConfigOption, Runnable action) {
             optionName = toggleableConfigOption;
-            TerminalInteraction.println("created checkbox listener for: " + optionName);
+            this.action = Optional.ofNullable(action);
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println("created checkbox listener for: " + optionName);
         }
 
         @Override
         public void onStatusChanged(boolean checked) {
-            TerminalInteraction.println(optionName + " set to: " + checked);
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println(optionName + " set to: " + checked);
+            action.ifPresent(Runnable::run);
         }
     }
 
     private class ButtonListener implements Button.Listener {
         private final String buttonName;
+        private final Optional<Runnable> action;
 
-        ButtonListener(String name) {
-            buttonName = name;
-            TerminalInteraction.println("created button listener for: " + buttonName);
+        ButtonListener(String buttonName) {
+            this(buttonName, null);
+        }
+
+        ButtonListener(String buttonName, Runnable action) {
+            this.buttonName = buttonName;
+            this.action = Optional.ofNullable(action);
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println("created button listener for: " + buttonName);
         }
 
         @Override
         public void onTriggered(Button button) {
-            TerminalInteraction.println("button: " + buttonName + " triggered");
-            // window.close();
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println("button: " + buttonName + " triggered");
+            action.ifPresent(Runnable::run);
         }
     }
 
     private class TextBoxListener implements TextBox.TextChangeListener {
         private final String optionName;
+        private final Optional<Runnable> action;
 
         TextBoxListener(String optionName) {
+            this(optionName, null);
+        }
+
+        TextBoxListener(String optionName, Runnable action) {
             this.optionName = optionName;
-            TerminalInteraction.println("created textbox listener for: " + optionName);
+            this.action = Optional.ofNullable(action);
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println("created textbox listener for: " + optionName);
         }
 
         @Override
         public void onTextChanged(String newText, boolean changedByUserInteraction) {
             if (changedByUserInteraction) {
-                TerminalInteraction.println("textbox " + optionName + " changed to: " + newText);
+                if (screen.getTerminal().getClass() != UnixTerminal.class)
+                    TerminalInteraction.println("textbox " + optionName + " changed to: " + newText);
+                action.ifPresent(Runnable::run);
             }
         }
     }
