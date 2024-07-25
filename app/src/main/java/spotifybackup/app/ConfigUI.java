@@ -2,6 +2,7 @@ package spotifybackup.app;
 
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TerminalSize;
+import com.googlecode.lanterna.bundle.LanternaThemes;
 import com.googlecode.lanterna.gui2.*;
 import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.input.KeyType;
@@ -11,6 +12,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.ansi.UnixTerminal;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -32,6 +34,7 @@ public class ConfigUI {
         screen.startScreen();
         gui = new MultiWindowTextGUI(new SameTextGUIThread.Factory(), screen);
         gui.setEOFWhenNoWindows(false);
+        gui.setTheme(LanternaThemes.getRegisteredTheme("blaster"));
         screen.getTerminal().addResizeListener((terminal, newSize) -> {
             try {
                 gui.updateScreen();
