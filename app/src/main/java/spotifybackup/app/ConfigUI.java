@@ -3,6 +3,7 @@ package spotifybackup.app;
 import com.googlecode.lanterna.SGR;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.gui2.*;
+import com.googlecode.lanterna.gui2.table.Table;
 import com.googlecode.lanterna.input.KeyType;
 import com.googlecode.lanterna.screen.Screen;
 import com.googlecode.lanterna.screen.TerminalScreen;
@@ -17,6 +18,8 @@ public class ConfigUI {
     private final MultiWindowTextGUI gui;
     private final BasicWindow window;
     private final String title = "SpotifyBackup App Configuration";
+    private final Table<String> configUsers = new Table<>("","Account display name", "Spotify ID",
+            "Has refresh token?", "Do backup?", "Cloning Target(s)");
 
     public ConfigUI() throws IOException {
         var termFactory = new DefaultTerminalFactory();
@@ -26,7 +29,7 @@ public class ConfigUI {
         screen.refresh(Screen.RefreshType.DELTA);
         screen.startScreen();
         gui = new MultiWindowTextGUI(new SameTextGUIThread.Factory(), screen);
-        gui.setEOFWhenNoWindows(true);
+        gui.setEOFWhenNoWindows(false);
         screen.getTerminal().addResizeListener((terminal, newSize) -> {
             try {
                 gui.updateScreen();
@@ -68,6 +71,8 @@ public class ConfigUI {
         outputHeading.addStyle(SGR.BOLD);
         panel.addComponent(outputHeading);
 
+        panel.addComponent(new EmptySpace());
+
         var printLibraryDuration = new CheckBox("Print total library duration");
         printLibraryDuration.setChecked(false); // TODO: store and retrieve this value from Config
         printLibraryDuration.addListener(new CheckBoxListener("printLibraryDuration"));
@@ -91,12 +96,43 @@ public class ConfigUI {
         panel.addComponent(textBox);
 
         panel.addComponent(new EmptySpace());
+        panel.addComponent(new Label("Users in config"));
+        updateConfigUsersRows();
+        configUsers.setCellSelection(false);
+        configUsers.setSelectAction(this::tableSelected);
+        panel.addComponent(configUsers);
+        var addUserButton = new Button("add new user");
+        addUserButton.addListener(new ButtonListener("add new user"));
+        panel.addComponent(addUserButton);
+
+        panel.addComponent(new EmptySpace());
 
         var finishedConfigButton = new Button("Done?", window::close); // action executed before listener
         panel.addComponent(finishedConfigButton);
 
 
         window.setComponent(panel);
+    }
+
+    private void updateConfigUsersRows() {
+        configUsers.getTableModel().clear();
+        int rowCount = 0;
+        final int idColumnLength = configUsers.getTableModel().getColumnLabel(2).length();
+        for (var user : App.config.getUsers()) {
+            var spotifyId = user.getSpotifyId().orElse("<ID missing>");
+            configUsers.getTableModel().addRow(
+                    String.valueOf(rowCount++),
+                    user.getDisplayName().orElse(""),
+                    spotifyId.length() <= idColumnLength ? spotifyId : spotifyId.substring(0,
+                            idColumnLength - 2) + "..",
+                    user.getRefreshToken().orElse("").isBlank() ? "No" : "Yes",
+                    user.getDoBackup() ? "Yes" : "No",
+                    String.join(", ", user.getCloneTargets().stream().map(u -> u.getSpotifyId().get()).toList()));
+        }
+    }
+
+    private void tableSelected() {
+        TerminalInteraction.println("table selected, row: " + configUsers.getSelectedRow());
     }
 
     private class CheckBoxListener implements CheckBox.Listener {

@@ -36,8 +36,6 @@ public class CLI extends TerminalInteraction {
         App.configFileArg.ifNotPresent(path -> verbosePrintln("Config file: " + path));
         App.sqlOutputFileArg.ifPresent(path -> verbosePrintln("SQL scripts file: " + path));
         App.noBackups.ifPresent(() -> println("Performing no backups."));
-        App.useConfigurationMenu.ifPresent(this::lanternaDemo);
-        repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         try {
             Config.loadAppConfigFromFile(App.configFileArg.getValue());
             App.setConfigValues.ifPresent(() -> setConfigValues(false));
@@ -49,6 +47,8 @@ public class CLI extends TerminalInteraction {
         } catch (ConfigFileException e) {
             setConfigValues(true);
         }
+        App.useConfigurationMenu.ifPresent(this::lanternaDemo);
+        repo = SpotifyObjectRepository.factory(App.dbFileArg.getValue());
         performActions();
     }
 
