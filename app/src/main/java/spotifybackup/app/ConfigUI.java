@@ -10,6 +10,7 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.regex.Pattern;
 
 public class ConfigUI {
     private final TerminalScreen screen;
@@ -78,6 +79,18 @@ public class ConfigUI {
         panel.addComponent(testListener);
 
         panel.addComponent(new EmptySpace());
+        panel.addComponent(new Label("textbox test"));
+        var noSpaces = Pattern.compile("\\S*");
+        var textBox = new TextBox("a-test-string", TextBox.Style.SINGLE_LINE)
+                .setValidationPattern(noSpaces)
+                .setTextChangeListener(new TextBoxListener("textBox"));
+        final int windowWidth = screen.getTerminalSize().getColumns() -
+                (window.getHints().contains(Window.Hint.NO_DECORATIONS) ? 0 : 2) -
+                (layout.getLeftMarginSize() + layout.getRightMarginSize());
+        textBox.setPreferredSize(new TerminalSize(windowWidth, 1));
+        panel.addComponent(textBox);
+
+        panel.addComponent(new EmptySpace());
 
         var finishedConfigButton = new Button("Done?", window::close); // action executed before listener
         panel.addComponent(finishedConfigButton);
@@ -112,6 +125,22 @@ public class ConfigUI {
         public void onTriggered(Button button) {
             TerminalInteraction.println("button: " + buttonName + " triggered");
             // window.close();
+        }
+    }
+
+    private class TextBoxListener implements TextBox.TextChangeListener {
+        private final String optionName;
+
+        TextBoxListener(String optionName) {
+            this.optionName = optionName;
+            TerminalInteraction.println("created textbox listener for: " + optionName);
+        }
+
+        @Override
+        public void onTextChanged(String newText, boolean changedByUserInteraction) {
+            if (changedByUserInteraction) {
+                TerminalInteraction.println("textbox " + optionName + " changed to: " + newText);
+            }
         }
     }
 }
