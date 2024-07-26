@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 public class ConfigUI {
     private final TerminalScreen screen;
@@ -35,17 +34,19 @@ public class ConfigUI {
         gui = new MultiWindowTextGUI(new SameTextGUIThread.Factory(), screen);
         gui.setEOFWhenNoWindows(false);
         gui.setTheme(LanternaThemes.getRegisteredTheme("blaster"));
-        screen.getTerminal().addResizeListener((terminal, newSize) -> {
-            try {
-                gui.updateScreen();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        screen.getTerminal().addResizeListener((terminal, newSize) -> tryToUpdateGui());
         window = new BasicWindow(title);
         window.setHints(Collections.singleton(Window.Hint.FULL_SCREEN));
         initializeComponents();
         gui.addWindow(window);
+    }
+
+    private void tryToUpdateGui() {
+        try {
+            gui.updateScreen();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void run() throws IOException {
@@ -106,39 +107,32 @@ public class ConfigUI {
         }));
         panel.addComponent(beep);
 
-        panel.addComponent(new EmptySpace());
-        panel.addComponent(new Label("UI theme:"));
-        ComboBox<String> themeSelect = new ComboBox<>(LanternaThemes.getRegisteredThemes());
-        for (var themeName : LanternaThemes.getRegisteredThemes()) {
-            if (gui.getTheme().equals(LanternaThemes.getRegisteredTheme(themeName))) {
-                themeSelect.setSelectedItem(themeName);
-                break;
-            }
-        }
-        themeSelect.addListener(new ComboBoxListener("theme select", selectIndex -> {
-            try {
-                gui.setTheme(LanternaThemes.getRegisteredTheme(themeSelect.getSelectedItem()));
-                gui.updateScreen();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
-        panel.addComponent(themeSelect);
-
         {
             panel.addComponent(new EmptySpace());
-            panel.addComponent(new Label("textbox test"));
-            var noSpaces = Pattern.compile("\\S*");
-            var textBox = new TextBox("a-test-string", TextBox.Style.SINGLE_LINE)
-                    .setValidationPattern(noSpaces)
-                    .setTextChangeListener(new TextBoxListener("textBox"));
-            textBox.setPreferredSize(new TerminalSize(windowWidth, 1));
-            panel.addComponent(textBox);
+            ComboBox<String> themeSelect = new ComboBox<>(LanternaThemes.getRegisteredThemes());
+            for (var themeName : LanternaThemes.getRegisteredThemes()) {
+                if (gui.getTheme().equals(LanternaThemes.getRegisteredTheme(themeName))) {
+                    themeSelect.setSelectedItem(themeName);
+                    break;
+                }
+            }
+            themeSelect.addListener((selectedIndex, previousSelection, changedByUserInteraction) -> {
+                if (changedByUserInteraction && selectedIndex != previousSelection) {
+                    gui.setTheme(LanternaThemes.getRegisteredTheme(themeSelect.getSelectedItem()));
+                    tryToUpdateGui();
+                }
+            });
+            var labeledComponent = new Panel(new LinearLayout(Direction.HORIZONTAL))
+                    .setPreferredSize(new TerminalSize(windowWidth, 1))
+                    .addComponent(new Label("UI theme"))
+                    .addComponent(themeSelect);
+            panel.addComponent(labeledComponent);
         }
 
         {
             panel.addComponent(new EmptySpace());
             var textBox = new TextBox("initial content", TextBox.Style.SINGLE_LINE)
+                    //.setValidationPattern()
                     .setTextChangeListener((newText, changedByUserInteraction) -> {
                         if (changedByUserInteraction) {
                             if (screen.getTerminal().getClass() != UnixTerminal.class)
