@@ -12,9 +12,9 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.ansi.UnixTerminal;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 public class ConfigUI {
@@ -60,6 +60,7 @@ public class ConfigUI {
                 if (screen.getTerminal().getClass() != UnixTerminal.class) TerminalInteraction.println("window closed");
                 break;
             } else {
+                gui.updateScreen();
                 if (screen.getTerminal().getClass() != UnixTerminal.class)
                     TerminalInteraction.println("unhandled input: " + input);
             }
@@ -99,6 +100,25 @@ public class ConfigUI {
             }
         }));
         panel.addComponent(beep);
+
+        panel.addComponent(new EmptySpace());
+        panel.addComponent(new Label("UI theme:"));
+        ComboBox<String> themeSelect = new ComboBox<>(LanternaThemes.getRegisteredThemes());
+        for (var themeName : LanternaThemes.getRegisteredThemes()) {
+            if (gui.getTheme().equals(LanternaThemes.getRegisteredTheme(themeName))) {
+                themeSelect.setSelectedItem(themeName);
+                break;
+            }
+        }
+        themeSelect.addListener(new ComboBoxListener("theme select", selectIndex -> {
+            try {
+                gui.setTheme(LanternaThemes.getRegisteredTheme(themeSelect.getSelectedItem()));
+                gui.updateScreen();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }));
+        panel.addComponent(themeSelect);
 
         panel.addComponent(new EmptySpace());
         panel.addComponent(new Label("textbox test"));
@@ -221,6 +241,31 @@ public class ConfigUI {
                 if (screen.getTerminal().getClass() != UnixTerminal.class)
                     TerminalInteraction.println("textbox " + optionName + " changed to: " + newText);
                 action.ifPresent(Runnable::run);
+            }
+        }
+    }
+
+    private class ComboBoxListener implements ComboBox.Listener {
+        private final String optionName;
+        private final Optional<Consumer<Integer>> action;
+
+        ComboBoxListener(String optionName) {
+            this(optionName, null);
+        }
+
+        ComboBoxListener(String optionName, Consumer<Integer> action) {
+            this.optionName = optionName;
+            this.action = Optional.ofNullable(action);
+            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                TerminalInteraction.println("created combo box listener for: " + optionName);
+        }
+
+        @Override
+        public void onSelectionChanged(int selectedIndex, int previousSelection, boolean changedByUserInteraction) {
+            if (changedByUserInteraction && selectedIndex != previousSelection) {
+                if (screen.getTerminal().getClass() != UnixTerminal.class)
+                    TerminalInteraction.println("combo box " + optionName + " changed to: " + selectedIndex);
+                action.ifPresent(integerConsumer -> integerConsumer.accept(selectedIndex));
             }
         }
     }
