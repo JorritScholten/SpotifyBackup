@@ -69,9 +69,14 @@ public class ConfigUI {
     }
 
     private void initializeComponents() {
-        var layout = new GridLayout(1);
-        layout.setVerticalSpacing(0);
-        var panel = new Panel(layout);
+        var panelLayout = new GridLayout(1);
+        panelLayout.setVerticalSpacing(0);
+        var panel = new Panel(panelLayout);
+        final int windowWidth = screen.getTerminalSize().getColumns() -
+                (window.getHints().contains(Window.Hint.NO_DECORATIONS) ? 0 : 2) -
+                (panelLayout.getLeftMarginSize() + panelLayout.getRightMarginSize());
+        final LayoutData grow = LinearLayout.createLayoutData(LinearLayout.Alignment.Beginning,
+                LinearLayout.GrowPolicy.CanGrow);
 
 
         var outputHeading = new Label("Terminal output options");
@@ -120,17 +125,32 @@ public class ConfigUI {
         }));
         panel.addComponent(themeSelect);
 
-        panel.addComponent(new EmptySpace());
-        panel.addComponent(new Label("textbox test"));
-        var noSpaces = Pattern.compile("\\S*");
-        var textBox = new TextBox("a-test-string", TextBox.Style.SINGLE_LINE)
-                .setValidationPattern(noSpaces)
-                .setTextChangeListener(new TextBoxListener("textBox"));
-        final int windowWidth = screen.getTerminalSize().getColumns() -
-                (window.getHints().contains(Window.Hint.NO_DECORATIONS) ? 0 : 2) -
-                (layout.getLeftMarginSize() + layout.getRightMarginSize());
-        textBox.setPreferredSize(new TerminalSize(windowWidth, 1));
-        panel.addComponent(textBox);
+        {
+            panel.addComponent(new EmptySpace());
+            panel.addComponent(new Label("textbox test"));
+            var noSpaces = Pattern.compile("\\S*");
+            var textBox = new TextBox("a-test-string", TextBox.Style.SINGLE_LINE)
+                    .setValidationPattern(noSpaces)
+                    .setTextChangeListener(new TextBoxListener("textBox"));
+            textBox.setPreferredSize(new TerminalSize(windowWidth, 1));
+            panel.addComponent(textBox);
+        }
+
+        {
+            panel.addComponent(new EmptySpace());
+            var textBox = new TextBox("initial content", TextBox.Style.SINGLE_LINE)
+                    .setTextChangeListener((newText, changedByUserInteraction) -> {
+                        if (changedByUserInteraction) {
+                            if (screen.getTerminal().getClass() != UnixTerminal.class)
+                                TerminalInteraction.println("newText: " + newText);
+                        }
+                    });
+            var labeledText = new Panel(new LinearLayout(Direction.HORIZONTAL))
+                    .setPreferredSize(new TerminalSize(windowWidth, 1))
+                    .addComponent(new Label("property"))
+                    .addComponent(textBox, grow);
+            panel.addComponent(labeledText);
+        }
 
         panel.addComponent(new EmptySpace());
         panel.addComponent(new Label("Users in config"));
