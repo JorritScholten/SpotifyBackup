@@ -683,7 +683,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyUser persist(@NonNull User apiUser, @NonNull ImageSelection selection) {
-        return persistAbstractModel(apiUser, (em, unused) -> SpotifyUserRepository.persist(em, apiUser, selection));
+        return persistAbstractModel(apiUser, (em, _) -> SpotifyUserRepository.persist(em, apiUser, selection));
     }
 
     /**
@@ -705,7 +705,7 @@ public class SpotifyObjectRepository {
      * new Spotify ID.
      */
     public SpotifyArtist persist(@NonNull Artist apiArtist, @NonNull ImageSelection selection) {
-        return persistAbstractModel(apiArtist, (em, unused) -> SpotifyArtistRepository.persist(em, apiArtist, selection));
+        return persistAbstractModel(apiArtist, (em, _) -> SpotifyArtistRepository.persist(em, apiArtist, selection));
     }
 
     /**
@@ -735,7 +735,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyAlbum persist(@NonNull Album apiAlbum) {
-        return persistAbstractModel(apiAlbum, (em, unused) -> SpotifyAlbumRepository.persist(em, apiAlbum,
+        return persistAbstractModel(apiAlbum, (em, _) -> SpotifyAlbumRepository.persist(em, apiAlbum,
                 true, ImageSelection.ALL));
     }
 
@@ -748,7 +748,7 @@ public class SpotifyObjectRepository {
      * Spotify ID.
      */
     public SpotifyAlbum persist(@NonNull Album apiAlbum, @NonNull ImageSelection selection) {
-        return persistAbstractModel(apiAlbum, (em, unused) -> SpotifyAlbumRepository.persist(em, apiAlbum,
+        return persistAbstractModel(apiAlbum, (em, _) -> SpotifyAlbumRepository.persist(em, apiAlbum,
                 true, selection));
     }
 
@@ -831,7 +831,7 @@ public class SpotifyObjectRepository {
     public List<SpotifySavedAlbum> persist(@NonNull SavedAlbum[] albums, @NonNull SpotifyUser user,
                                            @NonNull ImageSelection selection) {
         return persistAbstractModelsWithIdentifier(albums, new ArrayList<>(), user,
-                (em, album, unused) -> SpotifySavedAlbumRepository.persist(em, album, user, selection));
+                (em, album, _) -> SpotifySavedAlbumRepository.persist(em, album, user, selection));
     }
 
     /**
