@@ -71,7 +71,7 @@ public class ConfigUI {
 
     private void initializeComponents() {
         var panelLayout = new GridLayout(1);
-        panelLayout.setVerticalSpacing(0);
+        panelLayout.setVerticalSpacing(1);
         var panel = new Panel(panelLayout);
         final int windowWidth = screen.getTerminalSize().getColumns() -
                 (window.getHints().contains(Window.Hint.NO_DECORATIONS) ? 0 : 2) -
@@ -84,31 +84,27 @@ public class ConfigUI {
         outputHeading.addStyle(SGR.BOLD);
         panel.addComponent(outputHeading);
 
-        panel.addComponent(new EmptySpace());
-
         var printLibraryDuration = new CheckBox("Print total library duration");
         printLibraryDuration.setChecked(false); // TODO: store and retrieve this value from Config
         printLibraryDuration.addListener(new CheckBoxListener("printLibraryDuration"));
         panel.addComponent(printLibraryDuration);
 
-        panel.addComponent(new EmptySpace());
-        var testListener = new Button("listener test");
-        testListener.addListener(new ButtonListener("testListener"));
-        panel.addComponent(testListener);
+//        var testListener = new Button("listener test");
+//        testListener.addListener(new ButtonListener("testListener"));
+//        panel.addComponent(testListener);
 
-        panel.addComponent(new EmptySpace());
-        var beep = new Button("beep");
-        beep.addListener(new ButtonListener("beeper", () -> {
-            try {
-                screen.getTerminal().bell();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }));
-        panel.addComponent(beep);
+//        panel.addComponent(new EmptySpace());
+//        var beep = new Button("beep");
+//        beep.addListener(new ButtonListener("beeper", () -> {
+//            try {
+//                screen.getTerminal().bell();
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        }));
+//        panel.addComponent(beep);
 
         {
-            panel.addComponent(new EmptySpace());
             ComboBox<String> themeSelect = new ComboBox<>(LanternaThemes.getRegisteredThemes());
             for (var themeName : LanternaThemes.getRegisteredThemes()) {
                 if (gui.getTheme().equals(LanternaThemes.getRegisteredTheme(themeName))) {
@@ -130,7 +126,6 @@ public class ConfigUI {
         }
 
         {
-            panel.addComponent(new EmptySpace());
             var textBox = new TextBox("initial content", TextBox.Style.SINGLE_LINE)
                     //.setValidationPattern()
                     .setTextChangeListener((newText, changedByUserInteraction) -> {
@@ -146,21 +141,24 @@ public class ConfigUI {
             panel.addComponent(labeledText);
         }
 
-        panel.addComponent(new EmptySpace());
-        panel.addComponent(new Label("Users in config"));
-        updateConfigUsersRows();
-        configUsers.setCellSelection(false);
-        configUsers.setSelectAction(this::tableSelected);
-        panel.addComponent(configUsers);
-        panel.addComponent(new Button("add new user", () -> {
-            if (screen.getTerminal().getClass() != UnixTerminal.class)
-                TerminalInteraction.println("adding new user");
-        }));
+        {
+            var userTable = new Panel(new LinearLayout(Direction.VERTICAL));
+            userTable.addComponent(new Label("Users in config"));
+            updateConfigUsersRows();
+            configUsers.setCellSelection(false);
+            configUsers.setSelectAction(this::tableSelected);
+            userTable.addComponent(configUsers);
+            userTable.addComponent(new Button("add new user", () -> {
+                if (screen.getTerminal().getClass() != UnixTerminal.class)
+                    TerminalInteraction.println("adding new user");
+            }));
+            panel.addComponent(userTable);
+        }
 
-        panel.addComponent(new EmptySpace());
-
-        var finishedConfigButton = new Button("Done?", window::close); // action executed before listener
-        panel.addComponent(finishedConfigButton);
+        {
+            var finishedConfigButton = new Button("Done?", window::close); // action executed before listener
+            panel.addComponent(finishedConfigButton);
+        }
 
 
         window.setComponent(panel);
